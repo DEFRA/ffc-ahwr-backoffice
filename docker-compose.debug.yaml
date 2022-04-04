@@ -1,0 +1,4 @@
+version: '3.9'
+services:
+  ffc-template-node:
+    command: npm run start:debug
