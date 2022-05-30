@@ -1,8 +1,8 @@
 environment: development
-name: ffc-template-node
+name: ffc-ahwr-backoffice
 namespace: ffc-demo
 workstream: ffc-demo
-image: ffc-template-node
+image: ffc-ahwr-backoffice
 
 labels: {}
 
@@ -10,10 +10,10 @@ appInsights:
   key:
 
 containerConfigMap:
-  name: ffc-template-node-config-map
+  name: ffc-ahwr-backoffice-config-map
 
 containerSecret:
-  name: ffc-template-node-container-secret
+  name: ffc-ahwr-backoffice-container-secret
   type: Opaque
 
 deployment:
@@ -23,12 +23,22 @@ deployment:
   minReadySeconds: 0
 
 container:
+  backOfficeRequestQueueAddress: ffc-ahwr-backoffice-request
+  backOfficeResponseQueueAddress: ffc-ahwr-backoffice-response
+  azureStorageConnectionString:
+  cookiePassword: who-likes-cookies-i-like-cookies-everybody-likes-cookies
   imagePullPolicy: IfNotPresent
-  requestMemory: 10Mi
-  requestCpu: 10m
-  limitMemory: 40Mi
-  limitCpu: 40m
+  limitCpu: 120m
+  limitMemory: 200Mi
+  messageQueueHost: namespace.servicebus.windows.net
   port: 3000
+  requestCpu: 100m
+  requestMemory: 200Mi
+  redisHostname: redis-hostname.default
+  redisPartition: ffc-ahwr-backoffice
+  redisPassword: redis
+  redisPort: 6379
+  serviceUri:
 
 livenessProbe:
   path: /healthz

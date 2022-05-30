@@ -4,11 +4,11 @@ version: '3.9'
 # that test output is saved to the host
 
 services:
-  ffc-template-node:
+  ffc-ahwr-backoffice:
     build:
       target: development
-    image: ffc-template-node-development
-    container_name: ffc-template-node-test
+    image: ffc-ahwr-backoffice-development
+    container_name: ffc-ahwr-backoffice-test
     command: npm run test
     volumes:
       - ./app:/home/node/app

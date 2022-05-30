@@ -5,7 +5,7 @@ const readline = require('readline')
 
 const originalDescription = 'description-of-project-goes-here'
 const originalNamespace = 'ffc-demo'
-const originalProjectName = 'ffc-template-node'
+const originalProjectName = 'ffc-ahwr-backoffice'
 
 function processInput (args) {
   const [, , projectName, description] = args

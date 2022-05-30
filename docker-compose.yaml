@@ -1,12 +1,22 @@
 version: '3.9'
 
 services:
-  ffc-template-node:
+  ffc-ahwr-backoffice:
     build:
       context: .
       target: production
-    image: ffc-template-node
-    container_name: ffc-template-node
+    image: ffc-ahwr-backoffice
+    container_name: ffc-ahwr-backoffice
     environment:
-      APPINSIGHTS_CLOUDROLE: ffc-template-node-local
+      APPINSIGHTS_CLOUDROLE: ffc-ahwr-backoffice-local
       APPINSIGHTS_INSTRUMENTATIONKEY: ${APPINSIGHTS_INSTRUMENTATIONKEY}
+      BACKOFFICEREQUEST_QUEUE_ADDRESS: ${BACKOFFICEREQUEST_QUEUE_ADDRESS:-ffc-ahwr-backoffice-request}${MESSAGE_QUEUE_SUFFIX}
+      BACKOFFICERESPONSE_QUEUE_ADDRESS: ${BACKOFFICERESPONSE_QUEUE_ADDRESS:-ffc-ahwr-backoffice-response}${MESSAGE_QUEUE_SUFFIX}
+      COOKIE_PASSWORD: who-likes-cookies-i-like-cookies-everybody-likes-cookies
+      MESSAGE_QUEUE_HOST: ${MESSAGE_QUEUE_HOST:-notset}
+      MESSAGE_QUEUE_PASSWORD: ${MESSAGE_QUEUE_PASSWORD:-notset}
+      MESSAGE_QUEUE_USER: ${MESSAGE_QUEUE_USER:-notset}
+      REDIS_HOSTNAME: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ""
+      SERVICE_URI: http://localhost:3000

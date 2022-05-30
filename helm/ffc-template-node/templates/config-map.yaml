@@ -1,7 +1,22 @@
-{{- include "ffc-helm-library.container-config-map" (list . "ffc-template-node.config-map") -}}
-{{- define "ffc-template-node.config-map" -}}
+{{- include "ffc-helm-library.container-config-map" (list . "ffc-ahwr-backoffice.config-map") -}}
+{{- define "ffc-ahwr-backoffice.config-map" -}}
 data:
   NODE_ENV: {{ quote .Values.environment }}
   PORT: {{ quote .Values.container.port }}
   APPINSIGHTS_CLOUDROLE: {{ quote .Values.name }}
+  BACKOFFICEREQUEST_QUEUE_ADDRESS: {{ quote .Values.container.backOfficeRequestQueueAddress }}
+  BACKOFFICERESPONSE_QUEUE_ADDRESS: {{ quote .Values.container.backOfficeResponseQueueAddress }}
+  MESSAGE_QUEUE_HOST: {{ quote .Values.container.messageQueueHost }}
+  NODE_ENV: {{ quote .Values.environment }}
+  PORT: {{ quote .Values.container.port }}
+  {{- if .Values.container.redisHostname }}
+  REDIS_HOSTNAME: {{ quote .Values.container.redisHostname }}
+  {{- end }}
+  {{- if .Values.pr }}
+  REDIS_PARTITION: {{ .Values.container.redisPartition }}-{{ .Values.pr }}
+  {{ else }}
+  REDIS_PARTITION: {{ quote .Values.container.redisPartition }}
+  {{- end }}
+  REDIS_PORT: {{ quote .Values.container.redisPort }}
+  SERVICE_URI: {{ quote .Values.container.serviceUri }}
 {{- end -}}

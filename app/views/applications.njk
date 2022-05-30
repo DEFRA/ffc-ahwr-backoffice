@@ -1,0 +1,78 @@
+{% extends '.layout.njk' %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}    
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/tag/macro.njk" import govukTag -%}
+{% from "govuk/components/table/macro.njk" import govukTable -%}
+
+{% block pageTitle %}
+  {{ siteTitle }} - Start
+{% endblock %}
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back to applications",
+    href: "/applications",
+	  attributes: {id: 'linkBack'}
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">  
+      <h1 class="govuk-heading-l">Applications</h1>
+
+  </div>
+  <div class="govuk-grid-row">
+{{ govukTable({
+  attributes: {
+    'data-module': 'moj-sortable-table'
+  },
+  head: [
+    {
+      html: "<input type='checkbox' name='selectAll' id='selectAll'/>"
+    },
+    {
+      text: "Reference No",
+      attributes: {
+        "aria-sort": "ascending"
+      }
+    },
+    {
+      text: "Grant Type",
+      attributes: {
+        "aria-sort": "none"
+      }
+    },
+    {
+      text: "Name",
+      attributes: {
+        "aria-sort": "none"
+      }
+    },
+    {
+      text: "Submitted On",
+      attributes: {
+        "aria-sort": "none"
+      },
+      format: "date"
+    },
+    {
+      text: "Status",
+      attributes: {
+        "aria-sort": "none"
+      }
+    }
+  ],
+  rows: applications
+}) }}
+    </div>
+
+  </div>
+</div>
+  </div>
+  
+{% endblock %}
