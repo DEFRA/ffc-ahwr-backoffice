@@ -5,7 +5,7 @@ async function createModel (request, errorMessage) {
   const apps = await getApplications('', '', request.yar.id)
   console.log(apps, 'apps')
   return {
-    applications: [],
+    applications: apps,
     errorMessage
   }
 }
