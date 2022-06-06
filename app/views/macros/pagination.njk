@@ -1,0 +1,18 @@
+{% macro pager(page, totalPages, count, total, url) %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">
+        {% if page > 1 %}
+          <a href="{{ url }}?page=1" class="govuk-link">First</a>
+          <a href="{{ url }}?page={{ page - 1 }}" class="govuk-link">Previous</a>
+        {% endif %}
+            Page <strong>{{ page }}</strong> of <strong>{{ totalPages }}</strong>
+        {% if page < totalPages %}
+          <a href="{{ url }}?page={{ page + 1 }}" class="govuk-link">Next</a>
+          <a href="{{ url }}?page={{ totalPages }}" class="govuk-link">Last</a>
+        {% endif %}
+      </p>
+      <p class="govuk-body">Showing <strong>{{ count }}</strong> of <strong>{{ total }}</strong> results</p>
+    </div>
+  </div>
+{% endmacro %}
