@@ -13,7 +13,7 @@ async function createModel (request, errorMessage) {
 
   const pagingData = getPagingData(apps.applications.length ?? 0, limit, request.query.page ?? 1, request.headers.path ?? '')
 
-  let statusClass; let status = ''
+  let statusClass = 'govuk-tag--grey'; let status = 'Pending'
 
   return {
     applications: apps.applications.map(n => {
