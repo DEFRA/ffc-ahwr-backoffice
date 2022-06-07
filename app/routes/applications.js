@@ -11,10 +11,39 @@ async function createModel (request, errorMessage) {
     apps = await getApplications('', '', limit, offset, request.yar.id)
   }
 
-  const pagingData = getPagingData(apps.length ?? 0, limit, request.query.page, request.headers.path)
-  console.log(apps, 'apps', pagingData)
+  const pagingData = getPagingData(apps.applications.length ?? 0, limit, request.query.page ?? 1, request.headers.path ?? '')
+
+  let statusClass; let status = ''
+
   return {
-    applications: apps,
+    applications: apps.applications.map(n => {
+      switch (n.status) {
+        case '1':
+          statusClass = 'govuk-tag--grey'
+          status = 'In Progress'
+          break
+        case '2':
+          statusClass = 'govuk-tag--blue'
+          status = 'Submitted'
+          break
+        case '3':
+          statusClass = 'govuk-tag--red'
+          status = 'Withdrawn'
+          break
+        case '4':
+          statusClass = 'govuk-tag--red'
+          status = 'Deleted'
+          break
+      }
+      return [
+        { text: n.reference },
+        { text: n.data.organisation.name },
+        { text: n.data.organisation.sbi },
+        { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
+        { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
+        { html: `<span class="govuk-tag ${statusClass}">${status}</span>` }
+      ]
+    }),
     ...pagingData,
     errorMessage
   }

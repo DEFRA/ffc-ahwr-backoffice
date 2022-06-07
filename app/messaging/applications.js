@@ -5,12 +5,7 @@ async function getApplications (searchType, searchText, limit, offset, sessionId
   await sendMessage({ search: { type: searchType, text: searchText, limit, offset } }, backOfficeRequestMsgType, backOfficeRequestQueue, { sessionId })
   return receiveMessage(sessionId, backOfficeResponseQueue)
 }
-async function getOrgApplications (searchType, searchText, limit, offset, sessionId) {
-  await sendMessage({ search: { type: searchType, text: searchText, limit, offset } }, backOfficeRequestMsgType, backOfficeRequestQueue, { sessionId })
-  return receiveMessage(sessionId, backOfficeResponseQueue)
-}
 
 module.exports = {
-  getApplications,
-  getOrgApplications
+  getApplications
 }
