@@ -4,7 +4,8 @@ const routes = [].concat(
   require('../routes/privacy-policy'),
   require('../routes/healthy'),
   require('../routes/healthz'),
-  require('../routes/applications')
+  require('../routes/applications'),
+  require('../routes/view-application')
 )
 
 module.exports = {
