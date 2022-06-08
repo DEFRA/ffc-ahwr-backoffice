@@ -2,6 +2,8 @@ const viewTemplate = 'applications'
 const currentPath = `/${viewTemplate}`
 const { getApplications } = require('../messaging/applications')
 const { getPagination, getPagingData } = require('../pagination')
+const Joi = require('joi')
+
 async function createModel (request, errorMessage) {
   const { limit, offset } = getPagination(request.query.page, request.query.limit)
   let apps
@@ -10,8 +12,8 @@ async function createModel (request, errorMessage) {
   } else {
     apps = await getApplications('', '', limit, offset, request.yar.id)
   }
-
-  const pagingData = getPagingData(apps.applications.length ?? 0, limit, request.query.page ?? 1, request.headers.path ?? '')
+  console.log(apps.total, limit, request.query.page, request.headers.path, 'total app count')
+  const pagingData = getPagingData(apps.total ?? 0, limit, request.query.page ?? 1, request.headers.path ?? '')
 
   let statusClass = 'govuk-tag--grey'; let status = 'Pending'
 
@@ -52,9 +54,17 @@ module.exports = [
   {
     method: 'GET',
     path: currentPath,
-    handler: async (request, h) => {
-      console.log('request')
-      return h.view(viewTemplate, await createModel(request, null))
+    options: {
+      validate: {
+        query: Joi.object({
+          page: Joi.number().greater(0).default(1),
+          limit: Joi.number().greater(0).default(10)
+        })
+      },
+      handler: async (request, h) => {
+        console.log('request')
+        return h.view(viewTemplate, await createModel(request, null))
+      }
     }
   },
   {
