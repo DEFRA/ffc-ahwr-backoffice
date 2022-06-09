@@ -94,3 +94,120 @@ $govuk-assets-path: "~govuk-frontend/govuk/assets/";
   cursor: default;
   color: black;
 }
+
+/**
+ * user search box
+ */
+ .user-search-box .govuk-form-group {
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
+.user-search-box {
+  position: relative;
+}
+
+.user-search-box .govuk-input {
+  padding-right: 45px;
+  width: 100%;
+}
+
+.user-search-box .search-button,
+.user-search-box .search-button:active {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  border-width: 0 0 0 2px;
+  border-style: solid;
+  border-left-color: #000;
+  box-sizing: border-box;
+  margin-bottom: 0;
+  cursor: pointer;
+  border-radius: 0;
+  padding: 0;
+  width: 38px;
+  height: 36px;
+  background-image: url(../images/search-icon.png);
+  background-repeat: no-repeat;
+  background-position: 2px 50%;
+  text-indent: 115%;
+  overflow: hidden;
+  white-space: nowrap;
+  background-color: #1d70b8;
+  box-shadow: none;
+}
+
+.user-search-box .search-button:hover, .user-search-box .search-button:focus,
+.user-search-box .search-button:active:hover,
+.user-search-box .search-button:active:focus {
+  background-color: #003078;
+}
+
+.filter-block {
+  padding-top: 30px;
+  border-top: 1px solid #b1b4b6;
+  margin: 30px 0 1px 0;
+}
+
+/**
+ * pagination from: https://home-office-digital-patterns.herokuapp.com/components/pagination
+ */
+ .pagination {
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+}
+
+.pagination__item {
+  display: inline-block;
+  list-style: none;
+}
+
+.pagination__link {
+  display: block;
+  padding: 5px;
+  text-decoration: none;
+  font-size: 16px;
+  color: #005EA5;
+  display: inline-block;
+  margin-right: 15px;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.pagination__link:hover, .pagination__link:focus {
+  background: #F8F8F8;
+  outline: 3px solid #FFBF47;
+}
+
+.pagination__link.current {
+  font-weight: 700;
+}
+
+.pagination__link.current, .pagination__link.disabled {
+  color: #0B0C0C;
+  border: none;
+  pointer-events: none;
+  cursor: default;
+  font-family: "GDS Transport", arial, sans-serif;
+}
+
+a.pagination__link:hover,
+a.pagination__link:focus {
+  background: #F8F8F8;
+  outline: 3px solid #FFBF47;
+}
+
+.pagination__summary {
+  font-family: "GDS Transport", arial, sans-serif;
+  line-height: 30px;
+}
+
+@media (min-width: 642px) {
+  .pagination__summary {
+    float: right;
+  }
+}
+
+
