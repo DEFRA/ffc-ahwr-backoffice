@@ -11,22 +11,21 @@ const getOrganisationRows = (organisation) => {
 } 
 
 module.exports = {
-    method: 'GET',
-    path: '/view-application/{reference}',
-    options: {
-      validate: {
-        params: Joi.object({
-          reference: Joi.string().valid()
-        })
-      },
-      auth: false,
-      handler: async (request, h) => {
-        const application =  await getApplication(request.params.reference, request.yar.id)
-        if (!application) {
-          throw boom.badRequest()
-        }
-        return h.view('view-application', { applicationId: application.reference, organisationName: application?.data?.organisation?.name ,listData: { rows: getOrganisationRows(application?.data?.organisation) } })
+  method: 'GET',
+  path: '/view-application/{reference}',
+  options: {
+    validate: {
+      params: Joi.object({
+        reference: Joi.string().valid()
+      })
+    },
+    auth: false,
+    handler: async (request, h) => {
+      const application =  await getApplication(request.params.reference, request.yar.id)
+      if (!application) {
+        throw boom.badRequest()
       }
+      return h.view('view-application', { applicationId: application.reference, organisationName: application?.data?.organisation?.name ,listData: { rows: getOrganisationRows(application?.data?.organisation) } })
     }
   }
 }
