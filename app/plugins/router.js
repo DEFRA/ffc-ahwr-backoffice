@@ -1,10 +1,12 @@
 const routes = [].concat(
   require('../routes/assets'),
   require('../routes/accessibility'),
-  require('../routes/privacy-policy'),
+  require('../routes/cookies'),
   require('../routes/healthy'),
   require('../routes/healthz'),
+  require('../routes/home'),
   require('../routes/applications'),
+  require('../routes/privacy-policy'),
   require('../routes/view-application')
 )
 

@@ -25,7 +25,6 @@ deployment:
 container:
   backOfficeRequestQueueAddress: ffc-ahwr-backoffice-request
   backOfficeResponseQueueAddress: ffc-ahwr-backoffice-response
-  azureStorageConnectionString:
   cookiePassword: who-likes-cookies-i-like-cookies-everybody-likes-cookies
   imagePullPolicy: IfNotPresent
   limitCpu: 120m

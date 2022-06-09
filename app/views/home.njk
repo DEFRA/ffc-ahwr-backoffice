@@ -1,0 +1,52 @@
+{% extends './layouts/layout.njk' %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Home",
+        href: "/"
+      }
+    ]
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">{{ serviceName }}</h1>
+
+    {{ govukWarningText({
+      text: "This is not a real service and is for demonstration purposes only. This page only exists for easy access to the journeys listed below.",
+      iconFallbackText: "Warning"
+    }) }}
+
+    <div>
+      {{ govukButton({
+        classes: "govuk-!-margin-top-2 govuk-!-margin-bottom-8",
+        href: "/farmer-apply",
+        isStartButton: true,
+        text: "Farmer Apply"
+      }) }}
+    </div>
+
+    <div>
+      {{ govukButton({
+        classes: "govuk-!-margin-top-2 govuk-!-margin-bottom-8",
+        href: "/vet",
+        isStartButton: true,
+        text: "Vet Data Entry"
+      }) }}
+    </div>
+
+    <div>
+      {{ govukButton({
+        classes: "govuk-!-margin-top-2 govuk-!-margin-bottom-8",
+        href: "/farmer-claim",
+        isStartButton: true,
+        text: "Farmer Claim"
+      }) }}
+    </div>
+  </div>
+</div>
+{% endblock %}

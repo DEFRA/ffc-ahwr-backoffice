@@ -1,7 +1,7 @@
 {% macro pager(page, totalPages, count, total, url) %}
         <nav role="navigation" aria-label="Pagination">
         <div class="pagination__summary">
-            Showing {{ count-9 }} &ndash; {{ count }} of {{ total }} items
+            Showing {{ (page-1)*10+1 }} &ndash; {{ (page-1)*10+count }} of {{ total }} items
         </div>
 
         <ul class="pagination">
