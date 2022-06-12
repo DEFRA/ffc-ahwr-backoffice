@@ -47,12 +47,14 @@ const schema = Joi.object({
     ...sharedConfigSchema
   },
   backOfficeRequestMsgType: Joi.string(),
+  getApplicationRequestMsgType: Joi.string(),
   backOfficeResponseQueue: {
     address: Joi.string().default('backOfficeResponseQueue'),
     type: Joi.string(),
     ...sharedConfigSchema
   },
   backOfficeResponseMsgType: Joi.string(),
+  getBackOfficeApplicationResponseMsgType: Joi.string(),
   serviceUri: Joi.string().uri(),
   useRedis: Joi.boolean().default(false)
 })
@@ -97,6 +99,8 @@ const config = {
     ...sharedConfig
   },
   backOfficeRequestMsgType: `${msgTypePrefix}.backoffice.request`,
+  getApplicationRequestMsgType: `${msgTypePrefix}.get.application.backoffice.request`,
+  getBackOfficeApplicationResponseMsgType: `${msgTypePrefix}.get.application.backoffice.response`,
   backOfficeResponseQueue: {
     address: process.env.BACKOFFICERESPONSE_QUEUE_ADDRESS,
     type: 'queue',
