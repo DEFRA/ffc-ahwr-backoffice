@@ -12,60 +12,60 @@
         rows: listData.rows
       }) }}
 
-      {% set pastDayHtml %}
-      <h2 class="govuk-heading-l">Past day</h2>
+      {% set applicationHtml %}
+      <h2 class="govuk-heading-l">Applied</h2>
       {{ govukTable({
         head: [
           {
-            text: "Case manager"
+            text: "Date"
           },
           {
-            text: "Cases opened"
+            text: "Data requested"
           },
           {
-            text: "Cases closed"
+            text: "Data entered"
           }
         ],
         rows: [
           [
             {
-              text: "David Francis"
+              text: "12/08/2022"
             },
             {
-              text: "3"
+              text: "Review type"
             },
             {
-              text: "0"
+              text: "Sheep"
             }
           ],
           [
             {
-              text: "Paul Farmer"
+              text: "12/08/2022"
             },
             {
-              text: "1"
+              text: "Lifestock number"
             },
             {
-              text: "0"
+              text: "At least 21"
             }
           ],
           [
             {
-              text: "Rita Patel"
+              text: "12/08/2022"
             },
             {
-              text: "2"
+              text: "T&Cs agreed?"
             },
             {
-              text: "0"
+              text: "Yes"
             }
           ]
         ]
       }) }}
       {% endset -%}
 
-      {% set pastWeekHtml %}
-      <h2 class="govuk-heading-l">Past week</h2>
+      {% set vetReviewHtml %}
+      <h2 class="govuk-heading-l">Not yet reviewed</h2>
       {{ govukTable({
         head: [
           {
@@ -116,8 +116,8 @@
       }) }}
       {% endset -%}
 
-      {% set pastMonthHtml %}
-      <h2 class="govuk-heading-l">Past month</h2>
+      {% set claimHtml %}
+      <h2 class="govuk-heading-l">Not yet able to claim</h2>
       {{ govukTable({
         head: [
           {
@@ -168,8 +168,8 @@
       }) }}
       {% endset -%}
 
-      {% set pastYearHtml %}
-      <h2 class="govuk-heading-l">Past year</h2>
+      {% set paymentHtml %}
+      <h2 class="govuk-heading-l">Not yet paid</h2>
       {{ govukTable({
         head: [
           {
@@ -223,31 +223,31 @@
       {{ govukTabs({
         items: [
           {
-            label: "Past day",
-            id: "past-day",
+            label: "Application",
+            id: "application",
             panel: {
-              html: pastDayHtml
+              html: applicationHtml
             }
           },
           {
-            label: "Past week",
-            id: "past-week",
+            label: "Vet Review",
+            id: "vet-review",
             panel: {
-              html: pastWeekHtml
+              html: vetReviewHtml
             }
           },
           {
-            label: "Past month",
-            id: "past-month",
+            label: "Claim",
+            id: "claim",
             panel: {
-              html: pastMonthHtml
+              html: claimHtml
             }
           },
           {
-            label: "Past year",
-            id: "past-year",
+            label: "Payment",
+            id: "payment",
             panel: {
-              html: pastYearHtml
+              html: paymentHtml
             }
           }
         ]
