@@ -47,7 +47,7 @@ async function createModel (request, errorMessage) {
         { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
         { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
         { html: `<span class="govuk-tag ${statusClass}">${status}</span>` },
-        { html: `<a href="view-application/${n.reference}">View application</a>`}
+        { html: `<a href="view-application/${n.reference}">View application</a>` }
       ]
     }),
     ...pagingData,
