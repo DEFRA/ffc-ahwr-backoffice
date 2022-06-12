@@ -1,5 +1,5 @@
 const cheerio = require('cheerio')
-const { serviceName } = require('../../../../app/config')
+const { serviceName } = require('../../../app/config')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 
 describe('cookies route', () => {

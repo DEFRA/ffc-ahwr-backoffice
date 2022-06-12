@@ -66,7 +66,6 @@ module.exports = [
         })
       },
       handler: async (request, h) => {
-        console.log('request')
         return h.view(viewTemplate, await createModel(request, null))
       }
     }
@@ -74,10 +73,25 @@ module.exports = [
   {
     method: 'POST',
     path: `${currentPath}`,
-    handler: async (request, h) => {
-      setAppSearch(request, keys.appSearch.searchText, request.payload.searchText ?? '')
-      setAppSearch(request, keys.appSearch.searchType, request.payload.searchType ?? '')
-      return h.view(viewTemplate, await createModel(request, null))
+    options: {
+      validate: {
+        query: Joi.object({
+          page: Joi.number().greater(0).default(1),
+          limit: Joi.number().greater(0).default(10)
+        }),
+        payload: Joi.object({
+          searchText: Joi.number().min(10000000).max(999999999).required(),
+          searchType: Joi.string().required()
+        }),
+        failAction: async (request, h, error) => {
+          return h.view(viewTemplate, { ...request.payload, errorMessage: { text: error.details[0].message } }).code(400).takeover()
+        }
+      },
+      handler: async (request, h) => {
+        setAppSearch(request, keys.appSearch.searchText, request.payload.searchText ?? '')
+        setAppSearch(request, keys.appSearch.searchType, request.payload.searchType ?? '')
+        return h.view(viewTemplate, await createModel(request, null))
+      }
     }
   }
 ]
