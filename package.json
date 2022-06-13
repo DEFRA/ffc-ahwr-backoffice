@@ -31,7 +31,7 @@
     "@hapi/yar": "^10.1.1",
     "applicationinsights": "^2.1.6",
     "ffc-messaging": "^2.3.4",
-    "govuk-frontend": "^4.0.1",
+    "govuk-frontend": "4.0.1",
     "hapi-pino": "^9.1.2",
     "joi": "^17.6.0",
     "nunjucks": "^3.2.3",

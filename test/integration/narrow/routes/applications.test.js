@@ -76,12 +76,12 @@ describe('Applications test', () => {
 
     test.each([
       { searchDetails: { searchText: '444444444', searchType: 'sbi' } },
-      { searchDetails: { searchText: '444444441', searchType: 'sbi' } }
+      { searchDetails: { searchText: '444444443', searchType: 'sbi' } }
     ])('returns success when post', async ({ searchDetails }) => {
       const options = {
         method,
         url,
-        payload: { crumb, searchDetails },
+        payload: { crumb, searchText: searchDetails.searchText, searchType: searchDetails.searchType },
         headers: { cookie: `crumb=${crumb}` }
       }
 
