@@ -41,7 +41,7 @@
   {% if error %}
   <div class="govuk-grid-row">
     <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
-      <h2 class="govuk-error-summary__title" id="error-summary-title">There is a problem creating this applications request</h2>
+      <h2 class="govuk-error-summary__title" id="error-summary-title">{{errorMessage}}</h2>
     </div>
   </div>
   {% endif %}

@@ -1,16 +1,17 @@
 const cheerio = require('cheerio')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const getCrumbs = require('../../../utils/get-crumbs')
-// let session
+
+const sessionMock = require('../../../../app/session')
+jest.mock('../../../../app/session')
+const messagingMock = require('../../../../app/messaging')
+jest.mock('../../../../app/messaging')
 
 describe('Applications test', () => {
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
   const url = '/applications'
-  // beforeAll(async () => {
-  //   jest.resetAllMocks()
-  //   session = require('../../../../app/session')
-  //   jest.mock('../../../../app/session')
-  // })
-
   describe(`GET ${url} route`, () => {
     test('returns 200', async () => {
       const options = {
@@ -22,6 +23,7 @@ describe('Applications test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-heading-l').text()).toEqual('Applications')
       expect($('title').text()).toContain('Applications')
+      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(2)
       expectPhaseBanner.ok($)
     })
   })
@@ -29,13 +31,24 @@ describe('Applications test', () => {
   describe(`POST ${url} route`, () => {
     let crumb
     const method = 'POST'
-
+    const applications = [
+      {
+        reference: 'ABCDEFGH',
+        data: {
+          organisation: {
+            name: 'Fake Name',
+            sbi: '444444444',
+            createdAt: new Date(),
+            status: 1
+          }
+        }
+      }
+    ]
     beforeEach(async () => {
       crumb = await getCrumbs(global.__SERVER__)
     })
 
     test.each([
-      { searchDetails: { searchText: '', searchType: 'sbi' } },
       { searchDetails: { searchText: '444444444', searchType: 'sbi' } },
       { searchDetails: { searchText: '444444441', searchType: 'sbi' } }
     ])('returns success when post', async ({ searchDetails }) => {
@@ -46,6 +59,8 @@ describe('Applications test', () => {
         headers: { cookie: `crumb=${crumb}` }
       }
 
+      sessionMock.getAppSearch.mockReturnValue(searchDetails)
+      messagingMock.receiveMessage.mockResolvedValueOnce(applications)
       const res = await global.__SERVER__.inject(options)
 
       expect(res.statusCode).toBe(200)
