@@ -50,6 +50,9 @@
 {% endblock %}
 
 {% block bodyStart %}
+  {% if not cookiesPolicy.confirmed %}
+    {% include "../cookies/cookie-banner.njk" %}
+  {% endif %}
 {% endblock %}
 
 {% block footer %}
