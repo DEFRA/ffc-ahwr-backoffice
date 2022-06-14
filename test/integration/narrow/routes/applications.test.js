@@ -7,7 +7,16 @@ jest.mock('../../../../app/session')
 jest.mock('../../../../app/messaging')
 const applications = require('../../../../app/messaging/applications')
 jest.mock('../../../../app/messaging/applications')
+const pagination = require('../../../../app/pagination')
+jest.mock('../../../../app/pagination')
 
+pagination.getPagination = jest.fn().mockReturnValue({
+  limit: 10, offset: 0
+})
+
+pagination.getPagingData = jest.fn().mockReturnValue({
+  page: 1, totalPages: 1, total: 1, limit: 10, url: undefined
+})
 applications.getApplications = jest.fn().mockReturnValue({
   applicationState: 'submitted',
   applications: [{
@@ -71,10 +80,37 @@ describe('Applications test', () => {
         headers: { cookie: `crumb=${crumb}` }
       }
 
-      // sessionMock.getAppSearch.mockReturnValue(searchDetails)
       const res = await global.__SERVER__.inject(options)
 
       expect(res.statusCode).toBe(200)
+      expect(sessionMock.getAppSearch).toBeCalled()
+      expect(applications.getApplications).toBeCalled()
+      expect(pagination.getPagination).toBeCalled()
+      expect(pagination.getPagingData).toBeCalled()
+    })
+    test.each([
+      { searchDetails: { searchText: '444444443', searchType: 'sbi' } }
+    ])('returns success with error message when no data found', async ({ searchDetails }) => {
+      const options = {
+        method,
+        url,
+        payload: { crumb, searchText: searchDetails.searchText, searchType: searchDetails.searchType },
+        headers: { cookie: `crumb=${crumb}` }
+      }
+
+      applications.getApplications.mockReturnValue({
+        applicationState: 'not_found',
+        applications: []
+      })
+      const res = await global.__SERVER__.inject(options)
+
+      expect(res.statusCode).toBe(200)
+      expect(sessionMock.getAppSearch).toBeCalled()
+      expect(applications.getApplications).toBeCalled()
+      expect(pagination.getPagination).toBeCalled()
+      expect(pagination.getPagingData).toBeCalled()
+      const $ = cheerio.load(res.payload)
+      expect($('h2.govuk-error-summary__title').text()).toMatch('No Applications found.')
     })
 
     test.each([
