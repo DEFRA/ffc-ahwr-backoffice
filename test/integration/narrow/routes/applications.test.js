@@ -4,14 +4,16 @@ const getCrumbs = require('../../../utils/get-crumbs')
 
 const sessionMock = require('../../../../app/session')
 jest.mock('../../../../app/session')
-const messagingMock = require('../../../../app/messaging')
 jest.mock('../../../../app/messaging')
-let applications = require('../../../../app/messaging/applications')
+const applications = require('../../../../app/messaging/applications')
+jest.mock('../../../../app/messaging/applications')
 
 applications.getApplications = jest.fn().mockReturnValue({
+  applicationState: 'submitted',
   applications: [{
     id: '555afd4c-b095-4ce4-b492-800466b53393',
     reference: 'VV-555A-FD4C',
+    status: 1,
     data: {
       declaration: true,
       whichReview: 'sheep',
@@ -34,9 +36,6 @@ applications.getApplications = jest.fn().mockReturnValue({
 })
 
 describe('Applications test', () => {
-  afterEach(() => {
-    jest.resetAllMocks()
-  })
   const url = '/applications'
   describe(`GET ${url} route`, () => {
     test('returns 200', async () => {
@@ -57,19 +56,6 @@ describe('Applications test', () => {
   describe(`POST ${url} route`, () => {
     let crumb
     const method = 'POST'
-    applications = [
-      {
-        reference: 'ABCDEFGH',
-        data: {
-          organisation: {
-            name: 'Fake Name',
-            sbi: '444444444',
-            createdAt: new Date(),
-            status: 1
-          }
-        }
-      }
-    ]
     beforeEach(async () => {
       crumb = await getCrumbs(global.__SERVER__)
     })
@@ -85,8 +71,7 @@ describe('Applications test', () => {
         headers: { cookie: `crumb=${crumb}` }
       }
 
-      sessionMock.getAppSearch.mockReturnValue(searchDetails)
-      messagingMock.receiveMessage.mockResolvedValueOnce(applications)
+      // sessionMock.getAppSearch.mockReturnValue(searchDetails)
       const res = await global.__SERVER__.inject(options)
 
       expect(res.statusCode).toBe(200)

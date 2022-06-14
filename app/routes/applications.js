@@ -12,9 +12,8 @@ async function createModel (request, errorMessage) {
   const path = request.headers.path ?? ''
   const searchText = getAppSearch(request, keys.appSearch.searchText)
   const searchType = getAppSearch(request, keys.appSearch.searchType)
-
   const apps = await getApplications(searchType ?? '', searchText ?? '', limit, offset, request.yar.id)
-  if (apps) {
+  if (apps.applicationState !== 'not_found') {
     const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
 
     let statusClass = 'govuk-tag--grey'; let status = 'Pending'
@@ -49,15 +48,13 @@ async function createModel (request, errorMessage) {
         ]
       }),
       ...pagingData,
-      errorMessage,
       searchText
     }
   } else {
-    errorMessage = 'There is a problem creating this applications request'
+    errorMessage = 'No Applications found.'
     return {
       applications: [],
-      error: true,
-      errorMessage,
+      error: errorMessage,
       searchText
     }
   }
