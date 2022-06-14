@@ -60,6 +60,23 @@ describe('Applications test', () => {
       expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(2)
       expectPhaseBanner.ok($)
     })
+
+    test('returns 200 with query parameter', async () => {
+      const options = {
+        method: 'GET',
+        url: `${url}?page=1`
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      const $ = cheerio.load(res.payload)
+      expect($('h1.govuk-heading-l').text()).toEqual('Applications')
+      expect($('title').text()).toContain('Applications')
+      expect(sessionMock.getAppSearch).toBeCalled()
+      expect(applications.getApplications).toBeCalled()
+      expect(pagination.getPagination).toBeCalled()
+      expect(pagination.getPagingData).toBeCalled()
+      expectPhaseBanner.ok($)
+    })
   })
 
   describe(`POST ${url} route`, () => {
@@ -84,6 +101,7 @@ describe('Applications test', () => {
 
       expect(res.statusCode).toBe(200)
       expect(sessionMock.getAppSearch).toBeCalled()
+      expect(sessionMock.setAppSearch).toBeCalled()
       expect(applications.getApplications).toBeCalled()
       expect(pagination.getPagination).toBeCalled()
       expect(pagination.getPagingData).toBeCalled()
@@ -106,6 +124,7 @@ describe('Applications test', () => {
 
       expect(res.statusCode).toBe(200)
       expect(sessionMock.getAppSearch).toBeCalled()
+      expect(sessionMock.setAppSearch).toBeCalled()
       expect(applications.getApplications).toBeCalled()
       expect(pagination.getPagination).toBeCalled()
       expect(pagination.getPagingData).toBeCalled()
