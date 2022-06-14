@@ -13,7 +13,7 @@ applications.getApplication = jest.fn().mockReturnValueOnce(null).mockReturnValu
     organisation: {
       cph: '33/333/3333',
       sbi: '333333333',
-      name: 'My Farm',
+      name: 'My Farms',
       email: 'test@test.com',
       isTest: true,
       address: 'Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC'
