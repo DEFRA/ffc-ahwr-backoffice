@@ -6,8 +6,14 @@ image: ffc-ahwr-backoffice
 
 labels: {}
 
+aadPodIdentity: true
+
 appInsights:
   key:
+
+azureIdentity:
+  clientID:
+  resourceID:
 
 containerConfigMap:
   name: ffc-ahwr-backoffice-config-map
@@ -15,16 +21,6 @@ containerConfigMap:
 containerSecret:
   name: ffc-ahwr-backoffice-container-secret
   type: Opaque
-
-deployment:
-  cpuThreshold: 40
-  memoryThreshold: 80
-  minReadySeconds: 0
-  minReplicas: 1
-  maxReplicas: 2
-  priorityClassName: default
-  restartPolicy: Always
-  replicas: 1
 
 container:
   backOfficeRequestQueueAddress: ffc-ahwr-backoffice-request
@@ -42,6 +38,16 @@ container:
   redisPassword: redis
   redisPort: 6379
   serviceUri:
+
+deployment:
+  cpuThreshold: 40
+  memoryThreshold: 80
+  minReadySeconds: 0
+  minReplicas: 1
+  maxReplicas: 2
+  priorityClassName: default
+  restartPolicy: Always
+  replicas: 1
 
 ingress:
   class: nginx
