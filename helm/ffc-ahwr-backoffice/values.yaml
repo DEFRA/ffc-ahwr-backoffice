@@ -17,10 +17,14 @@ containerSecret:
   type: Opaque
 
 deployment:
-  restartPolicy: Always
-  priorityClassName: default
-  replicas: 1
+  cpuThreshold: 40
+  memoryThreshold: 80
   minReadySeconds: 0
+  minReplicas: 1
+  maxReplicas: 2
+  priorityClassName: default
+  restartPolicy: Always
+  replicas: 1
 
 container:
   backOfficeRequestQueueAddress: ffc-ahwr-backoffice-request
