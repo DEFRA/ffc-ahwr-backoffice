@@ -1,7 +1,7 @@
 environment: development
 name: ffc-ahwr-backoffice
-namespace: ffc-demo
-workstream: ffc-demo
+namespace: ffc-ahwr
+workstream: ffc-ahwr
 image: ffc-ahwr-backoffice
 
 labels: {}
