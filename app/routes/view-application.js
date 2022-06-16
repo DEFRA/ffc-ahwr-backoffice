@@ -1,6 +1,7 @@
 const Joi = require('joi')
 const boom = require('@hapi/boom')
 const { getApplication } = require('../messaging/applications')
+const { holdAdmin, schemeAdmin } = require('../auth/permissions')
 
 const getOrganisationRows = (organisation) => {
   return [
@@ -14,12 +15,12 @@ module.exports = {
   method: 'GET',
   path: '/view-application/{reference}',
   options: {
+    auth: { scope: [holdAdmin, schemeAdmin] },
     validate: {
       params: Joi.object({
         reference: Joi.string().valid()
       })
     },
-    auth: false,
     handler: async (request, h) => {
       const application = await getApplication(request.params.reference, request.yar.id)
       if (!application) {

@@ -5,6 +5,7 @@ const { getPagination, getPagingData } = require('../pagination')
 const Joi = require('joi')
 const { setAppSearch, getAppSearch } = require('../session')
 const keys = require('../session/keys')
+const { holdAdmin, schemeAdmin } = require('../auth/permissions')
 
 async function createModel (request, errorMessage) {
   const { limit, offset } = getPagination(request.query.page, request.query.limit)
@@ -79,6 +80,7 @@ module.exports = [
     method: 'POST',
     path: `${currentPath}`,
     options: {
+      auth: { scope: [holdAdmin, schemeAdmin] },
       validate: {
         query: Joi.object({
           page: Joi.number().greater(0).default(1),

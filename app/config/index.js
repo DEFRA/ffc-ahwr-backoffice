@@ -37,8 +37,16 @@ const schema = Joi.object({
     path: Joi.string().default('/'),
     ttl: Joi.number().default(1000 * 60 * 60 * 24 * 365) // 1 year
   },
+  auth: {
+    enabled: Joi.boolean().default(false),
+    clientSecret: Joi.string().allow(''),
+    clientId: Joi.string().allow(''),
+    authority: Joi.string().allow(''),
+    redirectUrl: Joi.string().default('http://localhost:3007/authenticate')
+  },
   env: Joi.string().valid('development', 'test', 'production').default('development'),
   isDev: Joi.boolean().default(false),
+  isProd: Joi.boolean().default(false),
   port: Joi.number().default(3000),
   serviceName: Joi.string().default('Administration of the health and welfare of your livestock'),
   backOfficeRequestQueue: {
@@ -81,7 +89,8 @@ const config = {
     cookieNameSession: 'ffc_ahwr_session',
     isSameSite: 'Lax',
     isSecure: process.env.NODE_ENV === 'production',
-    password: process.env.COOKIE_PASSWORD
+    password: process.env.COOKIE_PASSWORD,
+    ttl: process.env.COOKIE_TTL
   },
   cookiePolicy: {
     clearInvalid: false,
@@ -90,8 +99,16 @@ const config = {
     isSecure: process.env.NODE_ENV === 'production',
     password: process.env.COOKIE_PASSWORD
   },
+  auth: {
+    enabled: process.env.AUTHENTICATION_ENABLED,
+    clientSecret: process.env.AZUREID_CLIENT_SECRET,
+    clientId: process.env.AZUREID_CLIENT_ID,
+    authority: `https://login.microsoftonline.com/${process.env.AZUREID_TENANT_ID}`,
+    redirectUrl: process.env.REDIRECT_URL.length > 0 ? process.env.REDIRECT_URL : 'http://localhost:3007/authenticate'
+  },
   env: process.env.NODE_ENV,
   isDev: process.env.NODE_ENV === 'development',
+  isProd: process.env.NODE_ENV === 'production',
   port: process.env.PORT,
   backOfficeRequestQueue: {
     address: process.env.BACKOFFICEREQUEST_QUEUE_ADDRESS,
