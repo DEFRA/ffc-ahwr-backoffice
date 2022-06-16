@@ -20,3 +20,5 @@ services:
       REDIS_PORT: 6379
       REDIS_PASSWORD: ""
       SERVICE_URI: http://localhost:3000
+      REDIRECT_URL: http://localhost:3007/authenticate
+      AUTHENTICATION_ENABLED: true
