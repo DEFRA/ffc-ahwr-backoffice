@@ -147,8 +147,27 @@ describe('Applications test', () => {
       expect(pagination.getPagingData).toBeCalled()
       expectPhaseBanner.ok($)
     })
+    test('returns 200 without query parameter', async () => {
+      const options = {
+        method: 'GET',
+        url: `${url}`
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      const $ = cheerio.load(res.payload)
+      expect($('h1.govuk-heading-l').text()).toEqual('Applications')
+      expect($('title').text()).toContain('Applications')
+      expect($('span.govuk-tag--grey').text()).toContain('In Progress')
+      expect($('span.govuk-tag--blue').text()).toContain('Submitted')
+      expect($('span.govuk-tag--red').text()).toContain('Withdrawn')
+      expect($('span.govuk-tag--red').text()).toContain('Deleted')
+      expect(sessionMock.getAppSearch).toBeCalled()
+      expect(applications.getApplications).toBeCalled()
+      expect(pagination.getPagination).toBeCalled()
+      expect(pagination.getPagingData).toBeCalled()
+      expectPhaseBanner.ok($)
+    })
   })
-
   describe(`POST ${url} route`, () => {
     let crumb
     const method = 'POST'
@@ -158,7 +177,8 @@ describe('Applications test', () => {
 
     test.each([
       { searchDetails: { searchText: '444444444', searchType: 'sbi' } },
-      { searchDetails: { searchText: '444444443', searchType: 'sbi' } }
+      { searchDetails: { searchText: '444444443', searchType: 'sbi' } },
+      { searchDetails: { searchText: undefined, searchType: undefined } }
     ])('returns success when post', async ({ searchDetails }) => {
       const options = {
         method,
