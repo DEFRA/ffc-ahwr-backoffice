@@ -85,6 +85,28 @@ applications.getApplications = jest.fn().mockReturnValue({
     createdAt: '2022-06-06T14:27:51.251Z',
     updatedAt: '2022-06-06T14:27:51.775Z',
     createdBy: 'admin'
+  }, {
+    id: '555afd4c-b095-4ce4-b492-800466b66693',
+    reference: 'VV-555A-FD6E',
+    status: 4,
+    data: {
+      declaration: true,
+      whichReview: 'sheep',
+      organisation: {
+        cph: '33/333/3333',
+        sbi: '333333333',
+        name: 'My Farm',
+        email: 'test@test.com',
+        isTest: true,
+        address: 'Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC'
+      },
+      eligibleSpecies: 'yes',
+      confirmCheckDetails: 'yes'
+    },
+    claimed: false,
+    createdAt: '2022-06-06T14:27:51.251Z',
+    updatedAt: '2022-06-06T14:27:51.775Z',
+    createdBy: 'admin'
   }]
 })
 
@@ -118,6 +140,7 @@ describe('Applications test', () => {
       expect($('span.govuk-tag--grey').text()).toContain('In Progress')
       expect($('span.govuk-tag--blue').text()).toContain('Submitted')
       expect($('span.govuk-tag--red').text()).toContain('Withdrawn')
+      expect($('span.govuk-tag--red').text()).toContain('Deleted')
       expect(sessionMock.getAppSearch).toBeCalled()
       expect(applications.getApplications).toBeCalled()
       expect(pagination.getPagination).toBeCalled()

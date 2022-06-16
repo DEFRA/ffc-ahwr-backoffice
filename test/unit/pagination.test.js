@@ -6,6 +6,11 @@ describe('Pagination', () => {
     expect(result.limit).toBe(10)
     expect(result.offset).toBe(990)
   })
+  test('getPagination test for first page', () => {
+    const result = pagination.getPagination(1, 10)
+    expect(result.limit).toBe(10)
+    expect(result.offset).toBe(0)
+  })
   test('getPagingData test', () => {
     const result = pagination.getPagingData(100, 10, 1, 'test.com')
     expect(result.page).toBe(1)
