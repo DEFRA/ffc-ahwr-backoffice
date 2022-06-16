@@ -20,19 +20,19 @@ async function createModel (request, errorMessage) {
     return {
       applications: apps.applications.map(n => {
         switch (n.status) {
-          case '1':
+          case 1:
             statusClass = 'govuk-tag--grey'
             status = 'In Progress'
             break
-          case '2':
+          case 2:
             statusClass = 'govuk-tag--blue'
             status = 'Submitted'
             break
-          case '3':
+          case 3:
             statusClass = 'govuk-tag--red'
             status = 'Withdrawn'
             break
-          case '4':
+          case 4:
             statusClass = 'govuk-tag--red'
             status = 'Deleted'
             break
