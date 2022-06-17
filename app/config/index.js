@@ -101,9 +101,9 @@ const config = {
   },
   auth: {
     enabled: process.env.AUTHENTICATION_ENABLED,
-    clientSecret: process.env.AZUREID_CLIENT_SECRET,
-    clientId: process.env.AZUREID_CLIENT_ID,
-    authority: `https://login.microsoftonline.com/${process.env.AZUREID_TENANT_ID}`,
+    clientSecret: process.env.AADAR_CLIENT_SECRET,
+    clientId: process.env.AADAR_CLIENT_ID,
+    authority: `https://login.microsoftonline.com/${process.env.AADAR_TENANT_ID}`,
     redirectUrl: process.env.REDIRECT_URL.length > 0 ? process.env.REDIRECT_URL : 'http://localhost:3007/authenticate'
   },
   env: process.env.NODE_ENV,

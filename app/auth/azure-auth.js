@@ -12,7 +12,7 @@ const msalLogging = config.isProd
     }
 
 const msalClientApplication = new msal.ConfidentialClientApplication({
-  auth: config.auth.azure,
+  auth: config.auth,
   system: { loggerOptions: msalLogging }
 })
 
