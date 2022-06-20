@@ -1,0 +1,103 @@
+{% extends './layouts/layout.njk' %}
+{% import "./macros/pagination.njk" as pagination %}
+{% block pageTitle %}
+  {{ siteTitle }} - Applications
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    items: [{
+      text: "Home",
+      href: "/"
+    }]
+  })}}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row govuk-!-padding-bottom-9">  
+      <h1 class="govuk-heading-l">Applications</h1>
+      <div id="heading-hint" class="govuk-hint govuk-!-margin-bottom-5">
+        Select an application to edit it. <br>
+        Only eligible organisations that you have access to are shown.
+      </div>
+
+      <div class="user-search-box govuk-!-width-two-thirds">
+        <label class="govuk-label govuk-label--s" for="user-search">
+          Search for a user by SBI number
+        </label>
+         
+        <form method="POST">
+          <input type="hidden" name="crumb" value="{{crumb}}"/>
+            <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{searchText}}" aria-describedby="user-search-hint" spellcheck="false">
+            <input type="hidden" id="searchType" name="searchType" value="sbi"/>
+            <button class="search-button" data-module="govuk-button">
+                Search
+            </button>
+        </form>
+      </div>
+  </div>
+
+  {% if error %}
+  <div class="govuk-grid-row">
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">{{error}}</h2>
+    </div>
+  </div>
+  {% else %} 
+  <div class="govuk-grid-row">
+    {{ govukTable({
+      firstCellIsHeader: true,
+      head: [
+        {
+          text: "Ref",
+          attributes: {
+            "aria-sort": "ascending"
+          }
+        },
+        {
+          text: "Business",
+          attributes: {
+            "aria-sort": "none"
+          }
+        },
+        {
+          text: "SBI",
+          attributes: {
+            "aria-sort": "ascending"
+          }
+        },
+        {
+          text: "Apply date",
+          attributes: {
+            "aria-sort": "none"
+          },
+          format: "date"
+        },
+        {
+          text: "Claim date",
+          attributes: {
+            "aria-sort": "none"
+          },
+          format: "date"
+        },
+        {
+          text: "Status",
+          attributes: {
+            "aria-sort": "none"
+          }
+        },
+        {
+          text: "Details",
+          attributes: {
+            "aria-sort": "none"
+          }
+        }
+      ],
+      rows: applications
+    }) }}
+    {{ pagination.pager(page, totalPages, applications.length, total, url) }}
+  </div>
+  {% endif %}
+  
+{% endblock %}
