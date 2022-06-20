@@ -6,17 +6,17 @@ const Joi = require('joi')
 const { setAppSearch, getAppSearch } = require('../session')
 const keys = require('../session/keys')
 
-async function createModel (request, errorMessage) {
-  const { limit, offset } = getPagination(request.query.page, request.query.limit)
+async function createModel (request) {
   const page = request.query.page ?? 1
+  const { limit, offset } = getPagination(page, request.query.limit)
   const path = request.headers.path ?? ''
   const searchText = getAppSearch(request, keys.appSearch.searchText)
   const searchType = getAppSearch(request, keys.appSearch.searchType)
-  const apps = await getApplications(searchType ?? '', searchText ?? '', limit, offset, request.yar.id)
+  const apps = await getApplications(searchType, searchText, limit, offset, request.yar.id)
   if (apps.applicationState !== 'not_found') {
     const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
 
-    let statusClass = 'govuk-tag--grey'; let status = 'Pending'
+    let statusClass, status
     return {
       applications: apps.applications.map(n => {
         switch (n.status) {
@@ -36,6 +36,9 @@ async function createModel (request, errorMessage) {
             statusClass = 'govuk-tag--red'
             status = 'Deleted'
             break
+          default:
+            statusClass = 'govuk-tag--grey'
+            status = 'Pending'
         }
         return [
           { text: n.reference },
@@ -51,10 +54,9 @@ async function createModel (request, errorMessage) {
       searchText
     }
   } else {
-    errorMessage = 'No Applications found.'
     return {
       applications: [],
-      error: errorMessage,
+      error: 'No Applications found.',
       searchText
     }
   }
@@ -71,7 +73,7 @@ module.exports = [
         })
       },
       handler: async (request, h) => {
-        return h.view(viewTemplate, await createModel(request, null))
+        return h.view(viewTemplate, await createModel(request))
       }
     }
   },
@@ -95,7 +97,7 @@ module.exports = [
       handler: async (request, h) => {
         setAppSearch(request, keys.appSearch.searchText, request.payload.searchText ?? '')
         setAppSearch(request, keys.appSearch.searchType, request.payload.searchType ?? '')
-        return h.view(viewTemplate, await createModel(request, null))
+        return h.view(viewTemplate, await createModel(request))
       }
     }
   }

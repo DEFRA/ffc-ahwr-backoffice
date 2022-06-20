@@ -2,7 +2,7 @@ const { sendMessage, receiveMessage } = require('../messaging/index')
 const { backOfficeRequestQueue, backOfficeResponseQueue, backOfficeRequestMsgType, getApplicationRequestMsgType } = require('../config')
 
 async function getApplications (searchType, searchText, limit, offset, sessionId) {
-  await sendMessage({ search: { type: searchType, text: searchText }, limit, offset }, backOfficeRequestMsgType, backOfficeRequestQueue, { sessionId })
+  await sendMessage({ search: { type: searchType ?? '', text: searchText ?? '' }, limit, offset }, backOfficeRequestMsgType, backOfficeRequestQueue, { sessionId })
   return receiveMessage(sessionId, backOfficeResponseQueue)
 }
 
