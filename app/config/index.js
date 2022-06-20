@@ -20,9 +20,9 @@ const schema = Joi.object({
     }
   },
   cookie: {
-    cookieNameCookiePolicy: Joi.string().default('ffc_ahwr_cookie_policy'),
-    cookieNameAuth: Joi.string().default('ffc_ahwr_auth'),
-    cookieNameSession: Joi.string().default('ffc_ahwr_session'),
+    cookieNameCookiePolicy: Joi.string().default('ffc_ahwr_backoffice_cookie_policy'),
+    cookieNameAuth: Joi.string().default('ffc_ahwr_backoffice_auth'),
+    cookieNameSession: Joi.string().default('ffc_ahwr_backoffice_session'),
     isSameSite: Joi.string().default('Lax'),
     isSecure: Joi.boolean().default(true),
     password: Joi.string().min(32).required(),
@@ -76,9 +76,9 @@ const config = {
     }
   },
   cookie: {
-    cookieNameCookiePolicy: 'ffc_ahwr_cookie_policy',
-    cookieNameAuth: 'ffc_ahwr_auth',
-    cookieNameSession: 'ffc_ahwr_session',
+    cookieNameCookiePolicy: 'ffc_ahwr_backoffice_cookie_policy',
+    cookieNameAuth: 'ffc_ahwr_backoffice_auth',
+    cookieNameSession: 'ffc_ahwr_backoffice_session',
     isSameSite: 'Lax',
     isSecure: process.env.NODE_ENV === 'production',
     password: process.env.COOKIE_PASSWORD
