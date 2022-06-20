@@ -1,0 +1,28 @@
+.guidance-layout {
+  word-wrap: break-word;
+  background-color: #005ea5;
+  padding: 50px 30px 30px;
+  display: block;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.guidance-layout h1, .guidance-layout p, .guidance-layout ul, .guidance-layout h2, .guidance-layout .govuk-summary-list {
+  color: #fff;
+}
+
+.guidance-layout .govuk-button, .guidance-layout .drop-area__btn, .guidance-layout .js-enabled .dft-fu__add-file-btn, .js-enabled .guidance-layout .dft-fu__add-file-btn {
+  color: #005ea5;
+  background-color: #fff;
+}
+
+.guidance-layout .govuk-warning-text {
+  color: #fff;
+}
+
+.guidance-layout .govuk-warning-text__icon {
+  border: 3px solid #fff;
+  border-radius: 50%;
+  color: #005ea5;
+  background: #fff;
+}

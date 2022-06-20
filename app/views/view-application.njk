@@ -1,0 +1,257 @@
+{% extends './layouts/layout.njk' %}
+
+{% block pageTitle %}Application {{ applicationId }}{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Application {{ applicationId }} <span class="govuk-tag govuk-tag--green">Applied</span></h1> 
+
+      <h2 class="govuk-heading-m">{{ organisationName }}</h2>
+      {{ govukSummaryList({
+        rows: listData.rows
+      }) }}
+
+      {% set applicationHtml %}
+      <h2 class="govuk-heading-l">Applied</h2>
+      {{ govukTable({
+        head: [
+          {
+            text: "Date"
+          },
+          {
+            text: "Data requested"
+          },
+          {
+            text: "Data entered"
+          }
+        ],
+        rows: [
+          [
+            {
+              text: "12/08/2022"
+            },
+            {
+              text: "Review type"
+            },
+            {
+              text: "Sheep"
+            }
+          ],
+          [
+            {
+              text: "12/08/2022"
+            },
+            {
+              text: "Lifestock number"
+            },
+            {
+              text: "At least 21"
+            }
+          ],
+          [
+            {
+              text: "12/08/2022"
+            },
+            {
+              text: "T&Cs agreed?"
+            },
+            {
+              text: "Yes"
+            }
+          ]
+        ]
+      }) }}
+      {% endset -%}
+
+      {% set vetReviewHtml %}
+      <h2 class="govuk-heading-l">Not yet reviewed</h2>
+      {{ govukTable({
+        head: [
+          {
+            text: "Case manager"
+          },
+          {
+            text: "Cases opened"
+          },
+          {
+            text: "Cases closed"
+          }
+        ],
+        rows: [
+          [
+            {
+              text: "David Francis"
+            },
+            {
+              text: "24"
+            },
+            {
+              text: "18"
+            }
+          ],
+          [
+            {
+              text: "Paul Farmer"
+            },
+            {
+              text: "16"
+            },
+            {
+              text: "20"
+            }
+          ],
+          [
+            {
+              text: "Rita Patel"
+            },
+            {
+              text: "24"
+            },
+            {
+              text: "27"
+            }
+          ]
+        ]
+      }) }}
+      {% endset -%}
+
+      {% set claimHtml %}
+      <h2 class="govuk-heading-l">Not yet able to claim</h2>
+      {{ govukTable({
+        head: [
+          {
+            text: "Case manager"
+          },
+          {
+            text: "Cases opened"
+          },
+          {
+            text: "Cases closed"
+          }
+        ],
+        rows: [
+          [
+            {
+              text: "David Francis"
+            },
+            {
+              text: "98"
+            },
+            {
+              text: "95"
+            }
+          ],
+          [
+            {
+              text: "Paul Farmer"
+            },
+            {
+              text: "122"
+            },
+            {
+              text: "131"
+            }
+          ],
+          [
+            {
+              text: "Rita Patel"
+            },
+            {
+              text: "126"
+            },
+            {
+              text: "142"
+            }
+          ]
+        ]
+      }) }}
+      {% endset -%}
+
+      {% set paymentHtml %}
+      <h2 class="govuk-heading-l">Not yet paid</h2>
+      {{ govukTable({
+        head: [
+          {
+            text: "Case manager"
+          },
+          {
+            text: "Cases opened"
+          },
+          {
+            text: "Cases closed"
+          }
+        ],
+        rows: [
+          [
+            {
+              text: "David Francis"
+            },
+            {
+              text: "1380"
+            },
+            {
+              text: "1472"
+            }
+          ],
+          [
+            {
+              text: "Paul Farmer"
+            },
+            {
+              text: "1129"
+            },
+            {
+              text: "1083"
+            }
+          ],
+          [
+            {
+              text: "Rita Patel"
+            },
+            {
+              text: "1539"
+            },
+            {
+              text: "1265"
+            }
+          ]
+        ]
+      }) }}
+      {% endset -%}
+
+      {{ govukTabs({
+        items: [
+          {
+            label: "Application",
+            id: "application",
+            panel: {
+              html: applicationHtml
+            }
+          },
+          {
+            label: "Vet Review",
+            id: "vet-review",
+            panel: {
+              html: vetReviewHtml
+            }
+          },
+          {
+            label: "Claim",
+            id: "claim",
+            panel: {
+              html: claimHtml
+            }
+          },
+          {
+            label: "Payment",
+            id: "payment",
+            panel: {
+              html: paymentHtml
+            }
+          }
+        ]
+      }) }}
+    </div>
+  </div>
+{% endblock %}
