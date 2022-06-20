@@ -13,7 +13,7 @@ async function createModel (request) {
   const searchText = getAppSearch(request, keys.appSearch.searchText)
   const searchType = getAppSearch(request, keys.appSearch.searchType)
   const apps = await getApplications(searchType, searchText, limit, offset, request.yar.id)
-  if (apps.applicationState !== 'not_found') {
+  if (apps.total > 0) {
     const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
 
     let statusClass, status

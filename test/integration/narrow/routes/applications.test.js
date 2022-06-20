@@ -18,7 +18,7 @@ pagination.getPagingData = jest.fn().mockReturnValue({
   page: 1, totalPages: 1, total: 1, limit: 10, url: undefined
 })
 applications.getApplications = jest.fn().mockReturnValue({
-  applicationState: 'submitted',
+  total: 4,
   applications: [{
     id: '555afd4c-b095-4ce4-b492-800466b53393',
     reference: 'VV-555A-FD4C',
@@ -176,7 +176,7 @@ describe('Applications test', () => {
     })
 
     test.each([
-      { searchDetails: { searchText: '444444444', searchType: 'sbi' } },
+      { searchDetails: { searchText: '333333333', searchType: 'sbi' } },
       { searchDetails: { searchText: '444444443', searchType: 'sbi' } },
       { searchDetails: { searchText: undefined, searchType: undefined } }
     ])('returns success when post', async ({ searchDetails }) => {
@@ -194,7 +194,6 @@ describe('Applications test', () => {
       expect(sessionMock.setAppSearch).toBeCalled()
       expect(applications.getApplications).toBeCalled()
       expect(pagination.getPagination).toBeCalled()
-      expect(pagination.getPagingData).toBeCalled()
     })
     test.each([
       { searchDetails: { searchText: '444444443', searchType: 'sbi' } }
@@ -217,7 +216,6 @@ describe('Applications test', () => {
       expect(sessionMock.setAppSearch).toBeCalled()
       expect(applications.getApplications).toBeCalled()
       expect(pagination.getPagination).toBeCalled()
-      expect(pagination.getPagingData).toBeCalled()
       const $ = cheerio.load(res.payload)
       expect($('h2.govuk-error-summary__title').text()).toMatch('No Applications found.')
     })
