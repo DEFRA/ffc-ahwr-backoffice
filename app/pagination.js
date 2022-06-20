@@ -14,6 +14,7 @@ function getPagination (page = 1, limit = 10) {
  * @param  int page
  * @param  Url url
  */
+
 function getPagingData (total, limit, page, url) {
   const totalPages = Math.ceil(total / limit)
   return { page, totalPages, total, limit, url }
