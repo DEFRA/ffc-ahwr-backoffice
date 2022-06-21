@@ -9,7 +9,7 @@ services:
       target: development
     environment:
       NODE_ENV: test
-      AADAR_ENABLED: true
+      AADAR_ENABLED: 'true'
       AADAR_CLIENT_SECRET: itsasecretshhhhhhhh
       AADAR_CLIENT_ID: NCC-1701-D
       AADAR_TENANT_ID: C3PO-R2D2
