@@ -100,7 +100,7 @@ const config = {
     password: process.env.COOKIE_PASSWORD
   },
   auth: {
-    enabled: process.env.AUTHENTICATION_ENABLED,
+    enabled: process.env.AADAR_ENABLED,
     clientSecret: process.env.AADAR_CLIENT_SECRET,
     clientId: process.env.AADAR_CLIENT_ID,
     authority: `https://login.microsoftonline.com/${process.env.AADAR_TENANT_ID}`,
