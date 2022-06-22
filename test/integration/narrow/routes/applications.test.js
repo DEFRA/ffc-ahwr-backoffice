@@ -1,8 +1,9 @@
 const cheerio = require('cheerio')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const getCrumbs = require('../../../utils/get-crumbs')
-
+const { holdAdmin } = require('../../../../app/auth/permissions')
 const sessionMock = require('../../../../app/session')
+
 jest.mock('../../../../app/session')
 jest.mock('../../../../app/messaging')
 const applications = require('../../../../app/messaging/applications')
@@ -134,11 +135,22 @@ applications.getApplications = jest.fn().mockReturnValue({
 
 describe('Applications test', () => {
   const url = '/applications'
+  jest.mock('../../../../app/auth')
+  const auth = { strategy: 'session-auth', credentials: { scope: [holdAdmin] } }
   describe(`GET ${url} route`, () => {
-    test('returns 200', async () => {
+    test('returns 302 no auth', async () => {
       const options = {
         method: 'GET',
         url
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(302)
+    })
+    test('returns 200', async () => {
+      const options = {
+        method: 'GET',
+        url,
+        auth
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(200)
@@ -152,7 +164,8 @@ describe('Applications test', () => {
     test('returns 200 with query parameter', async () => {
       const options = {
         method: 'GET',
-        url: `${url}?page=1`
+        url: `${url}?page=1`,
+        auth
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(200)
@@ -172,7 +185,8 @@ describe('Applications test', () => {
     test('returns 200 without query parameter', async () => {
       const options = {
         method: 'GET',
-        url: `${url}`
+        url: `${url}`,
+        auth
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(200)
@@ -197,6 +211,17 @@ describe('Applications test', () => {
       crumb = await getCrumbs(global.__SERVER__)
     })
 
+    test('returns 302 no auth', async () => {
+      const options = {
+        method,
+        url,
+        payload: { crumb, searchText: '333333333', searchType: 'sbi' },
+        headers: { cookie: `crumb=${crumb}` }
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(302)
+    })
+
     test.each([
       { searchDetails: { searchText: '444444444', searchType: 'sbi' } },
       { searchDetails: { searchText: 'VV-555A-FD6E', searchType: 'ref' } },
@@ -210,6 +235,7 @@ describe('Applications test', () => {
         method,
         url,
         payload: { crumb, searchText: searchDetails.searchText },
+        auth,
         headers: { cookie: `crumb=${crumb}` }
       }
 
@@ -233,7 +259,7 @@ describe('Applications test', () => {
         method,
         url,
         payload: { crumb, searchText: searchDetails.searchText },
-        headers: { cookie: `crumb=${crumb}` }
+        auth
       }
 
       applications.getApplications.mockReturnValue({
@@ -258,6 +284,8 @@ describe('Applications test', () => {
         method,
         url,
         payload: { crumb, searchText: searchDetails.searchText },
+        auth,
+        payload: { crumb, searchDetails },
         headers: { cookie: `crumb=${crumb}` }
       }
 
