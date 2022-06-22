@@ -13,7 +13,7 @@ const authenticate = async (_, cookieAuth) => {
   })
 }
 
-const refresh = async (_, cookieAuth, _ = true) => {
+const refresh = async (_account, cookieAuth, _forceRefresh = true) => {
   cookieAuth.set({
     scope: [holdAdmin, schemeAdmin],
     account: devAccount
@@ -22,7 +22,7 @@ const refresh = async (_, cookieAuth, _ = true) => {
   return [holdAdmin, schemeAdmin]
 }
 
-const logout = async (_) => {
+const logout = async (_account) => {
   devAccount.homeAccountId = uuidv4()
 }
 
