@@ -91,7 +91,7 @@ module.exports = [
           searchType: Joi.string()
         }),
         failAction: async (request, h, error) => {
-          return h.view(viewTemplate, { ...request.payload, errorMessage: { text: error.details[0].message }, error: true }).code(400).takeover()
+          return h.view(viewTemplate, { ...request.payload, errorMessage: { text: error.details[0].message }, error: 'Invalid search value' }).code(400).takeover()
         }
       },
       handler: async (request, h) => {

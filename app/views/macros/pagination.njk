@@ -19,18 +19,18 @@
         {% if page < totalPages %}
           
             <li class="pagination__item">
-                <span class="pagination__link current" aria-label="Page 1">1</span>
+                <span class="pagination__link current" aria-label="Page {{ page }}">{{ page}}</span>
             </li>
             {% endif %}
 {% if page+1 < totalPages %}
             <li class="pagination__item">
-                <a class="pagination__link" href="{{ url }}?page={{ page + 1 }}" aria-label="Page {{ page + 1 }}">2</a>
+                <a class="pagination__link" href="{{ url }}?page={{ page + 1 }}" aria-label="Page {{ page + 1 }}">{{ page + 1 }}</a>
             </li>
 
             {% endif %}
 {% if page+2 < totalPages %}
             <li class="pagination__item">
-                <a class="pagination__link" href="{{ url }}?page={{ page + 2 }}" aria-label="Page {{ page + 3 }}">3</a>
+                <a class="pagination__link" href="{{ url }}?page={{ page + 2 }}" aria-label="Page {{ page + 2 }}">{{ page + 2 }}</a>
             </li>
 
         {% endif %}
