@@ -4,9 +4,9 @@ const { getApplication } = require('../messaging/applications')
 
 const getOrganisationRows = (organisation) => {
   return [
-    { key: { text: 'SBI number:' }, value: { text: organisation.sbi }, actions: { items: [{ href: '#', text: 'Change' }] } },
-    { key: { text: 'Address:' }, value: { text: organisation.address }, actions: { items: [{ href: '#', text: 'Change' }] } },
-    { key: { text: 'Email address:' }, value: { text: organisation.email }, actions: { items: [{ href: '#', text: 'Change' }] } }
+    { key: { text: 'SBI number:' }, value: { text: organisation?.sbi }, actions: { items: [{ href: '#', text: 'Change' }] } },
+    { key: { text: 'Address:' }, value: { text: organisation?.address }, actions: { items: [{ href: '#', text: 'Change' }] } },
+    { key: { text: 'Email address:' }, value: { text: organisation?.email }, actions: { items: [{ href: '#', text: 'Change' }] } }
   ]
 }
 
@@ -25,7 +25,7 @@ module.exports = {
       if (!application) {
         throw boom.badRequest()
       }
-      return h.view('view-application', { applicationId: application.reference, organisationName: application?.data?.organisation?.name, listData: { rows: getOrganisationRows(application?.data?.organisation) } })
+      return h.view('view-application', { applicationId: application.reference, status: application.status.status, organisationName: application?.data?.organisation?.name, listData: { rows: getOrganisationRows(application?.data?.organisation) } })
     }
   }
 }

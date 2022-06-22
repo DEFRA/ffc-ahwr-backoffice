@@ -6,8 +6,8 @@ const Joi = require('joi')
 const { setAppSearch, getAppSearch } = require('../session')
 const keys = require('../session/keys')
 
-async function createModel (request) {
-  const page = request.query.page ?? 1
+async function createModel (request, page) {
+  page = page ?? request.query.page ?? 1
   const { limit, offset } = getPagination(page, request.query.limit)
   const path = request.headers.path ?? ''
   const searchText = getAppSearch(request, keys.appSearch.searchText)
@@ -15,38 +15,32 @@ async function createModel (request) {
   const apps = await getApplications(searchType, searchText, limit, offset, request.yar.id)
   if (apps.total > 0) {
     const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
-
-    let statusClass, status
+    let statusClass
     return {
       applications: apps.applications.map(n => {
-        switch (n.status) {
-          case 1:
+        switch (n.status.status) {
+          case 'In Progress':
             statusClass = 'govuk-tag--grey'
-            status = 'In Progress'
             break
-          case 2:
+          case 'Submitted':
             statusClass = 'govuk-tag--blue'
-            status = 'Submitted'
             break
-          case 3:
+          case 'Withdrawn':
             statusClass = 'govuk-tag--red'
-            status = 'Withdrawn'
             break
-          case 4:
+          case 'Deleted':
             statusClass = 'govuk-tag--red'
-            status = 'Deleted'
             break
           default:
             statusClass = 'govuk-tag--grey'
-            status = 'Pending'
         }
         return [
           { text: n.reference },
-          { text: n.data.organisation.name },
-          { text: n.data.organisation.sbi },
+          { text: n.data?.organisation?.name },
+          { text: n.data?.organisation?.sbi },
           { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
           { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
-          { html: `<span class="govuk-tag ${statusClass}">${status}</span>` },
+          { html: `<span class="govuk-tag ${statusClass}">${n.status.status}</span>` },
           { html: `<a href="view-application/${n.reference}">View application</a>` }
         ]
       }),
@@ -59,6 +53,32 @@ async function createModel (request) {
       error: 'No Applications found.',
       searchText
     }
+  }
+}
+const appRefRegEx = /^vv-[\da-f]{4}-[\da-f]{4}$/i
+const validStatus = ['pending', 'in progress', 'deleted', 'submitted', 'withdrawn']
+const sbiRegEx = /^[\0-9]{9}$/i
+function checkValidSearch (searchText) {
+  let searchType
+  switch (true) {
+    case appRefRegEx.test(searchText):
+      searchType = 'ref'
+      break
+    case validStatus.indexOf(searchText.toLowerCase()) !== -1:
+      searchType = 'status'
+      break
+    case sbiRegEx.test(searchText):
+      searchType = 'sbi'
+      break
+  }
+
+  if (searchType) {
+    return {
+      searchText,
+      searchType
+    }
+  } else {
+    throw new Error('Invalid search. It should be application reference or status or sbi number.')
   }
 }
 module.exports = [
@@ -87,17 +107,22 @@ module.exports = [
           limit: Joi.number().greater(0).default(10)
         }),
         payload: Joi.object({
-          searchText: Joi.number().min(10000000).max(999999999),
-          searchType: Joi.string()
+          searchText: Joi.string()
         }),
-        failAction: async (request, h, error) => {
-          return h.view(viewTemplate, { ...request.payload, errorMessage: { text: error.details[0].message }, error: 'Invalid search value' }).code(400).takeover()
+        failAction: async (request, h, _error) => {
+          return h.view(viewTemplate, { ...request.payload, error: 'Invalid search value' }).code(400).takeover()
         }
       },
       handler: async (request, h) => {
-        setAppSearch(request, keys.appSearch.searchText, request.payload.searchText ?? '')
-        setAppSearch(request, keys.appSearch.searchType, request.payload.searchType ?? '')
-        return h.view(viewTemplate, await createModel(request))
+        try {
+          const { searchText, searchType } = checkValidSearch(request.payload.searchText)
+          console.log(searchText, searchType, 'search')
+          setAppSearch(request, keys.appSearch.searchText, searchText ?? '')
+          setAppSearch(request, keys.appSearch.searchType, searchType ?? '')
+          return h.view(viewTemplate, await createModel(request, 1))
+        } catch {
+          return h.view(viewTemplate, { ...request.payload, error: 'Invalid search value' }).code(400).takeover()
+        }
       }
     }
   }

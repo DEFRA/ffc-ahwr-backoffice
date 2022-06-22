@@ -24,13 +24,12 @@
 
       <div class="user-search-box govuk-!-width-two-thirds">
         <label class="govuk-label govuk-label--s" for="user-search">
-          Search for a user by SBI number
+          Search for a application by SBI number or reference or status
         </label>
          
         <form method="POST">
           <input type="hidden" name="crumb" value="{{crumb}}"/>
             <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{searchText}}" aria-describedby="user-search-hint" spellcheck="false">
-            <input type="hidden" id="searchType" name="searchType" value="sbi"/>
             <button class="search-button" data-module="govuk-button">
                 Search
             </button>
