@@ -6,7 +6,7 @@ module.exports = {
   options: {
     auth: false
   },
-  handler: async (request, h) => {
+  handler: async (_, h) => {
     try {
       const authUrl = await auth.getAuthenticationUrl()
       return h.redirect(authUrl)
