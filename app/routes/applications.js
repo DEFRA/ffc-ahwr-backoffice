@@ -56,7 +56,7 @@ async function createModel (request, page) {
   }
 }
 const appRefRegEx = /^vv-[\da-f]{4}-[\da-f]{4}$/i
-const validStatus = ['pending', 'in progress', 'deleted', 'submitted', 'withdrawn']
+const validStatus = ['pending', 'in progress', 'deleted', 'submitted', 'withdrawn', 'completed']
 const sbiRegEx = /^[\0-9]{9}$/i
 function checkValidSearch (searchText) {
   let searchType
@@ -116,7 +116,6 @@ module.exports = [
       handler: async (request, h) => {
         try {
           const { searchText, searchType } = checkValidSearch(request.payload.searchText)
-          console.log(searchText, searchType, 'search')
           setAppSearch(request, keys.appSearch.searchText, searchText ?? '')
           setAppSearch(request, keys.appSearch.searchType, searchType ?? '')
           return h.view(viewTemplate, await createModel(request, 1))

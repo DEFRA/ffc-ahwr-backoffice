@@ -7,6 +7,7 @@ const reference = 'VV-555A-FD4C'
 applications.getApplication = jest.fn().mockReturnValueOnce(null).mockReturnValue({
   id: '555afd4c-b095-4ce4-b492-800466b53393',
   reference,
+  status: { status: 'Submitted' },
   data: {
     declaration: true,
     whichReview: 'sheep',
@@ -54,7 +55,7 @@ describe('View Application test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
-      expect($('h1.govuk-heading-l').text()).toEqual(`Application ${reference} Applied`)
+      expect($('h1.govuk-heading-l').text()).toEqual(`Application ${reference} Submitted`)
       expect($('title').text()).toContain(`Application ${reference}`)
       expect($('.govuk-summary-list__row').length).toEqual(3)
       expect($('.govuk-summary-list__key').eq(0).text()).toMatch('SBI number:')

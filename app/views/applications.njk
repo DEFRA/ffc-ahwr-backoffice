@@ -39,9 +39,7 @@
 
   {% if error %}
   <div class="govuk-grid-row">
-    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
-      <h2 class="govuk-error-summary__title" id="error-summary-title">{{error}}</h2>
-    </div>
+    <p class="govuk-error-message">{{error}}</p>
   </div>
   {% else %} 
   <div class="govuk-grid-row">
