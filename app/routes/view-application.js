@@ -21,10 +21,11 @@ module.exports = {
     },
     auth: false,
     handler: async (request, h) => {
-      const application = await getApplication(request.params.reference, request.yar.id)
-      if (!application) {
+      const response = await getApplication(request.params.reference, request.yar.id)
+      if (!response) {
         throw boom.badRequest()
       }
+      const application = response.applications[0]
       return h.view('view-application', { applicationId: application.reference, status: application.status.status, organisationName: application?.data?.organisation?.name, listData: { rows: getOrganisationRows(application?.data?.organisation) } })
     }
   }

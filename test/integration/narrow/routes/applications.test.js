@@ -224,7 +224,10 @@ describe('Applications test', () => {
     test.each([
       { searchDetails: { searchText: '333333333' } },
       { searchDetails: { searchText: '444444443' } },
-      { searchDetails: { searchText: 'VV-555A-F5D5' } }
+      { searchDetails: { searchText: 'VV-555A-F5D5' } },
+      { searchDetails: { searchText: '' } },
+      { searchDetails: { searchText: null } },
+      { searchDetails: { searchText: undefined } }
     ])('returns success with error message when no data found', async ({ searchDetails }) => {
       const options = {
         method,
@@ -248,23 +251,20 @@ describe('Applications test', () => {
     })
 
     test.each([
-      { searchDetails: { searchText: null } },
-      { searchDetails: { searchText: undefined } },
       { searchDetails: { searchText: '1233' } },
-      { searchDetails: { searchText: '' } },
       { searchDetails: { searchText: 'sdfgsfgsd' } }
     ])('returns error', async ({ searchDetails }) => {
       const options = {
         method,
         url,
-        payload: { crumb, searchDetails },
+        payload: { crumb, searchText: searchDetails.searchText },
         headers: { cookie: `crumb=${crumb}` }
       }
 
       const res = await global.__SERVER__.inject(options)
 
       const $ = cheerio.load(res.payload)
-      expect($('p.govuk-error-message').text()).toMatch('Invalid search value')
+      expect($('p.govuk-error-message').text()).toMatch('Error: Invalid search. It should be application reference or status or sbi number.')
       expect(res.statusCode).toBe(400)
     })
   })

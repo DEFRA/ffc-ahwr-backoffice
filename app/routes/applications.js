@@ -60,6 +60,7 @@ const validStatus = ['pending', 'in progress', 'deleted', 'submitted', 'withdraw
 const sbiRegEx = /^[\0-9]{9}$/i
 function checkValidSearch (searchText) {
   let searchType
+  searchText = (searchText ?? '').trim()
   switch (true) {
     case appRefRegEx.test(searchText):
       searchType = 'ref'
@@ -72,6 +73,9 @@ function checkValidSearch (searchText) {
       break
   }
 
+  if (!searchType && searchText.length <= 0) {
+    searchType = 'reset'
+  }
   if (searchType) {
     return {
       searchText,
@@ -105,13 +109,7 @@ module.exports = [
         query: Joi.object({
           page: Joi.number().greater(0).default(1),
           limit: Joi.number().greater(0).default(10)
-        }),
-        payload: Joi.object({
-          searchText: Joi.string()
-        }),
-        failAction: async (request, h, _error) => {
-          return h.view(viewTemplate, { ...request.payload, error: 'Invalid search value' }).code(400).takeover()
-        }
+        })
       },
       handler: async (request, h) => {
         try {
@@ -119,8 +117,8 @@ module.exports = [
           setAppSearch(request, keys.appSearch.searchText, searchText ?? '')
           setAppSearch(request, keys.appSearch.searchType, searchType ?? '')
           return h.view(viewTemplate, await createModel(request, 1))
-        } catch {
-          return h.view(viewTemplate, { ...request.payload, error: 'Invalid search value' }).code(400).takeover()
+        } catch (err) {
+          return h.view(viewTemplate, { ...request.payload, error: err }).code(400).takeover()
         }
       }
     }
