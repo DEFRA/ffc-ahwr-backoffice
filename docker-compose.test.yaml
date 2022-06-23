@@ -12,8 +12,8 @@ services:
       AADAR_ENABLED: 'true'
       AADAR_CLIENT_SECRET: itsasecretshhhhhhhh
       AADAR_CLIENT_ID: NCC-1701-D
+      AADAR_REDIRECT_URL: http://thesearenotthedroidsyouarelookingfor
       AADAR_TENANT_ID: C3PO-R2D2
-      REDIRECT_URL: http://thesearenotthedroidsyouarelookingfor
     image: ffc-ahwr-backoffice-development
     container_name: ffc-ahwr-backoffice-test
     command: npm run test

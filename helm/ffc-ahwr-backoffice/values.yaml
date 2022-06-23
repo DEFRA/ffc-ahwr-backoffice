@@ -19,6 +19,7 @@ azureAppRegistration:
   enabled: true
   clientId:
   clientSecret:
+  redirectUrl:
   tenantId:
 
 containerConfigMap:

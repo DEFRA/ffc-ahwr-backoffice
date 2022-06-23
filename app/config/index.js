@@ -104,7 +104,7 @@ const config = {
     clientSecret: process.env.AADAR_CLIENT_SECRET,
     clientId: process.env.AADAR_CLIENT_ID,
     authority: `https://login.microsoftonline.com/${process.env.AADAR_TENANT_ID}`,
-    redirectUrl: process.env.REDIRECT_URL.length > 0 ? process.env.REDIRECT_URL : 'http://localhost:3007/authenticate'
+    redirectUrl: process.env.AADAR_REDIRECT_URL
   },
   env: process.env.NODE_ENV,
   isDev: process.env.NODE_ENV === 'development',
