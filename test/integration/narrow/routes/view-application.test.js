@@ -5,29 +5,29 @@ const applications = require('../../../../app/messaging/applications')
 const reference = 'VV-555A-FD4C'
 
 applications.getApplication = jest.fn().mockReturnValueOnce(null).mockReturnValue({
-  applications: [{
-    id: '555afd4c-b095-4ce4-b492-800466b53393',
-    reference,
-    status: { status: 'Submitted' },
-    data: {
-      declaration: true,
-      whichReview: 'sheep',
-      organisation: {
-        cph: '33/333/3333',
-        sbi: '333333333',
-        name: 'My Farms',
-        email: 'test@test.com',
-        isTest: true,
-        address: 'Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC'
-      },
-      eligibleSpecies: 'yes',
-      confirmCheckDetails: 'yes'
+
+  id: '555afd4c-b095-4ce4-b492-800466b53393',
+  reference,
+  status: { status: 'Submitted' },
+  data: {
+    declaration: true,
+    whichReview: 'sheep',
+    organisation: {
+      cph: '33/333/3333',
+      sbi: '333333333',
+      name: 'My Farms',
+      email: 'test@test.com',
+      isTest: true,
+      address: 'Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC'
     },
-    claimed: false,
-    createdAt: '2022-06-06T14:27:51.251Z',
-    updatedAt: '2022-06-06T14:27:51.775Z',
-    createdBy: 'admin'
-  }]
+    eligibleSpecies: 'yes',
+    confirmCheckDetails: 'yes'
+  },
+  claimed: false,
+  createdAt: '2022-06-06T14:27:51.251Z',
+  updatedAt: '2022-06-06T14:27:51.775Z',
+  createdBy: 'admin'
+
 })
 
 describe('View Application test', () => {
