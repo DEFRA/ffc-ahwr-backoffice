@@ -22,7 +22,6 @@ module.exports = {
     auth: false,
     handler: async (request, h) => {
       const response = await getApplication(request.params.reference, request.yar.id)
-      console.log(response)
       if (!response) {
         throw boom.badRequest()
       }
