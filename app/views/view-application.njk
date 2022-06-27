@@ -2,10 +2,18 @@
 
 {% block pageTitle %}Application {{ applicationId }}{% endblock %}
 
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    items: [{
+      text: "Applications",
+      href: "/applications"
+    }]
+  })}}
+{% endblock %}
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">Application {{ applicationId }} <span class="govuk-tag govuk-tag--green">Applied</span></h1> 
+      <h1 class="govuk-heading-l">Application {{ applicationId }} <span class="govuk-tag govuk-tag--green">{{ status }}</span></h1> 
 
       <h2 class="govuk-heading-m">{{ organisationName }}</h2>
       {{ govukSummaryList({
@@ -13,7 +21,7 @@
       }) }}
 
       {% set applicationHtml %}
-      <h2 class="govuk-heading-l">Applied</h2>
+      <h2 class="govuk-heading-l">{{ status }}</h2>
       {{ govukTable({
         head: [
           {
