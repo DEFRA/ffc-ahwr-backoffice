@@ -1,8 +1,8 @@
 {{- include "ffc-helm-library.container-config-map" (list . "ffc-ahwr-backoffice.config-map") -}}
 {{- define "ffc-ahwr-backoffice.config-map" -}}
 data:
-  NODE_ENV: {{ quote .Values.environment }}
-  PORT: {{ quote .Values.container.port }}
+  AADAR_ENABLED: {{ quote .Values.azureAppRegistration.enabled }}
+  AADAR_REDIRECT_URL: {{ quote .Values.azureAppRegistration.redirectUrl }}
   APPINSIGHTS_CLOUDROLE: {{ quote .Values.name }}
   BACKOFFICEREQUEST_QUEUE_ADDRESS: {{ quote .Values.container.backOfficeRequestQueueAddress }}
   BACKOFFICERESPONSE_QUEUE_ADDRESS: {{ quote .Values.container.backOfficeResponseQueueAddress }}
