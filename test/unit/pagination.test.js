@@ -24,6 +24,6 @@ describe('Pagination', () => {
     const result = pagination.getPagingData(totalPages, 20, 1, url)
     expect(result.pages).not.toBeNull()
     expect(result.previous).toBeNull()
-    expect(result.next).toStrictEqual({ href: `${url}?page=${totalPages / 20}` })
+    expect(result.next).toStrictEqual({ href: `${url}?page=2` })
   })
 })
