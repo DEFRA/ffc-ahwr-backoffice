@@ -42,7 +42,7 @@ const schema = Joi.object({
     clientSecret: Joi.string().allow(''),
     clientId: Joi.string().allow(''),
     authority: Joi.string().allow(''),
-    redirectUrl: Joi.string().default('http://localhost:3007/authenticate')
+    redirectUrl: Joi.string().default('http://localhost:3002/authenticate')
   },
   env: Joi.string().valid('development', 'test', 'production').default('development'),
   isDev: Joi.boolean().default(false),
