@@ -259,6 +259,7 @@ describe('Applications test', () => {
         method,
         url,
         payload: { crumb, searchText: searchDetails.searchText },
+        headers: { cookie: `crumb=${crumb}` },
         auth
       }
 
@@ -285,7 +286,6 @@ describe('Applications test', () => {
         url,
         payload: { crumb, searchText: searchDetails.searchText },
         auth,
-        payload: { crumb, searchDetails },
         headers: { cookie: `crumb=${crumb}` }
       }
 
