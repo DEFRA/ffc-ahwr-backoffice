@@ -1,6 +1,7 @@
 const cheerio = require('cheerio')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const applications = require('../../../../app/messaging/applications')
+const { holdAdmin } = require('../../../../app/auth/permissions')
 
 const reference = 'VV-555A-FD4C'
 
@@ -32,16 +33,27 @@ applications.getApplication = jest.fn().mockReturnValueOnce(null).mockReturnValu
 
 describe('View Application test', () => {
   const url = `/view-application/${reference}`
+  jest.mock('../../../../app/auth')
+  const auth = { strategy: 'session-auth', credentials: { scope: [holdAdmin] } }
 
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
   describe(`GET ${url} route`, () => {
-    test('returns 400', async () => {
+    test('returns 302 no auth', async () => {
       const options = {
         method: 'GET',
         url
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(302)
+    })
+    test('returns 400', async () => {
+      const options = {
+        method: 'GET',
+        url,
+        auth
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(400)
@@ -52,7 +64,8 @@ describe('View Application test', () => {
     test('returns 200', async () => {
       const options = {
         method: 'GET',
-        url
+        url,
+        auth
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(200)

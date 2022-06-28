@@ -15,6 +15,13 @@ azureIdentity:
   clientID:
   resourceID:
 
+azureAppRegistration:
+  enabled: true
+  clientId:
+  clientSecret:
+  redirectUrl:
+  tenantId:
+
 containerConfigMap:
   name: ffc-ahwr-backoffice-config-map
 
