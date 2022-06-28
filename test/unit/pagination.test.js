@@ -26,4 +26,13 @@ describe('Pagination', () => {
     expect(result.previous).toBeNull()
     expect(result.next).toStrictEqual({ href: `${url}?page=2` })
   })
+
+  test('getPagingData test for page 4', () => {
+    const url = 'test.com'
+    const totalPages = 100
+    const result = pagination.getPagingData(totalPages, 20, 4, url)
+    expect(result.pages).not.toBeNull()
+    expect(result.previous).toStrictEqual({ href: `${url}?page=3` })
+    expect(result.next).toStrictEqual({ href: `${url}?page=5` })
+  })
 })
