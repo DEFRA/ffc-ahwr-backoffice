@@ -8,7 +8,7 @@ const keys = require('../session/keys')
 
 async function createModel (request, page) {
   page = page ?? request.query.page ?? 1
-  const { limit, offset } = getPagination(page, request.query.limit)
+  const { limit, offset } = getPagination(page)
   const path = request.headers.path ?? ''
   const searchText = getAppSearch(request, keys.appSearch.searchText)
   const searchType = getAppSearch(request, keys.appSearch.searchType)
