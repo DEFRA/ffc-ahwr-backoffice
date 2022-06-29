@@ -1,7 +1,7 @@
 const cheerio = require('cheerio')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const applications = require('../../../../app/messaging/applications')
-const { holdAdmin } = require('../../../../app/auth/permissions')
+const { administrator } = require('../../../../app/auth/permissions')
 
 const reference = 'VV-555A-FD4C'
 
@@ -34,7 +34,7 @@ applications.getApplication = jest.fn().mockReturnValueOnce(null).mockReturnValu
 describe('View Application test', () => {
   const url = `/view-application/${reference}`
   jest.mock('../../../../app/auth')
-  const auth = { strategy: 'session-auth', credentials: { scope: [holdAdmin] } }
+  const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
 
   beforeEach(() => {
     jest.clearAllMocks()
