@@ -13,6 +13,6 @@ module.exports = {
     } catch (err) {
       console.log('Error authenticating', err)
     }
-    return h.view('500').code(500)
+    return h.view('error-pages/500').code(500)
   }
 }

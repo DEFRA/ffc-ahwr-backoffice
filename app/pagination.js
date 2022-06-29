@@ -18,7 +18,7 @@ function getPagination (page = 1, limit = 20) {
 function getPagingData (total, limit, page, url) {
   const totalPages = Math.ceil(total / limit)
   const previous = page === 1 ? null : { href: `${url}?page=${page - 1}` }
-  const next = totalPages === 1 || totalPages === page ? null : { href: `${url}?page=${totalPages}` }
+  const next = totalPages === 1 || totalPages === page ? null : { href: `${url}?page=${page + 1}` }
   const pages = totalPages === 1
     ? null
     : []

@@ -4,12 +4,10 @@
 {% endblock %}
 
 {% block beforeContent %}
-  {{ govukBreadcrumbs({
-    items: [{
-      text: "Home",
-      href: "/"
-    }]
-  })}}
+  {{ govukBackLink({
+        text: "Back",
+        href: "/"
+      }) }}
 {% endblock %}
 
 {% block content %}
