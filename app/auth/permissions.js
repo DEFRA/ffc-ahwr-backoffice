@@ -1,6 +1,7 @@
 const permissions = {
-  schemeAdmin: 'Payments.Scheme.Admin',
-  holdAdmin: 'Payment.Hold.Admin'
+  administrator: 'administrator',
+  processor: 'processor',
+  user: 'user'
 }
 
 module.exports = permissions

@@ -5,7 +5,7 @@ const { getPagination, getPagingData } = require('../pagination')
 const Joi = require('joi')
 const { setAppSearch, getAppSearch } = require('../session')
 const keys = require('../session/keys')
-const { holdAdmin, schemeAdmin } = require('../auth/permissions')
+const { administrator, processor, user } = require('../auth/permissions')
 
 async function createModel (request, page) {
   page = page ?? request.query.page ?? 1
@@ -89,6 +89,7 @@ function checkValidSearch (searchText) {
 module.exports = [
   {
     method: 'GET',
+    auth: { scope: [administrator, processor, user] },
     path: currentPath,
     options: {
       validate: {
@@ -106,7 +107,7 @@ module.exports = [
     method: 'POST',
     path: `${currentPath}`,
     options: {
-      auth: { scope: [holdAdmin, schemeAdmin] },
+      auth: { scope: [administrator, processor, user] },
       validate: {
         query: Joi.object({
           page: Joi.number().greater(0).default(1),

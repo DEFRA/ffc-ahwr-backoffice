@@ -1,7 +1,7 @@
 const Joi = require('joi')
 const boom = require('@hapi/boom')
 const { getApplication } = require('../messaging/applications')
-const { holdAdmin, schemeAdmin } = require('../auth/permissions')
+const { administrator, processor, user } = require('../auth/permissions')
 
 const getOrganisationRows = (organisation) => {
   return [
@@ -15,7 +15,7 @@ module.exports = {
   method: 'GET',
   path: '/view-application/{reference}',
   options: {
-    auth: { scope: [holdAdmin, schemeAdmin] },
+    auth: { scope: [administrator, processor, user] },
     validate: {
       params: Joi.object({
         reference: Joi.string().valid()
