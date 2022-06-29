@@ -89,9 +89,9 @@ function checkValidSearch (searchText) {
 module.exports = [
   {
     method: 'GET',
-    auth: { scope: [administrator, processor, user] },
     path: currentPath,
     options: {
+      auth: { scope: [administrator, processor, user] },
       validate: {
         query: Joi.object({
           page: Joi.number().greater(0).default(1),
