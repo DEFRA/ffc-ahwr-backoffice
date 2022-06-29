@@ -1,12 +1,13 @@
 const isInRole = require('./is-in-role')
-const { schemeAdmin, holdAdmin } = require('./permissions')
+const { administrator, processor, user } = require('./permissions')
 
 const mapAuth = (request) => {
   return {
     isAuthenticated: request.auth.isAuthenticated,
     isAnonymous: !request.auth.isAuthenticated,
-    isSchemeAdminUser: request.auth.isAuthenticated && isInRole(request.auth.credentials, schemeAdmin),
-    isHoldAdminUser: request.auth.isAuthenticated && isInRole(request.auth.credentials, holdAdmin)
+    isAdministrator: request.auth.isAuthenticated && isInRole(request.auth.credentials, administrator),
+    isProcessor: request.auth.isAuthenticated && isInRole(request.auth.credentials, processor),
+    isUser: request.auth.isAuthenticated && isInRole(request.auth.credentials, user)
   }
 }
 

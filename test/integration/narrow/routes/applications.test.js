@@ -1,7 +1,7 @@
 const cheerio = require('cheerio')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const getCrumbs = require('../../../utils/get-crumbs')
-const { holdAdmin } = require('../../../../app/auth/permissions')
+const { administrator } = require('../../../../app/auth/permissions')
 const sessionMock = require('../../../../app/session')
 
 jest.mock('../../../../app/session')
@@ -136,7 +136,7 @@ applications.getApplications = jest.fn().mockReturnValue({
 describe('Applications test', () => {
   const url = '/applications'
   jest.mock('../../../../app/auth')
-  const auth = { strategy: 'session-auth', credentials: { scope: [holdAdmin] } }
+  const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
   describe(`GET ${url} route`, () => {
     test('returns 302 no auth', async () => {
       const options = {
