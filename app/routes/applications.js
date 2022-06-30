@@ -13,24 +13,43 @@ async function createModel (request, page) {
   const path = request.headers.path ?? ''
   const searchText = getAppSearch(request, keys.appSearch.searchText)
   const searchType = getAppSearch(request, keys.appSearch.searchType)
-  const apps = await getApplications(searchType, searchText, limit, offset, request.yar.id)
+  let apps
+
+  await getApplications(searchType, searchText, limit, offset, request.yar.id).then(response => {
+    apps = response
+    console.log(apps.total, 'response total', page)
+  }
+  )
+  console.log(apps.total, 'received total', page)
   if (apps.total > 0) {
     const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
     let statusClass
     return {
       applications: apps.applications.map(n => {
         switch (n.status.status) {
-          case 'In Progress':
+          case 'APPLIED':
             statusClass = 'govuk-tag--grey'
             break
-          case 'Submitted':
+          case 'DATA INPUTED':
             statusClass = 'govuk-tag--blue'
             break
-          case 'Withdrawn':
+          case 'WITHDRAWN':
             statusClass = 'govuk-tag--red'
             break
-          case 'Deleted':
-            statusClass = 'govuk-tag--red'
+          case 'CLAIMED':
+            statusClass = 'govuk-tag--blue'
+            break
+          case 'CHECK':
+            statusClass = 'govuk-tag--blue'
+            break
+          case 'ACCEPTED':
+            statusClass = 'govuk-tag--blue'
+            break
+          case 'REJECTED':
+            statusClass = 'govuk-tag--blue'
+            break
+          case 'PAID':
+            statusClass = 'govuk-tag--blue'
             break
           default:
             statusClass = 'govuk-tag--grey'
@@ -57,7 +76,7 @@ async function createModel (request, page) {
   }
 }
 const appRefRegEx = /^vv-[\da-f]{4}-[\da-f]{4}$/i
-const validStatus = ['pending', 'in progress', 'deleted', 'submitted', 'withdrawn', 'completed']
+const validStatus = ['applied', 'withdrawn', 'data inputted', 'claimed', 'check', 'accepted', 'rejected', 'paid']
 const sbiRegEx = /^[\0-9]{9}$/i
 function checkValidSearch (searchText) {
   let searchType
