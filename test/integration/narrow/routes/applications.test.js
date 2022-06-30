@@ -130,6 +130,94 @@ applications.getApplications = jest.fn().mockReturnValue({
     createdAt: '2022-06-06T14:27:51.251Z',
     updatedAt: '2022-06-06T14:27:51.775Z',
     createdBy: 'admin'
+  }, {
+    id: '555afd4c-b095-4ce4-b492-800466b78693',
+    reference: 'VV-666A-FD7E',
+    status: { status: 'CHECK' },
+    data: {
+      declaration: true,
+      whichReview: 'sheep',
+      organisation: {
+        cph: '33/333/3333',
+        sbi: '333333333',
+        name: 'My Farm',
+        email: 'test@test.com',
+        isTest: true,
+        address: 'Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC'
+      },
+      eligibleSpecies: 'yes',
+      confirmCheckDetails: 'yes'
+    },
+    claimed: false,
+    createdAt: '2022-06-06T14:27:51.251Z',
+    updatedAt: '2022-06-06T14:27:51.775Z',
+    createdBy: 'admin'
+  }, {
+    id: '555afd4c-b095-4ce4-b492-800466b88893',
+    reference: 'VV-666A-AB6E',
+    status: { status: 'CLAIMED' },
+    data: {
+      declaration: true,
+      whichReview: 'sheep',
+      organisation: {
+        cph: '33/333/3333',
+        sbi: '333333333',
+        name: 'My Farm',
+        email: 'test@test.com',
+        isTest: true,
+        address: 'Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC'
+      },
+      eligibleSpecies: 'yes',
+      confirmCheckDetails: 'yes'
+    },
+    claimed: false,
+    createdAt: '2022-06-06T14:27:51.251Z',
+    updatedAt: '2022-06-06T14:27:51.775Z',
+    createdBy: 'admin'
+  }, {
+    id: '555afd4c-b095-4ce4-b492-800466b90993',
+    reference: 'VV-666A-RG6E',
+    status: { status: 'PAID' },
+    data: {
+      declaration: true,
+      whichReview: 'sheep',
+      organisation: {
+        cph: '33/333/3333',
+        sbi: '333333333',
+        name: 'My Farm',
+        email: 'test@test.com',
+        isTest: true,
+        address: 'Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC'
+      },
+      eligibleSpecies: 'yes',
+      confirmCheckDetails: 'yes'
+    },
+    claimed: false,
+    createdAt: '2022-06-06T14:27:51.251Z',
+    updatedAt: '2022-06-06T14:27:51.775Z',
+    createdBy: 'admin'
+  }, {
+    id: '555afd4c-b095-4ce4-b492-800466b10993',
+    reference: 'VV-666A-RG7E',
+    status: { status: 'ACCEPTED' },
+    data: {
+      declaration: true,
+      whichReview: 'sheep',
+      organisation: {
+        cph: '33/333/3333',
+        sbi: '333333333',
+        name: 'My Farm',
+        email: 'test@test.com',
+        isTest: true,
+        address: 'Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC'
+      },
+      eligibleSpecies: 'yes',
+      confirmCheckDetails: 'yes'
+    },
+    claimed: false,
+    createdAt: '2022-06-06T14:27:51.251Z',
+    updatedAt: '2022-06-06T14:27:51.775Z',
+    createdBy: 'admin'
   }]
 })
 
@@ -174,6 +262,10 @@ describe('Applications test', () => {
       expect($('title').text()).toContain('Applications')
       expect($('span.govuk-tag--grey').text()).toContain('APPLIED')
       expect($('span.govuk-tag--blue').text()).toContain('DATA INPUTED')
+      expect($('span.govuk-tag--blue').text()).toContain('CHECK')
+      expect($('span.govuk-tag--blue').text()).toContain('PAID')
+      expect($('span.govuk-tag--blue').text()).toContain('ACCEPTED')
+      expect($('span.govuk-tag--blue').text()).toContain('CLAIMED')
       expect($('span.govuk-tag--red').text()).toContain('WITHDRAWN')
       expect($('span.govuk-tag--red').text()).toContain('REJECTED')
       expect(sessionMock.getAppSearch).toBeCalled()
@@ -195,6 +287,10 @@ describe('Applications test', () => {
       expect($('title').text()).toContain('Applications')
       expect($('span.govuk-tag--grey').text()).toContain('APPLIED')
       expect($('span.govuk-tag--blue').text()).toContain('DATA INPUTED')
+      expect($('span.govuk-tag--blue').text()).toContain('CHECK')
+      expect($('span.govuk-tag--blue').text()).toContain('PAID')
+      expect($('span.govuk-tag--blue').text()).toContain('ACCEPTED')
+      expect($('span.govuk-tag--blue').text()).toContain('CLAIMED')
       expect($('span.govuk-tag--red').text()).toContain('WITHDRAWN')
       expect($('span.govuk-tag--red').text()).toContain('REJECTED')
       expect(sessionMock.getAppSearch).toBeCalled()
