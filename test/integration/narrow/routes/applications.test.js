@@ -23,7 +23,7 @@ applications.getApplications = jest.fn().mockReturnValue({
   applications: [{
     id: '555afd4c-b095-4ce4-b492-800466b53393',
     reference: 'VV-555A-FD4C',
-    status: { status: 'In Progress' },
+    status: { status: 'APPLIED' },
     data: {
       declaration: true,
       whichReview: 'sheep',
@@ -45,7 +45,7 @@ applications.getApplications = jest.fn().mockReturnValue({
   }, {
     id: '555afd4c-b095-4ce4-b492-800466b54493',
     reference: 'VV-555A-FD4D',
-    status: { status: 'Deleted' },
+    status: { status: 'REJECTED' },
     data: {
       declaration: true,
       whichReview: 'sheep',
@@ -67,7 +67,7 @@ applications.getApplications = jest.fn().mockReturnValue({
   }, {
     id: '555afd4c-b095-4ce4-b492-800466b55593',
     reference: 'VV-555A-FD5D',
-    status: { status: 'Submitted' },
+    status: { status: 'DATA INPUTED' },
     data: {
       declaration: true,
       whichReview: 'sheep',
@@ -89,7 +89,7 @@ applications.getApplications = jest.fn().mockReturnValue({
   }, {
     id: '555afd4c-b095-4ce4-b492-800466b66693',
     reference: 'VV-555A-FD6E',
-    status: { status: 'Withdrawn' },
+    status: { status: 'WITHDRAWN' },
     data: {
       declaration: true,
       whichReview: 'sheep',
@@ -111,7 +111,7 @@ applications.getApplications = jest.fn().mockReturnValue({
   }, {
     id: '555afd4c-b095-4ce4-b492-800466b66693',
     reference: 'VV-666A-FD6E',
-    status: { status: 'Completed' },
+    status: { status: 'ACCEPTED' },
     data: {
       declaration: true,
       whichReview: 'sheep',
@@ -172,10 +172,10 @@ describe('Applications test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-heading-l').text()).toEqual('Applications')
       expect($('title').text()).toContain('Applications')
-      expect($('span.govuk-tag--grey').text()).toContain('In Progress')
-      expect($('span.govuk-tag--blue').text()).toContain('Submitted')
-      expect($('span.govuk-tag--red').text()).toContain('Withdrawn')
-      expect($('span.govuk-tag--red').text()).toContain('Deleted')
+      expect($('span.govuk-tag--grey').text()).toContain('APPLIED')
+      expect($('span.govuk-tag--blue').text()).toContain('DATA INPUTED')
+      expect($('span.govuk-tag--red').text()).toContain('WITHDRAWN')
+      expect($('span.govuk-tag--red').text()).toContain('REJECTED')
       expect(sessionMock.getAppSearch).toBeCalled()
       expect(applications.getApplications).toBeCalled()
       expect(pagination.getPagination).toBeCalled()
@@ -193,10 +193,10 @@ describe('Applications test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-heading-l').text()).toEqual('Applications')
       expect($('title').text()).toContain('Applications')
-      expect($('span.govuk-tag--grey').text()).toContain('In Progress')
-      expect($('span.govuk-tag--blue').text()).toContain('Submitted')
-      expect($('span.govuk-tag--red').text()).toContain('Withdrawn')
-      expect($('span.govuk-tag--red').text()).toContain('Deleted')
+      expect($('span.govuk-tag--grey').text()).toContain('APPLIED')
+      expect($('span.govuk-tag--blue').text()).toContain('DATA INPUTED')
+      expect($('span.govuk-tag--red').text()).toContain('WITHDRAWN')
+      expect($('span.govuk-tag--red').text()).toContain('REJECTED')
       expect(sessionMock.getAppSearch).toBeCalled()
       expect(applications.getApplications).toBeCalled()
       expect(pagination.getPagination).toBeCalled()
@@ -225,12 +225,15 @@ describe('Applications test', () => {
     test.each([
       { searchDetails: { searchText: '444444444', searchType: 'sbi' } },
       { searchDetails: { searchText: 'VV-555A-FD6E', searchType: 'ref' } },
-      { searchDetails: { searchText: 'Pending', searchType: 'status' } },
-      { searchDetails: { searchText: 'In Progress', searchType: 'status' } },
-      { searchDetails: { searchText: 'Completed', searchType: 'status' } },
-      { searchDetails: { searchText: 'Deleted', searchType: 'status' } },
-      { searchDetails: { searchText: 'Withdrawn', searchType: 'status' } }
-    ])('returns success when post', async ({ searchDetails }) => {
+      { searchDetails: { searchText: 'applied', searchType: 'status' } },
+      { searchDetails: { searchText: 'data inputed', searchType: 'status' } },
+      { searchDetails: { searchText: 'claimed', searchType: 'status' } },
+      { searchDetails: { searchText: 'check', searchType: 'status' } },
+      { searchDetails: { searchText: 'accepted', searchType: 'status' } },
+      { searchDetails: { searchText: 'rejected', searchType: 'status' } },
+      { searchDetails: { searchText: 'paid', searchType: 'status' } },
+      { searchDetails: { searchText: 'withdrawn', searchType: 'status' } }
+    ])('returns success when post %p', async ({ searchDetails }) => {
       const options = {
         method,
         url,
