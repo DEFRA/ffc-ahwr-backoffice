@@ -22,54 +22,7 @@
 
       {% set applicationHtml %}
       <h2 class="govuk-heading-l">{{ status }}</h2>
-      {{ govukTable({
-        head: [
-          {
-            text: "Date"
-          },
-          {
-            text: "Data requested"
-          },
-          {
-            text: "Data entered"
-          }
-        ],
-        rows: [
-          [
-            {
-              text: "12/08/2022"
-            },
-            {
-              text: "Review type"
-            },
-            {
-              text: "Sheep"
-            }
-          ],
-          [
-            {
-              text: "12/08/2022"
-            },
-            {
-              text: "Lifestock number"
-            },
-            {
-              text: "At least 21"
-            }
-          ],
-          [
-            {
-              text: "12/08/2022"
-            },
-            {
-              text: "T&Cs agreed?"
-            },
-            {
-              text: "Yes"
-            }
-          ]
-        ]
-      }) }}
+      {{ govukTable({{ application }}) }}
       {% endset -%}
 
       {% set vetReviewHtml %}
