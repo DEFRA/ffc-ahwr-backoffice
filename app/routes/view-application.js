@@ -2,18 +2,9 @@ const Joi = require('joi')
 const boom = require('@hapi/boom')
 const { getApplication } = require('../messaging/applications')
 const { administrator, processor, user } = require('../auth/permissions')
+const speciesNumbers = require('../../app/constants/species-numbers')
 
-const head = [
-  {
-    text: "Date"
-  },
-  {
-    text: "Data requested"
-  },
-  {
-    text: "Data entered"
-  }
-]
+const head = [{ text: 'Date' }, { text: 'Data requested' }, { text: 'Data entered' }]
 
 const getOrganisationRows = (organisation) => {
   return [
@@ -27,9 +18,10 @@ const getFarmerApplication = (data) => {
   return {
     head,
     rows: [
-      [{ text: data.createdAt }, { text: "Review type" }, { text: data.whichReview } ],
-      [{ text: data.createdAt }, { text: "Lifestock number" }, { text: data.whichReview } ],
-      [{ text: data.createdAt }, { text: "T&Cs agreed?" }, { text: data.declaration } ]
+      [{ text: data.createdAt }, { text: 'Detail correct?' }, { text: data.confirmCheckDetails }],
+      [{ text: data.createdAt }, { text: 'Review type' }, { text: data.whichReview }],
+      [{ text: data.createdAt }, { text: 'Lifestock number' }, { text: speciesNumbers[data.whichReview] }],
+      [{ text: data.createdAt }, { text: 'T&Cs agreed?' }, { text: data.declaration }]
     ]
   }
 }
@@ -56,7 +48,8 @@ module.exports = {
         status: application.status.status,
         organisationName: application?.data?.organisation?.name,
         application: getFarmerApplication(application?.data),
-        listData: { rows: getOrganisationRows(application?.data?.organisation) }
+        listData: { rows: getOrganisationRows(application?.data?.organisation) },
+        vetVisit: application?.vetVisit
       })
     }
   }
