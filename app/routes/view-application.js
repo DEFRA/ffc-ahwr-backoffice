@@ -27,6 +27,7 @@ module.exports = {
         throw boom.badRequest()
       }
       const application = response
+      console.log(application)
       return h.view('view-application', { applicationId: application.reference, status: application.status.status, organisationName: application?.data?.organisation?.name, listData: { rows: getOrganisationRows(application?.data?.organisation) } })
     }
   }
