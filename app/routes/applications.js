@@ -5,6 +5,7 @@ const { getPagination, getPagingData } = require('../pagination')
 const Joi = require('joi')
 const { setAppSearch, getAppSearch } = require('../session')
 const keys = require('../session/keys')
+const getStyleClassByStatus = require('../constants/status')
 const { administrator, processor, user } = require('../auth/permissions')
 
 async function createModel (request, page) {
@@ -19,34 +20,7 @@ async function createModel (request, page) {
     let statusClass
     return {
       applications: apps.applications.map(n => {
-        switch (n.status.status) {
-          case 'APPLIED':
-            statusClass = 'govuk-tag--grey'
-            break
-          case 'DATA INPUTED':
-            statusClass = 'govuk-tag--blue'
-            break
-          case 'WITHDRAWN':
-            statusClass = 'govuk-tag--red'
-            break
-          case 'CLAIMED':
-            statusClass = 'govuk-tag--blue'
-            break
-          case 'CHECK':
-            statusClass = 'govuk-tag--blue'
-            break
-          case 'ACCEPTED':
-            statusClass = 'govuk-tag--blue'
-            break
-          case 'REJECTED':
-            statusClass = 'govuk-tag--red'
-            break
-          case 'PAID':
-            statusClass = 'govuk-tag--blue'
-            break
-          default:
-            statusClass = 'govuk-tag--grey'
-        }
+        statusClass = getStyleClassByStatus(n.status.status)
         return [
           { text: n.reference },
           { text: n.data?.organisation?.name },
