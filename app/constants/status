@@ -26,6 +26,7 @@ const status = {
 }
 
 const getStyleClassByStatus = (value) => {
+  value = value.replace(/\s/g, '')
   const v = Object.keys(status).map(i => i === value)
   if (v.filter(s => s === true).length > 0) {
     return status[value].styleClass
