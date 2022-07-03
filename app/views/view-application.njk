@@ -22,97 +22,19 @@
 
       {% set applicationHtml %}
       <h2 class="govuk-heading-l">{{ status }}</h2>
-      {{ govukTable({{ application }}) }}
+      {{ govukTable(applicationData) }}
       {% endset -%}
 
       {% set vetReviewHtml %}
       <h2 class="govuk-heading-l">Not yet reviewed</h2>
-      {{ govukTable({
-        head: [
-          {
-            text: "Date"
-          },
-          {
-            text: "Data requested"
-          },
-          {
-            text: "Data entered"
-          }
-        ],
-        rows: [
-          [
-            {
-              text: "David Francis"
-            },
-            {
-              text: "24"
-            },
-            {
-              text: "18"
-            }
-          ]
-        ]
-      }) }}
       {% endset -%}
 
       {% set claimHtml %}
       <h2 class="govuk-heading-l">Not yet able to claim</h2>
-      {{ govukTable({
-        head: [
-          {
-            text: "Date"
-          },
-          {
-            text: "Data requested"
-          },
-          {
-            text: "Data entered"
-          }
-        ],
-        rows: [
-          [
-            {
-              text: "David Francis"
-            },
-            {
-              text: "98"
-            },
-            {
-              text: "95"
-            }
-          ]
-        ]
-      }) }}
       {% endset -%}
 
       {% set paymentHtml %}
       <h2 class="govuk-heading-l">Not yet paid</h2>
-      {{ govukTable({
-        head: [
-          {
-            text: "Date"
-          },
-          {
-            text: "Data requested"
-          },
-          {
-            text: "Data entered"
-          }
-        ],
-        rows: [
-          [
-            {
-              text: "David Francis"
-            },
-            {
-              text: "1380"
-            },
-            {
-              text: "1472"
-            }
-          ]
-        ]
-      }) }}
       {% endset -%}
 
       {{ govukTabs({
