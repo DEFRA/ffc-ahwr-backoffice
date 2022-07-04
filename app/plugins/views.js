@@ -1,6 +1,6 @@
 const path = require('path')
 const nunjucks = require('nunjucks')
-const { isLocal, serviceName } = require('../config')
+const { isLocal, serviceName, siteTitle } = require('../config')
 const { version } = require('../../package.json')
 
 module.exports = {
@@ -35,6 +35,7 @@ module.exports = {
       appVersion: version,
       assetPath: '/assets',
       pageTitle: serviceName,
+      siteTitle,
       serviceName
     }
   }

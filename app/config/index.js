@@ -49,6 +49,7 @@ const schema = Joi.object({
   isProd: Joi.boolean().default(false),
   port: Joi.number().default(3000),
   serviceName: Joi.string().default('Administration of the health and welfare of your livestock'),
+  siteTitle: Joi.string().default('Back office'),
   backOfficeRequestQueue: {
     address: Joi.string().default('backOfficeRequestQueue'),
     type: Joi.string(),

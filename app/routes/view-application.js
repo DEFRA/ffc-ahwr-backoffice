@@ -9,9 +9,9 @@ const head = [{ text: 'Date' }, { text: 'Data requested' }, { text: 'Data entere
 
 const getOrganisationRows = (organisation) => {
   return [
-    { key: { text: 'SBI number:' }, value: { text: organisation?.sbi }, actions: { items: [{ href: '#', text: 'Change' }] } },
-    { key: { text: 'Address:' }, value: { text: organisation?.address }, actions: { items: [{ href: '#', text: 'Change' }] } },
-    { key: { text: 'Email address:' }, value: { text: organisation?.email }, actions: { items: [{ href: '#', text: 'Change' }] } }
+    { key: { text: 'SBI number:' }, value: { text: organisation?.sbi } },
+    { key: { text: 'Address:' }, value: { text: organisation?.address } },
+    { key: { text: 'Email address:' }, value: { text: organisation?.email } }
   ]
 }
 
@@ -23,7 +23,7 @@ const getFarmerApplication = (application) => {
     rows: [
       [{ text: formatedDate }, { text: 'Detail correct?' }, { text: upperFirstLetter(data.confirmCheckDetails) }],
       [{ text: formatedDate }, { text: 'Review type' }, { text: upperFirstLetter(data.whichReview) }],
-      [{ text: formatedDate }, { text: 'Lifestock number' }, { text: speciesNumbers[data.whichReview] }],
+      [{ text: formatedDate }, { text: 'Livestock number' }, { text: speciesNumbers[data.whichReview] }],
       [{ text: formatedDate }, { text: 'T&Cs agreed?' }, { text: data.declaration ? 'Yes' : 'No' }]
     ]
   }
