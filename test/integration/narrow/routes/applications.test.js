@@ -3,6 +3,7 @@ const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const getCrumbs = require('../../../utils/get-crumbs')
 const { administrator } = require('../../../../app/auth/permissions')
 const sessionMock = require('../../../../app/session')
+const applicationData = require('.././../../data/applications.json')
 
 jest.mock('../../../../app/session')
 jest.mock('../../../../app/messaging')
@@ -18,120 +19,7 @@ pagination.getPagination = jest.fn().mockReturnValue({
 pagination.getPagingData = jest.fn().mockReturnValue({
   page: 1, totalPages: 1, total: 1, limit: 10, url: undefined
 })
-applications.getApplications = jest.fn().mockReturnValue({
-  total: 4,
-  applications: [{
-    id: '555afd4c-b095-4ce4-b492-800466b53393',
-    reference: 'VV-555A-FD4C',
-    status: { status: 'In Progress' },
-    data: {
-      declaration: true,
-      whichReview: 'sheep',
-      organisation: {
-        cph: '33/333/3333',
-        sbi: '333333333',
-        name: 'My Farm',
-        email: 'test@test.com',
-        isTest: true,
-        address: 'Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC'
-      },
-      eligibleSpecies: 'yes',
-      confirmCheckDetails: 'yes'
-    },
-    claimed: false,
-    createdAt: '2022-06-06T14:27:51.251Z',
-    updatedAt: '2022-06-06T14:27:51.775Z',
-    createdBy: 'admin'
-  }, {
-    id: '555afd4c-b095-4ce4-b492-800466b54493',
-    reference: 'VV-555A-FD4D',
-    status: { status: 'Deleted' },
-    data: {
-      declaration: true,
-      whichReview: 'sheep',
-      organisation: {
-        cph: '33/333/3333',
-        sbi: '333333333',
-        name: 'My Farm',
-        email: 'test@test.com',
-        isTest: true,
-        address: 'Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC'
-      },
-      eligibleSpecies: 'yes',
-      confirmCheckDetails: 'yes'
-    },
-    claimed: false,
-    createdAt: '2022-06-06T14:27:51.251Z',
-    updatedAt: '2022-06-06T14:27:51.775Z',
-    createdBy: 'admin'
-  }, {
-    id: '555afd4c-b095-4ce4-b492-800466b55593',
-    reference: 'VV-555A-FD5D',
-    status: { status: 'Submitted' },
-    data: {
-      declaration: true,
-      whichReview: 'sheep',
-      organisation: {
-        cph: '33/333/3333',
-        sbi: '333333333',
-        name: 'My Farm',
-        email: 'test@test.com',
-        isTest: true,
-        address: 'Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC'
-      },
-      eligibleSpecies: 'yes',
-      confirmCheckDetails: 'yes'
-    },
-    claimed: false,
-    createdAt: '2022-06-06T14:27:51.251Z',
-    updatedAt: '2022-06-06T14:27:51.775Z',
-    createdBy: 'admin'
-  }, {
-    id: '555afd4c-b095-4ce4-b492-800466b66693',
-    reference: 'VV-555A-FD6E',
-    status: { status: 'Withdrawn' },
-    data: {
-      declaration: true,
-      whichReview: 'sheep',
-      organisation: {
-        cph: '33/333/3333',
-        sbi: '333333333',
-        name: 'My Farm',
-        email: 'test@test.com',
-        isTest: true,
-        address: 'Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC'
-      },
-      eligibleSpecies: 'yes',
-      confirmCheckDetails: 'yes'
-    },
-    claimed: false,
-    createdAt: '2022-06-06T14:27:51.251Z',
-    updatedAt: '2022-06-06T14:27:51.775Z',
-    createdBy: 'admin'
-  }, {
-    id: '555afd4c-b095-4ce4-b492-800466b66693',
-    reference: 'VV-666A-FD6E',
-    status: { status: 'Completed' },
-    data: {
-      declaration: true,
-      whichReview: 'sheep',
-      organisation: {
-        cph: '33/333/3333',
-        sbi: '333333333',
-        name: 'My Farm',
-        email: 'test@test.com',
-        isTest: true,
-        address: 'Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC'
-      },
-      eligibleSpecies: 'yes',
-      confirmCheckDetails: 'yes'
-    },
-    claimed: false,
-    createdAt: '2022-06-06T14:27:51.251Z',
-    updatedAt: '2022-06-06T14:27:51.775Z',
-    createdBy: 'admin'
-  }]
-})
+applications.getApplications = jest.fn().mockReturnValue(applicationData)
 
 describe('Applications test', () => {
   const url = '/applications'
@@ -172,10 +60,14 @@ describe('Applications test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-heading-l').text()).toEqual('Applications')
       expect($('title').text()).toContain('Applications')
-      expect($('span.govuk-tag--grey').text()).toContain('In Progress')
-      expect($('span.govuk-tag--blue').text()).toContain('Submitted')
-      expect($('span.govuk-tag--red').text()).toContain('Withdrawn')
-      expect($('span.govuk-tag--red').text()).toContain('Deleted')
+      expect($('span.govuk-tag--grey').text()).toContain('APPLIED')
+      expect($('span.govuk-tag--blue').text()).toContain('DATA INPUTED')
+      expect($('span.govuk-tag--blue').text()).toContain('CHECK')
+      expect($('span.govuk-tag--blue').text()).toContain('PAID')
+      expect($('span.govuk-tag--blue').text()).toContain('ACCEPTED')
+      expect($('span.govuk-tag--blue').text()).toContain('CLAIMED')
+      expect($('span.govuk-tag--brown').text()).toContain('WITHDRAWN')
+      expect($('span.govuk-tag--red').text()).toContain('REJECTED')
       expect(sessionMock.getAppSearch).toBeCalled()
       expect(applications.getApplications).toBeCalled()
       expect(pagination.getPagination).toBeCalled()
@@ -193,10 +85,14 @@ describe('Applications test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-heading-l').text()).toEqual('Applications')
       expect($('title').text()).toContain('Applications')
-      expect($('span.govuk-tag--grey').text()).toContain('In Progress')
-      expect($('span.govuk-tag--blue').text()).toContain('Submitted')
-      expect($('span.govuk-tag--red').text()).toContain('Withdrawn')
-      expect($('span.govuk-tag--red').text()).toContain('Deleted')
+      expect($('span.govuk-tag--grey').text()).toContain('APPLIED')
+      expect($('span.govuk-tag--blue').text()).toContain('DATA INPUTED')
+      expect($('span.govuk-tag--blue').text()).toContain('CHECK')
+      expect($('span.govuk-tag--blue').text()).toContain('PAID')
+      expect($('span.govuk-tag--blue').text()).toContain('ACCEPTED')
+      expect($('span.govuk-tag--blue').text()).toContain('CLAIMED')
+      expect($('span.govuk-tag--brown').text()).toContain('WITHDRAWN')
+      expect($('span.govuk-tag--red').text()).toContain('REJECTED')
       expect(sessionMock.getAppSearch).toBeCalled()
       expect(applications.getApplications).toBeCalled()
       expect(pagination.getPagination).toBeCalled()
@@ -225,12 +121,15 @@ describe('Applications test', () => {
     test.each([
       { searchDetails: { searchText: '444444444', searchType: 'sbi' } },
       { searchDetails: { searchText: 'VV-555A-FD6E', searchType: 'ref' } },
-      { searchDetails: { searchText: 'Pending', searchType: 'status' } },
-      { searchDetails: { searchText: 'In Progress', searchType: 'status' } },
-      { searchDetails: { searchText: 'Completed', searchType: 'status' } },
-      { searchDetails: { searchText: 'Deleted', searchType: 'status' } },
-      { searchDetails: { searchText: 'Withdrawn', searchType: 'status' } }
-    ])('returns success when post', async ({ searchDetails }) => {
+      { searchDetails: { searchText: 'applied', searchType: 'status' } },
+      { searchDetails: { searchText: 'data inputed', searchType: 'status' } },
+      { searchDetails: { searchText: 'claimed', searchType: 'status' } },
+      { searchDetails: { searchText: 'check', searchType: 'status' } },
+      { searchDetails: { searchText: 'accepted', searchType: 'status' } },
+      { searchDetails: { searchText: 'rejected', searchType: 'status' } },
+      { searchDetails: { searchText: 'paid', searchType: 'status' } },
+      { searchDetails: { searchText: 'withdrawn', searchType: 'status' } }
+    ])('returns success when post %p', async ({ searchDetails }) => {
       const options = {
         method,
         url,

@@ -5,6 +5,7 @@ const { getPagination, getPagingData } = require('../pagination')
 const Joi = require('joi')
 const { setAppSearch, getAppSearch } = require('../session')
 const keys = require('../session/keys')
+const getStyleClassByStatus = require('../constants/status')
 const { administrator, processor, user } = require('../auth/permissions')
 
 async function createModel (request, page) {
@@ -19,22 +20,7 @@ async function createModel (request, page) {
     let statusClass
     return {
       applications: apps.applications.map(n => {
-        switch (n.status.status) {
-          case 'In Progress':
-            statusClass = 'govuk-tag--grey'
-            break
-          case 'Submitted':
-            statusClass = 'govuk-tag--blue'
-            break
-          case 'Withdrawn':
-            statusClass = 'govuk-tag--red'
-            break
-          case 'Deleted':
-            statusClass = 'govuk-tag--red'
-            break
-          default:
-            statusClass = 'govuk-tag--grey'
-        }
+        statusClass = getStyleClassByStatus(n.status.status)
         return [
           { text: n.reference },
           { text: n.data?.organisation?.name },
@@ -57,7 +43,7 @@ async function createModel (request, page) {
   }
 }
 const appRefRegEx = /^vv-[\da-f]{4}-[\da-f]{4}$/i
-const validStatus = ['pending', 'in progress', 'deleted', 'submitted', 'withdrawn', 'completed']
+const validStatus = ['applied', 'withdrawn', 'data inputed', 'claimed', 'check', 'accepted', 'rejected', 'paid']
 const sbiRegEx = /^[\0-9]{9}$/i
 function checkValidSearch (searchText) {
   let searchType
