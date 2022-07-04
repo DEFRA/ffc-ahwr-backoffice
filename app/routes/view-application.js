@@ -4,14 +4,15 @@ const { getApplication } = require('../messaging/applications')
 const { administrator, processor, user } = require('../auth/permissions')
 const speciesNumbers = require('../../app/constants/species-numbers')
 const { formatedDateToUk, upperFirstLetter } = require('../lib/display-helper')
+const getStyleClassByStatus = require('../constants/status')
 
 const head = [{ text: 'Date' }, { text: 'Data requested' }, { text: 'Data entered' }]
 
 const getOrganisationRows = (organisation) => {
   return [
-    { key: { text: 'SBI number:' }, value: { text: organisation?.sbi }, actions: { items: [{ href: '#', text: 'Change' }] } },
-    { key: { text: 'Address:' }, value: { text: organisation?.address }, actions: { items: [{ href: '#', text: 'Change' }] } },
-    { key: { text: 'Email address:' }, value: { text: organisation?.email }, actions: { items: [{ href: '#', text: 'Change' }] } }
+    { key: { text: 'SBI number:' }, value: { text: organisation?.sbi } },
+    { key: { text: 'Address:' }, value: { text: organisation?.address } },
+    { key: { text: 'Email address:' }, value: { text: organisation?.email } }
   ]
 }
 
@@ -23,7 +24,7 @@ const getFarmerApplication = (application) => {
     rows: [
       [{ text: formatedDate }, { text: 'Detail correct?' }, { text: upperFirstLetter(data.confirmCheckDetails) }],
       [{ text: formatedDate }, { text: 'Review type' }, { text: upperFirstLetter(data.whichReview) }],
-      [{ text: formatedDate }, { text: 'Lifestock number' }, { text: speciesNumbers[data.whichReview] }],
+      [{ text: formatedDate }, { text: 'Livestock number' }, { text: speciesNumbers[data.whichReview] }],
       [{ text: formatedDate }, { text: 'T&Cs agreed?' }, { text: data.declaration ? 'Yes' : 'No' }]
     ]
   }
@@ -44,9 +45,11 @@ module.exports = {
       if (!application) {
         throw boom.badRequest()
       }
+      const statusClass = getStyleClassByStatus(application.status.status)
       return h.view('view-application', {
         applicationId: application.reference,
         status: application.status.status,
+        statusClass,
         organisationName: application?.data?.organisation?.name,
         applicationData: getFarmerApplication(application),
         listData: { rows: getOrganisationRows(application?.data?.organisation) },
