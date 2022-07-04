@@ -13,10 +13,9 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">Application {{ applicationId }}
-        <span class="govuk-tag govuk-tag--green">{{ status }}</span></h1>
+      <h1 class="govuk-caption-l govuk-!-margin-bottom-3">Application {{ applicationId }}</h1>
 
-      <h2 class="govuk-heading-m">{{ organisationName }}</h2>
+      <h2 class="govuk-heading-l">{{ organisationName }} <span class="govuk-tag {{ statusClass }}">{{ status }}</span></h2>
       {{ govukSummaryList({
         rows: listData.rows
       }) }}

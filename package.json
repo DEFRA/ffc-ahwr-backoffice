@@ -1,7 +1,7 @@
 {
   "name": "ffc-ahwr-backoffice",
-  "version": "1.4.5",
-  "description": "description-of-project-goes-here",
+  "version": "1.4.6",
+  "description": "Back office of the health and welfare of your livestock",
   "homepage": "https://github.com/DEFRA/ffc-ahwr-backoffice",
   "main": "app/index.js",
   "scripts": {

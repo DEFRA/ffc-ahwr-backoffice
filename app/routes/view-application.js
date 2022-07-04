@@ -4,6 +4,7 @@ const { getApplication } = require('../messaging/applications')
 const { administrator, processor, user } = require('../auth/permissions')
 const speciesNumbers = require('../../app/constants/species-numbers')
 const { formatedDateToUk, upperFirstLetter } = require('../lib/display-helper')
+const getStyleClassByStatus = require('../constants/status')
 
 const head = [{ text: 'Date' }, { text: 'Data requested' }, { text: 'Data entered' }]
 
@@ -44,9 +45,11 @@ module.exports = {
       if (!application) {
         throw boom.badRequest()
       }
+      const statusClass = getStyleClassByStatus(application.status.status)
       return h.view('view-application', {
         applicationId: application.reference,
         status: application.status.status,
+        statusClass,
         organisationName: application?.data?.organisation?.name,
         applicationData: getFarmerApplication(application),
         listData: { rows: getOrganisationRows(application?.data?.organisation) },
