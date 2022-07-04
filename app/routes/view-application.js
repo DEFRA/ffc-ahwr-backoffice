@@ -2,6 +2,10 @@ const Joi = require('joi')
 const boom = require('@hapi/boom')
 const { getApplication } = require('../messaging/applications')
 const { administrator, processor, user } = require('../auth/permissions')
+const speciesNumbers = require('../../app/constants/species-numbers')
+const { formatedDateToUk, upperFirstLetter } = require('../lib/display-helper')
+
+const head = [{ text: 'Date' }, { text: 'Data requested' }, { text: 'Data entered' }]
 
 const getOrganisationRows = (organisation) => {
   return [
@@ -9,6 +13,20 @@ const getOrganisationRows = (organisation) => {
     { key: { text: 'Address:' }, value: { text: organisation?.address }, actions: { items: [{ href: '#', text: 'Change' }] } },
     { key: { text: 'Email address:' }, value: { text: organisation?.email }, actions: { items: [{ href: '#', text: 'Change' }] } }
   ]
+}
+
+const getFarmerApplication = (application) => {
+  const { data, createdAt } = application
+  const formatedDate = formatedDateToUk(createdAt)
+  return {
+    head,
+    rows: [
+      [{ text: formatedDate }, { text: 'Detail correct?' }, { text: upperFirstLetter(data.confirmCheckDetails) }],
+      [{ text: formatedDate }, { text: 'Review type' }, { text: upperFirstLetter(data.whichReview) }],
+      [{ text: formatedDate }, { text: 'Lifestock number' }, { text: speciesNumbers[data.whichReview] }],
+      [{ text: formatedDate }, { text: 'T&Cs agreed?' }, { text: data.declaration ? 'Yes' : 'No' }]
+    ]
+  }
 }
 
 module.exports = {
@@ -22,12 +40,18 @@ module.exports = {
       })
     },
     handler: async (request, h) => {
-      const response = await getApplication(request.params.reference, request.yar.id)
-      if (!response) {
+      const application = await getApplication(request.params.reference, request.yar.id)
+      if (!application) {
         throw boom.badRequest()
       }
-      const application = response
-      return h.view('view-application', { applicationId: application.reference, status: application.status.status, organisationName: application?.data?.organisation?.name, listData: { rows: getOrganisationRows(application?.data?.organisation) } })
+      return h.view('view-application', {
+        applicationId: application.reference,
+        status: application.status.status,
+        organisationName: application?.data?.organisation?.name,
+        applicationData: getFarmerApplication(application),
+        listData: { rows: getOrganisationRows(application?.data?.organisation) },
+        vetVisit: application?.vetVisit
+      })
     }
   }
 }
