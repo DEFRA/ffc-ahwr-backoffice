@@ -42,6 +42,38 @@ const getVetVisitData = (vetVisit) => {
   }
 }
 
+const getPaymentData = (payment) => {
+  const { data, createdAt } = payment
+  const formatedDate = formatedDateToUk(createdAt)
+  const rows = []
+  data.invoiceLines.forEach(invoiceLine => {
+    rows.push([{ text: formatedDate }, { text: invoiceLine.description }, { text: data.value }])
+  });
+
+  if (data.frn) {
+    rows.push([{ text: formatedDate }, { text: 'FRN number' }, { text: data.frn }])
+  }
+
+  if (data.invoiceNumber) {
+    rows.push([{ text: formatedDate }, { text: 'Invoice number' }, { text: data.invoiceNumber }])
+  }
+
+  return {
+    head,
+    rows
+  }
+}
+
+const getClaimData = (updatedAt) => {
+  const formatedDate = formatedDateToUk(updatedAt)
+  return {
+    head,
+    rows: [
+      [{ text: formatedDate }, { text: '	Details correct?' }, { text: 'Yes' }]
+    ]
+  }
+}
+
 module.exports = {
   method: 'GET',
   path: '/view-application/{reference}',
@@ -69,6 +101,10 @@ module.exports = {
         listData: { rows: getOrganisationRows(application?.data?.organisation) },
         vetVisit: application?.vetVisit,
         vetVisitData: application?.vetVisit ? getVetVisitData(application.vetVisit): false,
+        claimed: application?.claimed,
+        claimData: application?.claimed ? getClaimData(application?.updatedAt): false,
+        payment: application?.payment,
+        paymentData: application?.payment ? getPaymentData(application?.payment): false
       })
     }
   }

@@ -1,24 +1,24 @@
 const status = {
   APPLIED: {
-    styleClass: 'govuk-tag--grey'
+    styleClass: 'govuk-tag--green'
   },
   WITHDRAWN: {
-    styleClass: 'govuk-tag--brown'
+    styleClass: 'govuk-tag--grey'
   },
   PAID: {
     styleClass: 'govuk-tag--blue'
   },
-  DATAINPUTED: {
-    styleClass: 'govuk-tag--blue'
+  DATAINPUTTED: {
+    styleClass: 'govuk-tag--yellow'
   },
   REJECTED: {
     styleClass: 'govuk-tag--red'
   },
   ACCEPTED: {
-    styleClass: 'govuk-tag--blue'
+    styleClass: 'govuk-tag--purple'
   },
   CHECK: {
-    styleClass: 'govuk-tag--blue'
+    styleClass: 'govuk-tag--orange'
   },
   CLAIMED: {
     styleClass: 'govuk-tag--blue'
