@@ -3,6 +3,7 @@ const boom = require('@hapi/boom')
 const { getApplication } = require('../messaging/applications')
 const { administrator, processor, user } = require('../auth/permissions')
 const speciesNumbers = require('../../app/constants/species-numbers')
+const eligibleSpecies = require('../../app/constants/eligible-species')
 const { formatedDateToUk, upperFirstLetter } = require('../lib/display-helper')
 const getStyleClassByStatus = require('../constants/status')
 
@@ -30,13 +31,15 @@ const getFarmerApplication = (application) => {
   }
 }
 
-const getVetVisitData = (vetVisit) => {
+const getVetVisitData = (vetVisit, species) => {
   const { data, createdAt } = vetVisit
   const formatedDate = formatedDateToUk(createdAt)
   return {
     head,
     rows: [
       [{ text: formatedDate }, { text: 'Review date' }, { text: formatedDateToUk(data.visitDate) }],
+      [{ text: formatedDate }, { text: eligibleSpecies[species] }, { text: upperFirstLetter(data.eligibleSpecies) }],
+      [{ text: formatedDate }, { text: 'BVD in herd?' }, { text: upperFirstLetter(data.speciesBvdInHerd) }],
       [{ text: formatedDate }, { text: 'Report given?' }, { text: upperFirstLetter(data.reviewReport) }]
     ]
   }
@@ -100,7 +103,7 @@ module.exports = {
         applicationData: getFarmerApplication(application),
         listData: { rows: getOrganisationRows(application?.data?.organisation) },
         vetVisit: application?.vetVisit,
-        vetVisitData: application?.vetVisit ? getVetVisitData(application.vetVisit): false,
+        vetVisitData: application?.vetVisit ? getVetVisitData(application.vetVisit, application?.data?.whichReview): false,
         claimed: application?.claimed,
         claimData: application?.claimed ? getClaimData(application?.updatedAt): false,
         payment: application?.payment,
