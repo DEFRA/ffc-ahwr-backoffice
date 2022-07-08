@@ -51,7 +51,7 @@ const getPaymentData = (payment) => {
   const rows = []
   data.invoiceLines.forEach(invoiceLine => {
     rows.push([{ text: formatedDate }, { text: invoiceLine.description }, { text: data.value }])
-  });
+  })
 
   if (data.frn) {
     rows.push([{ text: formatedDate }, { text: 'FRN number' }, { text: data.frn }])
@@ -72,7 +72,7 @@ const getClaimData = (updatedAt) => {
   return {
     head,
     rows: [
-      [{ text: formatedDate }, { text: '	Details correct?' }, { text: 'Yes' }]
+      [{ text: formatedDate }, { text: 'Details correct?' }, { text: 'Yes' }]
     ]
   }
 }
@@ -103,11 +103,11 @@ module.exports = {
         applicationData: getFarmerApplication(application),
         listData: { rows: getOrganisationRows(application?.data?.organisation) },
         vetVisit: application?.vetVisit,
-        vetVisitData: application?.vetVisit ? getVetVisitData(application.vetVisit, application?.data?.whichReview): false,
+        vetVisitData: application?.vetVisit ? getVetVisitData(application.vetVisit, application?.data?.whichReview) : false,
         claimed: application?.claimed,
-        claimData: application?.claimed ? getClaimData(application?.updatedAt): false,
+        claimData: application?.claimed ? getClaimData(application?.updatedAt) : false,
         payment: application?.payment,
-        paymentData: application?.payment ? getPaymentData(application?.payment): false
+        paymentData: application?.payment ? getPaymentData(application?.payment) : false
       })
     }
   }
