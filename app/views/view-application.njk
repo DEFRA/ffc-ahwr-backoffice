@@ -26,7 +26,12 @@
       {% endset -%}
 
       {% set vetReviewHtml %}
-      <h2 class="govuk-heading-l">Not yet reviewed</h2>
+        {% if vetVisit %}
+          <h2 class="govuk-heading-l">Data inputted</h2>
+          {{ govukTable(vetVisitData) }}
+        {% else %}
+          <h2 class="govuk-heading-l">Not yet reviewed</h2>
+        {% endif %}
       {% endset -%}
 
       {% set claimHtml %}

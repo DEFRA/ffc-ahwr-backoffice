@@ -30,6 +30,18 @@ const getFarmerApplication = (application) => {
   }
 }
 
+const getVetVisitData = (vetVisit) => {
+  const { data, createdAt } = vetVisit
+  const formatedDate = formatedDateToUk(createdAt)
+  return {
+    head,
+    rows: [
+      [{ text: formatedDate }, { text: 'Review date' }, { text: formatedDateToUk(data.visitDate) }],
+      [{ text: formatedDate }, { text: 'Report given?' }, { text: upperFirstLetter(data.reviewReport) }]
+    ]
+  }
+}
+
 module.exports = {
   method: 'GET',
   path: '/view-application/{reference}',
@@ -42,9 +54,11 @@ module.exports = {
     },
     handler: async (request, h) => {
       const application = await getApplication(request.params.reference, request.yar.id)
+      console.log(application)
       if (!application) {
         throw boom.badRequest()
       }
+
       const statusClass = getStyleClassByStatus(application.status.status)
       return h.view('view-application', {
         applicationId: application.reference,
@@ -53,7 +67,8 @@ module.exports = {
         organisationName: application?.data?.organisation?.name,
         applicationData: getFarmerApplication(application),
         listData: { rows: getOrganisationRows(application?.data?.organisation) },
-        vetVisit: application?.vetVisit
+        vetVisit: application?.vetVisit,
+        vetVisitData: application?.vetVisit ? getVetVisitData(application.vetVisit): false,
       })
     }
   }
