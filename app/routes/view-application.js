@@ -43,7 +43,7 @@ const getVetVisitData = (vetVisit, species) => {
   if (data.speciesBvdInHerd) {
     rows.push([{ text: formatedDate }, { text: 'BVD in herd?' }, { text: upperFirstLetter(data.speciesBvdInHerd) }])
   }
-  
+
   if (data.speciesTest && species === 'pigs') {
     rows.push([{ text: formatedDate }, { text: 'PRRS in herd?' }, { text: upperFirstLetter(data.speciesTest) }])
   }
@@ -51,7 +51,7 @@ const getVetVisitData = (vetVisit, species) => {
   if (data.speciesVaccinated) {
     rows.push([{ text: formatedDate }, { text: 'Species Vaccinated?' }, { text: upperFirstLetter(data.speciesVaccinated) }])
   }
-  
+
   if (data.speciesLastVaccinated) {
     rows.push([{ text: formatedDate }, { text: 'Last Vaccinated?' }, { text: `${data.speciesLastVaccinated.month}-${data.speciesLastVaccinated.year}` }])
   }

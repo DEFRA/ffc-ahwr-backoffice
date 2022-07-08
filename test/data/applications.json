@@ -50,7 +50,7 @@
     {
       "id": "555afd4c-b095-4ce4-b492-800466b55593",
       "reference": "VV-555A-FD5D",
-      "status": { "status": "DATA INPUTED" },
+      "status": { "status": "DATA INPUTTED" },
       "data": {
         "declaration": true,
         "whichReview": "sheep",
