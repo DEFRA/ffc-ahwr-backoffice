@@ -34,14 +34,41 @@ const getFarmerApplication = (application) => {
 const getVetVisitData = (vetVisit, species) => {
   const { data, createdAt } = vetVisit
   const formatedDate = formatedDateToUk(createdAt)
+  const rows = []
+  rows.push(
+    [{ text: formatedDate }, { text: 'Review date' }, { text: formatedDateToUk(data.visitDate) }],
+    [{ text: formatedDate }, { text: eligibleSpecies[species] }, { text: upperFirstLetter(data.eligibleSpecies) }]
+  )
+
+  if (data.speciesBvdInHerd) {
+    rows.push([{ text: formatedDate }, { text: 'BVD in herd?' }, { text: upperFirstLetter(data.speciesBvdInHerd) }])
+  }
+  
+  if (data.speciesTest && species === 'pigs') {
+    rows.push([{ text: formatedDate }, { text: 'PRRS in herd?' }, { text: upperFirstLetter(data.speciesTest) }])
+  }
+
+  if (data.speciesVaccinated) {
+    rows.push([{ text: formatedDate }, { text: 'Species Vaccinated?' }, { text: upperFirstLetter(data.speciesVaccinated) }])
+  }
+  
+  if (data.speciesLastVaccinated) {
+    rows.push([{ text: formatedDate }, { text: 'Last Vaccinated?' }, { text: `${data.speciesLastVaccinated.month}-${data.speciesLastVaccinated.year}` }])
+  }
+
+  if (data.speciesVaccinationUpToDate) {
+    rows.push([{ text: formatedDate }, { text: 'Vaccination up to date?' }, { text: upperFirstLetter(data.speciesVaccinationUpToDate) }])
+  }
+
+  if (data.sheepWorms) {
+    rows.push([{ text: formatedDate }, { text: 'Worms in sheep?' }, { text: upperFirstLetter(data.sheepWorms) }])
+  }
+
+  rows.push([{ text: formatedDate }, { text: 'Report given?' }, { text: upperFirstLetter(data.reviewReport) }])
+
   return {
     head,
-    rows: [
-      [{ text: formatedDate }, { text: 'Review date' }, { text: formatedDateToUk(data.visitDate) }],
-      [{ text: formatedDate }, { text: eligibleSpecies[species] }, { text: upperFirstLetter(data.eligibleSpecies) }],
-      [{ text: formatedDate }, { text: 'BVD in herd?' }, { text: upperFirstLetter(data.speciesBvdInHerd) }],
-      [{ text: formatedDate }, { text: 'Report given?' }, { text: upperFirstLetter(data.reviewReport) }]
-    ]
+    rows
   }
 }
 
