@@ -43,8 +43,9 @@
     "vetVisit": {
       "applicationReference": "VV-555A-FD4C",
       "data": {
-        "Review date": "2022-06-06T14:27:51.251Z",
+        "visitDate": "2022-06-06T14:27:51.251Z",
         "eligibleSpecies": "yes",
+        "sheepWorms": "yes",
         "reviewReport": "yes"
       },
       "createdAt": "2022-06-06T14:27:51.251Z"
@@ -117,7 +118,12 @@
       "applicationReference": "VV-555A-FD4C",
       "data": {
         "value": 400,
-        "invoiceLines": []
+        "frn": 1102057452,
+        "invoiceNumber": "VV-F528-5345V001",
+        "invoiceLines": [{
+          "description": "G00 - Gross value of claim",
+          "value": 400
+        }]
       },
       "createdAt": "2022-06-06T14:27:51.251Z",
       "status": "ACCEPTED"

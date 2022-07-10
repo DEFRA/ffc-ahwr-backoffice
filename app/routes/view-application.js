@@ -116,7 +116,6 @@ module.exports = {
     },
     handler: async (request, h) => {
       const application = await getApplication(request.params.reference, request.yar.id)
-      console.log(application)
       if (!application) {
         throw boom.badRequest()
       }
