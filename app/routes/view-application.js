@@ -3,6 +3,7 @@ const boom = require('@hapi/boom')
 const { getApplication } = require('../messaging/applications')
 const { administrator, processor, user } = require('../auth/permissions')
 const speciesNumbers = require('../../app/constants/species-numbers')
+const eligibleSpecies = require('../../app/constants/eligible-species')
 const { formatedDateToUk, upperFirstLetter } = require('../lib/display-helper')
 const getStyleClassByStatus = require('../constants/status')
 
@@ -30,6 +31,79 @@ const getFarmerApplication = (application) => {
   }
 }
 
+const getVetVisitData = (vetVisit, species) => {
+  const { data, createdAt } = vetVisit
+  const formatedDate = formatedDateToUk(createdAt)
+  const rows = []
+  rows.push(
+    [{ text: formatedDate }, { text: 'Review date' }, { text: formatedDateToUk(data.visitDate) }],
+    [{ text: formatedDate }, { text: eligibleSpecies[species] }, { text: upperFirstLetter(data.eligibleSpecies) }]
+  )
+
+  if (data.speciesBvdInHerd) {
+    rows.push([{ text: formatedDate }, { text: 'BVD in herd?' }, { text: upperFirstLetter(data.speciesBvdInHerd) }])
+  }
+
+  if (data.speciesTest && species === 'pigs') {
+    rows.push([{ text: formatedDate }, { text: 'PRRS in herd?' }, { text: upperFirstLetter(data.speciesTest) }])
+  }
+
+  if (data.speciesVaccinated) {
+    rows.push([{ text: formatedDate }, { text: 'Species Vaccinated?' }, { text: upperFirstLetter(data.speciesVaccinated) }])
+  }
+
+  if (data.speciesLastVaccinated) {
+    rows.push([{ text: formatedDate }, { text: 'Last Vaccinated?' }, { text: `${data.speciesLastVaccinated.month}-${data.speciesLastVaccinated.year}` }])
+  }
+
+  if (data.speciesVaccinationUpToDate) {
+    rows.push([{ text: formatedDate }, { text: 'Vaccination up to date?' }, { text: upperFirstLetter(data.speciesVaccinationUpToDate) }])
+  }
+
+  if (data.sheepWorms) {
+    rows.push([{ text: formatedDate }, { text: 'Worms in sheep?' }, { text: upperFirstLetter(data.sheepWorms) }])
+  }
+
+  rows.push([{ text: formatedDate }, { text: 'Report given?' }, { text: upperFirstLetter(data.reviewReport) }])
+
+  return {
+    head,
+    rows
+  }
+}
+
+const getPaymentData = (payment) => {
+  const { data, createdAt } = payment
+  const formatedDate = formatedDateToUk(createdAt)
+  const rows = []
+  data.invoiceLines.forEach(invoiceLine => {
+    rows.push([{ text: formatedDate }, { text: invoiceLine.description }, { text: data.value }])
+  })
+
+  if (data.frn) {
+    rows.push([{ text: formatedDate }, { text: 'FRN number' }, { text: data.frn }])
+  }
+
+  if (data.invoiceNumber) {
+    rows.push([{ text: formatedDate }, { text: 'Invoice number' }, { text: data.invoiceNumber }])
+  }
+
+  return {
+    head,
+    rows
+  }
+}
+
+const getClaimData = (updatedAt) => {
+  const formatedDate = formatedDateToUk(updatedAt)
+  return {
+    head,
+    rows: [
+      [{ text: formatedDate }, { text: 'Details correct?' }, { text: 'Yes' }]
+    ]
+  }
+}
+
 module.exports = {
   method: 'GET',
   path: '/view-application/{reference}',
@@ -45,6 +119,7 @@ module.exports = {
       if (!application) {
         throw boom.badRequest()
       }
+
       const statusClass = getStyleClassByStatus(application.status.status)
       return h.view('view-application', {
         applicationId: application.reference,
@@ -53,7 +128,12 @@ module.exports = {
         organisationName: application?.data?.organisation?.name,
         applicationData: getFarmerApplication(application),
         listData: { rows: getOrganisationRows(application?.data?.organisation) },
-        vetVisit: application?.vetVisit
+        vetVisit: application?.vetVisit,
+        vetVisitData: application?.vetVisit ? getVetVisitData(application.vetVisit, application?.data?.whichReview) : false,
+        claimed: application?.claimed,
+        claimData: application?.claimed ? getClaimData(application?.updatedAt) : false,
+        payment: application?.payment,
+        paymentData: application?.payment ? getPaymentData(application?.payment) : false
       })
     }
   }

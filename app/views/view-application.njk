@@ -26,15 +26,30 @@
       {% endset -%}
 
       {% set vetReviewHtml %}
-      <h2 class="govuk-heading-l">Not yet reviewed</h2>
+        {% if vetVisit %}
+          <h2 class="govuk-heading-l">Data inputted</h2>
+          {{ govukTable(vetVisitData) }}
+        {% else %}
+          <h2 class="govuk-heading-l">Not yet reviewed</h2>
+        {% endif %}
       {% endset -%}
 
       {% set claimHtml %}
-      <h2 class="govuk-heading-l">Not yet able to claim</h2>
+        {% if claimed %}
+          <h2 class="govuk-heading-l">Selected for fraud check</h2>
+          {{ govukTable(claimData) }}
+        {% else %}
+          <h2 class="govuk-heading-l">Not yet able to claim</h2>
+        {% endif %}
       {% endset -%}
 
       {% set paymentHtml %}
-      <h2 class="govuk-heading-l">Not yet paid</h2>
+        {% if payment %}
+          <h2 class="govuk-heading-l">Payment information</h2>
+          {{ govukTable(paymentData) }}
+        {% else %}
+          <h2 class="govuk-heading-l">Not yet paid</h2>
+        {% endif %}
       {% endset -%}
 
       {{ govukTabs({
