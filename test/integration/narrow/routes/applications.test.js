@@ -6,7 +6,6 @@ const sessionMock = require('../../../../app/session')
 const applicationData = require('.././../../data/applications.json')
 
 jest.mock('../../../../app/session')
-jest.mock('../../../../app/messaging')
 const applications = require('../../../../app/api/applications')
 jest.mock('../../../../app/api/applications')
 const pagination = require('../../../../app/pagination')
