@@ -1,6 +1,6 @@
 const viewTemplate = 'applications'
 const currentPath = `/${viewTemplate}`
-const { getApplications } = require('../messaging/applications')
+const { getApplications } = require('../api/applications')
 const { getPagination, getPagingData } = require('../pagination')
 const Joi = require('joi')
 const { setAppSearch, getAppSearch } = require('../session')
@@ -14,7 +14,7 @@ async function createModel (request, page) {
   const path = request.headers.path ?? ''
   const searchText = getAppSearch(request, keys.appSearch.searchText)
   const searchType = getAppSearch(request, keys.appSearch.searchType)
-  const apps = await getApplications(searchType, searchText, limit, offset, request.yar.id)
+  const apps = await getApplications(searchType, searchText, limit, offset)
   if (apps.total > 0) {
     const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
     let statusClass

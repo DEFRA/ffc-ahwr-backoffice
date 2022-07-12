@@ -45,6 +45,7 @@ container:
   redisPassword: redis
   redisPort: 6379
   serviceUri:
+  applicationApiUri:
 
 deployment:
   cpuThreshold: 40

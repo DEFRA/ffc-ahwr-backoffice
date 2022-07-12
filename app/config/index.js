@@ -1,13 +1,4 @@
 const Joi = require('joi')
-const msgTypePrefix = 'uk.gov.ffc.ahwr'
-
-const sharedConfigSchema = {
-  appInsights: Joi.object(),
-  host: Joi.string().default('localhost'),
-  password: Joi.string(),
-  username: Joi.string(),
-  useCredentialChain: Joi.bool().default(false)
-}
 const schema = Joi.object({
   cache: {
     expiresIn: Joi.number().default(1000 * 3600 * 24 * 3), // 3 days
@@ -50,31 +41,11 @@ const schema = Joi.object({
   port: Joi.number().default(3000),
   serviceName: Joi.string().default('Administration of the health and welfare of your livestock'),
   siteTitle: Joi.string().default('Back office'),
-  backOfficeRequestQueue: {
-    address: Joi.string().default('backOfficeRequestQueue'),
-    type: Joi.string(),
-    ...sharedConfigSchema
-  },
-  backOfficeRequestMsgType: Joi.string(),
-  getApplicationRequestMsgType: Joi.string(),
-  backOfficeResponseQueue: {
-    address: Joi.string().default('backOfficeResponseQueue'),
-    type: Joi.string(),
-    ...sharedConfigSchema
-  },
-  backOfficeResponseMsgType: Joi.string(),
-  getBackOfficeApplicationResponseMsgType: Joi.string(),
   serviceUri: Joi.string().uri(),
-  useRedis: Joi.boolean().default(false)
+  useRedis: Joi.boolean().default(false),
+  applicationApiUri: Joi.string().uri()
 })
 
-const sharedConfig = {
-  appInsights: require('applicationinsights'),
-  host: process.env.MESSAGE_QUEUE_HOST,
-  password: process.env.MESSAGE_QUEUE_PASSWORD,
-  username: process.env.MESSAGE_QUEUE_USER,
-  useCredentialChain: process.env.NODE_ENV === 'production'
-}
 const config = {
   cache: {
     options: {
@@ -111,22 +82,9 @@ const config = {
   isDev: process.env.NODE_ENV === 'development',
   isProd: process.env.NODE_ENV === 'production',
   port: process.env.PORT,
-  backOfficeRequestQueue: {
-    address: process.env.BACKOFFICEREQUEST_QUEUE_ADDRESS,
-    type: 'queue',
-    ...sharedConfig
-  },
-  backOfficeRequestMsgType: `${msgTypePrefix}.backoffice.request`,
-  getApplicationRequestMsgType: `${msgTypePrefix}.get.application.backoffice.request`,
-  getBackOfficeApplicationResponseMsgType: `${msgTypePrefix}.get.application.backoffice.response`,
-  backOfficeResponseQueue: {
-    address: process.env.BACKOFFICERESPONSE_QUEUE_ADDRESS,
-    type: 'queue',
-    ...sharedConfig
-  },
-  backOfficeResponseMsgType: `${msgTypePrefix}.backoffice.response`,
   serviceUri: process.env.SERVICE_URI,
-  useRedis: process.env.NODE_ENV !== 'test'
+  useRedis: process.env.NODE_ENV !== 'test',
+  applicationApiUri: process.env.APPLICATION_API_URI
 }
 
 const { error, value } = schema.validate(config, { abortEarly: false })
