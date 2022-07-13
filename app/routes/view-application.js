@@ -1,6 +1,6 @@
 const Joi = require('joi')
 const boom = require('@hapi/boom')
-const { getApplication } = require('../messaging/applications')
+const { getApplication } = require('../api/applications')
 const { administrator, processor, user } = require('../auth/permissions')
 const speciesNumbers = require('../../app/constants/species-numbers')
 const eligibleSpecies = require('../../app/constants/eligible-species')
@@ -115,7 +115,7 @@ module.exports = {
       })
     },
     handler: async (request, h) => {
-      const application = await getApplication(request.params.reference, request.yar.id)
+      const application = await getApplication(request.params.reference)
       if (!application) {
         throw boom.badRequest()
       }

@@ -15,13 +15,9 @@ services:
       AADAR_CLIENT_ID: ${AADAR_CLIENT_ID:-notset}
       AADAR_REDIRECT_URL: ${AADAR_REDIRECT_URL:-http://localhost:3002/authenticate}
       AADAR_TENANT_ID: ${AADAR_TENANT_ID:-notset}
-      BACKOFFICEREQUEST_QUEUE_ADDRESS: ${BACKOFFICEREQUEST_QUEUE_ADDRESS:-ffc-ahwr-backoffice-request}${MESSAGE_QUEUE_SUFFIX}
-      BACKOFFICERESPONSE_QUEUE_ADDRESS: ${BACKOFFICERESPONSE_QUEUE_ADDRESS:-ffc-ahwr-backoffice-response}${MESSAGE_QUEUE_SUFFIX}
       COOKIE_PASSWORD: who-likes-cookies-i-like-cookies-everybody-likes-cookies
-      MESSAGE_QUEUE_HOST: ${MESSAGE_QUEUE_HOST:-notset}
-      MESSAGE_QUEUE_PASSWORD: ${MESSAGE_QUEUE_PASSWORD:-notset}
-      MESSAGE_QUEUE_USER: ${MESSAGE_QUEUE_USER:-notset}
       REDIS_HOSTNAME: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: ""
       SERVICE_URI: http://localhost:3000
+      APPLICATION_API_URI: http://host.docker.internal:3001/api
