@@ -30,13 +30,10 @@ containerSecret:
   type: Opaque
 
 container:
-  backOfficeRequestQueueAddress: ffc-ahwr-backoffice-request
-  backOfficeResponseQueueAddress: ffc-ahwr-backoffice-response
   cookiePassword: who-likes-cookies-i-like-cookies-everybody-likes-cookies
   imagePullPolicy: IfNotPresent
   limitCpu: 120m
   limitMemory: 200Mi
-  messageQueueHost: namespace.servicebus.windows.net
   port: 3000
   requestCpu: 100m
   requestMemory: 200Mi
