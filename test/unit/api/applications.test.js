@@ -111,4 +111,36 @@ describe('Application API', () => {
     expect(Wreck.get).toHaveBeenCalledTimes(1)
     expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/application/get/${appRef}`, options)
   })
+
+  it('GetApplications should return empty applications array if api not available', async () => {
+    jest.mock('@hapi/wreck')
+    const options = {
+      payload: {
+        search: { text: searchText, type: searchType },
+        limit,
+        offset
+      },
+      json: true
+    }
+    Wreck.post = jest.fn(async function (_url, _options) {
+      throw new Error('fakeError')
+    })
+    const response = await getApplications(searchType, searchText, limit, offset)
+    expect(response).not.toBeNull()
+    expect(response.applications).toStrictEqual([])
+    expect(response.total).toStrictEqual(0)
+    expect(Wreck.post).toHaveBeenCalledTimes(1)
+    expect(Wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/application/search`, options)
+  })
+  it('GetApplication should return null if api not available', async () => {
+    jest.mock('@hapi/wreck')
+    const options = { json: true }
+    Wreck.get = jest.fn(async function (_url, _options) {
+      throw (new Error('fakeError'))
+    })
+    const response = await getApplication(appRef)
+    expect(response).toBeNull()
+    expect(Wreck.get).toHaveBeenCalledTimes(1)
+    expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/application/get/${appRef}`, options)
+  })
 })
