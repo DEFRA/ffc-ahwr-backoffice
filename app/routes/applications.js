@@ -7,7 +7,6 @@ const { setAppSearch, getAppSearch } = require('../session')
 const keys = require('../session/keys')
 const getStyleClassByStatus = require('../constants/status')
 const { administrator, processor, user } = require('../auth/permissions')
-
 async function createModel (request, page) {
   page = page ?? request.query.page ?? 1
   const { limit, offset } = getPagination(page)
@@ -16,29 +15,45 @@ async function createModel (request, page) {
   const searchType = getAppSearch(request, keys.appSearch.searchType)
   const apps = await getApplications(searchType, searchText, limit, offset)
   if (apps.total > 0) {
-    const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
     let statusClass
+    const applicationStatus = []
+    const applications = apps.applications.map(n => {
+      statusClass = getStyleClassByStatus(n.status.status)
+      applicationStatus.push({ aStatus: n.status.status, styleClass: statusClass, total: 1 })
+      return [
+        { text: n.reference },
+        { text: n.data?.organisation?.name },
+        { text: n.data?.organisation?.sbi },
+        { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
+        { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
+        { html: `<span class="govuk-tag ${statusClass}">${n.status.status}</span>` },
+        { html: `<a href="view-application/${n.reference}">View application</a>` }
+      ]
+    })
+    const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
+    const groupByStatus = []
+    applicationStatus.reduce((group, appStatus) => {
+      const { aStatus, styleClass, total } = appStatus
+      if (groupByStatus.filter(a => a.aStatus === aStatus).length > 0) {
+        groupByStatus.filter(a => a.aStatus === aStatus)[0].total = total + groupByStatus.filter(a => a.aStatus === aStatus)[0].total
+      } else {
+        groupByStatus.push({ aStatus, styleClass, total: 1 })
+      }
+      return group
+    }, {})
     return {
-      applications: apps.applications.map(n => {
-        statusClass = getStyleClassByStatus(n.status.status)
-        return [
-          { text: n.reference },
-          { text: n.data?.organisation?.name },
-          { text: n.data?.organisation?.sbi },
-          { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
-          { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
-          { html: `<span class="govuk-tag ${statusClass}">${n.status.status}</span>` },
-          { html: `<a href="view-application/${n.reference}">View application</a>` }
-        ]
-      }),
+      applications,
       ...pagingData,
-      searchText
+      searchText,
+      availableStatus: groupByStatus,
+      selectedStatus: groupByStatus
     }
   } else {
     return {
       applications: [],
       error: 'No Applications found.',
       searchText
+
     }
   }
 }

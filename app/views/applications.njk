@@ -40,7 +40,9 @@
     </div>
   {% else %}
     <div class="govuk-grid-row">
-      {{ govukTable({
+      {{ filter(availableStatus, selectedStatus) }}
+      <div class="govuk-grid-column-three-quarters">
+        {{ govukTable({
       firstCellIsHeader: true,
       head: [
         {
@@ -90,13 +92,15 @@
       ],
       rows: applications
     }) }}
-      {{ govukPagination({
+        {{ govukPagination({
         previous: previous,
         next: next,
         items: pages
         }) 
         }}
+      </div>
     </div>
+
   {% endif %}
 
 {% endblock %}
