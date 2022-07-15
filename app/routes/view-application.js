@@ -77,7 +77,7 @@ const getPaymentData = (payment) => {
   const formatedDate = formatedDateToUk(createdAt)
   const rows = []
   data.invoiceLines.forEach(invoiceLine => {
-    rows.push([{ text: formatedDate }, { text: invoiceLine.description }, { text: `£${data.value}` }])
+    rows.push([{ text: formatedDate }, { text: invoiceLine.description }, { text: `£${data?.value?.toFixed(2)}` }])
   })
 
   if (data.frn) {
