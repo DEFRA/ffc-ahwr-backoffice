@@ -188,7 +188,7 @@ describe('View Application test', () => {
       expect($('#claim').text()).toContain('Selected for fraud check')
       expect($('#payment').text()).toContain('Payment information')
       expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(2)').text()).toContain('G00 - Gross value of claim')
-      expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(3)').text()).toContain('400')
+      expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(3)').text()).toContain('£400')
       expect($('tbody:nth-child(2) tr:nth-child(2) td:nth-child(2)').text()).toContain('FRN number')
       expect($('tbody:nth-child(2) tr:nth-child(2) td:nth-child(3)').text()).toContain('1102057452')
       expect($('tbody:nth-child(2) tr:nth-child(3) td:nth-child(2)').text()).toContain('Invoice number')
