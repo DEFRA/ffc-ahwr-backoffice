@@ -17,7 +17,7 @@
                                 {% for status in selectedStatus %}
                                     <a class="govuk-tag {{status.styleClass}}" href="/path/to/remove/this" style="color:#104189;">
                                         <span class="govuk-visually-hidden">Remove this filter</span>
-                                        {{status.aStatus}}
+                                        {{status.status}}
                                     </a>
                                 {% endfor %}
                             </div>
@@ -33,8 +33,8 @@
                                 <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                                     {% for status in availableStatus %}
                                         <div class="govuk-checkboxes__item">
-                                            <input class="govuk-checkboxes__input" id="status" name="status" type="checkbox" value="{{status.aStatus}}">
-                                            <label class="govuk-label govuk-checkboxes__label" for="status">{{status.aStatus}} ({{status.total}})</label>
+                                            <input class="govuk-checkboxes__input" id="status" name="status" type="checkbox" value="{{status.status}}">
+                                            <label class="govuk-label govuk-checkboxes__label" for="status">{{status.status}} ({{status.total}})</label>
                                         </div>
                                     {% endfor %}
                                     <button class="govuk-button govuk-!-margin-top-5" data-module="govuk-button">Apply filters</button>

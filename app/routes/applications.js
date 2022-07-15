@@ -16,10 +16,8 @@ async function createModel (request, page) {
   const apps = await getApplications(searchType, searchText, limit, offset)
   if (apps.total > 0) {
     let statusClass
-    const applicationStatus = []
     const applications = apps.applications.map(n => {
       statusClass = getStyleClassByStatus(n.status.status)
-      applicationStatus.push({ aStatus: n.status.status, styleClass: statusClass, total: 1 })
       return [
         { text: n.reference },
         { text: n.data?.organisation?.name },
@@ -31,16 +29,7 @@ async function createModel (request, page) {
       ]
     })
     const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
-    const groupByStatus = []
-    applicationStatus.reduce((group, appStatus) => {
-      const { aStatus, styleClass, total } = appStatus
-      if (groupByStatus.filter(a => a.aStatus === aStatus).length > 0) {
-        groupByStatus.filter(a => a.aStatus === aStatus)[0].total = total + groupByStatus.filter(a => a.aStatus === aStatus)[0].total
-      } else {
-        groupByStatus.push({ aStatus, styleClass, total: 1 })
-      }
-      return group
-    }, {})
+    const groupByStatus = apps.applicationStatus
     return {
       applications,
       ...pagingData,
