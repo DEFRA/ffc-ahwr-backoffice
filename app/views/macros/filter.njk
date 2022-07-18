@@ -3,27 +3,23 @@
     <div class="govuk-grid-column-one-quarter govuk-!-margin-top-5">
         <div class="govuk-filter govuk-!-padding-3" style="background-color:#eeeeee;">
             <div class="govuk-filter__content">
-                <div class="govuk-filter__selected govuk-!-margin-bottom-5">
-                    <div class="govuk-filter__selected-heading">
-                        <div class="govuk-filter__heading-title">
-                            <h2 class="govuk-heading-s">Filters</h2>
-                        </div>
-                        {% if selectedStatus %}
+                {% if selectedStatus | length %}
+                    <div class="govuk-filter__selected govuk-!-margin-bottom-5">
+                        <div class="govuk-filter__selected-heading">
+                            <div class="govuk-filter__heading-title">
+                                <h2 class="govuk-heading-s">Filters</h2>
+                            </div>
                             <h3 class="govuk-body">Selected</h3>
                             <div class="govuk-filter__heading-action">
-                                <p class="govuk-body-s">
-                                    <a class="govuk-link--no-visited-state" href="">Clear filters</a>
-                                </p>
                                 {% for status in selectedStatus %}
-                                    <a class="govuk-tag {{status.styleClass}}" href="/path/to/remove/this" style="color:#104189;">
-                                        <span class="govuk-visually-hidden">Remove this filter</span>
+                                    <span class="govuk-tag {{status.styleClass}}" style="color:#104189;">
                                         {{status.status}}
-                                    </a>
+                                    </span>
                                 {% endfor %}
                             </div>
-                        {% endif %}
+                        </div>
                     </div>
-                </div>
+                {% endif %}
 
                 <div class="govuk-filter__options">
                     <div class="govuk-form-group govuk-!-margin-bottom-0">
@@ -33,7 +29,7 @@
                                 <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                                     {% for status in availableStatus %}
                                         <div class="govuk-checkboxes__item">
-                                            <input class="govuk-checkboxes__input" id="status" name="status" type="checkbox" value="{{status.status}}">
+                                            <input class="govuk-checkboxes__input" id="status" {{'checked' if status.selected }} name="status" type="checkbox" value="{{status.status}}">
                                             <label class="govuk-label govuk-checkboxes__label" for="status">{{status.status}} ({{status.total}})</label>
                                         </div>
                                     {% endfor %}

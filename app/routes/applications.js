@@ -13,7 +13,8 @@ async function createModel (request, page) {
   const path = request.headers.path ?? ''
   const searchText = getAppSearch(request, keys.appSearch.searchText)
   const searchType = getAppSearch(request, keys.appSearch.searchType)
-  const apps = await getApplications(searchType, searchText, limit, offset)
+  const filterStatus = getAppSearch(request, keys.appSearch.filterStatus) ?? []
+  const apps = await getApplications(searchType, searchText, limit, offset, filterStatus)
   if (apps.total > 0) {
     let statusClass
     const applications = apps.applications.map(n => {
@@ -29,20 +30,26 @@ async function createModel (request, page) {
       ]
     })
     const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
-    const groupByStatus = apps.applicationStatus
+    const groupByStatus = apps.applicationStatus.map(s => {
+      return {
+        status: s.status,
+        total: s.total,
+        styleClass: getStyleClassByStatus(s.status),
+        selected: filterStatus.filter(f => f === s.status).length > 0
+      }
+    })
     return {
       applications,
       ...pagingData,
       searchText,
       availableStatus: groupByStatus,
-      selectedStatus: groupByStatus
+      selectedStatus: groupByStatus.filter(s => s.selected === true)
     }
   } else {
     return {
       applications: [],
       error: 'No Applications found.',
       searchText
-
     }
   }
 }
@@ -106,8 +113,11 @@ module.exports = [
       },
       handler: async (request, h) => {
         try {
+          let filterStatus = request.payload?.status ?? []
+          filterStatus = Array.isArray(filterStatus) ? filterStatus : [filterStatus]
           const { searchText, searchType } = checkValidSearch(request.payload.searchText)
           setAppSearch(request, keys.appSearch.searchText, searchText ?? '')
+          setAppSearch(request, keys.appSearch.filterStatus, filterStatus)
           setAppSearch(request, keys.appSearch.searchType, searchType ?? '')
           return h.view(viewTemplate, await createModel(request, 1))
         } catch (err) {
