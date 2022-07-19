@@ -40,7 +40,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@hapi/catbox-memory": "^6.0.0",
+    "@hapi/catbox-memory": "^5.0.1",
     "@types/cheerio": "^0.22.31",
     "@types/hapi__hapi": "^20.0.10",
     "@types/jest": "^28.1.6",
