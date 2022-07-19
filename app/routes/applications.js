@@ -49,7 +49,9 @@ async function createModel (request, page) {
     return {
       applications: [],
       error: 'No Applications found.',
-      searchText
+      searchText,
+      availableStatus: [],
+      selectedStatus: []
     }
   }
 }

@@ -27,12 +27,12 @@ async function getApplications (searchType, searchText, limit, offset, filterSta
   try {
     const response = await Wreck.post(url, options)
     if (response.res.statusCode !== 200) {
-      return { applications: [], total: 0 }
+      return { applications: [], total: 0, applicationStatus: [] }
     }
     return response.payload
   } catch (err) {
     console.log(err)
-    return { applications: [], total: 0 }
+    return { applications: [], total: 0, applicationStatus: [] }
   }
 }
 module.exports = {

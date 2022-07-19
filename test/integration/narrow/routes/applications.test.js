@@ -44,7 +44,7 @@ describe('Applications test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-heading-l').text()).toEqual('Applications')
       expect($('title').text()).toContain('Applications')
-      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(2)
+      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(3)
       expectPhaseBanner.ok($)
     })
 
@@ -132,7 +132,7 @@ describe('Applications test', () => {
       const options = {
         method,
         url,
-        payload: { crumb, searchText: searchDetails.searchText },
+        payload: { crumb, searchText: searchDetails.searchText, status: [] },
         auth,
         headers: { cookie: `crumb=${crumb}` }
       }
@@ -156,13 +156,15 @@ describe('Applications test', () => {
       const options = {
         method,
         url,
-        payload: { crumb, searchText: searchDetails.searchText },
+        payload: { crumb, searchText: searchDetails.searchText, status: [] },
         headers: { cookie: `crumb=${crumb}` },
         auth
       }
 
       applications.getApplications.mockReturnValue({
-        applications: []
+        applications: [],
+        applicationStatus: [],
+        total: 0
       })
       const res = await global.__SERVER__.inject(options)
 
@@ -182,7 +184,7 @@ describe('Applications test', () => {
       const options = {
         method,
         url,
-        payload: { crumb, searchText: searchDetails.searchText },
+        payload: { crumb, searchText: searchDetails.searchText, status: [] },
         auth,
         headers: { cookie: `crumb=${crumb}` }
       }
