@@ -56,7 +56,7 @@ async function createModel (request, page) {
   }
 }
 const appRefRegEx = /^vv-[\da-f]{4}-[\da-f]{4}$/i
-const validStatus = ['applied', 'withdrawn', 'data inputed', 'claimed', 'check', 'accepted', 'rejected', 'paid']
+const validStatus = ['applied', 'withdrawn', 'data inputted', 'claimed', 'check', 'accepted', 'rejected', 'paid']
 const sbiRegEx = /^[\0-9]{9}$/i
 function checkValidSearch (searchText) {
   let searchType
