@@ -7,43 +7,56 @@ const { setAppSearch, getAppSearch } = require('../session')
 const keys = require('../session/keys')
 const getStyleClassByStatus = require('../constants/status')
 const { administrator, processor, user } = require('../auth/permissions')
-
 async function createModel (request, page) {
   page = page ?? request.query.page ?? 1
   const { limit, offset } = getPagination(page)
   const path = request.headers.path ?? ''
   const searchText = getAppSearch(request, keys.appSearch.searchText)
   const searchType = getAppSearch(request, keys.appSearch.searchType)
-  const apps = await getApplications(searchType, searchText, limit, offset)
+  const filterStatus = getAppSearch(request, keys.appSearch.filterStatus) ?? []
+  const apps = await getApplications(searchType, searchText, limit, offset, filterStatus)
   if (apps.total > 0) {
-    const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
     let statusClass
+    const applications = apps.applications.map(n => {
+      statusClass = getStyleClassByStatus(n.status.status)
+      return [
+        { text: n.reference },
+        { text: n.data?.organisation?.name },
+        { text: n.data?.organisation?.sbi },
+        { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
+        { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
+        { html: `<span class="govuk-tag ${statusClass}">${n.status.status}</span>` },
+        { html: `<a href="view-application/${n.reference}">View application</a>` }
+      ]
+    })
+    const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
+    const groupByStatus = apps.applicationStatus.map(s => {
+      return {
+        status: s.status,
+        total: s.total,
+        styleClass: getStyleClassByStatus(s.status),
+        selected: filterStatus.filter(f => f === s.status).length > 0
+      }
+    })
     return {
-      applications: apps.applications.map(n => {
-        statusClass = getStyleClassByStatus(n.status.status)
-        return [
-          { text: n.reference },
-          { text: n.data?.organisation?.name },
-          { text: n.data?.organisation?.sbi },
-          { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
-          { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
-          { html: `<span class="govuk-tag ${statusClass}">${n.status.status}</span>` },
-          { html: `<a href="view-application/${n.reference}">View application</a>` }
-        ]
-      }),
+      applications,
       ...pagingData,
-      searchText
+      searchText,
+      availableStatus: groupByStatus,
+      selectedStatus: groupByStatus.filter(s => s.selected === true)
     }
   } else {
     return {
       applications: [],
       error: 'No Applications found.',
-      searchText
+      searchText,
+      availableStatus: [],
+      selectedStatus: []
     }
   }
 }
 const appRefRegEx = /^vv-[\da-f]{4}-[\da-f]{4}$/i
-const validStatus = ['applied', 'withdrawn', 'data inputed', 'claimed', 'check', 'accepted', 'rejected', 'paid']
+const validStatus = ['applied', 'withdrawn', 'data inputted', 'claimed', 'check', 'accepted', 'rejected', 'paid']
 const sbiRegEx = /^[\0-9]{9}$/i
 function checkValidSearch (searchText) {
   let searchType
@@ -102,8 +115,11 @@ module.exports = [
       },
       handler: async (request, h) => {
         try {
+          let filterStatus = request.payload?.status ?? []
+          filterStatus = Array.isArray(filterStatus) ? filterStatus : [filterStatus]
           const { searchText, searchType } = checkValidSearch(request.payload.searchText)
           setAppSearch(request, keys.appSearch.searchText, searchText ?? '')
+          setAppSearch(request, keys.appSearch.filterStatus, filterStatus)
           setAppSearch(request, keys.appSearch.searchType, searchType ?? '')
           return h.view(viewTemplate, await createModel(request, 1))
         } catch (err) {

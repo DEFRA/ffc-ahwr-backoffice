@@ -118,14 +118,15 @@ describe('Application API', () => {
       payload: {
         search: { text: searchText, type: searchType },
         limit,
-        offset
+        offset,
+        filter: []
       },
       json: true
     }
     Wreck.post = jest.fn(async function (_url, _options) {
       throw new Error('fakeError')
     })
-    const response = await getApplications(searchType, searchText, limit, offset)
+    const response = await getApplications(searchType, searchText, limit, offset, [])
     expect(response).not.toBeNull()
     expect(response.applications).toStrictEqual([])
     expect(response.total).toStrictEqual(0)

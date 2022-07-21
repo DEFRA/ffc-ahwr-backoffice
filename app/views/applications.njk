@@ -12,35 +12,35 @@
 
 {% block content %}
 
-  <div class="govuk-grid-row govuk-!-padding-bottom-9">
-    <h1 class="govuk-heading-l">Applications</h1>
-    <div id="heading-hint" class="govuk-hint govuk-!-margin-bottom-5">
+  <form method="POST">
+    <div class="govuk-grid-row govuk-!-padding-bottom-9">
+      <h1 class="govuk-heading-l">Applications</h1>
+      <div id="heading-hint" class="govuk-hint govuk-!-margin-bottom-5">
         Select an application to edit it. <br>
         Only eligible organisations that you have access to are shown.
       </div>
 
-    <div class="user-search-box govuk-!-width-two-thirds">
-      <label class="govuk-label govuk-label--s" for="user-search">
+      <div class="user-search-box govuk-!-width-two-thirds">
+        <label class="govuk-label govuk-label--s" for="user-search">
           Search for an application by SBI number or reference or status
         </label>
-
-      <form method="POST">
         <input type="hidden" name="crumb" value="{{crumb}}"/>
         <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{searchText}}" aria-describedby="user-search-hint" spellcheck="false">
         <button class="search-button" data-module="govuk-button">
                 Search
-            </button>
-      </form>
+        </button>
+      </div>
     </div>
-  </div>
 
-  {% if error %}
-    <div class="govuk-grid-row">
-      <p class="govuk-error-message">{{error}}</p>
-    </div>
-  {% else %}
-    <div class="govuk-grid-row">
-      {{ govukTable({
+    {% if error %}
+      <div class="govuk-grid-row">
+        <p class="govuk-error-message">{{error}}</p>
+      </div>
+    {% else %}
+      <div class="govuk-grid-row">
+        {{ filter(availableStatus, selectedStatus) }}
+        <div class="govuk-grid-column-three-quarters">
+          {{ govukTable({
       firstCellIsHeader: true,
       head: [
         {
@@ -90,13 +90,16 @@
       ],
       rows: applications
     }) }}
-      {{ govukPagination({
+          {{ govukPagination({
         previous: previous,
         next: next,
         items: pages
         }) 
         }}
-    </div>
-  {% endif %}
+        </div>
+      </div>
 
+    {% endif %}
+
+  </form>
 {% endblock %}

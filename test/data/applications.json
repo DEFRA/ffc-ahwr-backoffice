@@ -208,5 +208,22 @@
       "updatedAt": "2022-06-06T14:27:51.775Z",
       "createdBy": "admin"
     }
+  ],
+  "applicationStatus": [
+    {
+      "status": "APPLIED",
+      "total": "23",
+      "status.status": "APPLIED"
+    },
+    {
+      "status": "CLAIMED",
+      "total": "1",
+      "status.status": "CLAIMED"
+    },
+    {
+      "status": "DATA INPUTTED",
+      "total": "2",
+      "status.status": "DATA INPUTTED"
+    }
   ]
 }

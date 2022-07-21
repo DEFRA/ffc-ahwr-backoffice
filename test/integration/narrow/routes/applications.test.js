@@ -44,7 +44,7 @@ describe('Applications test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-heading-l').text()).toEqual('Applications')
       expect($('title').text()).toContain('Applications')
-      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(2)
+      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(3)
       expectPhaseBanner.ok($)
     })
 
@@ -118,21 +118,21 @@ describe('Applications test', () => {
     })
 
     test.each([
-      { searchDetails: { searchText: '444444444', searchType: 'sbi' } },
-      { searchDetails: { searchText: 'VV-555A-FD6E', searchType: 'ref' } },
-      { searchDetails: { searchText: 'applied', searchType: 'status' } },
-      { searchDetails: { searchText: 'data inputed', searchType: 'status' } },
-      { searchDetails: { searchText: 'claimed', searchType: 'status' } },
-      { searchDetails: { searchText: 'check', searchType: 'status' } },
-      { searchDetails: { searchText: 'accepted', searchType: 'status' } },
-      { searchDetails: { searchText: 'rejected', searchType: 'status' } },
-      { searchDetails: { searchText: 'paid', searchType: 'status' } },
+      { searchDetails: { searchText: '444444444', searchType: 'sbi' }, status: ['APPLIED', 'DATA INPUTTED'] },
+      { searchDetails: { searchText: 'VV-555A-FD6E', searchType: 'ref' }, status: ['APPLIED', 'CLAIMED'] },
+      { searchDetails: { searchText: 'applied', searchType: 'status' }, status: 'APPLIED' },
+      { searchDetails: { searchText: 'data inputted', searchType: 'status' }, status: 'DATA INPUTTED' },
+      { searchDetails: { searchText: 'claimed', searchType: 'status' }, status: 'CLAIMED' },
+      { searchDetails: { searchText: 'check', searchType: 'status' }, status: 'CHECK' },
+      { searchDetails: { searchText: 'accepted', searchType: 'status' }, status: 'ACCEPTED' },
+      { searchDetails: { searchText: 'rejected', searchType: 'status' }, status: 'REJECTED' },
+      { searchDetails: { searchText: 'paid', searchType: 'status' }, status: 'PAID' },
       { searchDetails: { searchText: 'withdrawn', searchType: 'status' } }
-    ])('returns success when post %p', async ({ searchDetails }) => {
+    ])('returns success when post %p', async ({ searchDetails, status }) => {
       const options = {
         method,
         url,
-        payload: { crumb, searchText: searchDetails.searchText },
+        payload: { crumb, searchText: searchDetails.searchText, status },
         auth,
         headers: { cookie: `crumb=${crumb}` }
       }
@@ -156,13 +156,15 @@ describe('Applications test', () => {
       const options = {
         method,
         url,
-        payload: { crumb, searchText: searchDetails.searchText },
+        payload: { crumb, searchText: searchDetails.searchText, status: [] },
         headers: { cookie: `crumb=${crumb}` },
         auth
       }
 
       applications.getApplications.mockReturnValue({
-        applications: []
+        applications: [],
+        applicationStatus: [],
+        total: 0
       })
       const res = await global.__SERVER__.inject(options)
 
@@ -182,7 +184,7 @@ describe('Applications test', () => {
       const options = {
         method,
         url,
-        payload: { crumb, searchText: searchDetails.searchText },
+        payload: { crumb, searchText: searchDetails.searchText, status: [] },
         auth,
         headers: { cookie: `crumb=${crumb}` }
       }
