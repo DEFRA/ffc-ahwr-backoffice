@@ -2,6 +2,8 @@ const Joi = require('joi')
 const boom = require('@hapi/boom')
 const { administrator, processor, user } = require('../auth/permissions')
 const { submitApplicationPayment } = require('../api/applications')
+const session = require('../session')
+const { viewApplication: { payment } } = require('../session/keys')
 
 module.exports = [{
   method: 'POST',
@@ -13,14 +15,16 @@ module.exports = [{
         reference: Joi.string().valid()
       }),
       payload: Joi.object({
-        [paid]: Joi.string().valid('yes', 'no').required()
+        payment: Joi.string().valid('yes', 'no').required()
       }),
     },
     handler: async (request, h) => {
-      const application = await submitApplicationPayment(request.params.reference, request.payload.paid)
+      const application = await submitApplicationPayment(request.params.reference, request.payload.payment)
       if (!application) {
         throw boom.badRequest()
       }
+      session.setViewApplication(request, payment, request.payload.payment)
+      return h.redirect(`/view-application/${request.params.reference}`)
     }
   }
 }]

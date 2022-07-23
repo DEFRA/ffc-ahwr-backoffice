@@ -20,14 +20,24 @@
         rows: listData.rows
       }) }}
 
-      <form method="POST" autocomplete="off" novalidate="novalidate">
+      <form method="POST" autocomplete="off" novalidate="novalidate" action="/application/fraud-check/{{ applicationId }}">
         <input type="hidden" name="crumb" value="{{crumb}}"/>
         {{ govukRadios(radios) }}
         {{ govukButton({
-          text: "Continue",
-          attributes: {id: "btnContinue"}
+          text: "Submit",
+          attributes: {id: "btnSubmit"}
         }) }}
       </form>
+
+      <form method="POST" autocomplete="off" novalidate="novalidate" action="/application/payment/{{ applicationId }}">
+        <input type="hidden" name="crumb" value="{{crumb}}"/>
+        {{ govukRadios(paymentRadio) }}
+        {{ govukButton({
+          text: "Submit",
+          attributes: {id: "btnSubmit"}
+        }) }}
+      </form>
+
 
       {% set applicationHtml %}
       <h2 class="govuk-heading-l">{{ status }}</h2>

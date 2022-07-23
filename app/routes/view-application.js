@@ -11,6 +11,7 @@ const { viewApplication: {fraudCheck, payment } } = require('../session/keys')
 const session = require('../session')
 const head = [{ text: 'Date' }, { text: 'Data requested' }, { text: 'Data entered' }]
 const labelText = 'Approve fraud check'
+const labelTextPayment = 'Approve payment'
 
 const getOrganisationRows = (organisation) => {
   return [
@@ -124,7 +125,9 @@ module.exports = {
       }
 
       const statusClass = getStyleClassByStatus(application.status.status)
-      const prevAnswer = session.getVetVisitData(request, fraudCheck)
+      const prevAnswer = session.getViewApplication(request, fraudCheck)
+      const prevAnswerPayment = session.getViewApplication(request, payment)
+      const paymentRadio = getYesNoRadios(labelTextPayment, payment, prevAnswerPayment, null, { inline: true }).radios
       return h.view('view-application', {
         applicationId: application.reference,
         status: application.status.status,
@@ -138,7 +141,8 @@ module.exports = {
         claimData: application?.claimed ? getClaimData(application?.updatedAt) : false,
         payment: application?.payment,
         paymentData: application?.payment ? getPaymentData(application?.payment) : false,
-        ...getYesNoRadios(labelText, fraudCheck, prevAnswer, null, { inline: true })
+        ...getYesNoRadios(labelText, fraudCheck, prevAnswer, null, { inline: true }),
+        paymentRadio
       })
     }
   }
