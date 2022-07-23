@@ -20,6 +20,15 @@
         rows: listData.rows
       }) }}
 
+      <form method="POST" autocomplete="off" novalidate="novalidate">
+        <input type="hidden" name="crumb" value="{{crumb}}"/>
+        {{ govukRadios(radios) }}
+        {{ govukButton({
+          text: "Continue",
+          attributes: {id: "btnContinue"}
+        }) }}
+      </form>
+
       {% set applicationHtml %}
       <h2 class="govuk-heading-l">{{ status }}</h2>
       {{ govukTable(applicationData) }}
