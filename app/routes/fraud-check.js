@@ -16,7 +16,7 @@ module.exports = [{
       }),
       payload: Joi.object({
         fraudCheck: Joi.string().valid('yes', 'no').required()
-      }),
+      })
     },
     handler: async (request, h) => {
       const application = await submitApplicationFraudCheck(request.params.reference, request.payload.fraudCheck)

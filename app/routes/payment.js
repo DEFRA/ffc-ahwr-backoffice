@@ -16,7 +16,7 @@ module.exports = [{
       }),
       payload: Joi.object({
         payment: Joi.string().valid('yes', 'no').required()
-      }),
+      })
     },
     handler: async (request, h) => {
       const application = await submitApplicationPayment(request.params.reference, request.payload.payment)
