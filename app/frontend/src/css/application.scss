@@ -3,6 +3,13 @@ $govuk-assets-path: "~govuk-frontend/govuk/assets/";
 @import "./app-task-list";
 @import "./guidance-layout";
 
+.govuk-width-container, .moj-header__container, .moj-primary-navigation__container {
+  max-width: 90% !important;;
+}
+
+$moj-assets-path: "~@ministryofjustice/frontend/moj/assets/";
+
+@import "@ministryofjustice/frontend/moj/all";
 .nojs-hidden {
   display: none;
 }

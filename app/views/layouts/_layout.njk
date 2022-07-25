@@ -18,10 +18,12 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/warning-text/macro.njk"        import govukWarningText %}
 {% from "../macros/filter.njk" import filter %}
+{% from "moj/components/header/macro.njk" import mojHeader %}
 
 {% block pageTitle %}{{ serviceName }} - GOV.UK{% endblock %}
 
 {% block head %}
+  <meta name="robots" content="noindex, nofollow">
   <!--[if !IE 8]><!-->
   <% htmlWebpackPlugin.files.css.forEach(file => { %>
     <link href="<%= file %>" rel="stylesheet">
@@ -35,12 +37,49 @@
     {% endblock %}
 
     {% block header %}
-      {{ govukHeader({
-        homepageUrl: "https://www.gov.uk/",
-        containerClasses: "govuk-width-container",
-        serviceName: serviceName,
-        serviceUrl: "/"
-      }) }}
+      {% if user %}
+        {{ mojHeader({
+  organisationLabel: {
+    text: 'GOV.UK',
+    href: 'https://www.gov.uk/''
+  },
+  serviceLabel: {
+    text: 'Administration of the health and welfare of your livestock',
+    href: '/'
+  },
+  navigation: {
+    label: 'Account navigation',
+    items: [{
+      text: user.name,
+      href: '/account',
+      active: true
+    }, {
+      text: 'Sign out',
+      href: '/logout'
+    }]
+  }
+
+}) }}
+      {% else %}
+        {{ mojHeader({
+  organisationLabel: {
+    text: 'GOV.UK',
+    href: '/'
+  },
+  serviceLabel: {
+    text: 'Administration of the health and welfare of your livestock',
+    href: '/'
+  },
+  navigation: {
+    label: 'Account navigation',
+    items: [ {
+      text: 'Sign In',
+      href: '/login'
+    }]
+  }
+
+}) }}
+      {% endif %}
       <div class="govuk-grid-row govuk-width-container">
         {{ govukPhaseBanner({
           tag: {
