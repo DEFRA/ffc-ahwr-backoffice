@@ -51,6 +51,7 @@ async function submitApplicationPayment (reference, paid) {
     return true
   } catch (err) {
     console.log(err)
+    return false
   }
 }
 async function submitApplicationFraudCheck (reference, accepted) {
@@ -69,6 +70,7 @@ async function submitApplicationFraudCheck (reference, accepted) {
     return true
   } catch (err) {
     console.log(err)
+    return false
   }
 }
 module.exports = {
