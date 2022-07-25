@@ -125,9 +125,9 @@ module.exports = {
       }
 
       const statusClass = getStyleClassByStatus(application.status.status)
-      const prevAnswer = session.getViewApplication(request, fraudCheck)
-      const prevAnswerPayment = session.getViewApplication(request, payment)
-      const paymentRadio = getYesNoRadios(labelTextPayment, payment, prevAnswerPayment, null, { inline: true }).radios
+      const fraudCheckPassed = session.getApplicationFraudCheck(request, fraudCheck + request.params.reference) || false
+      const paymentPaid = session.getApplicationPayment(request, payment + request.params.reference) || false
+      const paymentRadio = getYesNoRadios(labelTextPayment, payment, paymentPaid, null, { inline: true }).radios
       return h.view('view-application', {
         applicationId: application.reference,
         status: application.status.status,
@@ -141,8 +141,10 @@ module.exports = {
         claimData: application?.claimed ? getClaimData(application?.updatedAt) : false,
         payment: application?.payment,
         paymentData: application?.payment ? getPaymentData(application?.payment) : false,
-        ...getYesNoRadios(labelText, fraudCheck, prevAnswer, null, { inline: true }),
-        paymentRadio
+        ...getYesNoRadios(labelText, fraudCheck, fraudCheckPassed, null, { inline: true }),
+        paymentRadio,
+        fraudCheckPassed,
+        paymentPaid
       })
     }
   }

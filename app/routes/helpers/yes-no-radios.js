@@ -10,7 +10,7 @@
  * @return {object} object with `radios` property containing radios component.
  */
 function getYesNoRadios (legendText, id, previousAnswer, errorText = undefined, options = {}) {
-  const { isPageHeading = true, legendClasses = 'govuk-fieldset__legend--l', inline = false, hintText = '' } = options
+  const { isPageHeading = false, legendClasses = 'govuk-fieldset__legend--m', inline = false, hintText = '' } = options
   return {
     radios: {
       classes: inline ? 'govuk-radios--inline' : undefined,

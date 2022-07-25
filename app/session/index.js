@@ -1,6 +1,7 @@
 const entries = {
   appSearch: 'appSearch',
-  viewApplication: 'viewApplication'
+  applicationFraudCheck: 'viewApplicationPayment',
+  applicationPayment: 'viewApplicationPayment'
 }
 
 function set (request, entryKey, key, value) {
@@ -21,17 +22,27 @@ function getAppSearch (request, key) {
   return get(request, entries.appSearch, key)
 }
 
-function getViewApplication (request, key) {
-  return get(request, entries.viewApplication, key)
+function getApplicationFraudCheck (request, key) {
+  return get(request, entries.applicationFraudCheck, key)
 }
 
-function setViewApplication (request, key, value) {
-  set(request, entries.viewApplication, key, value)
+function setApplicationFraudCheck (request, key, value) {
+  set(request, entries.applicationFraudCheck, key, value)
+}
+
+function getApplicationPayment (request, key) {
+  return get(request, entries.applicationPayment, key)
+}
+
+function setApplicationPayment (request, key, value) {
+  set(request, entries.applicationPayment, key, value)
 }
 
 module.exports = {
   setAppSearch,
   getAppSearch,
-  setViewApplication,
-  getViewApplication
+  getApplicationFraudCheck,
+  setApplicationFraudCheck,
+  getApplicationPayment,
+  setApplicationPayment
 }

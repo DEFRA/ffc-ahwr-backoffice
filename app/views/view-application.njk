@@ -15,28 +15,38 @@
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-caption-l govuk-!-margin-bottom-3">Application {{ applicationId }}</h1>
 
-      <h2 class="govuk-heading-l">{{ organisationName }} <span class="govuk-tag {{ statusClass }}">{{ status }}</span></h2>
+      <h2 class="govuk-fieldset__legend--m">{{ organisationName }} <span class="govuk-tag {{ statusClass }}">{{ status }}</span></h2>
       {{ govukSummaryList({
         rows: listData.rows
       }) }}
 
-      <form method="POST" autocomplete="off" novalidate="novalidate" action="/application/fraud-check/{{ applicationId }}">
-        <input type="hidden" name="crumb" value="{{crumb}}"/>
-        {{ govukRadios(radios) }}
-        {{ govukButton({
-          text: "Submit",
-          attributes: {id: "btnSubmit"}
-        }) }}
-      </form>
+      {% if fraudCheckPassed  === false %}
+        <form method="POST" autocomplete="off" novalidate="novalidate" action="/application/fraud-check/{{ applicationId }}">
+          <input type="hidden" name="crumb" value="{{crumb}}"/>
+          {{ govukRadios(radios) }}
+          {{ govukButton({
+            text: "Submit",
+            attributes: {id: "btnSubmit"}
+          }) }}
+        </form>
+      {% elif fraudCheckPassed === 'yes'%}
+         <h2 class="govuk-fieldset__legend--m">Fraud Check <span class="govuk-tag govuk-tag--purple">Accepted</span></h2>
+      {% elif fraudCheckPassed === 'no'%}
+         <h2 class="govuk-fieldset__legend--m">Fraud Check <span class="govuk-tag govuk-tag--red">Rejected</span></h2>
+      {% endif %}
 
-      <form method="POST" autocomplete="off" novalidate="novalidate" action="/application/payment/{{ applicationId }}">
-        <input type="hidden" name="crumb" value="{{crumb}}"/>
-        {{ govukRadios(paymentRadio) }}
-        {{ govukButton({
-          text: "Submit",
-          attributes: {id: "btnSubmit"}
-        }) }}
-      </form>
+      {% if (fraudCheckPassed === 'yes') and (paymentPaid === false) %}
+        <form method="POST" autocomplete="off" novalidate="novalidate" action="/application/payment/{{ applicationId }}">
+          <input type="hidden" name="crumb" value="{{crumb}}"/>
+          {{ govukRadios(paymentRadio) }}
+          {{ govukButton({
+            text: "Submit",
+            attributes: {id: "btnSubmit"}
+          }) }}
+        </form>
+      {% elif (paymentPaid === 'yes') or (paymentPaid === 'no') %}
+        <h2 class="govuk-fieldset__legend--m">Payment <span class="govuk-tag {{ statusClass }}">{{ status }}</span></h2>
+      {% endif %}
 
 
       {% set applicationHtml %}

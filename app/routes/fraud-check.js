@@ -23,7 +23,7 @@ module.exports = [{
       if (!application) {
         throw boom.badRequest()
       }
-      session.setViewApplication(request, fraudCheck, request.payload.fraudCheck)
+      session.setApplicationFraudCheck(request, fraudCheck + request.params.reference, request.payload.fraudCheck)
       return h.redirect(`/view-application/${request.params.reference}`)
     }
   }
