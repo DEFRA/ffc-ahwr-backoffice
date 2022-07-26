@@ -76,8 +76,8 @@ const getVetVisitData = (vetVisit, species) => {
   }
 }
 
-const getPaymentData = (payment) => {
-  const { data, createdAt } = payment
+const getPaymentData = (paymentData) => {
+  const { data, createdAt } = paymentData
   const formatedDate = formatedDateToUk(createdAt)
   const rows = []
   data.invoiceLines.forEach(invoiceLine => {

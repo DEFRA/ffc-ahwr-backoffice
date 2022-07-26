@@ -45,10 +45,8 @@ async function submitApplicationPayment (reference, paid) {
   }
   try {
     const response = await Wreck.post(url, options)
-    if (response.res.statusCode !== 200) {
-      return false
-    }
-    return true
+
+    return response.res.statusCode === 200
   } catch (err) {
     console.log(err)
     return false
@@ -64,10 +62,7 @@ async function submitApplicationFraudCheck (reference, accepted) {
   }
   try {
     const response = await Wreck.post(url, options)
-    if (response.res.statusCode !== 200) {
-      return false
-    }
-    return true
+    return response.res.statusCode === 200
   } catch (err) {
     console.log(err)
     return false
