@@ -41,19 +41,16 @@
         {{ filter(availableStatus, selectedStatus) }}
         <div class="govuk-grid-column-three-quarters">
           {{ govukTable({
+  attributes: {
+    'data-module': 'moj-sortable-table'
+  },
       firstCellIsHeader: true,
       head: [
         {
-          text: "Ref",
-          attributes: {
-            "aria-sort": "ascending"
-          }
+          text: "Ref"
         },
         {
-          text: "Business",
-          attributes: {
-            "aria-sort": "none"
-          }
+          text: "Business"
         },
         {
           text: "SBI",
@@ -82,10 +79,7 @@
           }
         },
         {
-          text: "Details",
-          attributes: {
-            "aria-sort": "none"
-          }
+          text: "Details"
         }
       ],
       rows: applications
