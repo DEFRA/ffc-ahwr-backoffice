@@ -6,8 +6,12 @@ const speciesNumbers = require('../../app/constants/species-numbers')
 const eligibleSpecies = require('../../app/constants/eligible-species')
 const { formatedDateToUk, upperFirstLetter } = require('../lib/display-helper')
 const getStyleClassByStatus = require('../constants/status')
-
+const { getYesNoRadios } = require('./helpers/yes-no-radios')
+const { viewApplication: { fraudCheck, payment } } = require('../session/keys')
+const session = require('../session')
 const head = [{ text: 'Date' }, { text: 'Data requested' }, { text: 'Data entered' }]
+const labelText = 'Approve fraud check'
+const labelTextPayment = 'Approve payment'
 
 const getOrganisationRows = (organisation) => {
   return [
@@ -72,8 +76,8 @@ const getVetVisitData = (vetVisit, species) => {
   }
 }
 
-const getPaymentData = (payment) => {
-  const { data, createdAt } = payment
+const getPaymentData = (paymentData) => {
+  const { data, createdAt } = paymentData
   const formatedDate = formatedDateToUk(createdAt)
   const rows = []
   data.invoiceLines.forEach(invoiceLine => {
@@ -121,6 +125,9 @@ module.exports = {
       }
 
       const statusClass = getStyleClassByStatus(application.status.status)
+      const fraudCheckPassed = session.getApplicationFraudCheck(request, fraudCheck + request.params.reference) || false
+      const paymentPaid = session.getApplicationPayment(request, payment + request.params.reference) || false
+      const paymentRadio = getYesNoRadios(labelTextPayment, payment, paymentPaid, null, { inline: true }).radios
       return h.view('view-application', {
         applicationId: application.reference,
         status: application.status.status,
@@ -133,7 +140,11 @@ module.exports = {
         claimed: application?.claimed,
         claimData: application?.claimed ? getClaimData(application?.updatedAt) : false,
         payment: application?.payment,
-        paymentData: application?.payment ? getPaymentData(application?.payment) : false
+        paymentData: application?.payment ? getPaymentData(application?.payment) : false,
+        ...getYesNoRadios(labelText, fraudCheck, fraudCheckPassed, null, { inline: true }),
+        paymentRadio,
+        fraudCheckPassed,
+        paymentPaid
       })
     }
   }
