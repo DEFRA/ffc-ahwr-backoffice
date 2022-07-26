@@ -45,7 +45,6 @@ async function submitApplicationPayment (reference, paid) {
   }
   try {
     const response = await Wreck.post(url, options)
-
     return response.res.statusCode === 200
   } catch (err) {
     console.log(err)

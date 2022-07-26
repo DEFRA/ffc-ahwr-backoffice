@@ -1,3 +1,5 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
 {% macro filter(availableStatus, selectedStatus) %}
     <!-- Filters -->
     <div class="govuk-grid-column-one-quarter govuk-!-margin-top-5">
@@ -26,14 +28,18 @@
                         <fieldset class="govuk-fieldset">
                             <legend class="govuk-fieldset__legend">Status</legend>
                             {% if availableStatus %}
-                                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                                <div class="govuk-!-width-full govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                                     {% for status in availableStatus %}
                                         <div class="govuk-checkboxes__item">
                                             <input class="govuk-checkboxes__input" id="status" {{'checked' if status.selected }} name="status" type="checkbox" value="{{status.status}}">
                                             <label class="govuk-label govuk-checkboxes__label" for="status">{{status.status}} ({{status.total}})</label>
                                         </div>
                                     {% endfor %}
-                                    <button class="govuk-button govuk-!-margin-top-5" data-module="govuk-button">Apply filters</button>
+                                </div>
+                                <div class="govuk-grid-row govuk-!-width-full">
+                                    {{ govukButton({
+                                    text: "Apply filters"
+                                }) }}
                                 </div>
                             {% endif %}
                         </fieldset>

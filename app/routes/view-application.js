@@ -10,6 +10,7 @@ const { getYesNoRadios } = require('./helpers/yes-no-radios')
 const { viewApplication: { fraudCheck, payment } } = require('../session/keys')
 const session = require('../session')
 const head = [{ text: 'Date' }, { text: 'Data requested' }, { text: 'Data entered' }]
+const { autoPayment } = require('../config')
 const labelText = 'Approve fraud check'
 const labelTextPayment = 'Approve payment'
 
@@ -129,6 +130,7 @@ module.exports = {
       const paymentPaid = session.getApplicationPayment(request, payment + request.params.reference) || false
       const paymentRadio = getYesNoRadios(labelTextPayment, payment, paymentPaid, null, { inline: true }).radios
       return h.view('view-application', {
+        autoPayment,
         applicationId: application.reference,
         status: application.status.status,
         statusClass,
