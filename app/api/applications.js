@@ -35,42 +35,7 @@ async function getApplications (searchType, searchText, limit, offset, filterSta
     return { applications: [], total: 0, applicationStatus: [] }
   }
 }
-async function submitApplicationPayment (reference, paid) {
-  const url = `${applicationApiUri}/application/payment/${reference}`
-  const options = {
-    payload: {
-      paid
-    },
-    json: true
-  }
-  try {
-    const response = await Wreck.post(url, options)
-
-    return response.res.statusCode === 200
-  } catch (err) {
-    console.log(err)
-    return false
-  }
-}
-async function submitApplicationFraudCheck (reference, accepted) {
-  const url = `${applicationApiUri}/application/fraud/${reference}`
-  const options = {
-    payload: {
-      accepted
-    },
-    json: true
-  }
-  try {
-    const response = await Wreck.post(url, options)
-    return response.res.statusCode === 200
-  } catch (err) {
-    console.log(err)
-    return false
-  }
-}
 module.exports = {
   getApplications,
-  getApplication,
-  submitApplicationPayment,
-  submitApplicationFraudCheck
+  getApplication
 }

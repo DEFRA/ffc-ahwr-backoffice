@@ -5,13 +5,11 @@ const routes = [].concat(
   require('../routes/authenticate'),
   require('../routes/cookies'),
   require('../routes/dev-auth'),
-  require('../routes/fraud-check'),
   require('../routes/healthy'),
   require('../routes/healthz'),
   require('../routes/home'),
   require('../routes/login'),
   require('../routes/logout'),
-  require('../routes/payment'),
   require('../routes/privacy-policy'),
   require('../routes/view-application')
 )
