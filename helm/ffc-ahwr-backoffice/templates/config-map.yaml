@@ -17,5 +17,4 @@ data:
   REDIS_PORT: {{ quote .Values.container.redisPort }}
   SERVICE_URI: {{ quote .Values.container.serviceUri }}
   APPLICATION_API_URI: {{ quote .Values.container.applicationApiUri }}
-  AUTO_PAYMENT: {{ quote .Values.container.autoPayment }}
 {{- end -}}

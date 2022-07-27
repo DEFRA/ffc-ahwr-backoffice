@@ -43,8 +43,7 @@ const schema = Joi.object({
   siteTitle: Joi.string().default('Back office'),
   serviceUri: Joi.string().uri(),
   useRedis: Joi.boolean().default(false),
-  applicationApiUri: Joi.string().uri(),
-  autoPayment: Joi.boolean().default(true)
+  applicationApiUri: Joi.string().uri()
 })
 
 const config = {
@@ -85,8 +84,7 @@ const config = {
   port: process.env.PORT,
   serviceUri: process.env.SERVICE_URI,
   useRedis: process.env.NODE_ENV !== 'test',
-  applicationApiUri: process.env.APPLICATION_API_URI,
-  autoPayment: process.env.AUTO_PAYMENT
+  applicationApiUri: process.env.APPLICATION_API_URI
 }
 
 const { error, value } = schema.validate(config, { abortEarly: false })
