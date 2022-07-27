@@ -12,7 +12,7 @@
 
 {% block content %}
 
-  <form method="POST">
+  <form method="POST" action="/applications">
     <div class="govuk-grid-row govuk-!-padding-bottom-9">
       <h1 class="govuk-heading-l">Applications</h1>
       <div id="heading-hint" class="govuk-hint govuk-!-margin-bottom-5">
@@ -38,7 +38,51 @@
       </div>
     {% else %}
       <div class="govuk-grid-row">
-        {{ filter(availableStatus, selectedStatus) }}
+        <div class="govuk-grid-column-one-quarter govuk-!-margin-top-5">
+          {%- from "moj/components/filter/macro.njk" import mojFilter -%}
+          {%- set filterOptionsHtml %}
+          {{ govukCheckboxes({
+          idPrefix: 'status',
+          name: 'status',
+          classes: "govuk-checkboxes--small",
+          fieldset: {
+            legend: {
+              text: 'Status',
+              classes: 'govuk-fieldset__legend--m'
+            }
+          },
+          items: filterStatus
+        }) }}
+
+          {% endset -%}
+
+          {{ mojFilter({
+  heading: {
+    text: 'Filter'
+  },
+  selectedFilters: {
+
+    heading: {
+      text: 'Selected filters'
+    },
+
+    clearLink: {
+      text: 'Clear filters',
+      href: '/applications/clear'
+    },
+
+    categories: [
+      {
+        heading: {
+          text: 'Status'
+        },
+        items: selectedStatus
+      }
+    ]
+  },
+  optionsHtml: filterOptionsHtml
+}) }}
+        </div>
         <div class="govuk-grid-column-three-quarters">
           {{ govukTable({
   attributes: {

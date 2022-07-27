@@ -3,7 +3,7 @@
  * @param  {} page=1
  * @param  {} limit=20
  */
-function getPagination (page = 1, limit = 20) {
+function getPagination (page = 1, limit = 30) {
   const offset = page === 1 ? 0 : (page - 1) * limit
   return { limit, offset }
 }
