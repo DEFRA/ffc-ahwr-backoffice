@@ -52,4 +52,30 @@ describe('Applications Filter test', () => {
       expectPhaseBanner.ok($)
     })
   })
+
+  describe('GET /applications/clear route', () => {
+    test('returns 302 no auth', async () => {
+      const options = {
+        method,
+        url: '/applications/clear'
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(302)
+    })
+    test('returns 200', async () => {
+      const options = {
+        method,
+        url: '/applications/clear',
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      const $ = cheerio.load(res.payload)
+      expect($('h1.govuk-heading-l').text()).toEqual('Applications')
+      expect($('title').text()).toContain('Applications')
+      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(3)
+      expect(sessionMock.setAppSearch).toHaveBeenCalledTimes(1)
+      expectPhaseBanner.ok($)
+    })
+  })
 })
