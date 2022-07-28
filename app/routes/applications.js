@@ -1,7 +1,7 @@
 const viewTemplate = 'applications'
 const currentPath = `/${viewTemplate}`
 const { getApplications } = require('../api/applications')
-const { getPagination, getPagingData } = require('../pagination')
+const { getPagination, getPagingData, displayPageSize } = require('../pagination')
 const Joi = require('joi')
 const { setAppSearch, getAppSearch } = require('../session')
 const keys = require('../session/keys')
@@ -109,7 +109,7 @@ module.exports = [
       validate: {
         query: Joi.object({
           page: Joi.number().greater(0).default(1),
-          limit: Joi.number().greater(0).default(30)
+          limit: Joi.number().greater(0).default(displayPageSize)
         })
       },
       handler: async (request, h) => {
@@ -154,7 +154,7 @@ module.exports = [
       validate: {
         query: Joi.object({
           page: Joi.number().greater(0).default(1),
-          limit: Joi.number().greater(0).default(30)
+          limit: Joi.number().greater(0).default(displayPageSize)
         })
       },
       handler: async (request, h) => {

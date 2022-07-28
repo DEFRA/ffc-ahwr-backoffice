@@ -18,6 +18,8 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/warning-text/macro.njk"        import govukWarningText %}
 {% from "moj/components/header/macro.njk" import mojHeader %}
+{%- from "moj/components/filter/macro.njk" import mojFilter -%}
+{%- from "../layouts/header.njk" import ahwrHeader -%}
 
 {% block pageTitle %}{{ serviceName }} - GOV.UK{% endblock %}
 
@@ -31,54 +33,14 @@
       {# For Internet Explorer 8, you need to compile specific stylesheet #}
       {# see https://github.com/alphagov/govuk-frontend/blob/master/docs/installation/supporting-internet-explorer-8.md #}
       <!--[if IE 8]>
-    <link href="{{ assetPath }}/govuk-frontend/govuk/all-ie8.css" rel="stylesheet" />
-  <![endif]-->
+        <link href="{{ assetPath }}/govuk-frontend/govuk/all-ie8.css" rel="stylesheet" />
+      <![endif]-->
     {% endblock %}
 
     {% block header %}
-      {% if user %}
-        {{ mojHeader({
-  organisationLabel: {
-    text: 'GOV.UK',
-    href: 'https://www.gov.uk/'
-  },
-  serviceLabel: {
-    text: 'Administration of the health and welfare of your livestock',
-    href: '/'
-  },
-  navigation: {
-    label: 'Account navigation',
-    items: [{
-      text: user.name,
-      href: '/account',
-      active: true
-    }, {
-      text: 'Sign out',
-      href: '/logout'
-    }]
-  }
-
-}) }}
-      {% else %}
-        {{ mojHeader({
-  organisationLabel: {
-    text: 'GOV.UK',
-    href: '/'
-  },
-  serviceLabel: {
-    text: 'Administration of the health and welfare of your livestock',
-    href: '/'
-  },
-  navigation: {
-    label: 'Account navigation',
-    items: [ {
-      text: 'Sign In',
-      href: '/login'
-    }]
-  }
-
-}) }}
-      {% endif %}
+      {{
+        ahwrHeader(user)
+      }}
       <div class="govuk-grid-row govuk-width-container">
         {{ govukPhaseBanner({
           tag: {
@@ -97,23 +59,23 @@
 
     {% block footer %}
       {{ govukFooter({
-    meta: {
-      items: [
-        {
-          href: "/accessibility",
-          text: "Accessibility"
-        },
-        {
-          href: "/cookies",
-          text: "Cookies"
-        },
-        {
-          href: "/privacy-policy",
-          text: "Privacy"
+        meta: {
+          items: [
+            {
+              href: "/accessibility",
+              text: "Accessibility"
+            },
+            {
+              href: "/cookies",
+              text: "Cookies"
+            },
+            {
+              href: "/privacy-policy",
+              text: "Privacy"
+            }
+          ]
         }
-      ]
-    }
-  }) }}
+      }) }}
     {% endblock %}
 
     {% block bodyEnd %}
