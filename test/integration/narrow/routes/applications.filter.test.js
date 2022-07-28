@@ -18,7 +18,7 @@ pagination.getPagingData = jest.fn().mockReturnValue({
   page: 1, totalPages: 1, total: 1, limit: 10, url: undefined
 })
 applications.getApplications = jest.fn().mockReturnValue(applicationData)
-sessionMock.getAppSearch = jest.fn().mockReturnValue([])
+sessionMock.getAppSearch = jest.fn().mockReturnValue([]).mockReturnValueOnce(['PENDING', 'APPLIED', 'DATA INPUTTED', 'CLAIMED'])
 describe('Applications Filter test', () => {
   const url = '/applications/remove'
   jest.mock('../../../../app/auth')
@@ -47,6 +47,20 @@ describe('Applications Filter test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-heading-l').text()).toEqual('Applications')
       expect($('title').text()).toContain('Applications')
+      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(4)
+      expect(sessionMock.setAppSearch).toHaveBeenCalledTimes(1)
+      expectPhaseBanner.ok($)
+    })
+    test('returns 200 with selected status', async () => {
+      const options = {
+        method,
+        url: `${url}/PENDING`,
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      const $ = cheerio.load(res.payload)
+      expect($('govuk-checkboxes__input').filter(s => s.value === 'APPLIED')).toBeTruthy()
       expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(4)
       expect(sessionMock.setAppSearch).toHaveBeenCalledTimes(1)
       expectPhaseBanner.ok($)
