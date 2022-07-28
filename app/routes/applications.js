@@ -141,7 +141,6 @@ module.exports = [
       handler: async (request, h) => {
         let filterStatus = getAppSearch(request, keys.appSearch.filterStatus)
         filterStatus = filterStatus.filter(s => s !== request.params.status)
-        console.log(filterStatus, request.params.status)
         setAppSearch(request, keys.appSearch.filterStatus, filterStatus)
         return h.view(viewTemplate, await createModel(request))
       }
@@ -155,16 +154,21 @@ module.exports = [
       validate: {
         query: Joi.object({
           page: Joi.number().greater(0).default(1),
-          limit: Joi.number().greater(0).default(10)
+          limit: Joi.number().greater(0).default(30)
         })
       },
       handler: async (request, h) => {
         try {
-          let filterStatus = request.payload?.status ?? []
-          filterStatus = Array.isArray(filterStatus) ? filterStatus : [filterStatus]
+          let filterStatus = []
+          // Is Search Button Clicked
+          if (!request.payload.submit) {
+            filterStatus = request.payload?.status ?? []
+            filterStatus = Array.isArray(filterStatus) ? filterStatus : [filterStatus]
+          }
+
+          setAppSearch(request, keys.appSearch.filterStatus, filterStatus)
           const { searchText, searchType } = checkValidSearch(request.payload.searchText)
           setAppSearch(request, keys.appSearch.searchText, searchText ?? '')
-          setAppSearch(request, keys.appSearch.filterStatus, filterStatus)
           setAppSearch(request, keys.appSearch.searchType, searchType ?? '')
           return h.view(viewTemplate, await createModel(request, 1))
         } catch (err) {

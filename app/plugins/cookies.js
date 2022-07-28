@@ -12,7 +12,7 @@ module.exports = {
         if (request.response.variety === 'view' && statusCode !== 404 && statusCode !== 500 && request.response.source.manager._context) {
           const cookiesPolicy = getCurrentPolicy(request, h)
           request.response.source.manager._context.cookiesPolicy = cookiesPolicy
-          request.response.source.manager._context.user = request.auth.credentials?.account
+          request.response.source.manager._context.user = request.auth?.credentials?.account
         }
         return h.continue
       })
