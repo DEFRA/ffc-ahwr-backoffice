@@ -10,7 +10,7 @@
  * required for the `url` of the request.
  * @returns {string} value of crumb.
  */
-module.exports = async (server, options = { url: '/', crumbKey: 'crumb' }, mockForRequest = () => {}) => {
+module.exports = async (server, options = { url: '/cookies', crumbKey: 'crumb' }, mockForRequest = () => {}) => {
   mockForRequest()
   const { crumbKey, url } = options
   const res = await server.inject({ method: 'GET', url })

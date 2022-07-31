@@ -16,14 +16,23 @@ module.exports = {
           }
         },
         prepare: (options, next) => {
-          options.compileOptions.environment = nunjucks.configure([
+          const nunjucksAppEnv = nunjucks.configure([
             path.join(options.relativeTo || process.cwd(), options.path),
-            'node_modules/govuk-frontend/'
+            'node_modules/govuk-frontend/',
+            'node_modules/@ministryofjustice/frontend/'
           ], {
             autoescape: true,
             watch: false
           })
 
+          // Add filters from MOJ Frontend
+          let mojFilters = require('../../node_modules/@ministryofjustice/frontend/moj/filters/all')()
+          mojFilters = Object.assign(mojFilters)
+          Object.keys(mojFilters).forEach(function (filterName) {
+            nunjucksAppEnv.addFilter(filterName, mojFilters[filterName])
+          })
+
+          options.compileOptions.environment = nunjucksAppEnv
           return next()
         }
       }
