@@ -22,10 +22,26 @@ async function createModel (request, page) {
       return [
         { text: n.reference },
         { text: n.data?.organisation?.name },
-        { text: n.data?.organisation?.sbi },
-        { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
-        { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
-        { html: `<span class="govuk-tag ${statusClass}">${n.status.status}</span>` },
+        {
+          text: n.data?.organisation?.sbi,
+          format: 'number',
+          attributes: {
+            'data-sort-value': n.data?.organisation?.sbi
+          }
+        },
+        {
+          text: new Date(n.createdAt).toLocaleDateString('en-GB'),
+          format: 'date',
+          attributes: {
+            'data-sort-value': new Date(n.createdAt).toLocaleDateString('en-GB')
+          }
+        },
+        {
+          html: `<span class="govuk-tag ${statusClass}">${n.status.status}</span>`,
+          attributes: {
+            'data-sort-value': `${n.status.status}`
+          }
+        },
         { html: `<a href="view-application/${n.reference}">View application</a>` }
       ]
     })
