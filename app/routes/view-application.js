@@ -40,7 +40,7 @@ const getVetVisitData = (vetVisit, species) => {
     [{ text: formatedDate }, { text: eligibleSpecies[species] }, { text: upperFirstLetter(data.eligibleSpecies) }]
   )
 
-  if (data.speciesBvdInHerd) {
+  if (data.speciesBvdInHerd && (species === 'beef' || species === 'dairy')) {
     rows.push([{ text: formatedDate }, { text: 'BVD in herd?' }, { text: upperFirstLetter(data.speciesBvdInHerd) }])
   }
 
