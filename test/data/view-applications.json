@@ -47,7 +47,6 @@
         "eligibleSpecies": "yes",
         "sheepWorms": "yes",
         "reviewReport": "yes",
-        "speciesBvdInHerd": "yes",
         "sheepWormTreatment": "LV",
         "speciesTest": 40
       },
