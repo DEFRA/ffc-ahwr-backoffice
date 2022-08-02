@@ -48,19 +48,27 @@ const getVetVisitData = (vetVisit, species) => {
     rows.push([{ text: formatedDate }, { text: 'PRRS in herd?' }, { text: upperFirstLetter(data.speciesTest) }])
   }
 
-  if (data.speciesVaccinated) {
+  if (data.speciesTest && species === 'sheep') {
+    rows.push([{ text: formatedDate }, { text: 'Percentage reduction in EPG?' }, { text: data.speciesTest }])
+  }
+
+  if (data.sheepWormTreatment && species === 'sheep') {
+    rows.push([{ text: formatedDate }, { text: 'Active chemical used in worming treatment' }, { text: upperFirstLetter(data.sheepWormTreatment) }])
+  }
+
+  if (data.speciesVaccinated && ( species === 'beef' || species === 'dairy' )) {
     rows.push([{ text: formatedDate }, { text: 'Species Vaccinated?' }, { text: upperFirstLetter(data.speciesVaccinated) }])
   }
 
-  if (data.speciesLastVaccinated) {
+  if (data.speciesLastVaccinated && ( species === 'beef' || species === 'dairy' )) {
     rows.push([{ text: formatedDate }, { text: 'Last Vaccinated?' }, { text: `${data.speciesLastVaccinated.month}-${data.speciesLastVaccinated.year}` }])
   }
 
-  if (data.speciesVaccinationUpToDate) {
+  if (data.speciesVaccinationUpToDate && ( species === 'beef' || species === 'dairy' )) {
     rows.push([{ text: formatedDate }, { text: 'Vaccination up to date?' }, { text: upperFirstLetter(data.speciesVaccinationUpToDate) }])
   }
 
-  if (data.sheepWorms) {
+  if (data.sheepWorms && species === 'sheep') {
     rows.push([{ text: formatedDate }, { text: 'Worms in sheep?' }, { text: upperFirstLetter(data.sheepWorms) }])
   }
 
