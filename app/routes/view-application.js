@@ -48,14 +48,6 @@ const getVetVisitData = (vetVisit, species) => {
     rows.push([{ text: formatedDate }, { text: 'PRRS in herd?' }, { text: upperFirstLetter(data.speciesTest) }])
   }
 
-  if (data.speciesTest && species === 'sheep') {
-    rows.push([{ text: formatedDate }, { text: 'Percentage reduction in EPG?' }, { text: data.speciesTest }])
-  }
-
-  if (data.sheepWormTreatment && species === 'sheep') {
-    rows.push([{ text: formatedDate }, { text: 'Active chemical used in worming treatment' }, { text: upperFirstLetter(data.sheepWormTreatment) }])
-  }
-
   if (data.speciesVaccinated && (species === 'beef' || species === 'dairy')) {
     rows.push([{ text: formatedDate }, { text: 'Species Vaccinated?' }, { text: upperFirstLetter(data.speciesVaccinated) }])
   }
@@ -70,6 +62,14 @@ const getVetVisitData = (vetVisit, species) => {
 
   if (data.sheepWorms && species === 'sheep') {
     rows.push([{ text: formatedDate }, { text: 'Worms in sheep?' }, { text: upperFirstLetter(data.sheepWorms) }])
+  }
+
+  if (data.speciesTest && species === 'sheep') {
+    rows.push([{ text: formatedDate }, { text: 'Percentage reduction in EPG?' }, { text: data.speciesTest }])
+  }
+
+  if (data.sheepWormTreatment && species === 'sheep') {
+    rows.push([{ text: formatedDate }, { text: 'Active chemical used in worming treatment' }, { text: upperFirstLetter(data.sheepWormTreatment) }])
   }
 
   rows.push([{ text: formatedDate }, { text: 'Report given?' }, { text: upperFirstLetter(data.reviewReport) }])
