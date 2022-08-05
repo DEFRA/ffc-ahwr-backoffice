@@ -24,7 +24,7 @@ async function createModel (request, page) {
         { text: n.data?.organisation?.name },
         {
           text: n.data?.organisation?.sbi,
-          format: 'number',
+          format: 'numeric',
           attributes: {
             'data-sort-value': n.data?.organisation?.sbi
           }
@@ -33,7 +33,7 @@ async function createModel (request, page) {
           text: new Date(n.createdAt).toLocaleDateString('en-GB'),
           format: 'date',
           attributes: {
-            'data-sort-value': new Date(n.createdAt).toLocaleDateString('en-GB')
+            'data-sort-value': new Date(n.createdAt).toLocaleDateString('en-US')
           }
         },
         {
