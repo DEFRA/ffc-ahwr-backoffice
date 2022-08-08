@@ -33,7 +33,7 @@ async function createModel (request, page) {
           text: new Date(n.createdAt).toLocaleDateString('en-GB'),
           format: 'date',
           attributes: {
-            'data-sort-value': new Date(n.createdAt).toLocaleDateString('en-US')
+            'data-sort-value': n.createdAt
           }
         },
         {
