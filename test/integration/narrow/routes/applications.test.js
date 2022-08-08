@@ -23,7 +23,7 @@ applications.getApplications = jest.fn().mockReturnValue(applicationData)
 describe('Applications test', () => {
   const url = '/applications'
   jest.mock('../../../../app/auth')
-  const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
+  const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: 'test user' } }
   describe(`GET ${url} route`, () => {
     test('returns 302 no auth', async () => {
       const options = {
@@ -42,8 +42,8 @@ describe('Applications test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
-      expect($('h1.govuk-heading-l').text()).toEqual('Applications')
-      expect($('title').text()).toContain('Applications')
+      expect($('h1.govuk-heading-l').text()).toEqual('AHWR Applications')
+      expect($('title').text()).toContain('AHWR Applications')
       expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(3)
       expectPhaseBanner.ok($)
     })
@@ -57,8 +57,8 @@ describe('Applications test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
-      expect($('h1.govuk-heading-l').text()).toEqual('Applications')
-      expect($('title').text()).toContain('Applications')
+      expect($('h1.govuk-heading-l').text()).toEqual('AHWR Applications')
+      expect($('title').text()).toContain('AHWR Applications')
       expect($('span.govuk-tag--green').text()).toContain('APPLIED')
       expect($('span.govuk-tag--yellow').text()).toContain('DATA INPUTTED')
       expect($('span.govuk-tag--orange').text()).toContain('CHECK')
@@ -82,8 +82,8 @@ describe('Applications test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
-      expect($('h1.govuk-heading-l').text()).toEqual('Applications')
-      expect($('title').text()).toContain('Applications')
+      expect($('h1.govuk-heading-l').text()).toEqual('AHWR Applications')
+      expect($('title').text()).toContain('AHWR Applications')
       expect($('span.govuk-tag--green').text()).toContain('APPLIED')
       expect($('span.govuk-tag--yellow').text()).toContain('DATA INPUTTED')
       expect($('span.govuk-tag--orange').text()).toContain('CHECK')
@@ -110,7 +110,7 @@ describe('Applications test', () => {
       const options = {
         method,
         url,
-        payload: { crumb, searchText: '333333333', searchType: 'sbi' },
+        payload: { crumb, searchText: '333333333', searchType: 'sbi', submit: 'search' },
         headers: { cookie: `crumb=${crumb}` }
       }
       const res = await global.__SERVER__.inject(options)
@@ -132,11 +132,15 @@ describe('Applications test', () => {
       const options = {
         method,
         url,
-        payload: { crumb, searchText: searchDetails.searchText, status },
+        payload: { crumb, searchText: searchDetails.searchText, status, submit: 'search' },
         auth,
         headers: { cookie: `crumb=${crumb}` }
       }
-
+      applications.getApplications.mockReturnValue({
+        applications: [],
+        applicationStatus: [],
+        total: 0
+      })
       const res = await global.__SERVER__.inject(options)
 
       expect(res.statusCode).toBe(200)
@@ -156,7 +160,7 @@ describe('Applications test', () => {
       const options = {
         method,
         url,
-        payload: { crumb, searchText: searchDetails.searchText, status: [] },
+        payload: { crumb, searchText: searchDetails.searchText, status: [], submit: 'search' },
         headers: { cookie: `crumb=${crumb}` },
         auth
       }

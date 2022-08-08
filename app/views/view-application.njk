@@ -15,7 +15,8 @@
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-caption-l govuk-!-margin-bottom-3">Application {{ applicationId }}</h1>
 
-      <h2 class="govuk-heading-l">{{ organisationName }} <span class="govuk-tag {{ statusClass }}">{{ status }}</span></h2>
+      <h2 class="govuk-fieldset__legend--m">{{ organisationName }}
+        <span class="govuk-tag {{ statusClass }}">{{ status }}</span></h2>
       {{ govukSummaryList({
         rows: listData.rows
       }) }}
@@ -26,30 +27,30 @@
       {% endset -%}
 
       {% set vetReviewHtml %}
-        {% if vetVisit %}
-          <h2 class="govuk-heading-l">Data inputted</h2>
-          {{ govukTable(vetVisitData) }}
-        {% else %}
-          <h2 class="govuk-heading-l">Not yet reviewed</h2>
-        {% endif %}
+      {% if vetVisit %}
+        <h2 class="govuk-heading-l">Data inputted</h2>
+        {{ govukTable(vetVisitData) }}
+      {% else %}
+        <h2 class="govuk-heading-l">Not yet reviewed</h2>
+      {% endif %}
       {% endset -%}
 
       {% set claimHtml %}
-        {% if claimed %}
-          <h2 class="govuk-heading-l">Selected for fraud check</h2>
-          {{ govukTable(claimData) }}
-        {% else %}
-          <h2 class="govuk-heading-l">Not yet able to claim</h2>
-        {% endif %}
+      {% if claimed %}
+        <h2 class="govuk-heading-l">Selected for fraud check</h2>
+        {{ govukTable(claimData) }}
+      {% else %}
+        <h2 class="govuk-heading-l">Not yet able to claim</h2>
+      {% endif %}
       {% endset -%}
 
       {% set paymentHtml %}
-        {% if payment %}
-          <h2 class="govuk-heading-l">Payment information</h2>
-          {{ govukTable(paymentData) }}
-        {% else %}
-          <h2 class="govuk-heading-l">Not yet paid</h2>
-        {% endif %}
+      {% if payment %}
+        <h2 class="govuk-heading-l">Payment information</h2>
+        {{ govukTable(paymentData) }}
+      {% else %}
+        <h2 class="govuk-heading-l">Not yet paid</h2>
+      {% endif %}
       {% endset -%}
 
       {{ govukTabs({
