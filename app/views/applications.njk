@@ -1,6 +1,6 @@
 {% extends './layouts/layout.njk' %}
 {% block pageTitle %}
-  {{ siteTitle }}: Applications
+  {{ siteTitle }}: AHWR Applications
 {% endblock %}
 
 {% block beforeContent %}
@@ -12,11 +12,10 @@
 
 {% block content %}
 
-  <form method="POST">
+  <form method="POST" action="/applications">
     <div class="govuk-grid-row govuk-!-padding-bottom-9">
-      <h1 class="govuk-heading-l">Applications</h1>
+      <h1 class="govuk-heading-l">AHWR Applications</h1>
       <div id="heading-hint" class="govuk-hint govuk-!-margin-bottom-5">
-        Select an application to edit it. <br>
         Only eligible organisations that you have access to are shown.
       </div>
 
@@ -26,7 +25,7 @@
         </label>
         <input type="hidden" name="crumb" value="{{crumb}}"/>
         <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{searchText}}" aria-describedby="user-search-hint" spellcheck="false">
-        <button class="search-button" data-module="govuk-button">
+        <button class="search-button" data-module="govuk-button" name="submit" value="search">
                 Search
         </button>
       </div>
@@ -38,68 +37,94 @@
       </div>
     {% else %}
       <div class="govuk-grid-row">
-        {{ filter(availableStatus, selectedStatus) }}
+        <div class="govuk-grid-column-one-quarter govuk-!-margin-top-5">
+          {%- set filterOptionsHtml %}
+          {{ govukCheckboxes({
+              idPrefix: 'status',
+              name: 'status',
+              classes: "govuk-checkboxes--small",
+              fieldset: {
+                legend: {
+                  text: 'Status',
+                  classes: 'govuk-fieldset__legend--m'
+                }
+              },
+              items: filterStatus
+              }) }}
+
+          {% endset -%}
+
+          {{ mojFilter({
+            heading: {
+              text: 'Filter'
+            },
+            selectedFilters: {
+              heading: {
+                text: 'Selected filters'
+              },
+              clearLink: {
+                text: 'Clear filters',
+                href: '/applications/clear'
+              },
+              categories: [
+                {
+                  heading: {
+                    text: 'Status'
+                  },
+                  items: selectedStatus
+                }
+              ]
+            },
+            optionsHtml: filterOptionsHtml
+          }) }}
+        </div>
         <div class="govuk-grid-column-three-quarters">
           {{ govukTable({
-      firstCellIsHeader: true,
-      head: [
-        {
-          text: "Ref",
-          attributes: {
-            "aria-sort": "ascending"
-          }
-        },
-        {
-          text: "Business",
-          attributes: {
-            "aria-sort": "none"
-          }
-        },
-        {
-          text: "SBI",
-          attributes: {
-            "aria-sort": "ascending"
-          }
-        },
-        {
-          text: "Apply date",
-          attributes: {
-            "aria-sort": "none"
-          },
-          format: "date"
-        },
-        {
-          text: "Claim date",
-          attributes: {
-            "aria-sort": "none"
-          },
-          format: "date"
-        },
-        {
-          text: "Status",
-          attributes: {
-            "aria-sort": "none"
-          }
-        },
-        {
-          text: "Details",
-          attributes: {
-            "aria-sort": "none"
-          }
-        }
-      ],
-      rows: applications
-    }) }}
+            attributes: {
+              'data-module': 'moj-sortable-table'
+            },
+            firstCellIsHeader: false,
+            head: [
+              {
+                text: "Ref"
+              },
+              {
+                text: "Business"
+              },
+              {
+                text: "SBI",
+                attributes: {
+                  "aria-sort": "ascending"
+                },
+                format: "numeric"
+              },
+              {
+                text: "Apply date",
+                attributes: {
+                  "aria-sort": "none"
+                },
+                format: "date"
+              },
+              {
+                text: "Status",
+                attributes: {
+                  "aria-sort": "none"
+                }
+              },
+              {
+                text: "Details"
+              }
+            ],
+            rows: applications
+          }) }}
           {{ govukPagination({
-        previous: previous,
-        next: next,
-        items: pages
-        }) 
-        }}
+            previous: previous,
+            next: next,
+            items: pages
+          }) 
+          }}
         </div>
       </div>
-
     {% endif %}
-
   </form>
 {% endblock %}

@@ -1,7 +1,7 @@
 const viewTemplate = 'applications'
 const currentPath = `/${viewTemplate}`
 const { getApplications } = require('../api/applications')
-const { getPagination, getPagingData } = require('../pagination')
+const { getPagination, getPagingData, displayPageSize } = require('../pagination')
 const Joi = require('joi')
 const { setAppSearch, getAppSearch } = require('../session')
 const keys = require('../session/keys')
@@ -22,10 +22,26 @@ async function createModel (request, page) {
       return [
         { text: n.reference },
         { text: n.data?.organisation?.name },
-        { text: n.data?.organisation?.sbi },
-        { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
-        { text: new Date(n.createdAt).toLocaleDateString('en-GB') },
-        { html: `<span class="govuk-tag ${statusClass}">${n.status.status}</span>` },
+        {
+          text: n.data?.organisation?.sbi,
+          format: 'numeric',
+          attributes: {
+            'data-sort-value': n.data?.organisation?.sbi
+          }
+        },
+        {
+          text: new Date(n.createdAt).toLocaleDateString('en-GB'),
+          format: 'date',
+          attributes: {
+            'data-sort-value': n.createdAt
+          }
+        },
+        {
+          html: `<span class="govuk-tag ${statusClass}">${n.status.status}</span>`,
+          attributes: {
+            'data-sort-value': `${n.status.status}`
+          }
+        },
         { html: `<a href="view-application/${n.reference}">View application</a>` }
       ]
     })
@@ -43,7 +59,21 @@ async function createModel (request, page) {
       ...pagingData,
       searchText,
       availableStatus: groupByStatus,
-      selectedStatus: groupByStatus.filter(s => s.selected === true)
+      selectedStatus: groupByStatus.filter(s => s.selected === true).map(s => {
+        return {
+          href: `${currentPath}/remove/${s.status}`,
+          classes: s.styleClass,
+          text: s.status
+        }
+      }),
+      filterStatus: groupByStatus.map(s => {
+        return {
+          value: s.status,
+          html: `<div class="govuk-tag ${s.styleClass}"  style="color:#104189;" >${s.status} (${s.total}) </div>`,
+          checked: s.selected,
+          styleClass: s.styleClass
+        }
+      })
     }
   } else {
     return {
@@ -51,7 +81,8 @@ async function createModel (request, page) {
       error: 'No Applications found.',
       searchText,
       availableStatus: [],
-      selectedStatus: []
+      selectedStatus: [],
+      filterStatus: []
     }
   }
 }
@@ -94,10 +125,39 @@ module.exports = [
       validate: {
         query: Joi.object({
           page: Joi.number().greater(0).default(1),
-          limit: Joi.number().greater(0).default(10)
+          limit: Joi.number().greater(0).default(displayPageSize)
         })
       },
       handler: async (request, h) => {
+        return h.view(viewTemplate, await createModel(request))
+      }
+    }
+  },
+  {
+    method: 'GET',
+    path: `${currentPath}/clear`,
+    options: {
+      auth: { scope: [administrator, processor, user] },
+      handler: async (request, h) => {
+        setAppSearch(request, keys.appSearch.filterStatus, [])
+        return h.view(viewTemplate, await createModel(request))
+      }
+    }
+  },
+  {
+    method: 'GET',
+    path: `${currentPath}/remove/{status}`,
+    options: {
+      auth: { scope: [administrator, processor, user] },
+      validate: {
+        params: Joi.object({
+          status: Joi.string()
+        })
+      },
+      handler: async (request, h) => {
+        let filterStatus = getAppSearch(request, keys.appSearch.filterStatus)
+        filterStatus = filterStatus.filter(s => s !== request.params.status)
+        setAppSearch(request, keys.appSearch.filterStatus, filterStatus)
         return h.view(viewTemplate, await createModel(request))
       }
     }
@@ -110,16 +170,21 @@ module.exports = [
       validate: {
         query: Joi.object({
           page: Joi.number().greater(0).default(1),
-          limit: Joi.number().greater(0).default(10)
+          limit: Joi.number().greater(0).default(displayPageSize)
         })
       },
       handler: async (request, h) => {
         try {
-          let filterStatus = request.payload?.status ?? []
-          filterStatus = Array.isArray(filterStatus) ? filterStatus : [filterStatus]
+          let filterStatus = []
+          // Is Search Button Clicked
+          if (!request.payload.submit) {
+            filterStatus = request.payload?.status ?? []
+            filterStatus = Array.isArray(filterStatus) ? filterStatus : [filterStatus]
+          }
+
+          setAppSearch(request, keys.appSearch.filterStatus, filterStatus)
           const { searchText, searchType } = checkValidSearch(request.payload.searchText)
           setAppSearch(request, keys.appSearch.searchText, searchText ?? '')
-          setAppSearch(request, keys.appSearch.filterStatus, filterStatus)
           setAppSearch(request, keys.appSearch.searchType, searchType ?? '')
           return h.view(viewTemplate, await createModel(request, 1))
         } catch (err) {

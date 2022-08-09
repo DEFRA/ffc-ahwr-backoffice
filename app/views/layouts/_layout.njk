@@ -17,11 +17,14 @@
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/warning-text/macro.njk"        import govukWarningText %}
-{% from "../macros/filter.njk" import filter %}
+{% from "moj/components/header/macro.njk" import mojHeader %}
+{%- from "moj/components/filter/macro.njk" import mojFilter -%}
+{%- from "../layouts/header.njk" import ahwrHeader -%}
 
 {% block pageTitle %}{{ serviceName }} - GOV.UK{% endblock %}
 
 {% block head %}
+  <meta name="robots" content="noindex, nofollow">
   <!--[if !IE 8]><!-->
   <% htmlWebpackPlugin.files.css.forEach(file => { %>
     <link href="<%= file %>" rel="stylesheet">
@@ -30,17 +33,14 @@
       {# For Internet Explorer 8, you need to compile specific stylesheet #}
       {# see https://github.com/alphagov/govuk-frontend/blob/master/docs/installation/supporting-internet-explorer-8.md #}
       <!--[if IE 8]>
-    <link href="{{ assetPath }}/govuk-frontend/govuk/all-ie8.css" rel="stylesheet" />
-  <![endif]-->
+        <link href="{{ assetPath }}/govuk-frontend/govuk/all-ie8.css" rel="stylesheet" />
+      <![endif]-->
     {% endblock %}
 
     {% block header %}
-      {{ govukHeader({
-        homepageUrl: "https://www.gov.uk/",
-        containerClasses: "govuk-width-container",
-        serviceName: serviceName,
-        serviceUrl: "/"
-      }) }}
+      {{
+        ahwrHeader(user)
+      }}
       <div class="govuk-grid-row govuk-width-container">
         {{ govukPhaseBanner({
           tag: {
@@ -53,23 +53,23 @@
 
     {% block footer %}
       {{ govukFooter({
-    meta: {
-      items: [
-        {
-          href: "/accessibility",
-          text: "Accessibility"
-        },
-        {
-          href: "/cookies",
-          text: "Cookies"
-        },
-        {
-          href: "/privacy-policy",
-          text: "Privacy"
+        meta: {
+          items: [
+            {
+              href: "/accessibility",
+              text: "Accessibility"
+            },
+            {
+              href: "/cookies",
+              text: "Cookies"
+            },
+            {
+              href: "/privacy-policy",
+              text: "Privacy"
+            }
+          ]
         }
-      ]
-    }
-  }) }}
+      }) }}
     {% endblock %}
 
     {% block bodyEnd %}

@@ -1,0 +1,44 @@
+{% from "moj/components/header/macro.njk" import mojHeader %}
+{% macro ahwrHeader(user) %}
+    {% if user %}
+        {{ mojHeader({
+        organisationLabel: {
+            text: 'GOV.UK',
+            href: 'https://www.gov.uk/'
+        },
+        serviceLabel: {
+            text: 'Administration of the health and welfare of your livestock',
+            href: '/'
+        },
+        navigation: {
+            label: 'Account navigation',
+            items: [{
+                text: user.name,
+                href: '/account',
+                active: true
+            }, {
+                text: 'Sign out',
+                href: '/logout'
+            }]
+        }
+}) }}
+    {% else %}
+        {{ mojHeader({
+        organisationLabel: {
+        text: 'GOV.UK',
+        href: '/'
+    },
+    serviceLabel: {
+        text: 'Administration of the health and welfare of your livestock',
+        href: '/'
+    },
+    navigation: {
+        label: 'Account navigation',
+        items: [ {
+            text: 'Sign In',
+            href: '/login'
+        }]
+    }
+}) }}
+    {% endif %}
+{% endmacro %}
