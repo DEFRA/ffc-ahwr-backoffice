@@ -37,7 +37,7 @@
       </div>
     {% else %}
       <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-quarter govuk-!-margin-top-5">
+        <div class="govuk-grid-column-one-quarter govuk-!-padding-left-0">
           {%- set filterOptionsHtml %}
           {{ govukCheckboxes({
               idPrefix: 'status',
@@ -79,6 +79,9 @@
           }) }}
         </div>
         <div class="govuk-grid-column-three-quarters">
+          <div class="moj-action-bar">
+            <div class="moj-action-bar__filter hide_pseudo_after"></div>
+          </div>
           {{ govukTable({
             attributes: {
               'data-module': 'moj-sortable-table'

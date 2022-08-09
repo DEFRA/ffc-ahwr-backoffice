@@ -3,13 +3,16 @@ $govuk-assets-path: "~govuk-frontend/govuk/assets/";
 @import "./app-task-list";
 @import "./guidance-layout";
 
-.govuk-width-container, .moj-header__container, .moj-primary-navigation__container {
+.govuk-width-container,
+.moj-header__container,
+.moj-primary-navigation__container {
   max-width: 90% !important;
 }
 
 $moj-assets-path: "~@ministryofjustice/frontend/moj/assets/";
 
 @import "@ministryofjustice/frontend/moj/all";
+
 .nojs-hidden {
   display: none;
 }
@@ -105,7 +108,7 @@ $moj-assets-path: "~@ministryofjustice/frontend/moj/assets/";
 /**
  * user search box
  */
- .user-search-box .govuk-form-group {
+.user-search-box .govuk-form-group {
   margin-left: 20px;
   margin-bottom: 10px;
 }
@@ -144,7 +147,8 @@ $moj-assets-path: "~@ministryofjustice/frontend/moj/assets/";
   box-shadow: none;
 }
 
-.user-search-box .search-button:hover, .user-search-box .search-button:focus,
+.user-search-box .search-button:hover,
+.user-search-box .search-button:focus,
 .user-search-box .search-button:active:hover,
 .user-search-box .search-button:active:focus {
   background-color: #003078;
@@ -159,7 +163,7 @@ $moj-assets-path: "~@ministryofjustice/frontend/moj/assets/";
 /**
  * pagination from: https://home-office-digital-patterns.herokuapp.com/components/pagination
  */
- .pagination {
+.pagination {
   font-family: "GDS Transport", arial, sans-serif;
   padding: 0;
   margin: 0;
@@ -183,7 +187,8 @@ $moj-assets-path: "~@ministryofjustice/frontend/moj/assets/";
   cursor: pointer;
 }
 
-.pagination__link:hover, .pagination__link:focus {
+.pagination__link:hover,
+.pagination__link:focus {
   background: #F8F8F8;
   outline: 3px solid #FFBF47;
 }
@@ -192,7 +197,8 @@ $moj-assets-path: "~@ministryofjustice/frontend/moj/assets/";
   font-weight: 700;
 }
 
-.pagination__link.current, .pagination__link.disabled {
+.pagination__link.current,
+.pagination__link.disabled {
   color: #0B0C0C;
   border: none;
   pointer-events: none;
@@ -220,4 +226,8 @@ a.pagination__link:focus {
 
 .govuk-summary-list {
   margin-bottom: 60px !important;
+}
+
+.moj-action-bar__filter.hide_pseudo_after:after {
+  display: none;
 }
