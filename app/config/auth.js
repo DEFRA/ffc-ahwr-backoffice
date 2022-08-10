@@ -5,7 +5,7 @@ const schema = Joi.object({
   clientSecret: Joi.string().allow(''),
   clientId: Joi.string().allow(''),
   authority: Joi.string().allow(''),
-  redirectUrl: Joi.string().default('http://localhost:3002/authenticate')
+  redirectUrl: Joi.string()
 })
 
 const config = {
