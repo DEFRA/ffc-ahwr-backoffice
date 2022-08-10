@@ -7,6 +7,7 @@ initAll()
 window.$ = $
 moj.initAll()
 
+/* eslint-disable no-new */
 new moj.FilterToggleButton({
   bigModeMediaQuery: '(min-width: 48.063em)',
   startHidden: true,
