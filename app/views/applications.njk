@@ -33,49 +33,64 @@
       </div>
     {% else %}
       <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-quarter govuk-!-margin-top-5">
-          {%- set filterOptionsHtml %}
-          {{ govukCheckboxes({
-              idPrefix: 'status',
-              name: 'status',
-              classes: "govuk-checkboxes--small",
-              fieldset: {
-                legend: {
-                  text: 'Status',
-                  classes: 'govuk-fieldset__legend--m'
-                }
-              },
-              items: filterStatus
-              }) }}
+        <div class="moj-filter-layout">
 
-          {% endset -%}
+          <div class="moj-filter-layout__filter">
+            {%- set filterOptionsHtml %}
+            {{ govukCheckboxes({
+                      idPrefix: 'status',
+                      name: 'status',
+                      classes: "govuk-checkboxes--small",
+                      fieldset: {
+                        legend: {
+                          text: 'Status',
+                          classes: 'govuk-fieldset__legend--m'
+                        }
+                      },
+                      items: filterStatus
+                      }) }}
 
-          {{ mojFilter({
-            heading: {
-              text: 'Filter'
-            },
-            selectedFilters: {
-              heading: {
-                text: 'Selected filters'
-              },
-              clearLink: {
-                text: 'Clear filters',
-                href: '/applications/clear'
-              },
-              categories: [
-                {
-                  heading: {
-                    text: 'Status'
-                  },
-                  items: selectedStatus
-                }
-              ]
-            },
-            optionsHtml: filterOptionsHtml
-          }) }}
-        </div>
-        <div class="govuk-grid-column-three-quarters">
-          {{ govukTable({
+            {% endset -%}
+
+            {{ mojFilter({
+                    heading: {
+                      text: 'Filter'
+                    },
+                    selectedFilters: {
+                      heading: {
+                        text: 'Selected filters'
+                      },
+                      clearLink: {
+                        text: 'Clear filters',
+                        href: '/applications/clear'
+                      },
+                      categories: [
+                        {
+                          heading: {
+                            text: 'Status'
+                          },
+                          items: selectedStatus
+                        }
+                      ]
+                    },
+                    optionsHtml: filterOptionsHtml
+                  }) }}
+          </div>
+
+          <div class="moj-filter-layout__content">
+            <div class="moj-action-bar">
+              <div class="moj-action-bar__filter"></div>
+              {{ mojButtonMenu({
+                        items: [{
+                          text: 'Find Users',
+                          classes: 'govuk-button--secondary'
+                        }]
+                      }) }}
+            </div>
+            <div class="moj-scrollable-pane">
+
+              <div class="moj-scrollable-pane__wrapper">
+                {{ govukTable({
             attributes: {
               'data-module': 'moj-sortable-table'
             },
@@ -113,14 +128,16 @@
             ],
             rows: applications
           }) }}
-          {{ govukPagination({
+                {{ govukPagination({
             previous: previous,
             next: next,
             items: pages
           }) 
           }}
-        </div>
-      </div>
-    {% endif %}
-  </form>
-{% endblock %}
+              </div>
+
+            </div>
+          </div>
+        {% endif %}
+      </form>
+    {% endblock %}
