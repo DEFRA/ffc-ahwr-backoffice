@@ -13,6 +13,9 @@ $moj-assets-path: "~@ministryofjustice/frontend/moj/assets/";
 .nojs-hidden {
   display: none;
 }
+.moj-action-bar__filter:after {
+  width: 0px;
+}
 
 .js-enabled .nojs-hidden {
   display: block;
