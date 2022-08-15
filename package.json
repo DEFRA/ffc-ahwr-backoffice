@@ -35,7 +35,6 @@
     "@hapi/yar": "^10.1.1",
     "@ministryofjustice/frontend": "^1.4.2",
     "applicationinsights": "^2.1.6",
-    "ffc-messaging": "^2.3.4",
     "govuk-frontend": "^4.2.0",
     "hapi-pino": "^10.1.0",
     "joi": "^17.6.0",

@@ -15,10 +15,6 @@
   <form method="POST" action="/applications">
     <div class="govuk-grid-row govuk-!-padding-bottom-9">
       <h1 class="govuk-heading-l">AHWR Applications</h1>
-      <div id="heading-hint" class="govuk-hint govuk-!-margin-bottom-5">
-        Only eligible organisations that you have access to are shown.
-      </div>
-
       <div class="user-search-box govuk-!-width-two-thirds">
         <label class="govuk-label govuk-label--s" for="user-search">
           Search for an application by SBI number or reference or status
@@ -37,49 +33,58 @@
       </div>
     {% else %}
       <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-quarter govuk-!-margin-top-5">
-          {%- set filterOptionsHtml %}
-          {{ govukCheckboxes({
-              idPrefix: 'status',
-              name: 'status',
-              classes: "govuk-checkboxes--small",
-              fieldset: {
-                legend: {
-                  text: 'Status',
-                  classes: 'govuk-fieldset__legend--m'
-                }
-              },
-              items: filterStatus
-              }) }}
+        <div class="moj-filter-layout">
 
-          {% endset -%}
+          <div class="moj-filter-layout__filter">
+            {%- set filterOptionsHtml %}
+            {{ govukCheckboxes({
+                      idPrefix: 'status',
+                      name: 'status',
+                      classes: "govuk-checkboxes--small",
+                      fieldset: {
+                        legend: {
+                          text: 'Status',
+                          classes: 'govuk-fieldset__legend--m'
+                        }
+                      },
+                      items: filterStatus
+                      }) }}
 
-          {{ mojFilter({
-            heading: {
-              text: 'Filter'
-            },
-            selectedFilters: {
-              heading: {
-                text: 'Selected filters'
-              },
-              clearLink: {
-                text: 'Clear filters',
-                href: '/applications/clear'
-              },
-              categories: [
-                {
-                  heading: {
-                    text: 'Status'
-                  },
-                  items: selectedStatus
-                }
-              ]
-            },
-            optionsHtml: filterOptionsHtml
-          }) }}
-        </div>
-        <div class="govuk-grid-column-three-quarters">
-          {{ govukTable({
+            {% endset -%}
+
+            {{ mojFilter({
+                    heading: {
+                      text: 'Filter'
+                    },
+                    selectedFilters: {
+                      heading: {
+                        text: 'Selected filters'
+                      },
+                      clearLink: {
+                        text: 'Clear filters',
+                        href: '/applications/clear'
+                      },
+                      categories: [
+                        {
+                          heading: {
+                            text: 'Status'
+                          },
+                          items: selectedStatus
+                        }
+                      ]
+                    },
+                    optionsHtml: filterOptionsHtml
+                  }) }}
+          </div>
+
+          <div class="moj-filter-layout__content">
+            <div class="moj-action-bar">
+              <div class="moj-action-bar__filter hide_pseudo_after"></div>
+            </div>
+            <div class="moj-scrollable-pane">
+
+              <div class="moj-scrollable-pane__wrapper">
+                {{ govukTable({
             attributes: {
               'data-module': 'moj-sortable-table'
             },
@@ -117,14 +122,16 @@
             ],
             rows: applications
           }) }}
-          {{ govukPagination({
+                {{ govukPagination({
             previous: previous,
             next: next,
             items: pages
           }) 
           }}
-        </div>
-      </div>
-    {% endif %}
-  </form>
-{% endblock %}
+              </div>
+
+            </div>
+          </div>
+        {% endif %}
+      </form>
+    {% endblock %}

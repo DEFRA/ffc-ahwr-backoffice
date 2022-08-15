@@ -1,4 +1,6 @@
 const Joi = require('joi')
+const authConfig = require('./auth')
+
 const schema = Joi.object({
   cache: {
     expiresIn: Joi.number().default(1000 * 3600 * 24 * 3), // 3 days
@@ -28,19 +30,12 @@ const schema = Joi.object({
     path: Joi.string().default('/'),
     ttl: Joi.number().default(1000 * 60 * 60 * 24 * 365) // 1 year
   },
-  auth: {
-    enabled: Joi.boolean().default(false),
-    clientSecret: Joi.string().allow(''),
-    clientId: Joi.string().allow(''),
-    authority: Joi.string().allow(''),
-    redirectUrl: Joi.string().default('http://localhost:3002/authenticate')
-  },
   env: Joi.string().valid('development', 'test', 'production').default('development'),
   isDev: Joi.boolean().default(false),
   isProd: Joi.boolean().default(false),
   port: Joi.number().default(3000),
   serviceName: Joi.string().default('Administration of the health and welfare of your livestock'),
-  siteTitle: Joi.string().default('Back office'),
+  siteTitle: Joi.string().default('Administration'),
   serviceUri: Joi.string().uri(),
   useRedis: Joi.boolean().default(false),
   applicationApiUri: Joi.string().uri(),
@@ -72,13 +67,6 @@ const config = {
     isSecure: process.env.NODE_ENV === 'production',
     password: process.env.COOKIE_PASSWORD
   },
-  auth: {
-    enabled: process.env.AADAR_ENABLED,
-    clientSecret: process.env.AADAR_CLIENT_SECRET,
-    clientId: process.env.AADAR_CLIENT_ID,
-    authority: `https://login.microsoftonline.com/${process.env.AADAR_TENANT_ID}`,
-    redirectUrl: process.env.AADAR_REDIRECT_URL
-  },
   env: process.env.NODE_ENV,
   isDev: process.env.NODE_ENV === 'development',
   isProd: process.env.NODE_ENV === 'production',
@@ -94,5 +82,7 @@ const { error, value } = schema.validate(config, { abortEarly: false })
 if (error) {
   throw new Error(`The server config is invalid. ${error.message}`)
 }
+
+value.auth = authConfig
 
 module.exports = value
