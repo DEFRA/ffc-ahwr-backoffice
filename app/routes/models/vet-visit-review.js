@@ -1,5 +1,4 @@
 const { formatedDateToUk, upperFirstLetter } = require('../../lib/display-helper')
-const speciesNumbers = require('../../../app/constants/species-numbers')
 const eligibleSpecies = require('../../../app/constants/eligible-species')
 
 const getSheepDataRows = (data, formatedDate) => {

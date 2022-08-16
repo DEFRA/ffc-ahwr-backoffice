@@ -10,7 +10,7 @@ function ViewModel (application) {
     vetVisitData: application?.vetVisit ? getVetVisitData(application.vetVisit, application?.data?.whichReview) : false,
     listData: { rows: getOrganisationRows(application?.data?.organisation) },
     paymentData: application?.payment ? getPaymentData(application?.payment) : false,
-    claimData: application?.claimed ? getClaimData(application?.updatedAt) : false,
+    claimData: application?.claimed ? getClaimData(application?.updatedAt) : false
   }
 }
 

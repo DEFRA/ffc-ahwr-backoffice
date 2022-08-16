@@ -30,7 +30,7 @@ module.exports = {
         vetVisit: application?.vetVisit,
         claimed: application?.claimed,
         payment: application?.payment,
-        ... new ViewModel(application)
+        ...new ViewModel(application)
       })
     }
   }
