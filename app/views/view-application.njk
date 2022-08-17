@@ -3,11 +3,13 @@
 {% block pageTitle %}
   {{ siteTitle }}: User Application
 {% endblock %}
-
+{% set backLink %}
+ /applications?page={{page}}
+{% endset -%}
 {% block beforeContent %}
   {{ govukBackLink({
         text: "Back",
-        href: "/applications"
+        href: backLink
       }) }}
 {% endblock %}
 {% block content %}

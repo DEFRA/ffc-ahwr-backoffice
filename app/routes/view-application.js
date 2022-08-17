@@ -13,6 +13,9 @@ module.exports = {
     validate: {
       params: Joi.object({
         reference: Joi.string().valid()
+      }),
+      query: Joi.object({
+        page: Joi.number().greater(0).default(1)
       })
     },
     handler: async (request, h) => {
@@ -30,7 +33,8 @@ module.exports = {
         vetVisit: application?.vetVisit,
         claimed: application?.claimed,
         payment: application?.payment,
-        ...new ViewModel(application)
+        ...new ViewModel(application),
+        page: request.query.page
       })
     }
   }
