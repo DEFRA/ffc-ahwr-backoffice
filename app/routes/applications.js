@@ -21,7 +21,7 @@ module.exports = [
         })
       },
       handler: async (request, h) => {
-        return h.view(viewTemplate, await new ViewModel(request))
+        return h.view(viewTemplate, await new ViewModel(request)) // NOSONAR
       }
     }
   },
@@ -32,7 +32,7 @@ module.exports = [
       auth: { scope: [administrator, processor, user] },
       handler: async (request, h) => {
         setAppSearch(request, keys.appSearch.filterStatus, [])
-        return h.view(viewTemplate, await new ViewModel(request))
+        return h.view(viewTemplate, await new ViewModel(request)) // NOSONAR
       }
     }
   },
@@ -50,7 +50,7 @@ module.exports = [
         let filterStatus = getAppSearch(request, keys.appSearch.filterStatus)
         filterStatus = filterStatus.filter(s => s !== request.params.status)
         setAppSearch(request, keys.appSearch.filterStatus, filterStatus)
-        return h.view(viewTemplate, await new ViewModel(request))
+        return h.view(viewTemplate, await new ViewModel(request)) // NOSONAR
       }
     }
   },
@@ -78,7 +78,7 @@ module.exports = [
           const { searchText, searchType } = checkValidSearch(request.payload.searchText)
           setAppSearch(request, keys.appSearch.searchText, searchText ?? '')
           setAppSearch(request, keys.appSearch.searchType, searchType ?? '')
-          return h.view(viewTemplate, await new ViewModel(request, 1))
+          return h.view(viewTemplate, await new ViewModel(request, 1)) // NOSONAR
         } catch (err) {
           return h.view(viewTemplate, { ...request.payload, error: err }).code(400).takeover()
         }
