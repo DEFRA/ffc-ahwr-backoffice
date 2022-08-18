@@ -50,7 +50,7 @@ async function createModel (request, page) {
             'data-sort-value': `${n.status.status}`
           }
         },
-        { html: `<a href="view-application/${n.reference}">View application</a>` }
+        { html: `<a href="view-application/${n.reference}?page=${page}">View application</a>` }
       ]
     })
     const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
