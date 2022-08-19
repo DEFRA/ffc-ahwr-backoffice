@@ -13,39 +13,39 @@ class ViewModel {
   }
 }
 
-const getApplicationTableHeader = (sortField) =>{
-  const direction = sortField.direction ==='DESC' ? 'descending' : 'ascending'
+const getApplicationTableHeader = (sortField) => {
+  const direction = sortField.direction === 'DESC' ? 'descending' : 'ascending'
   const headerColumns = [{
-    text: "Ref"
+    text: 'Ref'
   },
   {
-    text: "Business"
+    text: 'Business'
   }]
   headerColumns.push({
-    text: "SBI",
+    text: 'SBI',
     attributes: {
-      "aria-sort": sortField && sortField.field === 'SBI' ? direction : 'none',
-      "data-url": '/applications/sort/SBI'
+      'aria-sort': sortField && sortField.field === 'SBI' ? direction : 'none',
+      'data-url': '/applications/sort/SBI'
     },
-    format: "numeric"
+    format: 'numeric'
   })
   headerColumns.push({
-    text: "Apply date",
+    text: 'Apply date',
     attributes: {
-      "aria-sort": sortField && sortField.field === 'Apply date' ? direction : 'none',
-      "data-url": '/applications/sort/Apply date'
+      'aria-sort': sortField && sortField.field === 'Apply date' ? direction : 'none',
+      'data-url': '/applications/sort/Apply date'
     },
-    format: "date"
+    format: 'date'
   })
   headerColumns.push({
-    text: "Status",
+    text: 'Status',
     attributes: {
-      "aria-sort": sortField && sortField.field === 'Status' ? direction : 'none',
-      "data-url": '/applications/sort/Status'
+      'aria-sort': sortField && sortField.field === 'Status' ? direction : 'none',
+      'data-url': '/applications/sort/Status'
     }
   })
   headerColumns.push({
-    text: "Details"
+    text: 'Details'
   })
 
   return headerColumns

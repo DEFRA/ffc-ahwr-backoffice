@@ -97,7 +97,7 @@ module.exports = [
         })
       },
       handler: async (request, h) => {
-        request.params.direction = request.params.direction !== 'descending' ? 'DESC': 'ASC'
+        request.params.direction = request.params.direction !== 'descending' ? 'DESC' : 'ASC'
         setAppSearch(request, keys.appSearch.sort, request.params)
         return 1 // NOSONAR
       }
