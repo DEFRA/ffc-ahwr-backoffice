@@ -13,14 +13,15 @@ async function getApplication (reference) {
     return null
   }
 }
-async function getApplications (searchType, searchText, limit, offset, filterStatus) {
+async function getApplications (searchType, searchText, limit, offset, filterStatus, sort) {
   const url = `${applicationApiUri}/application/search`
   const options = {
     payload: {
       search: { text: searchText, type: searchType },
       limit,
       offset,
-      filter: filterStatus
+      filter: filterStatus,
+      sort
     },
     json: true
   }

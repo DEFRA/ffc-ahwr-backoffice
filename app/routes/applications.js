@@ -84,5 +84,23 @@ module.exports = [
         }
       }
     }
+  },
+  {
+    method: 'GET',
+    path: `${currentPath}/sort/{field}/{direction}`,
+    options: {
+      auth: { scope: [administrator, processor, user] },
+      validate: {
+        params: Joi.object({
+          field: Joi.string(),
+          direction: Joi.string()
+        })
+      },
+      handler: async (request, h) => {
+        request.params.direction = request.params.direction !== 'descending' ? 'DESC': 'ASC'
+        setAppSearch(request, keys.appSearch.sort, request.params)
+        return 1 // NOSONAR
+      }
+    }
   }
 ]

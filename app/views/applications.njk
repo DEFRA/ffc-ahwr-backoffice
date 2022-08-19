@@ -89,37 +89,7 @@
               'data-module': 'moj-sortable-table'
             },
             firstCellIsHeader: false,
-            head: [
-              {
-                text: "Ref"
-              },
-              {
-                text: "Business"
-              },
-              {
-                text: "SBI",
-                attributes: {
-                  "aria-sort": "ascending"
-                },
-                format: "numeric"
-              },
-              {
-                text: "Apply date",
-                attributes: {
-                  "aria-sort": "none"
-                },
-                format: "date"
-              },
-              {
-                text: "Status",
-                attributes: {
-                  "aria-sort": "none"
-                }
-              },
-              {
-                text: "Details"
-              }
-            ],
+            head: model.header,
             rows: model.applications
           }) }}
                 {{ govukPagination({

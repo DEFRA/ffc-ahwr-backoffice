@@ -2,6 +2,7 @@ module.exports = {
   appSearch: {
     searchText: 'searchText',
     searchType: 'searchType',
-    filterStatus: 'status'
+    filterStatus: 'status',
+    sort: 'sort'
   }
 }
