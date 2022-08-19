@@ -34,6 +34,6 @@ document.querySelectorAll('th.govuk-table__header > button')
   .forEach((button) =>
     button.addEventListener('click', function () {
       submitSort(this.parentElement.getAttribute('data-url'), this.parentElement.getAttribute('aria-sort'))
-      location.reload()
+      window.location.reload()
     })
   )
