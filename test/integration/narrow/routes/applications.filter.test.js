@@ -102,10 +102,22 @@ describe('Applications Filter test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
     })
-    test('returns 200', async () => {
+    test('returns 200 ascending', async () => {
       const options = {
         method,
         url: '/applications/sort/sbi/ascending',
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      expect(res.payload).toEqual('1')
+      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(0)
+      expect(sessionMock.setAppSearch).toHaveBeenCalledTimes(1)
+    })
+    test('returns 200 descending', async () => {
+      const options = {
+        method,
+        url: '/applications/sort/sbi/descending',
         auth
       }
       const res = await global.__SERVER__.inject(options)
