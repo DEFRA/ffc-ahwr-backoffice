@@ -44,7 +44,7 @@ describe('Applications test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-heading-l').text()).toEqual('AHWR Applications')
       expect($('title').text()).toContain('AHWR Applications')
-      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(3)
+      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(5)
       expectPhaseBanner.ok($)
     })
 

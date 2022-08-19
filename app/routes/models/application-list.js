@@ -14,7 +14,7 @@ class ViewModel {
 }
 
 const getApplicationTableHeader = (sortField) => {
-  const direction = sortField.direction === 'DESC' ? 'descending' : 'ascending'
+  const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
   const headerColumns = [{
     text: 'Ref'
   },
