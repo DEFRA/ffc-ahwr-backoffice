@@ -92,4 +92,27 @@ describe('Applications Filter test', () => {
       expectPhaseBanner.ok($)
     })
   })
+
+  describe('GET /applications/sort route', () => {
+    test('returns 302 no auth', async () => {
+      const options = {
+        method,
+        url: '/applications/sort/sbi/ascending'
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(302)
+    })
+    test('returns 200', async () => {
+      const options = {
+        method,
+        url: '/applications/sort/sbi/ascending',
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      expect(res.payload).toEqual('1')
+      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(0)
+      expect(sessionMock.setAppSearch).toHaveBeenCalledTimes(1)
+    })
+  })
 })
