@@ -1,4 +1,6 @@
 {% extends './layouts/layout.njk' %}
+{% from "./macros/applications-table.njk" import applicationsTable %}
+
 {% block pageTitle %}
   {{ siteTitle }}: AHWR Applications
 {% endblock %}
@@ -84,50 +86,7 @@
             <div class="moj-scrollable-pane">
 
               <div class="moj-scrollable-pane__wrapper">
-                {{ govukTable({
-            attributes: {
-              'data-module': 'moj-sortable-table'
-            },
-            firstCellIsHeader: false,
-            head: [
-              {
-                text: "Ref"
-              },
-              {
-                text: "Business"
-              },
-              {
-                text: "SBI",
-                attributes: {
-                  "aria-sort": "ascending"
-                },
-                format: "numeric"
-              },
-              {
-                text: "Apply date",
-                attributes: {
-                  "aria-sort": "none"
-                },
-                format: "date"
-              },
-              {
-                text: "Status",
-                attributes: {
-                  "aria-sort": "none"
-                }
-              },
-              {
-                text: "Details"
-              }
-            ],
-            rows: model.applications
-          }) }}
-                {{ govukPagination({
-            previous: model.previous,
-            next: model.next,
-            items: model.pages
-          }) 
-          }}
+                {{ applicationsTable(model) }}
               </div>
 
             </div>
