@@ -18,7 +18,10 @@ pagination.getPagingData = jest.fn().mockReturnValue({
   page: 1, totalPages: 1, total: 1, limit: 10, url: undefined
 })
 applications.getApplications = jest.fn().mockReturnValue(applicationData)
-sessionMock.getAppSearch = jest.fn().mockReturnValue([]).mockReturnValueOnce(['PENDING', 'APPLIED', 'DATA INPUTTED', 'CLAIMED'])
+sessionMock.getAppSearch = jest.fn()
+  .mockReturnValue([])
+  .mockReturnValueOnce(['PENDING', 'APPLIED', 'DATA INPUTTED', 'CLAIMED'])
+  .mockReturnValueOnce({ field: 'SBI', direction: 'DESC' })
 describe('Applications Filter test', () => {
   const url = '/applications/remove'
   jest.mock('../../../../app/auth')
@@ -27,7 +30,7 @@ describe('Applications Filter test', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
-  describe(`GET ${url} route`, () => {
+  describe(`GET ${url} route remove`, () => {
     test('returns 302 no auth', async () => {
       const options = {
         method,

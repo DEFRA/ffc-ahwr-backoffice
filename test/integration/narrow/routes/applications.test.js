@@ -19,10 +19,7 @@ pagination.getPagingData = jest.fn().mockReturnValue({
   page: 1, totalPages: 1, total: 1, limit: 10, url: undefined
 })
 applications.getApplications = jest.fn().mockReturnValue(applicationData)
-sessionMock.getAppSearch = jest.fn()
-  .mockReturnValue([])
-  .mockReturnValueOnce(['PENDING', 'APPLIED', 'DATA INPUTTED', 'CLAIMED'])
-  .mockReturnValueOnce({ field: 'SBI', direction: 'DESC' })
+
 describe('Applications test', () => {
   const url = '/applications'
   jest.mock('../../../../app/auth')

@@ -24,13 +24,13 @@ new moj.FilterToggleButton({ // NOSONAR
     container: $('.moj-filter')
   }
 })
-function submitSort (dataUrl, sort) {
+function submitSort (dataUrl, sort) { // NOSONAR
   const xhr = new XMLHttpRequest() // eslint-disable-line
   xhr.open('GET', `${dataUrl}/${sort}`, true)
   xhr.setRequestHeader('Content-Type', 'application/json')
   xhr.send()
 }
-document.querySelectorAll('th.govuk-table__header > button')
+document.querySelectorAll('th.govuk-table__header > button') // NOSONAR
   .forEach((button) =>
     button.addEventListener('click', function () {
       submitSort(this.parentElement.getAttribute('data-url'), this.parentElement.getAttribute('aria-sort'))
