@@ -23,7 +23,7 @@
       {{ govukSummaryList({
         rows: model.listData.rows
       }) }}
-      {{ viewApplicationTabs(model) }}
+      {{ viewApplicationTabs(model, vetVisit, claimed, payment, status) }}
     </div>
   </div>
 {% endblock %}
