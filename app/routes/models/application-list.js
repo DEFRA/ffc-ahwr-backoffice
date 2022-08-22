@@ -3,6 +3,7 @@ const { getPagination, getPagingData } = require('../../pagination')
 const { getAppSearch } = require('../../session')
 const getStyleClassByStatus = require('../../constants/status')
 const keys = require('../../session/keys')
+const { serviceUri } = require('../../config')
 
 class ViewModel {
   constructor (request, page) {
@@ -89,7 +90,7 @@ async function createModel (request, page) {
             'data-sort-value': `${n.status.status}`
           }
         },
-        { html: `<a href="view-application/${n.reference}?page=${page}">View application</a>` }
+        { html: `<a href="${serviceUri}/view-application/${n.reference}?page=${page}">View application</a>` }
       ]
     })
     const pagingData = getPagingData(apps.total ?? 0, limit, page, path)

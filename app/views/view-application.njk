@@ -1,4 +1,5 @@
 {% extends './layouts/layout.njk' %}
+{% from "./macros/view-application-tabs.njk" import viewApplicationTabs %}
 
 {% block pageTitle %}
   {{ siteTitle }}: User Application
@@ -22,71 +23,7 @@
       {{ govukSummaryList({
         rows: model.listData.rows
       }) }}
-
-      {% set applicationHtml %}
-      <h2 class="govuk-heading-l">{{ status }}</h2>
-      {{ govukTable(model.applicationData) }}
-      {% endset -%}
-
-      {% set vetReviewHtml %}
-      {% if vetVisit %}
-        <h2 class="govuk-heading-l">Data inputted</h2>
-        {{ govukTable(model.vetVisitData) }}
-      {% else %}
-        <h2 class="govuk-heading-l">Not yet reviewed</h2>
-      {% endif %}
-      {% endset -%}
-
-      {% set claimHtml %}
-      {% if claimed %}
-        <h2 class="govuk-heading-l">Selected for fraud check</h2>
-        {{ govukTable(model.claimData) }}
-      {% else %}
-        <h2 class="govuk-heading-l">Not yet able to claim</h2>
-      {% endif %}
-      {% endset -%}
-
-      {% set paymentHtml %}
-      {% if payment %}
-        <h2 class="govuk-heading-l">Payment information</h2>
-        {{ govukTable(model.paymentData) }}
-      {% else %}
-        <h2 class="govuk-heading-l">Not yet paid</h2>
-      {% endif %}
-      {% endset -%}
-
-      {{ govukTabs({
-        items: [
-          {
-            label: "Application",
-            id: "application",
-            panel: {
-              html: applicationHtml
-            }
-          },
-          {
-            label: "Vet Review",
-            id: "vet-review",
-            panel: {
-              html: vetReviewHtml
-            }
-          },
-          {
-            label: "Claim",
-            id: "claim",
-            panel: {
-              html: claimHtml
-            }
-          },
-          {
-            label: "Payment",
-            id: "payment",
-            panel: {
-              html: paymentHtml
-            }
-          }
-        ]
-      }) }}
+      {{ viewApplicationTabs(model, vetVisit, claimed, payment, status) }}
     </div>
   </div>
 {% endblock %}
