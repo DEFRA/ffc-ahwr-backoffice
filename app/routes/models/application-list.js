@@ -136,4 +136,4 @@ async function createModel (request, page) {
   }
 }
 
-module.exports = ViewModel
+module.exports = { ViewModel, getApplicationTableHeader }

@@ -5,7 +5,7 @@ const Joi = require('joi')
 const { setAppSearch, getAppSearch } = require('../session')
 const keys = require('../session/keys')
 const { administrator, processor, user } = require('../auth/permissions')
-const ViewModel = require('./models/application-list')
+const { ViewModel } = require('./models/application-list')
 const checkValidSearch = require('../lib/search-validation')
 
 module.exports = [
