@@ -26,14 +26,14 @@ new moj.FilterToggleButton({ // NOSONAR
 })
 function submitSort (dataUrl, sort) { // NOSONAR
   const xhr = new XMLHttpRequest() // eslint-disable-line
-  xhr.open('GET', `${dataUrl}/${sort}`, true)
-  xhr.setRequestHeader('Content-Type', 'application/json')
-  xhr.send()
+  xhr.open('GET', `${dataUrl}/${sort}`, true) // NOSONAR
+  xhr.setRequestHeader('Content-Type', 'application/json') // NOSONAR
+  xhr.send() // NOSONAR
 }
 document.querySelectorAll('th.govuk-table__header > button') // NOSONAR
-  .forEach((button) =>
-    button.addEventListener('click', function () {
-      submitSort(this.parentElement.getAttribute('data-url'), this.parentElement.getAttribute('aria-sort'))
-      window.location.reload()
+  .forEach((button) => // NOSONAR
+    button.addEventListener('click', function () { // NOSONAR
+      submitSort(this.parentElement.getAttribute('data-url'), this.parentElement.getAttribute('aria-sort')) // NOSONAR
+      window.location.reload() // NOSONAR
     })
   )
