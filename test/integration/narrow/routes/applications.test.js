@@ -73,7 +73,33 @@ describe('Applications test', () => {
       expect(sessionMock.getAppSearch).toBeCalled()
       expect(applications.getApplications).toBeCalled()
       expect(pagination.getPagination).toBeCalled()
+      expect(pagination.getPagination).toHaveBeenCalledWith(1)
       expect(pagination.getPagingData).toBeCalled()
+      expect(pagination.getPagingData).toHaveBeenCalledWith(9, 10, 1, '')
+      expectPhaseBanner.ok($)
+    })
+    test('returns 200 with query parameter page 2 with sort', async () => {
+      let options = {
+        method: 'GET',
+        url: '/applications/sort/SBI/descending',
+        auth
+      }
+      let res = await global.__SERVER__.inject(options)
+      options = {
+        method: 'GET',
+        url: `${url}?page=2`,
+        auth
+      }
+      res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      const $ = cheerio.load(res.payload)
+      expect($('th[aria-sort="none"]').text()).toContain('SBI')
+      expect(sessionMock.getAppSearch).toBeCalled()
+      expect(applications.getApplications).toBeCalled()
+      expect(pagination.getPagination).toBeCalled()
+      expect(pagination.getPagination).toHaveBeenCalledWith(2)
+      expect(pagination.getPagingData).toBeCalled()
+      expect(pagination.getPagingData).toHaveBeenCalledWith(9, 10, 2, '')
       expectPhaseBanner.ok($)
     })
     test('returns 200 without query parameter', async () => {
