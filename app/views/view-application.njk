@@ -3,11 +3,13 @@
 {% block pageTitle %}
   {{ siteTitle }}: User Application
 {% endblock %}
-
+{% set backLink %}
+ /applications?page={{page}}
+{% endset -%}
 {% block beforeContent %}
   {{ govukBackLink({
         text: "Back",
-        href: "/applications"
+        href: backLink
       }) }}
 {% endblock %}
 {% block content %}
@@ -18,18 +20,18 @@
       <h2 class="govuk-fieldset__legend--m">{{ organisationName }}
         <span class="govuk-tag {{ statusClass }}">{{ status }}</span></h2>
       {{ govukSummaryList({
-        rows: listData.rows
+        rows: model.listData.rows
       }) }}
 
       {% set applicationHtml %}
       <h2 class="govuk-heading-l">{{ status }}</h2>
-      {{ govukTable(applicationData) }}
+      {{ govukTable(model.applicationData) }}
       {% endset -%}
 
       {% set vetReviewHtml %}
       {% if vetVisit %}
         <h2 class="govuk-heading-l">Data inputted</h2>
-        {{ govukTable(vetVisitData) }}
+        {{ govukTable(model.vetVisitData) }}
       {% else %}
         <h2 class="govuk-heading-l">Not yet reviewed</h2>
       {% endif %}
@@ -38,7 +40,7 @@
       {% set claimHtml %}
       {% if claimed %}
         <h2 class="govuk-heading-l">Selected for fraud check</h2>
-        {{ govukTable(claimData) }}
+        {{ govukTable(model.claimData) }}
       {% else %}
         <h2 class="govuk-heading-l">Not yet able to claim</h2>
       {% endif %}
@@ -47,7 +49,7 @@
       {% set paymentHtml %}
       {% if payment %}
         <h2 class="govuk-heading-l">Payment information</h2>
-        {{ govukTable(paymentData) }}
+        {{ govukTable(model.paymentData) }}
       {% else %}
         <h2 class="govuk-heading-l">Not yet paid</h2>
       {% endif %}

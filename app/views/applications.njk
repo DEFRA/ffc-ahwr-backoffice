@@ -20,16 +20,16 @@
           Search for an application by SBI number or reference or status
         </label>
         <input type="hidden" name="crumb" value="{{crumb}}"/>
-        <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{searchText}}" aria-describedby="user-search-hint" spellcheck="false">
+        <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{model.searchText}}" aria-describedby="user-search-hint" spellcheck="false">
         <button class="search-button" data-module="govuk-button" name="submit" value="search">
                 Search
         </button>
       </div>
     </div>
 
-    {% if error %}
+    {% if model.error or error %}
       <div class="govuk-grid-row">
-        <p class="govuk-error-message">{{error}}</p>
+        <p class="govuk-error-message">{{model.error}}{{error}}</p>
       </div>
     {% else %}
       <div class="govuk-grid-row">
@@ -47,7 +47,7 @@
                           classes: 'govuk-fieldset__legend--m'
                         }
                       },
-                      items: filterStatus
+                      items: model.filterStatus
                       }) }}
 
             {% endset -%}
@@ -69,7 +69,7 @@
                           heading: {
                             text: 'Status'
                           },
-                          items: selectedStatus
+                          items: model.selectedStatus
                         }
                       ]
                     },
@@ -120,12 +120,12 @@
                 text: "Details"
               }
             ],
-            rows: applications
+            rows: model.applications
           }) }}
                 {{ govukPagination({
-            previous: previous,
-            next: next,
-            items: pages
+            previous: model.previous,
+            next: model.next,
+            items: model.pages
           }) 
           }}
               </div>
