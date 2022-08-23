@@ -5,7 +5,7 @@ const Joi = require('joi')
 const { setAppSearch, getAppSearch } = require('../session')
 const keys = require('../session/keys')
 const { administrator, processor, user } = require('../auth/permissions')
-const ViewModel = require('./models/application-list')
+const { ViewModel } = require('./models/application-list')
 const checkValidSearch = require('../lib/search-validation')
 
 module.exports = [
@@ -82,6 +82,24 @@ module.exports = [
         } catch (err) {
           return h.view(viewTemplate, { ...request.payload, error: err }).code(400).takeover()
         }
+      }
+    }
+  },
+  {
+    method: 'GET',
+    path: `${currentPath}/sort/{field}/{direction}`,
+    options: {
+      auth: { scope: [administrator, processor, user] },
+      validate: {
+        params: Joi.object({
+          field: Joi.string(),
+          direction: Joi.string()
+        })
+      },
+      handler: async (request, h) => {
+        request.params.direction = request.params.direction !== 'descending' ? 'DESC' : 'ASC'
+        setAppSearch(request, keys.appSearch.sort, request.params)
+        return 1 // NOSONAR
       }
     }
   }

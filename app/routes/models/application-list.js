@@ -14,6 +14,44 @@ class ViewModel {
   }
 }
 
+const getApplicationTableHeader = (sortField) => {
+  const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
+  const headerColumns = [{
+    text: 'Ref'
+  },
+  {
+    text: 'Business'
+  }]
+  headerColumns.push({
+    text: 'SBI',
+    attributes: {
+      'aria-sort': sortField && sortField.field === 'SBI' ? direction : 'none',
+      'data-url': '/applications/sort/SBI'
+    },
+    format: 'numeric'
+  })
+  headerColumns.push({
+    text: 'Apply date',
+    attributes: {
+      'aria-sort': sortField && sortField.field === 'Apply date' ? direction : 'none',
+      'data-url': '/applications/sort/Apply date'
+    },
+    format: 'date'
+  })
+  headerColumns.push({
+    text: 'Status',
+    attributes: {
+      'aria-sort': sortField && sortField.field === 'Status' ? direction : 'none',
+      'data-url': '/applications/sort/Status'
+    }
+  })
+  headerColumns.push({
+    text: 'Details'
+  })
+
+  return headerColumns
+}
+
 async function createModel (request, page) {
   const viewTemplate = 'applications'
   const currentPath = `/${viewTemplate}`
@@ -23,7 +61,8 @@ async function createModel (request, page) {
   const searchText = getAppSearch(request, keys.appSearch.searchText)
   const searchType = getAppSearch(request, keys.appSearch.searchType)
   const filterStatus = getAppSearch(request, keys.appSearch.filterStatus) ?? []
-  const apps = await getApplications(searchType, searchText, limit, offset, filterStatus)
+  const sortField = getAppSearch(request, keys.appSearch.sort) ?? undefined
+  const apps = await getApplications(searchType, searchText, limit, offset, filterStatus, sortField)
   if (apps.total > 0) {
     let statusClass
     const applications = apps.applications.map(n => {
@@ -65,6 +104,7 @@ async function createModel (request, page) {
     })
     return {
       applications,
+      header: getApplicationTableHeader(getAppSearch(request, keys.appSearch.sort)),
       ...pagingData,
       searchText,
       availableStatus: groupByStatus,
@@ -96,4 +136,4 @@ async function createModel (request, page) {
   }
 }
 
-module.exports = ViewModel
+module.exports = { ViewModel, getApplicationTableHeader }

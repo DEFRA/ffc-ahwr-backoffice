@@ -18,7 +18,10 @@ pagination.getPagingData = jest.fn().mockReturnValue({
   page: 1, totalPages: 1, total: 1, limit: 10, url: undefined
 })
 applications.getApplications = jest.fn().mockReturnValue(applicationData)
-sessionMock.getAppSearch = jest.fn().mockReturnValue([]).mockReturnValueOnce(['PENDING', 'APPLIED', 'DATA INPUTTED', 'CLAIMED'])
+sessionMock.getAppSearch = jest.fn()
+  .mockReturnValue([])
+  .mockReturnValueOnce(['PENDING', 'APPLIED', 'DATA INPUTTED', 'CLAIMED'])
+  .mockReturnValueOnce({ field: 'SBI', direction: 'DESC' })
 describe('Applications Filter test', () => {
   const url = '/applications/remove'
   jest.mock('../../../../app/auth')
@@ -27,7 +30,7 @@ describe('Applications Filter test', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
-  describe(`GET ${url} route`, () => {
+  describe(`GET ${url} route remove`, () => {
     test('returns 302 no auth', async () => {
       const options = {
         method,
@@ -47,7 +50,7 @@ describe('Applications Filter test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-heading-l').text()).toEqual('AHWR Applications')
       expect($('title').text()).toContain('AHWR Applications')
-      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(4)
+      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(6)
       expect(sessionMock.setAppSearch).toHaveBeenCalledTimes(1)
       expectPhaseBanner.ok($)
     })
@@ -61,7 +64,7 @@ describe('Applications Filter test', () => {
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
       expect($('govuk-checkboxes__input').filter(s => s.value === 'APPLIED')).toBeTruthy()
-      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(4)
+      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(6)
       expect(sessionMock.setAppSearch).toHaveBeenCalledTimes(1)
       expectPhaseBanner.ok($)
     })
@@ -87,9 +90,44 @@ describe('Applications Filter test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-heading-l').text()).toEqual('AHWR Applications')
       expect($('title').text()).toContain('AHWR Applications')
-      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(3)
+      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(5)
       expect(sessionMock.setAppSearch).toHaveBeenCalledTimes(1)
       expectPhaseBanner.ok($)
+    })
+  })
+
+  describe('GET /applications/sort route', () => {
+    test('returns 302 no auth', async () => {
+      const options = {
+        method,
+        url: '/applications/sort/sbi/ascending'
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(302)
+    })
+    test('returns 200 ascending', async () => {
+      const options = {
+        method,
+        url: '/applications/sort/sbi/ascending',
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      expect(res.payload).toEqual('1')
+      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(0)
+      expect(sessionMock.setAppSearch).toHaveBeenCalledTimes(1)
+    })
+    test('returns 200 descending', async () => {
+      const options = {
+        method,
+        url: '/applications/sort/sbi/descending',
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      expect(res.payload).toEqual('1')
+      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(0)
+      expect(sessionMock.setAppSearch).toHaveBeenCalledTimes(1)
     })
   })
 })

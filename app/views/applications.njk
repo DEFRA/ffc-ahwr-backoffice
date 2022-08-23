@@ -86,7 +86,20 @@
             <div class="moj-scrollable-pane">
 
               <div class="moj-scrollable-pane__wrapper">
-                {{ applicationsTable(model) }}
+                {{ govukTable({
+            attributes: {
+              'data-module': 'moj-sortable-table'
+            },
+            firstCellIsHeader: false,
+            head: model.header,
+            rows: model.applications
+          }) }}
+                {{ govukPagination({
+            previous: model.previous,
+            next: model.next,
+            items: model.pages
+          }) 
+          }}
               </div>
 
             </div>

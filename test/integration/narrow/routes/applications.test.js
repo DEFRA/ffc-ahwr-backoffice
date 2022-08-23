@@ -44,7 +44,7 @@ describe('Applications test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-heading-l').text()).toEqual('AHWR Applications')
       expect($('title').text()).toContain('AHWR Applications')
-      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(3)
+      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(5)
       expectPhaseBanner.ok($)
     })
 
@@ -67,10 +67,39 @@ describe('Applications test', () => {
       expect($('span.govuk-tag--blue').text()).toContain('CLAIMED')
       expect($('span.govuk-tag--grey').text()).toContain('WITHDRAWN')
       expect($('span.govuk-tag--red').text()).toContain('REJECTED')
+      expect($('th[aria-sort="none"]').text()).toContain('SBI')
+      expect($('th[aria-sort="none"]').text()).toContain('Status')
+      expect($('th[aria-sort="none"]').text()).toContain('Apply date')
       expect(sessionMock.getAppSearch).toBeCalled()
       expect(applications.getApplications).toBeCalled()
       expect(pagination.getPagination).toBeCalled()
+      expect(pagination.getPagination).toHaveBeenCalledWith(1)
       expect(pagination.getPagingData).toBeCalled()
+      expect(pagination.getPagingData).toHaveBeenCalledWith(9, 10, 1, '')
+      expectPhaseBanner.ok($)
+    })
+    test('returns 200 with query parameter page 2 with sort', async () => {
+      let options = {
+        method: 'GET',
+        url: '/applications/sort/SBI/descending',
+        auth
+      }
+      let res = await global.__SERVER__.inject(options)
+      options = {
+        method: 'GET',
+        url: `${url}?page=2`,
+        auth
+      }
+      res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      const $ = cheerio.load(res.payload)
+      expect($('th[aria-sort="none"]').text()).toContain('SBI')
+      expect(sessionMock.getAppSearch).toBeCalled()
+      expect(applications.getApplications).toBeCalled()
+      expect(pagination.getPagination).toBeCalled()
+      expect(pagination.getPagination).toHaveBeenCalledWith(2)
+      expect(pagination.getPagingData).toBeCalled()
+      expect(pagination.getPagingData).toHaveBeenCalledWith(9, 10, 2, '')
       expectPhaseBanner.ok($)
     })
     test('returns 200 without query parameter', async () => {
