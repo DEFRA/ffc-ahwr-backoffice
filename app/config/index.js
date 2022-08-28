@@ -1,5 +1,6 @@
 const Joi = require('joi')
 const authConfig = require('./auth')
+const storageConfig = require('./storage')
 
 const schema = Joi.object({
   cache: {
@@ -84,5 +85,6 @@ if (error) {
 }
 
 value.auth = authConfig
+value.storageConfig = storageConfig
 
 module.exports = value
