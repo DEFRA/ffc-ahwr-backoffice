@@ -23,6 +23,7 @@ module.exports = [{
   options: {
     auth: { scope: [administrator, processor, user] },
     handler: async (_, h) => {
+      await downloadBlob(filesContainer, req.params.fileName);
       return h.view('file-view')
     }
   }

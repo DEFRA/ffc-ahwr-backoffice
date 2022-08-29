@@ -33,4 +33,5 @@ services:
       - "6380:6379"
 
 volumes:
+  azurite_data:
   redis_data:

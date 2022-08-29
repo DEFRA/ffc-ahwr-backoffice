@@ -17,11 +17,18 @@ const listBlob = async (container) => {
   return client.listBlobsFlat();
 }
 
-const downloadBlob = async (container, blobName, fileName) => {
+const downloadBlob = async (container, fileName) => {
   const blobServiceClient = getClient()
   const containerClient = blobServiceClient.getContainerClient(container)
-  const blobClient = await containerClient.getBlobClient(blobName);
-  await blobClient.downloadToFile(fileName);
+  if (await containerClient.exists()) {
+    try {
+      const blob = containerClient.getBlockBlobClient(fileName)
+      return blob.downloadToBuffer()
+    } catch (e) {
+      console.error(e)
+    }
+  }
+  return undefined
 }
 
 module.exports = { listBlob, downloadBlob }
