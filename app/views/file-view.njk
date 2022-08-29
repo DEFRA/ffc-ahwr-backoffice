@@ -15,18 +15,24 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      {{ govukCheckboxes({
-        idPrefix: "files",
-        name: "files",
-        fieldset: {
-          legend: {
-            text: "Select File to download",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--l"
-          }
-        },
-        items: files
-      }) }}
+      <form method="POST" action="/file-view">
+        {{ govukCheckboxes({
+          idPrefix: "files",
+          name: "files",
+          fieldset: {
+            legend: {
+              text: "Select File to download",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          items: files
+        }) }}
+        {{ govukButton({
+          classes: "govuk-!-margin-top-2 govuk-!-margin-bottom-8",
+            text: "Submit"
+        }) }}
+      </form>
     </div>
   </div>
 {% endblock %}
