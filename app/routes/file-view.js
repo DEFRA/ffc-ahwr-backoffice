@@ -11,9 +11,8 @@ module.exports = [{
       const blobs = await listBlob(filesContainer);
       const files = []
       for await (const blob of blobs) {
-        files.push({ value: 'file', text: blob.name })
+        files.push({ value: blob.name, text: blob.name })
       }
-      console.log(files)
       return h.view('file-view', {files})
     }
   }
@@ -22,9 +21,11 @@ module.exports = [{
   path: '/file-view',
   options: {
     auth: { scope: [administrator, processor, user] },
-    handler: async (_, h) => {
-      await downloadBlob(filesContainer, req.params.fileName);
-      return h.view('file-view')
+    handler: async (req, h) => {
+      const file = await downloadBlob(filesContainer, req.payload.files);
+      return h.response(file)
+        .header('Content-Type', 'application/pdf')
+        .header('Content-Disposition', 'attachment; filename= ' + req.payload.files);
     }
   }
 }]
