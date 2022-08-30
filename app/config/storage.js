@@ -10,7 +10,8 @@ const storageSchema = Joi.object({
 const storageConfig = {
   connectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
   storageAccount: process.env.AZURE_STORAGE_ACCOUNT_NAME,
-  filesContainer: process.env.AZURE_STORAGE_FILES_CONTAINER
+  filesContainer: process.env.AZURE_STORAGE_FILES_CONTAINER,
+  useConnectionString: process.env.AZURE_STORAGE_USE_CONNECTION_STRING
 }
 
 const storageResult = storageSchema.validate(storageConfig, {
