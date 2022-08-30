@@ -14,7 +14,7 @@ const listBlob = async (container) => {
   const blobServiceClient = getClient()
   const client = blobServiceClient.getContainerClient(container)
 
-  return client.listBlobsFlat();
+  return client.listBlobsFlat()
 }
 
 const downloadBlob = async (container, fileName) => {
