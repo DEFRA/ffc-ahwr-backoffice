@@ -17,5 +17,7 @@ data:
   REDIS_PORT: {{ quote .Values.container.redisPort }}
   SERVICE_URI: {{ quote .Values.container.serviceUri }}
   APPLICATION_API_URI: {{ quote .Values.container.applicationApiUri }}
+  AZURE_STORAGE_USE_CONNECTION_STRING: {{ quote .Values.container.azureStorageUseConnectionString }}
+  AZURE_STORAGE_ACCOUNT_NAME: {{ quote .Values.container.azureStorageAccountName }}
   DISPLAY_PAGE_SIZE: {{ quote .Values.container.displayPageSize }}
 {{- end -}}
