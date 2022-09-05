@@ -43,6 +43,7 @@ container:
   redisPort: 6379
   serviceUri:
   applicationApiUri:
+  paymentApiUri:
   displayPageSize: 20
 
 deployment:
