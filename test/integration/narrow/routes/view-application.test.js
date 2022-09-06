@@ -1,12 +1,15 @@
 const cheerio = require('cheerio')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const applications = require('../../../../app/api/applications')
+const payments = require('../../../../app/api/payments')
 const { administrator } = require('../../../../app/auth/permissions')
 const viewApplicationData = require('.././../../data/view-applications.json')
+const paymentData = require('.././../../data/payments.json')
 const reference = 'VV-555A-FD4C'
 const eligibleSpecies = require('../../../../app/constants/eligible-species')
 
 jest.mock('../../../../app/api/applications')
+jest.mock('../../../../app/api/payments')
 
 describe('View Application test', () => {
   const url = `/view-application/${reference}`
@@ -152,6 +155,7 @@ describe('View Application test', () => {
     })
     test('returns 200 application paid', async () => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.paid)
+      payments.getPayments.mockReturnValueOnce(paymentData[0])
       const options = {
         method: 'GET',
         url,

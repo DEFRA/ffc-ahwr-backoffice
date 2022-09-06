@@ -4,6 +4,7 @@ const { getApplication } = require('../api/applications')
 const { administrator, processor, user } = require('../auth/permissions')
 const getStyleClassByStatus = require('../constants/status')
 const ViewModel = require('./models/view-application')
+const { getPayments } = require('../api/payments')
 
 module.exports = {
   method: 'GET',
@@ -24,6 +25,7 @@ module.exports = {
         throw boom.badRequest()
       }
 
+      const payment = await getPayments(request.params.reference)
       const statusClass = getStyleClassByStatus(application.status.status)
       return h.view('view-application', {
         applicationId: application.reference,
@@ -32,7 +34,7 @@ module.exports = {
         organisationName: application?.data?.organisation?.name,
         vetVisit: application?.vetVisit,
         claimed: application?.claimed,
-        payment: application?.payment,
+        payment,
         ...new ViewModel(application),
         page: request.query.page
       })

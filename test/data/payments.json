@@ -1,0 +1,25 @@
+[{
+    "frn": 1102773778,
+    "sbi": "113692789",
+    "value": 37200,
+    "ledger": "AP",
+    "dueDate": "22/06/2022",
+    "currency": "GBP",
+    "schemeId": 4,
+    "deliveryBody": "RP00",
+    "invoiceLines": [
+        {
+            "value": 37200,
+            "fundCode": "DOM10",
+            "schemeCode": "18003",
+            "description": "G00 - Gross value of claim",
+            "standardCode": "AHWR-Dairy"
+        }
+    ],
+    "sourceSystem": "AHWR",
+    "correlationId": "f52e3e84-336c-461f-953b-beed207ae5c9",
+    "invoiceNumber": "VV-EAB8-86F6V001",
+    "marketingYear": 2022,
+    "agreementNumber": "VV-EAB8-86F6",
+    "paymentRequestNumber": 1
+}]
