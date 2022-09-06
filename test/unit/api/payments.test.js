@@ -97,7 +97,7 @@ describe('Payment API', () => {
     expect(Wreck.get).toHaveBeenCalledWith(`${paymentApiUri}/payment/${appRef}`, options)
   })
 
-  it('GetPayments should return empty Payments array if api not available', async () => {
+  it('Post Payment should return empty Payments array if api get error', async () => {
     jest.mock('@hapi/wreck')
     const payload = {
     }
@@ -107,6 +107,30 @@ describe('Payment API', () => {
     }
     Wreck.post = jest.fn(async function (_url, _options) {
       throw new Error('fakeError')
+    })
+    const response = await postPayment(payload)
+    expect(response).not.toBeNull()
+    expect(response.payments).toStrictEqual([])
+    expect(response.total).toStrictEqual(0)
+    expect(Wreck.post).toHaveBeenCalledTimes(1)
+    expect(Wreck.post).toHaveBeenCalledWith(`${paymentApiUri}/payment`, options)
+  })
+  it('Post Payment should return empty Payments array if api not available', async () => {
+    jest.mock('@hapi/wreck')
+    const payload = {
+    }
+    const options = {
+      payload,
+      json: true
+    }
+    const wreckResponse = {
+      payload: [],
+      res: {
+        statusCode: 400
+      }
+    }
+    Wreck.post = jest.fn(async function (_url, _options) {
+      return wreckResponse
     })
     const response = await postPayment(payload)
     expect(response).not.toBeNull()
