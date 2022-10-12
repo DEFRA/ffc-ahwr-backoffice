@@ -1,5 +1,4 @@
 const getFarmerApplication = require('./farmer-application')
-const getVetVisitData = require('./vet-visit-review')
 const getOrganisationRows = require('./application-organisation')
 const getPaymentData = require('./application-payment')
 const getClaimData = require('./application-claim')
