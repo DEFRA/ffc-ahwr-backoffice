@@ -40,18 +40,6 @@
       "eligibleSpecies": "yes",
       "confirmCheckDetails": "yes"
     },
-    "vetVisit": {
-      "applicationReference": "VV-555A-FD4C",
-      "data": {
-        "visitDate": "2022-06-06T14:27:51.251Z",
-        "eligibleSpecies": "yes",
-        "sheepWorms": "yes",
-        "reviewReport": "yes",
-        "sheepWormTreatment": "LV",
-        "speciesTest": 40
-      },
-      "createdAt": "2022-06-06T14:27:51.251Z"
-    },
     "claimed": false,
     "createdAt": "2022-06-06T14:27:51.251Z",
     "updatedAt": "2022-06-06T14:27:51.775Z",
@@ -73,17 +61,11 @@
         "address": "Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC"
       },
       "eligibleSpecies": "yes",
-      "confirmCheckDetails": "yes"
-    },
-    "vetVisit": {
-      "applicationReference": "VV-555A-FD4C",
-      "data": {
-        "visitDate": "2022-06-06T14:27:51.251Z",
-        "eligibleSpecies": "yes",
-        "reviewReport": "yes",
-        "speciesTest": "yes"
-      },
-      "createdAt": "2022-06-06T14:27:51.251Z"
+      "confirmCheckDetails": "yes",
+      "detailsCorrect": "yes",
+      "urnResult": "134242",
+      "vetName": "testVet",
+      "vetRcvs": "1234234"
     },
     "claimed": true,
     "createdAt": "2022-06-06T14:27:51.251Z",
@@ -107,23 +89,6 @@
       },
       "eligibleSpecies": "yes",
       "confirmCheckDetails": "yes"
-    },
-    "vetVisit": {
-      "applicationReference": "VV-555A-FD4C",
-      "data": {
-        "visitDate": "2022-06-06T14:27:51.251Z",
-        "eligibleSpecies": "yes",
-        "speciesBvdInHerd": "yes",
-        "reviewReport": "yes",
-        "speciesTest": "yes",
-        "speciesVaccinated": "partly",
-        "speciesLastVaccinated": {
-          "month": 6,
-          "year": 2008
-        },
-        "speciesVaccinationUpToDate": "no"
-      },
-      "createdAt": "2022-06-06T14:27:51.251Z"
     },
     "payment": {
       "applicationReference": "VV-555A-FD4C",
