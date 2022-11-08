@@ -16,15 +16,6 @@
     {% endif %}
   {% endset -%}
 
-  {% set paymentHtml %}
-    {% if payment %}
-      <h2 class="govuk-heading-l">Payment information</h2>
-      {{ govukTable(model.paymentData) }}
-    {% else %}
-      <h2 class="govuk-heading-l">Not yet paid</h2>
-    {% endif %}
-  {% endset -%}
-
   {{ govukTabs({
     items: [
       {
@@ -39,13 +30,6 @@
         id: "claim",
         panel: {
           html: claimHtml
-        }
-      },
-      {
-        label: "Payment",
-        id: "payment",
-        panel: {
-          html: paymentHtml
         }
       }
     ]
