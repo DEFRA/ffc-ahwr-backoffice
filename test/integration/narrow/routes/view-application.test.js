@@ -118,7 +118,7 @@ describe('View Application test', () => {
       expect($('.govuk-summary-list__key').eq(2).text()).toMatch('Email address:')
       expect($('.govuk-summary-list__value').eq(2).text()).toMatch('test@test.com')
 
-      expect($('#claim').text()).toContain('Selected for fraud check')
+      expect($('#claim').text()).toContain('Claimed')
       expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(2)').text()).toContain('Details correct?')
       expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(3)').text()).toContain('Yes')
       expect($('tbody:nth-child(2) tr:nth-child(2) td:nth-child(2)').text()).toContain('Date of review')
@@ -154,7 +154,7 @@ describe('View Application test', () => {
       expect($('.govuk-summary-list__key').eq(2).text()).toMatch('Email address:')
       expect($('.govuk-summary-list__value').eq(2).text()).toMatch('test@test.com')
 
-      expect($('#claim').text()).toContain('Selected for fraud check')
+      expect($('#claim').text()).toContain('Claimed')
       expectPhaseBanner.ok($)
     })
   })
