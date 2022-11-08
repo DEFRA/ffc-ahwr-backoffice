@@ -67,7 +67,6 @@ describe('View Application test', () => {
       expect($('tbody tr:nth-child(4) td:nth-child(2)').text()).toContain('T&Cs agreed?')
       expect($('tbody tr:nth-child(4) td:nth-child(3)').text()).toContain('Yes')
       expect($('#claim').text()).toContain('Not yet able to claim')
-      // expect($('#payment').text()).toContain('Not yet paid')
       expectPhaseBanner.ok($)
     })
     test('returns 200 application data inputted', async () => {
@@ -94,7 +93,6 @@ describe('View Application test', () => {
       expect($('.govuk-summary-list__value').eq(2).text()).toMatch('test@test.com')
 
       expect($('#claim').text()).toContain('Not yet able to claim')
-      // expect($('#payment').text()).toContain('Not yet paid')
       expectPhaseBanner.ok($)
     })
     test('returns 200 application claim', async () => {
@@ -150,13 +148,6 @@ describe('View Application test', () => {
       expect($('.govuk-summary-list__value').eq(2).text()).toMatch('test@test.com')
 
       expect($('#claim').text()).toContain('Selected for fraud check')
-      // expect($('#payment').text()).toContain('Payment information')
-      expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(2)').text()).toContain('G00 - Gross value of claim')
-      expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(3)').text()).toContain('£400.00')
-      expect($('tbody:nth-child(2) tr:nth-child(2) td:nth-child(2)').text()).toContain('FRN number')
-      expect($('tbody:nth-child(2) tr:nth-child(2) td:nth-child(3)').text()).toContain('1102057452')
-      expect($('tbody:nth-child(2) tr:nth-child(3) td:nth-child(2)').text()).toContain('Invoice number')
-      expect($('tbody:nth-child(2) tr:nth-child(3) td:nth-child(3)').text()).toContain('VV-F528-5345V001')
       expectPhaseBanner.ok($)
     })
   })
