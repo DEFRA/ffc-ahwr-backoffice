@@ -9,7 +9,7 @@
 
   {% set claimHtml %}
     {% if claimed %}
-      <h2 class="govuk-heading-l">Selected for fraud check</h2>
+      <h2 class="govuk-heading-l">Claimed</h2>
       {{ govukTable(model.claimData) }}
     {% else %}
       <h2 class="govuk-heading-l">Not yet able to claim</h2>
