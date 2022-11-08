@@ -65,7 +65,8 @@
       "detailsCorrect": "yes",
       "urnResult": "134242",
       "vetName": "testVet",
-      "vetRcvs": "1234234"
+      "vetRcvs": "1234234",
+      "visitDate": "2022-11-07T00:00:00.000Z"
     },
     "claimed": true,
     "createdAt": "2022-06-06T14:27:51.251Z",
