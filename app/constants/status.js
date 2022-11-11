@@ -17,6 +17,9 @@ const status = {
   REJECTED: {
     styleClass: 'govuk-tag--red'
   },
+  NOTAGREED: {
+    styleClass: 'govuk-tag--red'
+  },
   ACCEPTED: {
     styleClass: 'govuk-tag--purple'
   },
