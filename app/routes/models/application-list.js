@@ -17,13 +17,13 @@ class ViewModel {
 const getApplicationTableHeader = (sortField) => {
   const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
   const headerColumns = [{
-    text: 'Ref'
+    text: 'Agreement number'
   },
   {
-    text: 'Business'
+    text: 'Organisation'
   }]
   headerColumns.push({
-    text: 'SBI',
+    text: 'SBI number',
     attributes: {
       'aria-sort': sortField && sortField.field === 'SBI' ? direction : 'none',
       'data-url': '/applications/sort/SBI'
@@ -66,6 +66,7 @@ async function createModel (request, page) {
   if (apps.total > 0) {
     let statusClass
     const applications = apps.applications.map(n => {
+      n.status.status = n.status.status === 'APPLIED' ? 'AGREED' : n.status.status
       statusClass = getStyleClassByStatus(n.status.status)
       return [
         { text: n.reference },
@@ -90,7 +91,7 @@ async function createModel (request, page) {
             'data-sort-value': `${n.status.status}`
           }
         },
-        { html: `<a href="${serviceUri}/view-application/${n.reference}?page=${page}">View application</a>` }
+        { html: `<a href="${serviceUri}/view-application/${n.reference}?page=${page}">View details</a>` }
       ]
     })
     const pagingData = getPagingData(apps.total ?? 0, limit, page, path)

@@ -4,6 +4,7 @@ const { getApplication } = require('../api/applications')
 const { administrator, processor, user } = require('../auth/permissions')
 const getStyleClassByStatus = require('../constants/status')
 const ViewModel = require('./models/view-application')
+const { upperFirstLetter } = require('../lib/display-helper')
 
 module.exports = {
   method: 'GET',
@@ -25,9 +26,10 @@ module.exports = {
       }
 
       const statusClass = getStyleClassByStatus(application.status.status)
+      const status = application.status.status === 'APPLIED' ? 'Agreed' : upperFirstLetter(application.status.status.toLowerCase())
       return h.view('view-application', {
         applicationId: application.reference,
-        status: application.status.status,
+        status,
         statusClass,
         organisationName: application?.data?.organisation?.name,
         vetVisit: application?.vetVisit,

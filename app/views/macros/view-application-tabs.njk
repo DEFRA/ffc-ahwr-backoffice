@@ -12,14 +12,14 @@
       <h2 class="govuk-heading-l">Claimed</h2>
       {{ govukTable(model.claimData) }}
     {% else %}
-      <h2 class="govuk-heading-l">Not yet able to claim</h2>
+      <h2 class="govuk-heading-l">Never claimed</h2>
     {% endif %}
   {% endset -%}
 
   {{ govukTabs({
     items: [
       {
-        label: "Application",
+        label: "Agreement",
         id: "application",
         panel: {
           html: applicationHtml
