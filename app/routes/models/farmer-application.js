@@ -8,8 +8,8 @@ module.exports = (application) => {
     firstCellIsHeader: true,
     rows: [
       [{ text: 'Agreement formed' }, { text: formatedDate }],
-      [{ text: 'Detail correct?' }, { text: upperFirstLetter(data.confirmCheckDetails) }],
-      [{ text: 'Business details correct' }, { text: upperFirstLetter(data.whichReview) }],
+      [{ text: 'Business details correct' }, { text: upperFirstLetter(data.confirmCheckDetails) }],
+      [{ text: 'Type of review' }, { text: upperFirstLetter(data.whichReview) }],
       [{ text: 'Number of livestock' }, { text: speciesNumbers[data.whichReview] }],
       [{ text: 'Agreement accepted' }, { text: data.declaration ? 'Yes' : 'No' }]
     ]
