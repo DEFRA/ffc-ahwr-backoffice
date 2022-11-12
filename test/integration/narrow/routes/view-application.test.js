@@ -77,6 +77,45 @@ describe('View Application test', () => {
       expect($('#claim').text()).toContain('Never claimed')
       expectPhaseBanner.ok($)
     })
+    test('returns 200 application applied', async () => {
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.notaggreed)
+      const options = {
+        method: 'GET',
+        url,
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      const $ = cheerio.load(res.payload)
+      expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
+      expect($('h2.govuk-heading-l').text()).toContain('Not agreed')
+      expect($('title').text()).toContain('Administration: User Application')
+      expect($('.govuk-summary-list__row').length).toEqual(4)
+      expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name:')
+      expect($('.govuk-summary-list__value').eq(0).text()).toMatch('Farmer name')
+
+      expect($('.govuk-summary-list__key').eq(1).text()).toMatch('SBI number:')
+      expect($('.govuk-summary-list__value').eq(1).text()).toMatch('333333333')
+
+      expect($('.govuk-summary-list__key').eq(2).text()).toMatch('Address:')
+      expect($('.govuk-summary-list__value').eq(2).text()).toMatch('Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC')
+
+      expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address:')
+      expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
+
+      expect($('tbody tr:nth-child(1)').text()).toContain('Agreement not formed')
+      expect($('tbody tr:nth-child(1)').text()).toContain('06/06/2022')
+      expect($('tbody tr:nth-child(2)').text()).toContain('Business details correct')
+      expect($('tbody tr:nth-child(2)').text()).toContain('Yes')
+      expect($('tbody tr:nth-child(3)').text()).toContain('Type of review')
+      expect($('tbody tr:nth-child(3)').text()).toContain('Sheep')
+      expect($('tbody tr:nth-child(4)').text()).toContain('Number of livestock')
+      expect($('tbody tr:nth-child(4)').text()).toContain('At least 21')
+      expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
+      expect($('tbody tr:nth-child(5)').text()).toContain('No')
+      expect($('#claim').text()).toContain('Never claimed')
+      expectPhaseBanner.ok($)
+    })
     test('returns 200 application data inputted', async () => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.dataInputted)
       const options = {
