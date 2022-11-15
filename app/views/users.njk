@@ -1,0 +1,47 @@
+{% extends './layouts/layout.njk' %}
+{% from "./macros/users-table.njk" import usersTable %}
+
+{% block pageTitle %}
+  {{ siteTitle }}: AHWR Users
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+        text: "Back",
+        href: "/"
+      }) }}
+{% endblock %}
+
+{% block content %}
+<form>
+<div class="govuk-grid-row govuk-!-padding-bottom-3">
+  <h1 class="govuk-heading-l">AHWR Users</h1>
+</div>  
+    {% if model.error or error %}
+      <div class="govuk-grid-row">
+        <p class="govuk-error-message">{{model.error}}{{error}}</p>
+      </div>
+    {% else %}
+      <div class="govuk-grid-row">
+        <div class="moj-filter-layout">
+          <div class="moj-filter-layout__content">
+            <div class="moj-scrollable-pane">
+                <div class="moj-scrollable-pane__wrapper">
+                  {{ 
+                    govukTable({
+                      attributes: {
+                        'data-module': 'moj-sortable-table'
+                      },
+                      firstCellIsHeader: false,
+                      head: model.header,
+                      rows: model.users
+                    }) 
+                  }}
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    </form>
+{% endblock %}

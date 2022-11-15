@@ -10,7 +10,8 @@ const routes = [].concat(
   require('../routes/login'),
   require('../routes/logout'),
   require('../routes/privacy-policy'),
-  require('../routes/view-application')
+  require('../routes/view-application'),
+  require('../routes/users')
 )
 
 module.exports = {
