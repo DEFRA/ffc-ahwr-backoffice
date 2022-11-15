@@ -2,6 +2,9 @@ const status = {
   APPLIED: {
     styleClass: 'govuk-tag--green'
   },
+  AGREED: {
+    styleClass: 'govuk-tag--green'
+  },
   WITHDRAWN: {
     styleClass: 'govuk-tag--grey'
   },
@@ -12,6 +15,9 @@ const status = {
     styleClass: 'govuk-tag--yellow'
   },
   REJECTED: {
+    styleClass: 'govuk-tag--red'
+  },
+  NOTAGREED: {
     styleClass: 'govuk-tag--red'
   },
   ACCEPTED: {
