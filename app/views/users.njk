@@ -13,10 +13,21 @@
 {% endblock %}
 
 {% block content %}
-<form>
-<div class="govuk-grid-row govuk-!-padding-bottom-3">
+<form action="users" method="POST">
+<div class="govuk-grid-row govuk-!-padding-bottom-9">
   <h1 class="govuk-heading-l">AHWR Users</h1>
+        <div class="user-search-box govuk-!-width-two-thirds">
+        <label class="govuk-label govuk-label--s" for="user-search">
+          Search by single business identifier (SBI) number or email.
+        </label>
+        <input type="hidden" name="crumb" value="{{crumb}}"/>
+        <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{model.searchText}}" aria-describedby="user-search-hint" spellcheck="false">
+        <button class="search-button" data-module="govuk-button" name="submit" value="searchBar">
+                Search
+        </button>
+      </div>
 </div>  
+
     {% if model.error or error %}
       <div class="govuk-grid-row">
         <p class="govuk-error-message">{{model.error}}{{error}}</p>

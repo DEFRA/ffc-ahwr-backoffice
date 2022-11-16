@@ -1,6 +1,6 @@
-const { getPagination, getPagingData } = require('../../pagination')
+const keys = require('../../session/keys')
 const { getAppSearch } = require('../../session')
-const usersFile = require('../../constants/users')
+const { usersList, sortUsers, searchForUser } = require('../../api/users')
 
 class UsersViewModel {
   constructor (request) {
@@ -11,7 +11,8 @@ class UsersViewModel {
   }
 }
 
-const getUsersTableHeader = () => {
+const getUsersTableHeader = (sortField) => {
+  const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
   const headerColumns = [{
     text: 'Farmer Name'
   },
@@ -19,7 +20,11 @@ const getUsersTableHeader = () => {
     text: 'Organisation'
   },
   {
-    text: 'SBI'
+    text: 'SBI',
+    attributes: {
+      'aria-sort': sortField && sortField.field === 'SBI' ? direction : 'none',
+      'data-url': '/users/sort/SBI'
+    }
   },
   {
     text: 'CPH'
@@ -35,39 +40,46 @@ const getUsersTableHeader = () => {
 }
 
 async function createModel (request) {
-  const users = usersFile.map(n => {
+  const sortField = getAppSearch(request, keys.appSearch.sort) ?? undefined
+  const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
+  const searchText = getAppSearch(request, keys.appSearch.searchText) ?? undefined
+  const searchType = getAppSearch(request, keys.appSearch.searchType) ?? undefined
+
+  sortUsers(direction)
+
+  const filteredUsers = searchText ? searchForUser(searchText, searchType) : usersList
+
+  const users = filteredUsers.map(n => {
     return [
       {
-        "text" : n.farmerName,
+        text: n.farmerName
       },
       {
-        "text" : n.name
+        text: n.name
       },
       {
-        "text" : n.sbi,
+        text: n.sbi,
         format: 'numeric',
         attributes: {
           'data-sort-value': n.sbi
         }
       },
       {
-        "text" : n.cph,
-        format: 'numeric',
-        attributes: {
-          'data-sort-value': n.cph
-        }
+        text: n.cph,
+        format: 'numeric'
       },
       {
-        "text" : n.address
+        text: n.address
       },
       {
-        "text" : n.email
+        text: n.email,
+        format: 'email'
       }
     ]
   })
   return {
-      users,
-      header: getUsersTableHeader()
+    users,
+    header: getUsersTableHeader(getAppSearch(request, keys.appSearch.sort))
   }
 }
 
