@@ -18,11 +18,11 @@
     <div class="govuk-grid-row govuk-!-padding-bottom-9">
       <h1 class="govuk-heading-l">Annual health and welfare review agreements</h1>
       <div class="user-search-box govuk-!-width-two-thirds">
-        <label class="govuk-label govuk-label--s" for="applications-search">
+        <label class="govuk-label govuk-label--s" for="user-search">
           Search by agreement number, organisation or single business identifier (SBI) number
         </label>
         <input type="hidden" name="crumb" value="{{crumb}}"/>
-        <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{model.searchText}}" aria-describedby="applications-search-hint" spellcheck="false">
+        <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{model.searchText}}" aria-describedby="user-search-hint" spellcheck="false">
         <button class="search-button" data-module="govuk-button" name="submit" value="search">
                 Search
         </button>
@@ -105,5 +105,5 @@
             </div>
           </div>
         {% endif %}
-  </form>
+      </form>
     {% endblock %}

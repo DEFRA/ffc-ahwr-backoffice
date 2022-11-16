@@ -22,3 +22,6 @@ services:
       SERVICE_URI: http://localhost:3002
       APPLICATION_API_URI: http://host.docker.internal:3001/api
       DISPLAY_PAGE_SIZE: 20
+      AZURE_STORAGE_ACCOUNT_NAME: ${AZURE_STORAGE_ACCOUNT_NAME:-ffcahwr}
+      AZURE_STORAGE_CONNECTION_STRING: ${AZURE_STORAGE_CONNECTION_STRING:-DefaultEndpointsProtocol=https;AccountName=ffcahwr;AccountKey=rY7JhqIUbzKLc3KGcqOrhQxrvt0y9vVgZiR0sPqpijrIA3C4SM5hVTHhnjRp2ALaTKufc6ummz7lOXcS5j1b4Q==;BlobEndpoint=https://ffcahwr.blob.core.windows.net/;QueueEndpoint=https://ffcahwr.queue.core.windows.net/;TableEndpoint=https://ffcahwr.table.core.windows.net/;FileEndpoint=https://ffcahwr.file.core.windows.net/;}
+      AZURE_STORAGE_USE_CONNECTION_STRING: "true"

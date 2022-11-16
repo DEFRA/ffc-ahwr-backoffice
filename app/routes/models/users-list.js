@@ -1,6 +1,6 @@
 const keys = require('../../session/keys')
 const { getUserSearch } = require('../../session')
-const { usersList, sortUsers, searchForUser } = require('../../api/users')
+const { getUsers, sortUsers, searchForUser } = require('../../api/users')
 
 class UsersViewModel {
   constructor (request) {
@@ -41,12 +41,13 @@ const getUsersTableHeader = (sortField) => {
 }
 
 async function createModel (request) {
+  const usersList = await getUsers()
   const sortField = getUserSearch(request, keys.userSearch.sort) ?? undefined
   const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
   const searchText = getUserSearch(request, keys.userSearch.searchText) ?? undefined
   const searchType = getUserSearch(request, keys.userSearch.searchType) ?? undefined
 
-  const filteredUsers = searchText ? searchForUser(searchText, searchType) : usersList
+  const filteredUsers = searchText ? searchForUser(searchText, searchType, usersList) : usersList
 
   const sortedUsers = sortUsers(direction, filteredUsers)
 
