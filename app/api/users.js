@@ -147,18 +147,18 @@ const usersList = [
   }
 ]
 
-function sortUsers (direction) {
-  return direction === 'ascending' ? sortAscending() : sortDescending
+function sortUsers (direction, users) {
+  return direction ? direction === 'ascending' ? sortAscending(users) : sortDescending(users) : users
 }
 
-function sortAscending () {
-  return usersList.sort(function (a, b) {
+function sortAscending (users) {
+  return users.sort(function (a, b) {
     return parseFloat(b.sbi) - parseFloat(a.sbi)
   })
 }
 
-function sortDescending () {
-  return usersList.sort(function (a, b) {
+function sortDescending (users) {
+  return users.sort(function (a, b) {
     return parseFloat(a.sbi) - parseFloat(b.sbi)
   })
 }

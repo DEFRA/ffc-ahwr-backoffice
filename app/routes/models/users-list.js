@@ -1,5 +1,5 @@
 const keys = require('../../session/keys')
-const { getAppSearch } = require('../../session')
+const { getUserSearch } = require('../../session')
 const { usersList, sortUsers, searchForUser } = require('../../api/users')
 
 class UsersViewModel {
@@ -20,11 +20,12 @@ const getUsersTableHeader = (sortField) => {
     text: 'Organisation'
   },
   {
-    text: 'SBI',
+    text: 'SBI number',
     attributes: {
       'aria-sort': sortField && sortField.field === 'SBI' ? direction : 'none',
       'data-url': '/users/sort/SBI'
-    }
+    },
+    format: 'numeric'
   },
   {
     text: 'CPH'
@@ -40,46 +41,55 @@ const getUsersTableHeader = (sortField) => {
 }
 
 async function createModel (request) {
-  const sortField = getAppSearch(request, keys.appSearch.sort) ?? undefined
+  const sortField = getUserSearch(request, keys.userSearch.sort) ?? undefined
   const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
-  const searchText = getAppSearch(request, keys.appSearch.searchText) ?? undefined
-  const searchType = getAppSearch(request, keys.appSearch.searchType) ?? undefined
-
-  sortUsers(direction)
+  const searchText = getUserSearch(request, keys.userSearch.searchText) ?? undefined
+  const searchType = getUserSearch(request, keys.userSearch.searchType) ?? undefined
 
   const filteredUsers = searchText ? searchForUser(searchText, searchType) : usersList
 
-  const users = filteredUsers.map(n => {
-    return [
-      {
-        text: n.farmerName
-      },
-      {
-        text: n.name
-      },
-      {
-        text: n.sbi,
-        format: 'numeric',
-        attributes: {
-          'data-sort-value': n.sbi
+  const sortedUsers = sortUsers(direction, filteredUsers)
+
+  if (sortedUsers.length > 0) {
+    const users = sortedUsers.map(n => {
+      return [
+        {
+          text: n.farmerName
+        },
+        {
+          text: n.name
+        },
+        {
+          text: n.sbi,
+          format: 'numeric',
+          attributes: {
+            'data-sort-value': n.sbi
+          }
+        },
+        {
+          text: n.cph,
+          format: 'numeric'
+        },
+        {
+          text: n.address
+        },
+        {
+          text: n.email,
+          format: 'email'
         }
-      },
-      {
-        text: n.cph,
-        format: 'numeric'
-      },
-      {
-        text: n.address
-      },
-      {
-        text: n.email,
-        format: 'email'
-      }
-    ]
-  })
-  return {
-    users,
-    header: getUsersTableHeader(getAppSearch(request, keys.appSearch.sort))
+      ]
+    })
+
+    return {
+      users,
+      header: getUsersTableHeader(getUserSearch(request, keys.userSearch.sort))
+    }
+  } else {
+    return {
+      users: [],
+      error: 'No Users found.',
+      searchText
+    }
   }
 }
 
