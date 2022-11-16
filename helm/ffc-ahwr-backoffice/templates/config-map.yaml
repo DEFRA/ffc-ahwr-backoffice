@@ -4,6 +4,8 @@ data:
   AADAR_ENABLED: {{ quote .Values.azureAppRegistration.enabled }}
   AADAR_REDIRECT_URL: {{ quote .Values.azureAppRegistration.redirectUrl }}
   APPINSIGHTS_CLOUDROLE: {{ quote .Values.name }}
+  AZURE_STORAGE_USE_CONNECTION_STRING: {{ quote .Values.container.azureStorageUseConnectionString }}
+  AZURE_STORAGE_ACCOUNT_NAME: {{ quote .Values.container.azureStorageAccountName }}
   NODE_ENV: {{ quote .Values.environment }}
   PORT: {{ quote .Values.container.port }}
   {{- if .Values.container.redisHostname }}
