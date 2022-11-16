@@ -32,7 +32,7 @@ module.exports = [
       },
       handler: async (request, h) => {
         request.params.direction = request.params.direction !== 'descending' ? 'DESC' : 'ASC'
-        setUserSearch(request, keys.appSearch.sort, request.params)
+        setUserSearch(request, keys.userSearch.sort, request.params)
         return 1 // NOSONAR
       }
     }
@@ -51,8 +51,8 @@ module.exports = [
       handler: async (request, h) => {
         try {
           const { searchText, searchType } = checkValidSearch(request.payload.searchText)
-          setUserSearch(request, keys.appSearch.searchText, searchText ?? '')
-          setUserSearch(request, keys.appSearch.searchType, searchType ?? '')
+          setUserSearch(request, keys.userSearch.searchText, searchText ?? '')
+          setUserSearch(request, keys.userSearch.searchType, searchType ?? '')
           return h.view(viewTemplate, await new UsersViewModel(request, 1)) // NOSONAR
         } catch (err) {
           return h.view(viewTemplate, { ...request.payload, error: err }).code(400).takeover()
