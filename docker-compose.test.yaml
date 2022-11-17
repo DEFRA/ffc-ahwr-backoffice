@@ -14,6 +14,9 @@ services:
       AADAR_CLIENT_ID: NCC-1701-D
       AADAR_REDIRECT_URL: http://thesearenotthedroidsyouarelookingfor
       AADAR_TENANT_ID: C3PO-R2D2
+      AZURE_STORAGE_ACCOUNT_NAME: devstoreaccount1
+      AZURE_STORAGE_CONNECTION_STRING: something
+      AZURE_STORAGE_USE_CONNECTION_STRING: true
     image: ffc-ahwr-backoffice-development
     container_name: ffc-ahwr-backoffice-test
     command: npm run test

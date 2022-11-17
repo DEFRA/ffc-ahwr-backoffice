@@ -16,13 +16,13 @@ function sort (direction, users) {
 
 function sortAscending (users) {
   return users.sort(function (a, b) {
-    return parseFloat(b.sbi) - parseFloat(a.sbi)
+    return parseFloat(a.sbi) - parseFloat(b.sbi)
   })
 }
 
 function sortDescending (users) {
   return users.sort(function (a, b) {
-    return parseFloat(a.sbi) - parseFloat(b.sbi)
+    return parseFloat(b.sbi) - parseFloat(a.sbi)
   })
 }
 
@@ -37,7 +37,7 @@ function searchForUser (searchText, searchType, usersList) {
         }
         break
       case 'name':
-        if (n.name === searchText) {
+        if (n.name.toLowerCase() === searchText) {
           filteredResults.push(n)
         }
         break
