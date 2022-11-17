@@ -38,15 +38,18 @@ describe('Users test', () => {
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-heading-l').text()).toEqual('Annual health and welfare review users')
-      expect($('title').text()).toContain('AHWR Users')
+      expect($('title').text()).toContain('Annual health and welfare review users')
       expect(sessionMock.getUserSearch).toHaveBeenCalledTimes(4)
       expectPhaseBanner.ok($)
     })
 
-    test('returns 200 with sort', async () => {
+    test.each([
+      { direction: 'ascending' },
+      { direction: 'descending' }
+    ])('returns 200 with sort %p', async ({ direction }) => {
       let options = {
         method: 'GET',
-        url: '/users/sort/SBI/descending',
+        url: `/users/sort/SBI/${direction}`,
         auth
       }
       let res = await global.__SERVER__.inject(options)
@@ -74,7 +77,7 @@ describe('Users test', () => {
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-heading-l').text()).toEqual('Annual health and welfare review users')
-      expect($('title').text()).toContain('AHWR Users')
+      expect($('title').text()).toContain('Annual health and welfare review users')
       expect(sessionMock.getUserSearch).toBeCalled()
       expect(users.getUsers).toBeCalled()
       expectPhaseBanner.ok($)
@@ -98,22 +101,15 @@ describe('Users test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
     })
+
     test.each([
-      { searchDetails: { searchText: '444444444', searchType: 'sbi' } }
-      // { searchDetails: { searchText: 'VV-555A-FD6E', searchType: 'ref' }, status: ['APPLIED', 'CLAIMED'] },
-      // { searchDetails: { searchText: 'applied', searchType: 'status' }, status: 'APPLIED' },
-      // { searchDetails: { searchText: 'data inputted', searchType: 'status' }, status: 'DATA INPUTTED' },
-      // { searchDetails: { searchText: 'claimed', searchType: 'status' }, status: 'CLAIMED' },
-      // { searchDetails: { searchText: 'check', searchType: 'status' }, status: 'CHECK' },
-      // { searchDetails: { searchText: 'accepted', searchType: 'status' }, status: 'ACCEPTED' },
-      // { searchDetails: { searchText: 'rejected', searchType: 'status' }, status: 'REJECTED' },
-      // { searchDetails: { searchText: 'paid', searchType: 'status' }, status: 'PAID' },
-      // { searchDetails: { searchText: 'withdrawn', searchType: 'status' } }
-    ])('returns success when post %p', async ({ searchDetails, status }) => {
+      { searchDetails: { searchText: '444444444', searchType: 'sbi' } },
+      { searchDetails: { searchText: 'robert.fleming@rpa.gov.uk', searchType: 'email' } }
+    ])('returns success when post %p', async ({ searchDetails }) => {
       const options = {
         method,
         url,
-        payload: { crumb, searchText: searchDetails.searchText, status, submit: 'search' },
+        payload: { crumb, searchText: searchDetails.searchText, submit: 'search' },
         auth,
         headers: { cookie: `crumb=${crumb}` }
       }
@@ -126,55 +122,51 @@ describe('Users test', () => {
       expect(users.getUsers).toBeCalled()
     })
 
-    // test.each([
-    //   { searchDetails: { searchText: '333333333' } },
-    //   { searchDetails: { searchText: '444444443' } },
-    //   { searchDetails: { searchText: 'VV-555A-F5D5' } },
-    //   { searchDetails: { searchText: '' } },
-    //   { searchDetails: { searchText: null } },
-    //   { searchDetails: { searchText: undefined } }
-    // ])('returns success with error message when no data found', async ({ searchDetails }) => {
-    //   const options = {
-    //     method,
-    //     url,
-    //     payload: { crumb, searchText: searchDetails.searchText, status: [], submit: 'search' },
-    //     headers: { cookie: `crumb=${crumb}` },
-    //     auth
-    //   }
+    test.each([
+      { searchDetails: { searchText: '000000000' } },
+      { searchDetails: { searchText: 'unknown@email.com' } },
+      { searchDetails: { searchText: '' } },
+      { searchDetails: { searchText: null } },
+      { searchDetails: { searchText: undefined } }
+    ])('returns success with error message when no data found', async ({ searchDetails }) => {
+      const options = {
+        method,
+        url,
+        payload: { crumb, searchText: searchDetails.searchText, submit: 'search' },
+        headers: { cookie: `crumb=${crumb}` },
+        auth
+      }
 
-    //   applications.getApplications.mockReturnValue({
-    //     applications: [],
-    //     applicationStatus: [],
-    //     total: 0
-    //   })
-    //   const res = await global.__SERVER__.inject(options)
+      users.getUsers.mockReturnValue([])
+      users.sortUsers.mockReturnValue([])
+      users.searchForUser.mockReturnValue([])
+      const res = await global.__SERVER__.inject(options)
 
-    //   expect(res.statusCode).toBe(200)
-    //   expect(sessionMock.getAppSearch).toBeCalled()
-    //   expect(sessionMock.setAppSearch).toBeCalled()
-    //   expect(applications.getApplications).toBeCalled()
-    //   expect(pagination.getPagination).toBeCalled()
-    //   const $ = cheerio.load(res.payload)
-    //   expect($('p.govuk-error-message').text()).toMatch('No Applications found.')
-    // })
+      expect(res.statusCode).toBe(200)
+      expect(sessionMock.getUserSearch).toBeCalled()
+      expect(sessionMock.setUserSearch).toBeCalled()
+      expect(users.getUsers).toBeCalled()
+      const $ = cheerio.load(res.payload)
+      expect($('p.govuk-error-message').text()).toMatch('No users found.')
+    })
 
-    // test.each([
-    //   { searchDetails: { searchText: '1233' } },
-    //   { searchDetails: { searchText: 'sdfgsfgsd' } }
-    // ])('returns error', async ({ searchDetails }) => {
-    //   const options = {
-    //     method,
-    //     url,
-    //     payload: { crumb, searchText: searchDetails.searchText, status: [] },
-    //     auth,
-    //     headers: { cookie: `crumb=${crumb}` }
-    //   }
+    test.each([
+      { searchDetails: { searchText: '1233' } },
+      { searchDetails: { searchText: 'sdfgsfgsd' } }
+    ])('returns error', async ({ searchDetails }) => {
+      const options = {
+        method,
+        url,
+        payload: { crumb, searchText: searchDetails.searchText, status: [] },
+        auth,
+        headers: { cookie: `crumb=${crumb}` }
+      }
 
-    //   const res = await global.__SERVER__.inject(options)
+      const res = await global.__SERVER__.inject(options)
 
-    //   const $ = cheerio.load(res.payload)
-    //   expect($('p.govuk-error-message').text()).toMatch('Error: Invalid search. It should be application reference or status or sbi number.')
-    //   expect(res.statusCode).toBe(400)
-    // })
+      const $ = cheerio.load(res.payload)
+      expect($('p.govuk-error-message').text()).toMatch('Error: Invalid search. It should be application reference or status or sbi number.')
+      expect(res.statusCode).toBe(400)
+    })
   })
 })

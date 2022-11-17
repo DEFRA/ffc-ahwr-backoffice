@@ -48,7 +48,6 @@ async function createModel (request) {
   const searchType = getUserSearch(request, keys.userSearch.searchType) ?? undefined
 
   const filteredUsers = searchText ? searchForUser(searchText, searchType, usersList) : usersList
-
   const sortedUsers = sortUsers(direction, filteredUsers)
 
   if (sortedUsers.length > 0) {
@@ -88,7 +87,7 @@ async function createModel (request) {
   } else {
     return {
       users: [],
-      error: 'No Users found.',
+      error: 'No users found.',
       searchText
     }
   }
