@@ -1,13 +1,13 @@
 const Wreck = require('@hapi/wreck')
 jest.mock('@hapi/wreck')
-jest.mock('../../../app/config')
-const { applicationApiUri } = require('../../../app/config')
+jest.mock('../../../../app/config')
+const { applicationApiUri } = require('../../../../app/config')
 const appRef = 'ABC-1234'
 const limit = 20
 const offset = 0
 let searchText = ''
 let searchType = ''
-const { getApplications, getApplication } = require('../../../app/api/applications')
+const { getApplications, getApplication } = require('../../../../app/api/applications')
 describe('Application API', () => {
   it('GetApplications should return empty applications array', async () => {
     jest.mock('@hapi/wreck')

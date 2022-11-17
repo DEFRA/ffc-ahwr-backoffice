@@ -1,5 +1,6 @@
 const entries = {
-  appSearch: 'appSearch'
+  appSearch: 'appSearch',
+  userSearch: 'userSearch'
 }
 
 function set (request, entryKey, key, value) {
@@ -20,7 +21,17 @@ function getAppSearch (request, key) {
   return get(request, entries.appSearch, key)
 }
 
+function setUserSearch (request, key, value) {
+  set(request, entries.userSearch, key, value)
+}
+
+function getUserSearch (request, key) {
+  return get(request, entries.userSearch, key)
+}
+
 module.exports = {
   setAppSearch,
-  getAppSearch
+  getAppSearch,
+  setUserSearch,
+  getUserSearch
 }

@@ -4,5 +4,10 @@ module.exports = {
     searchType: 'searchType',
     filterStatus: 'status',
     sort: 'sort'
+  },
+  userSearch: {
+    searchText: 'searchText',
+    searchType: 'searchType',
+    sort: 'sort'
   }
 }

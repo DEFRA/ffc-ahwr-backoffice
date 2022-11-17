@@ -1,12 +1,13 @@
 {
   "name": "ffc-ahwr-backoffice",
-  "version": "1.14.1",
+  "version": "1.14.2",
   "description": "Back office of the health and welfare of your livestock",
   "homepage": "https://github.com/DEFRA/ffc-ahwr-backoffice",
   "main": "app/index.js",
   "scripts": {
     "build": "webpack",
     "build:watch": "webpack --watch",
+    "lint:fix": "standard --fix",
     "pretest": "npm run test:lint",
     "test": "jest --runInBand",
     "test:watch": "jest --coverage=false --onlyChanged --watch --runInBand",
@@ -23,6 +24,8 @@
   ],
   "license": "OGL-UK-3.0",
   "dependencies": {
+    "@azure/storage-blob": "^12.9.0",
+    "@azure/identity" : "^2.1.0",
     "@azure/msal-node": "^1.10.0",
     "@hapi/boom": "10.00",
     "@hapi/catbox-redis": "^6.0.2",
