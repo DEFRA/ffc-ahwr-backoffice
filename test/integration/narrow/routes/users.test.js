@@ -103,8 +103,8 @@ describe('Users test', () => {
     })
 
     test.each([
-      { searchDetails: { searchText: '444444444', searchType: 'sbi' } },
-      { searchDetails: { searchText: 'robert.fleming@rpa.gov.uk', searchType: 'email' } }
+      { searchDetails: { searchText: '222222222', searchType: 'sbi' } },
+      { searchDetails: { searchText: 'farm@livestock-keeper.com', searchType: 'email' } }
     ])('returns success when post %p', async ({ searchDetails }) => {
       const options = {
         method,
