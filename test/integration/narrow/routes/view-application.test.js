@@ -74,7 +74,7 @@ describe('View Application test', () => {
       expect($('tbody tr:nth-child(4)').text()).toContain('At least 21')
       expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
       expect($('tbody tr:nth-child(5)').text()).toContain('Yes')
-      expect($('#claim').text()).toContain('Never claimed')
+      expect($('#claim').text()).toContain('Not claimed yet')
       expectPhaseBanner.ok($)
     })
     test('returns 200 application applied', async () => {
@@ -113,7 +113,7 @@ describe('View Application test', () => {
       expect($('tbody tr:nth-child(4)').text()).toContain('At least 21')
       expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
       expect($('tbody tr:nth-child(5)').text()).toContain('No')
-      expect($('#claim').text()).toContain('Never claimed')
+      expect($('#claim').text()).toContain('Not eligible to claim')
       expectPhaseBanner.ok($)
     })
     test('returns 200 application data inputted', async () => {
@@ -142,7 +142,7 @@ describe('View Application test', () => {
       expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address:')
       expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
 
-      expect($('#claim').text()).toContain('Never claimed')
+      expect($('#claim').text()).toContain('Not eligible to claim')
       expectPhaseBanner.ok($)
     })
     test('returns 200 application claim', async () => {
