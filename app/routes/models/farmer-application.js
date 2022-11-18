@@ -4,6 +4,7 @@ const speciesNumbers = require('../../../app/constants/species-numbers')
 module.exports = (application) => {
   const { data, createdAt, status } = application
   const formatedDate = formatedDateToUk(createdAt)
+
   return {
     firstCellIsHeader: true,
     rows: [
@@ -11,7 +12,7 @@ module.exports = (application) => {
       [{ text: 'Business details correct' }, { text: upperFirstLetter(data.confirmCheckDetails) }],
       [{ text: 'Type of review' }, { text: upperFirstLetter(data.whichReview) }],
       [{ text: 'Number of livestock' }, { text: speciesNumbers[data.whichReview] }],
-      [{ text: 'Agreement accepted' }, { text: data.offerStatus === 'rejected' ? 'Yes' : 'No' }]
+      [{ text: 'Agreement accepted' }, { text: data.offerStatus === 'accepted' ? 'Yes' : 'No' }]
     ]
   }
 }

@@ -1,8 +1,8 @@
 {
-  "applied": {
+  "agreed": {
     "id": "555afd4c-b095-4ce4-b492-800466b53393",
     "reference": "AHWR-555A-FD4C",
-    "status": { "status": "APPLIED" },
+    "status": { "status": "AGREED" },
     "data": {
       "declaration": true,
       "whichReview": "sheep",

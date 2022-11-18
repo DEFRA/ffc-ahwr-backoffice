@@ -38,8 +38,8 @@ describe('View Application test', () => {
       expect($('h1.govuk-heading-l').text()).toEqual('400 - Bad Request')
       expectPhaseBanner.ok($)
     })
-    test('returns 200 application applied', async () => {
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.applied)
+    test('returns 200 application agreed', async () => {
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
       const options = {
         method: 'GET',
         url,
