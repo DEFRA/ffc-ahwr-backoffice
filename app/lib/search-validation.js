@@ -26,6 +26,6 @@ module.exports = (searchText) => {
       searchType
     }
   } else {
-    throw new Error('Invalid search. It should be application reference or status or sbi number.')
+    throw new Error('Invalid search. It should be agreement number, organisation or single business identifier (SBI) number.')
   }
 }

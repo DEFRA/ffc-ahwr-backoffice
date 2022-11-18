@@ -225,7 +225,7 @@ describe('Applications test', () => {
       const res = await global.__SERVER__.inject(options)
 
       const $ = cheerio.load(res.payload)
-      expect($('p.govuk-error-message').text()).toMatch('Error: Invalid search. It should be application reference or status or sbi number.')
+      expect($('p.govuk-error-message').text()).toMatch('Error: Invalid search. It should be agreement number, organisation or single business identifier (SBI) number.')
       expect(res.statusCode).toBe(400)
     })
   })
