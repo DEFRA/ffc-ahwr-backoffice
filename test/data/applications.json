@@ -3,7 +3,7 @@
   "applications": [
     {
       "id": "555afd4c-b095-4ce4-b492-800466b53393",
-      "reference": "VV-555A-FD4C",
+      "reference": "AHWR-555A-FD4C",
       "status": { "status": "APPLIED" },
       "data": {
         "declaration": true,
@@ -26,7 +26,7 @@
     },
     {
       "id": "555afd4c-b095-4ce4-b492-800466b54493",
-      "reference": "VV-555A-FD4D",
+      "reference": "AHWR-555A-FD4D",
       "status": { "status": "REJECTED" },
       "data": {
         "declaration": true,
@@ -49,7 +49,7 @@
     },
     {
       "id": "555afd4c-b095-4ce4-b492-800466b55593",
-      "reference": "VV-555A-FD5D",
+      "reference": "AHWR-555A-FD5D",
       "status": { "status": "DATA INPUTTED" },
       "data": {
         "declaration": true,
@@ -72,7 +72,7 @@
     },
     {
       "id": "555afd4c-b095-4ce4-b492-800466b66693",
-      "reference": "VV-555A-FD6E",
+      "reference": "AHWR-555A-FD6E",
       "status": { "status": "WITHDRAWN" },
       "data": {
         "declaration": true,
@@ -95,7 +95,7 @@
     },
     {
       "id": "555afd4c-b095-4ce4-b492-800466b66693",
-      "reference": "VV-666A-FD6E",
+      "reference": "AHWR-666A-FD6E",
       "status": { "status": "ACCEPTED" },
       "data": {
         "declaration": true,
@@ -118,7 +118,7 @@
     },
     {
       "id": "555afd4c-b095-4ce4-b492-800466b78693",
-      "reference": "VV-666A-FD7E",
+      "reference": "AHWR-666A-FD7E",
       "status": { "status": "CHECK" },
       "data": {
         "declaration": true,
@@ -141,7 +141,7 @@
     },
     {
       "id": "555afd4c-b095-4ce4-b492-800466b88893",
-      "reference": "VV-666A-AB6E",
+      "reference": "AHWR-666A-AB6E",
       "status": { "status": "CLAIMED" },
       "data": {
         "declaration": true,
@@ -164,7 +164,7 @@
     },
     {
       "id": "555afd4c-b095-4ce4-b492-800466b90993",
-      "reference": "VV-666A-RG6E",
+      "reference": "AHWR-666A-RG6E",
       "status": { "status": "PAID" },
       "data": {
         "declaration": true,
@@ -187,7 +187,7 @@
     },
     {
       "id": "555afd4c-b095-4ce4-b492-800466b10993",
-      "reference": "VV-666A-RG7E",
+      "reference": "AHWR-666A-RG7E",
       "status": { "status": "ACCEPTED" },
       "data": {
         "declaration": true,
