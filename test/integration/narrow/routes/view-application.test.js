@@ -3,7 +3,7 @@ const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const applications = require('../../../../app/api/applications')
 const { administrator } = require('../../../../app/auth/permissions')
 const viewApplicationData = require('.././../../data/view-applications.json')
-const reference = 'VV-555A-FD4C'
+const reference = 'AHWR-555A-FD4C'
 
 jest.mock('../../../../app/api/applications')
 
@@ -78,7 +78,7 @@ describe('View Application test', () => {
       expectPhaseBanner.ok($)
     })
     test('returns 200 application applied', async () => {
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.notaggreed)
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.notagreed)
       const options = {
         method: 'GET',
         url,

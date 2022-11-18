@@ -148,7 +148,7 @@ describe('Applications test', () => {
 
     test.each([
       { searchDetails: { searchText: '444444444', searchType: 'sbi' }, status: ['APPLIED', 'DATA INPUTTED'] },
-      { searchDetails: { searchText: 'VV-555A-FD6E', searchType: 'ref' }, status: ['APPLIED', 'CLAIMED'] },
+      { searchDetails: { searchText: 'AHWR-555A-FD6E', searchType: 'ref' }, status: ['APPLIED', 'CLAIMED'] },
       { searchDetails: { searchText: 'applied', searchType: 'status' }, status: 'APPLIED' },
       { searchDetails: { searchText: 'data inputted', searchType: 'status' }, status: 'DATA INPUTTED' },
       { searchDetails: { searchText: 'claimed', searchType: 'status' }, status: 'CLAIMED' },
@@ -181,7 +181,7 @@ describe('Applications test', () => {
     test.each([
       { searchDetails: { searchText: '333333333' } },
       { searchDetails: { searchText: '444444443' } },
-      { searchDetails: { searchText: 'VV-555A-F5D5' } },
+      { searchDetails: { searchText: 'AHWR-555A-F5D5' } },
       { searchDetails: { searchText: '' } },
       { searchDetails: { searchText: null } },
       { searchDetails: { searchText: undefined } }
