@@ -1,7 +1,7 @@
 {
   "applied": {
     "id": "555afd4c-b095-4ce4-b492-800466b53393",
-    "reference": "VV-555A-FD4C",
+    "reference": "AHWR-555A-FD4C",
     "status": { "status": "APPLIED" },
     "data": {
       "declaration": true,
@@ -23,9 +23,9 @@
     "updatedAt": "2022-06-06T14:27:51.775Z",
     "createdBy": "admin"
   },
-  "notaggreed": {
+  "notagreed": {
     "id": "555afd4c-b095-4ce4-b492-800466b53393",
-    "reference": "VV-555A-FD4C",
+    "reference": "AHWR-555A-FD4C",
     "status": { "status": "NOT AGREED" },
     "data": {
       "whichReview": "sheep",
@@ -48,7 +48,7 @@
   },
   "dataInputted": {
     "id": "555afd4c-b095-4ce4-b492-800466b53393",
-    "reference": "VV-555A-FD4C",
+    "reference": "AHWR-555A-FD4C",
     "status": { "status": "DATA INPUTTED" },
     "data": {
       "declaration": true,
@@ -72,7 +72,7 @@
   },
   "claim": {
     "id": "555afd4c-b095-4ce4-b492-800466b53393",
-    "reference": "VV-555A-FD4C",
+    "reference": "AHWR-555A-FD4C",
     "status": { "status": "CLAIMED" },
     "data": {
       "declaration": true,
@@ -101,7 +101,7 @@
   },
   "paid": {
     "id": "555afd4c-b095-4ce4-b492-800466b53393",
-    "reference": "VV-555A-FD4C",
+    "reference": "AHWR-555A-FD4C",
     "status": { "status": "ACCEPTED" },
     "data": {
       "declaration": true,
@@ -119,11 +119,11 @@
       "confirmCheckDetails": "yes"
     },
     "payment": {
-      "applicationReference": "VV-555A-FD4C",
+      "applicationReference": "AHWR-555A-FD4C",
       "data": {
         "value": 400,
         "frn": 1102057452,
-        "invoiceNumber": "VV-F528-5345V001",
+        "invoiceNumber": "AHWR-F528-5345V001",
         "invoiceLines": [{
           "description": "G00 - Gross value of claim",
           "value": 400
