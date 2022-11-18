@@ -11,7 +11,7 @@ module.exports = (application) => {
       [{ text: 'Business details correct' }, { text: upperFirstLetter(data.confirmCheckDetails) }],
       [{ text: 'Type of review' }, { text: upperFirstLetter(data.whichReview) }],
       [{ text: 'Number of livestock' }, { text: speciesNumbers[data.whichReview] }],
-      [{ text: 'Agreement accepted' }, { text: data.declaration ? 'Yes' : 'No' }]
+      [{ text: 'Agreement accepted' }, { text: data.offerStatus === 'rejected' ? 'Yes' : 'No' }]
     ]
   }
 }
