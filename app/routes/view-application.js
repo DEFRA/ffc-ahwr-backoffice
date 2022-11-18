@@ -26,10 +26,9 @@ module.exports = {
       }
 
       const statusClass = getStyleClassByStatus(application.status.status)
-      const status = application.status.status === 'APPLIED' ? 'Agreed' : upperFirstLetter(application.status.status.toLowerCase())
       return h.view('view-application', {
         applicationId: application.reference,
-        status,
+        status: application.status.status,
         statusClass,
         organisationName: application?.data?.organisation?.name,
         vetVisit: application?.vetVisit,
