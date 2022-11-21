@@ -66,7 +66,6 @@ async function createModel (request, page) {
   if (apps.total > 0) {
     let statusClass
     const applications = apps.applications.map(n => {
-      n.status.status = n.status.status === 'APPLIED' ? 'AGREED' : n.status.status
       statusClass = getStyleClassByStatus(n.status.status)
       return [
         { text: n.reference },
