@@ -3,7 +3,7 @@ const validStatus = ['agreed', 'applied', 'withdrawn', 'data inputted', 'claimed
 const sbiRegEx = /^[\0-9]{9}$/i
 
 module.exports = (searchText) => {
-  let searchType
+  let searchType = 'organisation'
   searchText = (searchText ?? '').trim()
   switch (true) {
     case appRefRegEx.test(searchText):
