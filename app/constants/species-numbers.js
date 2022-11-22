@@ -1,6 +1,6 @@
 module.exports = {
-  beef: 'At least 11',
-  dairy: 'At least 11',
-  pigs: 'At least 51',
-  sheep: 'At least 21'
+  beef: 'Minimum 11',
+  dairy: 'Minimum 11',
+  pigs: 'Minimum 51',
+  sheep: 'Minimum 21'
 }

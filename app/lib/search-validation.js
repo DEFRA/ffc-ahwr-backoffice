@@ -15,17 +15,17 @@ module.exports = (searchText) => {
     case sbiRegEx.test(searchText):
       searchType = 'sbi'
       break
+    default:
+      searchType = 'organisation'
+      break
   }
 
-  if (!searchType && searchText.length <= 0) {
+  if (searchText.length <= 0) {
     searchType = 'reset'
   }
-  if (searchType) {
-    return {
-      searchText,
-      searchType
-    }
-  } else {
-    throw new Error('Invalid search. It should be agreement number, organisation or single business identifier (SBI) number.')
+
+  return {
+    searchText,
+    searchType
   }
 }
