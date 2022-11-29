@@ -19,17 +19,17 @@ module.exports = (searchText) => {
     case emailRegex.test(searchText.toLowerCase()):
       searchType = 'email'
       break
+    default:
+      searchType = 'organisation'
+      break
   }
 
-  if (!searchType && searchText.length <= 0) {
+  if (searchText.length <= 0) {
     searchType = 'reset'
   }
-  if (searchType) {
-    return {
-      searchText,
-      searchType
-    }
-  } else {
-    throw new Error('Invalid search. It should be application reference or status or sbi number.')
+
+  return {
+    searchText,
+    searchType
   }
 }

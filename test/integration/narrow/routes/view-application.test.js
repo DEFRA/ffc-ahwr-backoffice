@@ -38,8 +38,8 @@ describe('View Application test', () => {
       expect($('h1.govuk-heading-l').text()).toEqual('400 - Bad Request')
       expectPhaseBanner.ok($)
     })
-    test('returns 200 application applied', async () => {
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.applied)
+    test('returns 200 application agreed', async () => {
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
       const options = {
         method: 'GET',
         url,
@@ -64,17 +64,17 @@ describe('View Application test', () => {
       expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address:')
       expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
 
-      expect($('tbody tr:nth-child(1)').text()).toContain('Agreement formed')
+      expect($('tbody tr:nth-child(1)').text()).toContain('Date of agreement')
       expect($('tbody tr:nth-child(1)').text()).toContain('06/06/2022')
       expect($('tbody tr:nth-child(2)').text()).toContain('Business details correct')
       expect($('tbody tr:nth-child(2)').text()).toContain('Yes')
       expect($('tbody tr:nth-child(3)').text()).toContain('Type of review')
       expect($('tbody tr:nth-child(3)').text()).toContain('Sheep')
       expect($('tbody tr:nth-child(4)').text()).toContain('Number of livestock')
-      expect($('tbody tr:nth-child(4)').text()).toContain('At least 21')
+      expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
       expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
       expect($('tbody tr:nth-child(5)').text()).toContain('Yes')
-      expect($('#claim').text()).toContain('Never claimed')
+      expect($('#claim').text()).toContain('Not claimed yet')
       expectPhaseBanner.ok($)
     })
     test('returns 200 application applied', async () => {
@@ -103,17 +103,17 @@ describe('View Application test', () => {
       expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address:')
       expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
 
-      expect($('tbody tr:nth-child(1)').text()).toContain('Agreement not formed')
+      expect($('tbody tr:nth-child(1)').text()).toContain('Date of agreement rejected')
       expect($('tbody tr:nth-child(1)').text()).toContain('06/06/2022')
       expect($('tbody tr:nth-child(2)').text()).toContain('Business details correct')
       expect($('tbody tr:nth-child(2)').text()).toContain('Yes')
       expect($('tbody tr:nth-child(3)').text()).toContain('Type of review')
       expect($('tbody tr:nth-child(3)').text()).toContain('Sheep')
       expect($('tbody tr:nth-child(4)').text()).toContain('Number of livestock')
-      expect($('tbody tr:nth-child(4)').text()).toContain('At least 21')
+      expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
       expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
       expect($('tbody tr:nth-child(5)').text()).toContain('No')
-      expect($('#claim').text()).toContain('Never claimed')
+      expect($('#claim').text()).toContain('Not eligible to claim')
       expectPhaseBanner.ok($)
     })
     test('returns 200 application data inputted', async () => {
@@ -142,7 +142,7 @@ describe('View Application test', () => {
       expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address:')
       expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
 
-      expect($('#claim').text()).toContain('Never claimed')
+      expect($('#claim').text()).toContain('Not eligible to claim')
       expectPhaseBanner.ok($)
     })
     test('returns 200 application claim', async () => {
@@ -173,16 +173,18 @@ describe('View Application test', () => {
 
       expect($('#claim').text()).toContain('Claimed')
 
-      expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('Review details confirmed')
-      expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('Yes')
-      expect($('tbody:nth-child(1) tr:nth-child(2)').text()).toContain('Date of review')
-      expect($('tbody:nth-child(1) tr:nth-child(2)').text()).toContain('07/11/2022')
-      expect($('tbody:nth-child(1) tr:nth-child(3)').text()).toContain('Vet’s name')
-      expect($('tbody:nth-child(1) tr:nth-child(3)').text()).toContain('testVet')
-      expect($('tbody:nth-child(1) tr:nth-child(4)').text()).toContain('Vet’s RCVS number')
-      expect($('tbody:nth-child(1) tr:nth-child(4)').text()).toContain('1234234')
-      expect($('tbody:nth-child(1) tr:nth-child(5)').text()).toContain('Unique reference number (URN)')
-      expect($('tbody:nth-child(1) tr:nth-child(5)').text()).toContain('134242')
+      expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('Date of claim')
+      expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('07/12/2022')
+      expect($('tbody:nth-child(1) tr:nth-child(2)').text()).toContain('Review details confirmed')
+      expect($('tbody:nth-child(1) tr:nth-child(2)').text()).toContain('Yes')
+      expect($('tbody:nth-child(1) tr:nth-child(3)').text()).toContain('Date of review')
+      expect($('tbody:nth-child(1) tr:nth-child(3)').text()).toContain('07/11/2022')
+      expect($('tbody:nth-child(1) tr:nth-child(4)').text()).toContain('Vet’s name')
+      expect($('tbody:nth-child(1) tr:nth-child(4)').text()).toContain('testVet')
+      expect($('tbody:nth-child(1) tr:nth-child(5)').text()).toContain('Vet’s RCVS number')
+      expect($('tbody:nth-child(1) tr:nth-child(5)').text()).toContain('1234234')
+      expect($('tbody:nth-child(1) tr:nth-child(6)').text()).toContain('Test results unique reference number (URN)')
+      expect($('tbody:nth-child(1) tr:nth-child(6)').text()).toContain('134242')
       expectPhaseBanner.ok($)
     })
     test('returns 200 application paid', async () => {

@@ -1,11 +1,12 @@
 {
-  "applied": {
+  "agreed": {
     "id": "555afd4c-b095-4ce4-b492-800466b53393",
     "reference": "AHWR-555A-FD4C",
-    "status": { "status": "APPLIED" },
+    "status": { "status": "AGREED" },
     "data": {
       "declaration": true,
       "whichReview": "sheep",
+      "offerStatus": "accepted",
       "organisation": {
         "cph": "33/333/3333",
         "sbi": "333333333",
@@ -96,7 +97,7 @@
     },
     "claimed": true,
     "createdAt": "2022-06-06T14:27:51.251Z",
-    "updatedAt": "2022-06-06T14:27:51.775Z",
+    "updatedAt": "2022-12-07T14:27:51.775Z",
     "createdBy": "admin"
   },
   "paid": {

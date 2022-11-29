@@ -209,24 +209,5 @@ describe('Applications test', () => {
       const $ = cheerio.load(res.payload)
       expect($('p.govuk-error-message').text()).toMatch('No Applications found.')
     })
-
-    test.each([
-      { searchDetails: { searchText: '1233' } },
-      { searchDetails: { searchText: 'sdfgsfgsd' } }
-    ])('returns error', async ({ searchDetails }) => {
-      const options = {
-        method,
-        url,
-        payload: { crumb, searchText: searchDetails.searchText, status: [] },
-        auth,
-        headers: { cookie: `crumb=${crumb}` }
-      }
-
-      const res = await global.__SERVER__.inject(options)
-
-      const $ = cheerio.load(res.payload)
-      expect($('p.govuk-error-message').text()).toMatch('Error: Invalid search. It should be application reference or status or sbi number.')
-      expect(res.statusCode).toBe(400)
-    })
   })
 })

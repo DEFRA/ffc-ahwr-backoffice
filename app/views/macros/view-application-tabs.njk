@@ -11,8 +11,10 @@
     {% if claimed %}
       <h2 class="govuk-heading-l">Claimed</h2>
       {{ govukTable(model.claimData) }}
+    {% elif (status == "Agreed") %}
+      <h2 class="govuk-heading-l">Not claimed yet</h2>
     {% else %}
-      <h2 class="govuk-heading-l">Never claimed</h2>
+      <h2 class="govuk-heading-l">Not eligible to claim</h2>
     {% endif %}
   {% endset -%}
 

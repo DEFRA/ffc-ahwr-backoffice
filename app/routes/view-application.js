@@ -25,8 +25,8 @@ module.exports = {
         throw boom.badRequest()
       }
 
+      const status = upperFirstLetter(application.status.status.toLowerCase())
       const statusClass = getStyleClassByStatus(application.status.status)
-      const status = application.status.status === 'APPLIED' ? 'Agreed' : upperFirstLetter(application.status.status.toLowerCase())
       return h.view('view-application', {
         applicationId: application.reference,
         status,
