@@ -166,7 +166,7 @@ describe('Users test', () => {
 
       const $ = cheerio.load(res.payload)
       expect($('p.govuk-error-message').text()).toMatch('No users found.')
-      expect(res.statusCode).toBe(400)
+      expect(res.statusCode).toBe(200)
     })
   })
 })
