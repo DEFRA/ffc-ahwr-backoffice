@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  ffc-ahwr-farmer-apply-acceptance-tests:
+    environment:
+      MAX_INSTANCES: 1
+      CHROME_ARGS: "--verbose"
+    volumes:
+      - ./babel.config.js:/home/node/babel.config.js
+      - ./package.json:/home/node/package.json
+      - ./wdio.conf.js:/home/node/wdio.conf.js
+      - ./features:/home/node/features
+      - ./html-reports:/home/node/html-reports
+      - ./page-objects:/home/node/page-objects
+      - ./steps:/home/node/steps
+      - ./support:/home/node/support
+    ports:
+      - "9228:9229"

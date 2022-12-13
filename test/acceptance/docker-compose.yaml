@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  ffc-ahwr-farmer-apply-acceptance-tests:
+    build: .
+    image: ffc-ahwr-farmer-apply-acceptance-tests
+    container_name: ffc-ahwr-farmer-apply-acceptance-tests
+    environment:
+      APPLICATIONREQUEST_QUEUE_ADDRESS: ${APPLICATIONREQUEST_QUEUE_ADDRESS:-ffc-ahwr-application-request}${MESSAGE_QUEUE_SUFFIX}
+      APPLICATIONRESPONSE_QUEUE_ADDRESS: ${APPLICATIONRESPONSE_QUEUE_ADDRESS:-ffc-ahwr-application-response}${MESSAGE_QUEUE_SUFFIX}
+      BROWSERSTACK_ACCESS_KEY: ${BROWSERSTACK_ACCESS_KEY}
+      BROWSERSTACK_USERNAME: ${BROWSERSTACK_USERNAME}
+      CHROME_ARGS: "--ignore-certificate-errors"
+      EVENT_QUEUE_ADDRESS: ${EVENT_QUEUE_ADDRESS:-ffc-ahwr-event}${MESSAGE_QUEUE_SUFFIX}
+      MESSAGE_QUEUE_HOST: ${MESSAGE_QUEUE_HOST}
+      MESSAGE_QUEUE_PASSWORD: ${MESSAGE_QUEUE_PASSWORD}
+      MESSAGE_QUEUE_USER: ${MESSAGE_QUEUE_USER}
+      PR_BUILD: ${PR_BUILD}
+      TEST_ENVIRONMENT_ROOT_URL: ${TEST_ENVIRONMENT_ROOT_URL}
+      TEST_TOKEN: ${FFC_AHWR_TEST_TOKEN}
