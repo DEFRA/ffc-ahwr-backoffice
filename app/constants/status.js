@@ -31,6 +31,9 @@ const status = {
   },
   INCHECK: {
     styleClass: 'govuk-tag--orange'
+  },
+  READYTOPAY: {
+    styleClass: 'govuk-tag'
   }
 }
 
