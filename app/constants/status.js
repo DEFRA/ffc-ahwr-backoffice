@@ -18,7 +18,7 @@ const status = {
     styleClass: 'govuk-tag--red'
   },
   NOTAGREED: {
-    styleClass: 'govuk-tag--red'
+    styleClass: 'govuk-tag--pink'
   },
   ACCEPTED: {
     styleClass: 'govuk-tag--purple'
@@ -28,6 +28,12 @@ const status = {
   },
   CLAIMED: {
     styleClass: 'govuk-tag--blue'
+  },
+  INCHECK: {
+    styleClass: 'govuk-tag--orange'
+  },
+  READYTOPAY: {
+    styleClass: 'govuk-tag'
   }
 }
 
