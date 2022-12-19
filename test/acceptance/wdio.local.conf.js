@@ -3,7 +3,7 @@ import { config } from './wdio.conf'
 exports.config = {
   ...config,
   ...{
-//    services: ['chromedriver'],
+    services: ['chromedriver'],
     capabilities: [{
       maxInstances: 1,
       pageLoadStrategy: 'none',
