@@ -8,7 +8,7 @@ module.exports = (application) => {
   return {
     firstCellIsHeader: true,
     rows: [
-      [{ text: status.status === 'NOT AGREED' ? 'Date of agreement rejected' : 'Date of agreement' }, { text: formatedDate }],
+      [{ text: status.status === 'NOT AGREED' ? 'Date agreement rejected' : 'Date of agreement' }, { text: formatedDate }],
       [{ text: 'Business details correct' }, { text: upperFirstLetter(data.confirmCheckDetails) }],
       [{ text: 'Type of review' }, { text: upperFirstLetter(data.whichReview) }],
       [{ text: 'Number of livestock' }, { text: speciesNumbers[data.whichReview] }],

@@ -103,7 +103,7 @@ describe('View Application test', () => {
       expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address:')
       expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
 
-      expect($('tbody tr:nth-child(1)').text()).toContain('Date of agreement rejected')
+      expect($('tbody tr:nth-child(1)').text()).toContain('Date agreement rejected')
       expect($('tbody tr:nth-child(1)').text()).toContain('06/06/2022')
       expect($('tbody tr:nth-child(2)').text()).toContain('Business details correct')
       expect($('tbody tr:nth-child(2)').text()).toContain('Yes')
