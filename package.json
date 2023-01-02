@@ -42,6 +42,11 @@
     "nunjucks": "^3.2.3",
     "uuid": "^8.3.2"
   },
+  "overrides": {
+    "@azure/msal-node": {
+      "jsonwebtoken": "9.0.0"
+    }
+  },
   "devDependencies": {
     "@hapi/catbox-memory": "^5.0.1",
     "@types/cheerio": "^0.22.31",
