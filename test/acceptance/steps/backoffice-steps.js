@@ -127,3 +127,5 @@ Then("the status of each application should be displayed on AHWR pages", async (
   await browser.pause(1000)
   await wdioExpect(await ApplicationsPage.firstClaimedInList).toBePresent()
 });
+
+

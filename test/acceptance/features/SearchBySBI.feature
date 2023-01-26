@@ -4,8 +4,7 @@ So that I can load the application quickly and respond to user inquiries.
 
 
 Scenario: Search by SBI Number.
-GIVEN I am on the AHWR application page.
-WHEN I enter the SBI number in the search menu,
-AND I clicked the enter button.
-THEN an application with the SBI number should be displayed.
+Given I am on the AHWR page "false"
+When I enter the SBI number "108831093" the search bar
+Then an application with the SBI number "108831093" should be displayed
 

@@ -7,10 +7,9 @@ So that I can quickly load the application and respond to user inquiries.
 
 
 Scenario: Search by Reference Number.
-Given I am on the application page.
-When I type in an application <reference number> in the search bar,
-And I clicked the enter button or magnifying glass .
-Then an application with the <reference number> should be displayed.
+Given I am on the AHWR page "false"
+When I enter the application "AHWR-3CBA-F9CB" in the search bar
+Then an application with the "AHWR-3CBA-F9CB" should be displayed
 
 Scenario: Enter Invalid Reference Number.
 Given I am on the application page.
