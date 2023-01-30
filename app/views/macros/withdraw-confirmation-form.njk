@@ -1,7 +1,9 @@
-{% macro viewWithdrawConfirmationForm() %}
+{% macro viewWithdrawConfirmationForm(applicationId, page) %}
   <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left">
     <h1 class="govuk-panel__title-s govuk-!-font-size-36 govuk-!-margin-top-1">Are you sure you want to withdraw?</h1>
-    <a href="#" draggable="false" class="govuk-button govuk-button govuk-!-margin-bottom-3" data-module="govuk-button">Yes</a>
-    <a href="#" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-3">No</a>
+    <form method="POST" autocomplete="off" novalidate="novalidate" action="/withdraw-application/{{ applicationId }}?page={{page}}">
+      <button class="govuk-button govuk-button govuk-!-margin-bottom-3" name="withdrawConfirmation" value="yes">Yes</button>
+      <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-3" name="withdrawConfirmation" value="no">No</button>
+    </form>
   </div>
 {% endmacro %}

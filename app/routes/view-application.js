@@ -16,7 +16,8 @@ module.exports = {
         reference: Joi.string().valid()
       }),
       query: Joi.object({
-        page: Joi.number().greater(0).default(1)
+        page: Joi.number().greater(0).default(1),
+        withdraw: Joi.bool().default(false),
       })
     },
     handler: async (request, h) => {

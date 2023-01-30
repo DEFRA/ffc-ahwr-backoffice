@@ -24,10 +24,10 @@
       {{ govukSummaryList({
         rows: model.listData.rows
       }) }}
-      {{ viewWithdrawConfirmationForm() }}
+      {{ viewWithdrawConfirmationForm(applicationId, page) }}
       {{ viewApplicationTabs(model, vetVisit, claimed, payment, status) }}
       {% if withdrawLink %}
-        <a class="govuk-link govuk-body">Withdraw</a>
+        <a class="govuk-link govuk-body" href="/view-application/{{ applicationId }}?page={{page}}&withdraw=true">Withdraw</a>
       {% endif %}
     </div>
   </div>
