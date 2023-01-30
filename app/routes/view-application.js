@@ -27,6 +27,8 @@ module.exports = {
 
       const status = upperFirstLetter(application.status.status.toLowerCase())
       const statusClass = getStyleClassByStatus(application.status.status)
+      const withdrawLinkStatus = ['IN CHECK', 'AGREED']
+
       return h.view('view-application', {
         applicationId: application.reference,
         status,
@@ -34,6 +36,7 @@ module.exports = {
         organisationName: application?.data?.organisation?.name,
         vetVisit: application?.vetVisit,
         claimed: application?.claimed,
+        withdrawLink: withdrawLinkStatus.includes(application.status.status),
         payment: application?.payment,
         ...new ViewModel(application),
         page: request.query.page
