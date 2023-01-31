@@ -185,10 +185,5 @@ describe('Application API', () => {
     expect(response).toBe(true)
     expect(Wreck.put).toHaveBeenCalledTimes(1)
     expect(Wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/application/${appRef}`, options)
-
-    jest.mock('@hapi/wreck')
-    const applicationData = {
-      reference: appRef
-    }
   })
 })

@@ -11,9 +11,8 @@ const reference = 'AHWR-555A-FD4C'
 applications.withdrawApplication = jest.fn().mockResolvedValue(true)
 
 describe('View Application test', () => {
-
   let crumb
-  const url = `/withdraw-application/`
+  const url = '/withdraw-application/'
   jest.mock('../../../../app/auth')
   const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
 
@@ -38,7 +37,7 @@ describe('View Application test', () => {
         url,
         auth,
         payload: {
-          reference,
+          reference
         }
       }
       const res = await global.__SERVER__.inject(options)
