@@ -1,23 +1,22 @@
 const Joi = require('joi')
+const { withdrawApplication } = require('../api/applications')
 
 module.exports = {
   method: 'POST',
-  path: '/withdraw-application/{reference}',
+  path: '/withdraw-application',
   options: {
     validate: {
-      params: Joi.object({
-        reference: Joi.string().valid()
-      }),
-      query: Joi.object({
-        page: Joi.number().greater(0).default(1)
-      }),
       payload: Joi.object({
-        withdrawConfirmation: Joi.string().valid('yes', 'no')
+        withdrawConfirmation: Joi.string().valid('yes', 'no'),
+        reference: Joi.string().valid(),
+        page: Joi.number().greater(0).default(1)
       })
     },
     handler: async (request, h) => {
-      console.log(request.payload.withdrawConfirmation)
-      return h.redirect(`/view-application/${request.params.reference}?page=${request?.query?.page || 1}`)
+      if (request.payload.withdrawConfirmation === 'yes') {
+        await withdrawApplication(request.payload.reference, 'admin')
+      }
+      return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
     }
   }
 }
