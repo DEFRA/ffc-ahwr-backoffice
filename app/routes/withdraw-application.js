@@ -14,7 +14,7 @@ module.exports = {
     },
     handler: async (request, h) => {
       if (request.payload.withdrawConfirmation === 'yes') {
-        await withdrawApplication(request.payload.reference, 'admin')
+        await withdrawApplication(request.payload.reference, 'admin', 2)
       }
       return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
     }

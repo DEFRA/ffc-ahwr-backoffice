@@ -37,24 +37,21 @@ async function getApplications (searchType, searchText, limit, offset, filterSta
   }
 }
 
-async function withdrawApplication (reference, user) {
+async function withdrawApplication (reference, user, status) {
   const url = `${applicationApiUri}/application/${reference}`
   const options = {
     payload: {
       user,
-      status: 'WITHDRAWN'
+      status
     },
     json: true
   }
   try {
-    const response = await Wreck.put(url, options)
-    if (response.res.statusCode !== 200) {
-      return { applications: [], total: 0, applicationStatus: [] }
-    }
-    return response.payload
+    await Wreck.put(url, options)
+    return true
   } catch (err) {
     console.log(err)
-    return { applications: [], total: 0, applicationStatus: [] }
+    return false
   }
 }
 
