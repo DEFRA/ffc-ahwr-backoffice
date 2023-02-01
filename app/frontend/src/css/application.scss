@@ -224,3 +224,16 @@ a.pagination__link:focus {
 .govuk-summary-list {
   margin-bottom: 60px !important;
 }
+
+.govuk-link {
+  color: #d4351c;
+}
+
+.govuk-panel--confirmation {
+  background-color: #fafafa;
+  border-color: #000000;
+  border-width: medium;
+  h1 {
+    color: #000000;
+  }
+}

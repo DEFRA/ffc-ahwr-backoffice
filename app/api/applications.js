@@ -36,7 +36,27 @@ async function getApplications (searchType, searchText, limit, offset, filterSta
     return { applications: [], total: 0, applicationStatus: [] }
   }
 }
+
+async function withdrawApplication (reference, user, status) {
+  const url = `${applicationApiUri}/application/${reference}`
+  const options = {
+    payload: {
+      user,
+      status
+    },
+    json: true
+  }
+  try {
+    await Wreck.put(url, options)
+    return true
+  } catch (err) {
+    console.log(err)
+    return false
+  }
+}
+
 module.exports = {
   getApplications,
-  getApplication
+  getApplication,
+  withdrawApplication
 }

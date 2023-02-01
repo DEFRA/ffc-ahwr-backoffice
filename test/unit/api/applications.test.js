@@ -7,7 +7,7 @@ const limit = 20
 const offset = 0
 let searchText = ''
 let searchType = ''
-const { getApplications, getApplication } = require('../../../app/api/applications')
+const { getApplications, getApplication, withdrawApplication } = require('../../../app/api/applications')
 describe('Application API', () => {
   it('GetApplications should return empty applications array', async () => {
     jest.mock('@hapi/wreck')
@@ -143,5 +143,47 @@ describe('Application API', () => {
     expect(response).toBeNull()
     expect(Wreck.get).toHaveBeenCalledTimes(1)
     expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/application/get/${appRef}`, options)
+  })
+
+  it('WithdrawApplication should return false if api not available', async () => {
+    jest.mock('@hapi/wreck')
+    const options = {
+      payload: {
+        user: 'test',
+        status: 2
+      },
+      json: true
+    }
+    Wreck.put = jest.fn(async function (_url, _options) {
+      throw (new Error('fakeError'))
+    })
+    const response = await withdrawApplication(appRef, 'test', 2)
+    expect(response).toBe(false)
+    expect(Wreck.put).toHaveBeenCalledTimes(1)
+    expect(Wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/application/${appRef}`, options)
+  })
+
+  it('WithdrawApplication should return true after successful API request', async () => {
+    jest.mock('@hapi/wreck')
+    const options = {
+      payload: {
+        user: 'test',
+        status: 2
+      },
+      json: true
+    }
+    const wreckResponse = {
+      res: {
+        statusCode: 200
+      }
+    }
+
+    Wreck.put = jest.fn(async function (_url, _options) {
+      return wreckResponse
+    })
+    const response = await withdrawApplication(appRef, 'test', 2)
+    expect(response).toBe(true)
+    expect(Wreck.put).toHaveBeenCalledTimes(1)
+    expect(Wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/application/${appRef}`, options)
   })
 })

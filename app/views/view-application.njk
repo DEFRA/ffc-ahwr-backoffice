@@ -1,5 +1,6 @@
 {% extends './layouts/layout.njk' %}
 {% from "./macros/view-application-tabs.njk" import viewApplicationTabs %}
+{% from "./macros/withdraw-confirmation-form.njk" import viewWithdrawConfirmationForm %}
 
 {% block pageTitle %}
   {{ siteTitle }}: User Application
@@ -23,7 +24,13 @@
       {{ govukSummaryList({
         rows: model.listData.rows
       }) }}
+      {% if withdrawConfirmationForm %}
+        {{ viewWithdrawConfirmationForm(applicationId, page, crumb) }}
+      {% endif %}
       {{ viewApplicationTabs(model, vetVisit, claimed, payment, status) }}
+      {% if withdrawLink %}
+        <a class="govuk-link govuk-body" href="/view-application/{{ applicationId }}?page={{page}}&withdraw=true">Withdraw</a>
+      {% endif %}
     </div>
   </div>
 {% endblock %}

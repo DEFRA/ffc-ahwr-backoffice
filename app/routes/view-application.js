@@ -16,7 +16,8 @@ module.exports = {
         reference: Joi.string().valid()
       }),
       query: Joi.object({
-        page: Joi.number().greater(0).default(1)
+        page: Joi.number().greater(0).default(1),
+        withdraw: Joi.bool().default(false)
       })
     },
     handler: async (request, h) => {
@@ -27,6 +28,9 @@ module.exports = {
 
       const status = upperFirstLetter(application.status.status.toLowerCase())
       const statusClass = getStyleClassByStatus(application.status.status)
+      const withdrawLinkStatus = ['IN CHECK', 'AGREED']
+      const withdrawConfirmationForm = application.status.status !== 'WITHDRAWN' && withdrawLinkStatus.includes(application.status.status) && request.query.withdraw
+
       return h.view('view-application', {
         applicationId: application.reference,
         status,
@@ -34,6 +38,8 @@ module.exports = {
         organisationName: application?.data?.organisation?.name,
         vetVisit: application?.vetVisit,
         claimed: application?.claimed,
+        withdrawLink: withdrawLinkStatus.includes(application.status.status),
+        withdrawConfirmationForm,
         payment: application?.payment,
         ...new ViewModel(application),
         page: request.query.page
