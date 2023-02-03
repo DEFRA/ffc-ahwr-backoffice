@@ -1,6 +1,7 @@
 {% extends './layouts/layout.njk' %}
 {% from "./macros/view-application-tabs.njk" import viewApplicationTabs %}
 {% from "./macros/withdraw-confirmation-form.njk" import viewWithdrawConfirmationForm %}
+{% from "./macros/claim-confirmation-form.njk" import viewClaimConfirmationForm %}
 
 {% block pageTitle %}
   {{ siteTitle }}: User Application
@@ -27,6 +28,7 @@
       {% if withdrawConfirmationForm %}
         {{ viewWithdrawConfirmationForm(applicationId, page, crumb) }}
       {% endif %}
+      {{ viewClaimConfirmationForm(applicationId, page, crumb) }}
       {{ viewApplicationTabs(model, vetVisit, claimed, payment, status) }}
       {% if withdrawLink %}
         <a class="govuk-link govuk-body" href="/view-application/{{ applicationId }}?page={{page}}&withdraw=true">Withdraw</a>

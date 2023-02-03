@@ -55,8 +55,28 @@ async function withdrawApplication (reference, user, status) {
   }
 }
 
+async function processApplicationClaim (reference, user, approved) {
+  const url = `${applicationApiUri}/application/claim`
+  const options = {
+    payload: {
+      reference,
+      user,
+      approved
+    },
+    json: true
+  }
+  try {
+    await Wreck.post(url, options)
+    return true
+  } catch (err) {
+    console.log(err)
+    return false
+  }
+}
+
 module.exports = {
   getApplications,
   getApplication,
-  withdrawApplication
+  withdrawApplication,
+  processApplicationClaim
 }
