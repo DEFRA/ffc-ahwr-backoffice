@@ -137,5 +137,30 @@
     "createdAt": "2022-06-06T14:27:51.251Z",
     "updatedAt": "2022-06-06T14:27:51.775Z",
     "createdBy": "admin"
+  },
+  "incheck": {
+    "id": "75216bb8-b4e6-40aa-b51f-24e8a90f7195",
+    "reference": "AHWR-555A-FD4C",
+    "status": { "status": "IN CHECK" },
+    "data": {
+      "declaration": true,
+      "whichReview": "sheep",
+      "offerStatus": "accepted",
+      "organisation": {
+        "cph": "33/333/3333",
+        "sbi": "333333333",
+        "name": "My Farm",
+        "email": "test@test.com",
+        "isTest": true,
+        "farmerName": "Farmer name",
+        "address": "Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC"
+      },
+      "eligibleSpecies": "yes",
+      "confirmCheckDetails": "yes"
+    },
+    "claimed": false,
+    "createdAt": "2022-06-06T14:27:51.251Z",
+    "updatedAt": "2022-06-06T14:27:51.775Z",
+    "createdBy": "admin"
   }
 }
