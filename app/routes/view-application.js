@@ -5,6 +5,7 @@ const { administrator, processor, user } = require('../auth/permissions')
 const getStyleClassByStatus = require('../constants/status')
 const ViewModel = require('./models/view-application')
 const { upperFirstLetter } = require('../lib/display-helper')
+const mapAuth = require('../auth/map-auth')
 
 module.exports = {
   method: 'GET',
@@ -28,8 +29,10 @@ module.exports = {
 
       const status = upperFirstLetter(application.status.status.toLowerCase())
       const statusClass = getStyleClassByStatus(application.status.status)
+      const mappedAuth = mapAuth(request)
       const withdrawLinkStatus = ['IN CHECK', 'AGREED']
-      const withdrawConfirmationForm = application.status.status !== 'WITHDRAWN' && withdrawLinkStatus.includes(application.status.status) && request.query.withdraw
+      const withdrawLink = withdrawLinkStatus.includes(application.status.status) && mappedAuth.isAdministrator
+      const withdrawConfirmationForm = application.status.status !== 'WITHDRAWN' && withdrawLink && request.query.withdraw
 
       return h.view('view-application', {
         applicationId: application.reference,
@@ -38,7 +41,7 @@ module.exports = {
         organisationName: application?.data?.organisation?.name,
         vetVisit: application?.vetVisit,
         claimed: application?.claimed,
-        withdrawLink: withdrawLinkStatus.includes(application.status.status),
+        withdrawLink,
         withdrawConfirmationForm,
         payment: application?.payment,
         ...new ViewModel(application),

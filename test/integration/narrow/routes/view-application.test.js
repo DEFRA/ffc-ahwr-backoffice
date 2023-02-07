@@ -5,12 +5,23 @@ const { administrator } = require('../../../../app/auth/permissions')
 const viewApplicationData = require('.././../../data/view-applications.json')
 const reference = 'AHWR-555A-FD4C'
 
+function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
+  if (isWithdrawLinkVisible) {
+    expect($('.govuk-link').hasClass)
+    const withdrawLink = $('.govuk-link')
+    expect(withdrawLink.text()).toMatch('Withdraw')
+    expect(withdrawLink.attr('href')).toMatch(`/view-application/${reference}?page=1&withdraw=true`)
+  } else {
+    expect($('.govuk-link').not.hasClass)
+  }
+}
+
 jest.mock('../../../../app/api/applications')
 
 describe('View Application test', () => {
   const url = `/view-application/${reference}`
   jest.mock('../../../../app/auth')
-  const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
+  let auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -38,7 +49,12 @@ describe('View Application test', () => {
       expect($('h1.govuk-heading-l').text()).toEqual('400 - Bad Request')
       expectPhaseBanner.ok($)
     })
-    test('returns 200 application agreed', async () => {
+    test.each([
+      ['administrator', true],
+      ['processor', false],
+      ['user', false]
+    ])('returns 200 application agreed - %s role', async (authScope, isWithdrawLinkVisible) => {
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
       const options = {
         method: 'GET',
@@ -75,6 +91,9 @@ describe('View Application test', () => {
       expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
       expect($('tbody tr:nth-child(5)').text()).toContain('Yes')
       expect($('#claim').text()).toContain('Not claimed yet')
+
+      expectWithdrawLink($, reference, isWithdrawLinkVisible)
+
       expectPhaseBanner.ok($)
     })
     test('returns 200 application applied', async () => {
@@ -114,6 +133,9 @@ describe('View Application test', () => {
       expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
       expect($('tbody tr:nth-child(5)').text()).toContain('No')
       expect($('#claim').text()).toContain('Not eligible to claim')
+
+      expectWithdrawLink($, reference, false)
+
       expectPhaseBanner.ok($)
     })
     test('returns 200 application data inputted', async () => {
@@ -143,6 +165,9 @@ describe('View Application test', () => {
       expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
 
       expect($('#claim').text()).toContain('Not eligible to claim')
+
+      expectWithdrawLink($, reference, false)
+
       expectPhaseBanner.ok($)
     })
     test('returns 200 application claim', async () => {
@@ -185,6 +210,9 @@ describe('View Application test', () => {
       expect($('tbody:nth-child(1) tr:nth-child(5)').text()).toContain('1234234')
       expect($('tbody:nth-child(1) tr:nth-child(6)').text()).toContain('Test results unique reference number (URN)')
       expect($('tbody:nth-child(1) tr:nth-child(6)').text()).toContain('134242')
+
+      expectWithdrawLink($, reference, false)
+
       expectPhaseBanner.ok($)
     })
     test('returns 200 application paid', async () => {
@@ -214,6 +242,56 @@ describe('View Application test', () => {
       expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
 
       expect($('#claim').text()).toContain('Claimed')
+
+      expectWithdrawLink($, reference, false)
+
+      expectPhaseBanner.ok($)
+    })
+    test.each([
+      ['administrator', true],
+      ['processor', false],
+      ['user', false]
+    ])('returns 200 application in check - %s role', async (authScope, isWithdrawLinkVisible) => {
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
+      const options = {
+        method: 'GET',
+        url,
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      const $ = cheerio.load(res.payload)
+      expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
+      expect($('h2.govuk-heading-l').text()).toContain('In check')
+      expect($('title').text()).toContain('Administration: User Application')
+      expect($('.govuk-summary-list__row').length).toEqual(4)
+      expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name:')
+      expect($('.govuk-summary-list__value').eq(0).text()).toMatch('Farmer name')
+
+      expect($('.govuk-summary-list__key').eq(1).text()).toMatch('SBI number:')
+      expect($('.govuk-summary-list__value').eq(1).text()).toMatch('333333333')
+
+      expect($('.govuk-summary-list__key').eq(2).text()).toMatch('Address:')
+      expect($('.govuk-summary-list__value').eq(2).text()).toMatch('Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC')
+
+      expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address:')
+      expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
+
+      expect($('tbody tr:nth-child(1)').text()).toContain('Date of agreement')
+      expect($('tbody tr:nth-child(1)').text()).toContain('06/06/2022')
+      expect($('tbody tr:nth-child(2)').text()).toContain('Business details correct')
+      expect($('tbody tr:nth-child(2)').text()).toContain('Yes')
+      expect($('tbody tr:nth-child(3)').text()).toContain('Type of review')
+      expect($('tbody tr:nth-child(3)').text()).toContain('Sheep')
+      expect($('tbody tr:nth-child(4)').text()).toContain('Number of livestock')
+      expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
+      expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
+      expect($('tbody tr:nth-child(5)').text()).toContain('Yes')
+      expect($('#claim').text()).toContain('Not claimed yet')
+
+      expectWithdrawLink($, reference, isWithdrawLinkVisible)
+
       expectPhaseBanner.ok($)
     })
   })
