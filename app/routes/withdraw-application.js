@@ -1,10 +1,12 @@
 const Joi = require('joi')
 const { withdrawApplication } = require('../api/applications')
+const { administrator } = require('../auth/permissions')
 
 module.exports = {
   method: 'POST',
   path: '/withdraw-application',
   options: {
+    auth: { scope: [administrator] },
     validate: {
       payload: Joi.object({
         withdrawConfirmation: Joi.string().valid('yes', 'no'),
