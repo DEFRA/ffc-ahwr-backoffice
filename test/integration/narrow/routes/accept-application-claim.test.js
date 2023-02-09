@@ -10,9 +10,9 @@ const reference = 'AHWR-555A-FD4C'
 
 applications.processApplicationClaim = jest.fn().mockResolvedValue(true)
 
-describe('View Application test', () => {
+describe('Reject Application test', () => {
   let crumb
-  const url = '/process-application-claim/'
+  const url = '/approve-application-claim/'
   jest.mock('../../../../app/auth')
   const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
 
@@ -47,7 +47,7 @@ describe('View Application test', () => {
       expectPhaseBanner.ok($)
     })
 
-    test('Approve application claim', async () => {
+    test('Approve application claim processed', async () => {
       const options = {
         method: 'POST',
         url,
@@ -67,7 +67,7 @@ describe('View Application test', () => {
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
 
-    test('Reject application claim', async () => {
+    test('Approve application claim not processed', async () => {
       const options = {
         method: 'POST',
         url,
@@ -81,8 +81,7 @@ describe('View Application test', () => {
         }
       }
       const res = await global.__SERVER__.inject(options)
-      expect(applications.processApplicationClaim).toHaveBeenCalledTimes(1)
-      expect(applications.processApplicationClaim).toHaveBeenCalledWith(reference, 'admin', false)
+      expect(applications.processApplicationClaim).not.toHaveBeenCalled()
       expect(res.statusCode).toBe(302)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })

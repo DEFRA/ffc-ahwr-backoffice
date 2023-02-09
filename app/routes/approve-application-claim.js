@@ -3,7 +3,7 @@ const { processApplicationClaim } = require('../api/applications')
 
 module.exports = {
   method: 'POST',
-  path: '/process-application-claim',
+  path: '/approve-application-claim',
   options: {
     validate: {
       payload: Joi.object({
@@ -13,7 +13,9 @@ module.exports = {
       })
     },
     handler: async (request, h) => {
-      await processApplicationClaim(request.payload.reference, 'admin', request.payload.approveClaim === 'yes')
+      if (request.payload.approveClaim === 'yes') {
+        await processApplicationClaim(request.payload.reference, 'admin', true)
+      }
       return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
     }
   }
