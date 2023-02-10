@@ -32,7 +32,7 @@ module.exports = {
       const status = upperFirstLetter(application.status.status.toLowerCase())
       const statusClass = getStyleClassByStatus(application.status.status)
       const mappedAuth = mapAuth(request)
-      const withdrawLinkStatus = ['IN CHECK', 'AGREED']
+      const withdrawLinkStatus = ['AGREED']
       const withdrawLink = withdrawLinkStatus.includes(application.status.status) && mappedAuth.isAdministrator
       const withdrawConfirmationForm = application.status.status !== 'WITHDRAWN' && withdrawLink && request.query.withdraw
 
