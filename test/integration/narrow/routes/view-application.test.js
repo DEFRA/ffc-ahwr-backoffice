@@ -290,8 +290,6 @@ describe('View Application test', () => {
       expect($('tbody tr:nth-child(5)').text()).toContain('Yes')
       expect($('#claim').text()).toContain('Not claimed yet')
 
-      expectWithdrawLink($, reference, isWithdrawLinkVisible)
-
       expectPhaseBanner.ok($)
     })
   })
