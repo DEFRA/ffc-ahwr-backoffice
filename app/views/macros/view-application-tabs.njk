@@ -3,25 +3,25 @@
 
 {% macro viewApplicationTabs(model, vetVisit, claimed, payment, status) %}
   {% set applicationHtml %}
-    <h2 class="govuk-heading-l">{{ status }}</h2>
-    {{ govukTable(model.applicationData) }}
+  <h2 class="govuk-heading-l">{{ status }}</h2>
+  {{ govukTable(model.applicationData) }}
   {% endset -%}
 
   {% set claimHtml %}
-    {% if claimed %}
-      <h2 class="govuk-heading-l">Claimed</h2>
-      {{ govukTable(model.claimData) }}
-    {% elif (status == "In check") %}
-      <h2 class="govuk-heading-l">Not claimed yet</h2>
-      {{ govukTable(model.claimData) }}
-    {% elif (status == "Rejected") %}
-      <h2 class="govuk-heading-l">Not eligible to claim</h2>
-      {{ govukTable(model.claimData) }}
-    {% elif (status == "Agreed") %}
-      <h2 class="govuk-heading-l">Not claimed yet</h2>
-    {% else %}
-      <h2 class="govuk-heading-l">Not eligible to claim</h2>
-    {% endif %}
+  {% if claimed %}
+    <h2 class="govuk-heading-l">Claimed</h2>
+    {{ govukTable(model.claimData) }}
+  {% elif(status == "In check") %}
+    <h2 class="govuk-heading-l">Not claimed yet</h2>
+    {{ govukTable(model.claimData) }}
+  {% elif(status == "Rejected") %}
+    <h2 class="govuk-heading-l">Not eligible to claim</h2>
+    {{ govukTable(model.claimData) }}
+  {% elif(status == "Agreed") %}
+    <h2 class="govuk-heading-l">Not claimed yet</h2>
+  {% else %}
+    <h2 class="govuk-heading-l">Not eligible to claim</h2>
+  {% endif %}
   {% endset -%}
 
   {{ govukTabs({

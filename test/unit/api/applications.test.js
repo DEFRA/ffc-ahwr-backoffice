@@ -7,7 +7,7 @@ const limit = 20
 const offset = 0
 let searchText = ''
 let searchType = ''
-const { getApplications, getApplication, withdrawApplication } = require('../../../app/api/applications')
+const { getApplications, getApplication, withdrawApplication, processApplicationClaim } = require('../../../app/api/applications')
 describe('Application API', () => {
   it('GetApplications should return empty applications array', async () => {
     jest.mock('@hapi/wreck')
@@ -185,5 +185,49 @@ describe('Application API', () => {
     expect(response).toBe(true)
     expect(Wreck.put).toHaveBeenCalledTimes(1)
     expect(Wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/application/${appRef}`, options)
+  })
+
+  it('processApplicationClaim should return false if api not available', async () => {
+    jest.mock('@hapi/wreck')
+    const options = {
+      payload: {
+        user: 'test',
+        approved: false,
+        reference: appRef
+      },
+      json: true
+    }
+    Wreck.post = jest.fn(async function (_url, _options) {
+      throw (new Error('fakeError'))
+    })
+    const response = await processApplicationClaim(appRef, 'test', false)
+    expect(response).toBe(false)
+    expect(Wreck.post).toHaveBeenCalledTimes(1)
+    expect(Wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/application/claim`, options)
+  })
+
+  it('processApplicationClaim should return true after successful API request', async () => {
+    jest.mock('@hapi/wreck')
+    const options = {
+      payload: {
+        user: 'test',
+        approved: true,
+        reference: appRef
+      },
+      json: true
+    }
+    const wreckResponse = {
+      res: {
+        statusCode: 200
+      }
+    }
+
+    Wreck.post = jest.fn(async function (_url, _options) {
+      return wreckResponse
+    })
+    const response = await processApplicationClaim(appRef, 'test', true)
+    expect(response).toBe(true)
+    expect(Wreck.post).toHaveBeenCalledTimes(1)
+    expect(Wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/application/claim`, options)
   })
 })

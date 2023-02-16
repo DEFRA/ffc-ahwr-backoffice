@@ -18,7 +18,9 @@ module.exports = {
       }),
       query: Joi.object({
         page: Joi.number().greater(0).default(1),
-        withdraw: Joi.bool().default(false)
+        withdraw: Joi.bool().default(false),
+        approve: Joi.bool().default(false),
+        reject: Joi.bool().default(false)
       })
     },
     handler: async (request, h) => {
@@ -34,6 +36,11 @@ module.exports = {
       const withdrawLink = withdrawLinkStatus.includes(application.status.status) && mappedAuth.isAdministrator
       const withdrawConfirmationForm = application.status.status !== 'WITHDRAWN' && withdrawLink && request.query.withdraw
 
+      const isApplicationInCheckAndUserIsAdmin = application.status.status === 'IN CHECK' && mappedAuth.isAdministrator
+      const claimConfirmationForm = isApplicationInCheckAndUserIsAdmin && !request.query.approve && !request.query.reject
+      const approveClaimConfirmationForm = isApplicationInCheckAndUserIsAdmin && request.query.approve
+      const rejectClaimConfirmationForm = isApplicationInCheckAndUserIsAdmin && request.query.reject
+
       return h.view('view-application', {
         applicationId: application.reference,
         status,
@@ -43,6 +50,9 @@ module.exports = {
         claimed: application?.claimed,
         withdrawLink,
         withdrawConfirmationForm,
+        claimConfirmationForm,
+        approveClaimConfirmationForm,
+        rejectClaimConfirmationForm,
         payment: application?.payment,
         ...new ViewModel(application),
         page: request.query.page
