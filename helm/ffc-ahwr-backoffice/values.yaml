@@ -43,8 +43,9 @@ container:
   redisPort: 6379
   serviceUri:
   applicationApiUri:
-  displayPageSize: 20
-
+  displayPageSize: 20  
+  agreementWithdrawlEnabled:
+  
 deployment:
   cpuThreshold: 40
   memoryThreshold: 80
