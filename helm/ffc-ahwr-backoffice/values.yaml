@@ -44,7 +44,8 @@ container:
   serviceUri:
   applicationApiUri:
   displayPageSize: 20
-
+  agreementWithdrawlEnabled:
+  
 deployment:
   cpuThreshold: 40
   memoryThreshold: 80

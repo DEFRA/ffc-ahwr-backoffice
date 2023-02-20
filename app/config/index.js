@@ -39,7 +39,10 @@ const schema = Joi.object({
   serviceUri: Joi.string().uri(),
   useRedis: Joi.boolean().default(false),
   applicationApiUri: Joi.string().uri(),
-  displayPageSize: Joi.number().default(20)
+  displayPageSize: Joi.number().default(20),
+  agreementWithdrawl: {
+    enabled: Joi.bool().default(false)
+  }
 })
 
 const config = {
@@ -74,7 +77,10 @@ const config = {
   serviceUri: process.env.SERVICE_URI,
   useRedis: process.env.NODE_ENV !== 'test',
   applicationApiUri: process.env.APPLICATION_API_URI,
-  displayPageSize: process.env.DISPLAY_PAGE_SIZE
+  displayPageSize: process.env.DISPLAY_PAGE_SIZE,
+  agreementWithdrawl: {
+    enabled: process.env.AGREEMENT_WITHDRAWL_ENABLED
+  }
 }
 
 const { error, value } = schema.validate(config, { abortEarly: false })

@@ -23,8 +23,15 @@ describe('View Application test', () => {
   jest.mock('../../../../app/auth')
   let auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
 
-  beforeEach(() => {
+  beforeAll(() => {
     jest.clearAllMocks()
+
+    jest.mock('../../../../app/config', () => ({
+      ...jest.requireActual('../../../../app/config'),
+      agreementWithdrawl: {
+        enabled: true
+      }
+    }))
   })
 
   describe(`GET ${url} route`, () => {
@@ -48,6 +55,49 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-heading-l').text()).toEqual('400 - Bad Request')
       expectPhaseBanner.ok($)
+    })
+    test.each([
+      ['administrator', true],
+      ['processor', false],
+      ['user', false]
+    ])('Withdrawl link feature flag enabled, link displayed as expected for role %s', async (authScope, isWithdrawLinkVisible) => {
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
+      const options = {
+        method: 'GET',
+        url,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      expectWithdrawLink($, reference, isWithdrawLinkVisible)
+    })
+    test.each([
+      ['administrator', false],
+      ['processor', false],
+      ['user', false]
+    ])('Withdrawl link feature flag disabled, link not displayed for role %s', async (authScope, isWithdrawLinkVisible) => {
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
+      jest.clearAllMocks()
+      jest.mock('../../../../app/config', () => ({
+        ...jest.requireActual('../../../../app/config'),
+        agreementWithdrawl: {
+          enabled: false
+        }
+      }))
+      const options = {
+        method: 'GET',
+        url,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      expectWithdrawLink($, reference, isWithdrawLinkVisible)
     })
     test.each([
       ['administrator', true],

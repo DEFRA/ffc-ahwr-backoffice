@@ -6,6 +6,7 @@ const getStyleClassByStatus = require('../constants/status')
 const ViewModel = require('./models/view-application')
 const { upperFirstLetter } = require('../lib/display-helper')
 const mapAuth = require('../auth/map-auth')
+const { agreementWithdrawl } = require('../config/index.js')
 
 module.exports = {
   method: 'GET',
@@ -33,7 +34,7 @@ module.exports = {
       const statusClass = getStyleClassByStatus(application.status.status)
       const mappedAuth = mapAuth(request)
       const withdrawLinkStatus = ['AGREED']
-      const withdrawLink = withdrawLinkStatus.includes(application.status.status) && mappedAuth.isAdministrator
+      const withdrawLink = agreementWithdrawl.enabled === true && withdrawLinkStatus.includes(application.status.status) && mappedAuth.isAdministrator
       const withdrawConfirmationForm = application.status.status !== 'WITHDRAWN' && withdrawLink && request.query.withdraw
 
       const isApplicationInCheckAndUserIsAdmin = application.status.status === 'IN CHECK' && mappedAuth.isAdministrator
