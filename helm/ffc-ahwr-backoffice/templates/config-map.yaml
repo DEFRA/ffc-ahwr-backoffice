@@ -19,4 +19,5 @@ data:
   APPLICATION_API_URI: {{ quote .Values.container.applicationApiUri }}
   DISPLAY_PAGE_SIZE: {{ quote .Values.container.displayPageSize }}
   AGREEMENT_WITHDRAWL_ENABLED: {{ quote .Values.container.agreementWithdrawlEnabled }}
+  COMPLIANCE_CHECKS_ENABLED: {{ quote .Values.container.complianceChecksEnabled }}
 {{- end -}}
