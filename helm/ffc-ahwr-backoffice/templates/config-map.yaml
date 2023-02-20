@@ -17,6 +17,6 @@ data:
   REDIS_PORT: {{ quote .Values.container.redisPort }}
   SERVICE_URI: {{ quote .Values.container.serviceUri }}
   APPLICATION_API_URI: {{ quote .Values.container.applicationApiUri }}
-  DISPLAY_PAGE_SIZE: {{ quote .Values.container.displayPageSize }}  
+  DISPLAY_PAGE_SIZE: {{ quote .Values.container.displayPageSize }}
   AGREEMENT_WITHDRAWL_ENABLED: {{ quote .Values.container.agreementWithdrawlEnabled }}
 {{- end -}}
