@@ -16,6 +16,22 @@ function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
   }
 }
 
+function expectComplianceCheckPanel ($, isComplianceCheckPanelVisible) {
+  const panelClass = '.govuk-panel__title-s .govuk-!-font-size-36 .govuk-!-margin-top-1'
+  const approveClaimButtonClass = '.govuk-button .govuk-button .govuk-!-margin-bottom-3'
+  const rejectClaimButtonClass = '.govuk-button. govuk-button--secondary .govuk-!-margin-bottom-3'
+
+  if (isComplianceCheckPanelVisible) {
+    expect($(panelClass).hasClass)
+    expect($(approveClaimButtonClass).hasClass)
+    expect($(rejectClaimButtonClass).hasClass)
+  } else {
+    expect($(panelClass).not.hasClass)
+    expect($(approveClaimButtonClass).not.hasClass)
+    expect($(rejectClaimButtonClass).not.hasClass)
+  }
+}
+
 jest.mock('../../../../app/api/applications')
 
 describe('View Application test', () => {
@@ -98,6 +114,56 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
 
       expectWithdrawLink($, reference, isWithdrawLinkVisible)
+    })
+    test.each([
+      ['administrator', true],
+      ['processor', false],
+      ['user', false]
+    ])('Compliance checks feature flag enabled, authorisation panel displayed as expected for role %s', async (authScope, isComplianceCheckPanelVisible) => {
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      jest.clearAllMocks()
+      jest.mock('../../../../app/config', () => ({
+        ...jest.requireActual('../../../../app/config'),
+        complianceChecks: {
+          enabled: true
+        }
+      }))
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
+      const options = {
+        method: 'GET',
+        url,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      expectComplianceCheckPanel($, isComplianceCheckPanelVisible)
+    })
+    test.each([
+      ['administrator', false],
+      ['processor', false],
+      ['user', false]
+    ])('Compliance checks feature flag disabled, authorisation panel not displayed for role %s', async (authScope, isComplianceCheckPanelVisible) => {
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
+      jest.clearAllMocks()
+      jest.mock('../../../../app/config', () => ({
+        ...jest.requireActual('../../../../app/config'),
+        complianceChecks: {
+          enabled: false
+        }
+      }))
+      const options = {
+        method: 'GET',
+        url,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      expectComplianceCheckPanel($, isComplianceCheckPanelVisible)
     })
     test.each([
       ['administrator', true],

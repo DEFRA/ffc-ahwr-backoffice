@@ -45,6 +45,7 @@ container:
   applicationApiUri:
   displayPageSize: 20
   agreementWithdrawlEnabled:
+  complianceChecksEnabled:
   
 deployment:
   cpuThreshold: 40

@@ -42,6 +42,9 @@ const schema = Joi.object({
   displayPageSize: Joi.number().default(20),
   agreementWithdrawl: {
     enabled: Joi.bool().default(false)
+  },
+  complianceChecks: {
+    enabled: Joi.bool().default(false)
   }
 })
 
@@ -80,6 +83,9 @@ const config = {
   displayPageSize: process.env.DISPLAY_PAGE_SIZE,
   agreementWithdrawl: {
     enabled: process.env.AGREEMENT_WITHDRAWL_ENABLED
+  },
+  complianceChecks: {
+    enabled: process.env.COMPLIANCE_CHECKS_ENABLED
   }
 }
 
