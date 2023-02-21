@@ -21,15 +21,22 @@ function expectComplianceCheckPanel ($, isComplianceCheckPanelVisible) {
   const approveClaimButtonClass = '.govuk-button .govuk-button .govuk-!-margin-bottom-3'
   const rejectClaimButtonClass = '.govuk-button. govuk-button--secondary .govuk-!-margin-bottom-3'
 
-  if (isComplianceCheckPanelVisible) {
-    expect($(panelClass).hasClass)
-    expect($(approveClaimButtonClass).hasClass)
-    expect($(rejectClaimButtonClass).hasClass)
-  } else {
-    expect($(panelClass).not.hasClass)
-    expect($(approveClaimButtonClass).not.hasClass)
-    expect($(rejectClaimButtonClass).not.hasClass)
-  }
+  isComplianceCheckPanelVisible ? expect($(panelClass).hasClass) : expect($(panelClass).not.hasClass)
+  isComplianceCheckPanelVisible ? expect($(approveClaimButtonClass).hasClass) : expect($(approveClaimButtonClass).not.hasClass)
+  isComplianceCheckPanelVisible ? expect($(rejectClaimButtonClass).hasClass) : expect($(rejectClaimButtonClass).not.hasClass)
+}
+
+function expectWithdrawConfirmationPanel ($, istWithdrawConfirmationPanelVisible) {
+  const panelText = $('h1:contains("Are you sure you want to withdraw?")').text()
+  const yesButtonText = $('button:contains("Yes")').text()
+  const noButtonText = $('button:contains("No")').text()
+  const panelExpectedLength = 34
+  const yesButtonExpectedLength = 3
+  const noButtonExpectedLength = 2
+
+  istWithdrawConfirmationPanelVisible ? expect(panelText).toHaveLength(panelExpectedLength) : expect(panelText).toHaveLength(0)
+  istWithdrawConfirmationPanelVisible ? expect(yesButtonText).toHaveLength(yesButtonExpectedLength) : expect(yesButtonText).toHaveLength(0)
+  istWithdrawConfirmationPanelVisible ? expect(noButtonText).toHaveLength(noButtonExpectedLength) : expect(noButtonText).toHaveLength(0)
 }
 
 jest.mock('../../../../app/api/applications')
@@ -407,6 +414,23 @@ describe('View Application test', () => {
       expect($('#claim').text()).toContain('Not claimed yet')
 
       expectPhaseBanner.ok($)
+    })
+    test('withdraw link hidden and withdraw confirmation displayed when withdraw link selected by user', async () => {
+      auth = { strategy: 'session-auth', credentials: { scope: ['administrator'] } }
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
+      const url = `/view-application/${reference}?page=1&withdraw=${true}`
+      const options = {
+        method: 'GET',
+        url,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+
+      const $ = cheerio.load(res.payload)
+      expectWithdrawLink($, reference, false)
+      expectWithdrawConfirmationPanel($, true)
     })
   })
 })

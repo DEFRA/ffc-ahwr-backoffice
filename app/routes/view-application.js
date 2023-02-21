@@ -34,8 +34,9 @@ module.exports = {
       const statusClass = getStyleClassByStatus(application.status.status)
       const mappedAuth = mapAuth(request)
       const withdrawLinkStatus = ['AGREED']
-      const withdrawLink = agreementWithdrawl.enabled === true && withdrawLinkStatus.includes(application.status.status) && mappedAuth.isAdministrator
-      const withdrawConfirmationForm = application.status.status !== 'WITHDRAWN' && withdrawLink && request.query.withdraw
+      const isAgreementAgreedAndUserIsAdmin = agreementWithdrawl.enabled === true && withdrawLinkStatus.includes(application.status.status) && mappedAuth.isAdministrator
+      const withdrawLink = isAgreementAgreedAndUserIsAdmin && !request.query.withdraw
+      const withdrawConfirmationForm = isAgreementAgreedAndUserIsAdmin && application.status.status !== 'WITHDRAWN' && request.query.withdraw
 
       const isApplicationInCheckAndUserIsAdmin = complianceChecks.enabled === true && application.status.status === 'IN CHECK' && mappedAuth.isAdministrator
       const claimConfirmationForm = isApplicationInCheckAndUserIsAdmin && !request.query.approve && !request.query.reject
