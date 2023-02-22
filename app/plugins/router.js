@@ -1,5 +1,6 @@
 const routes = [].concat(
   require('../routes/accessibility'),
+  require('../routes/account'),
   require('../routes/applications'),
   require('../routes/assets'),
   require('../routes/authenticate'),

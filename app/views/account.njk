@@ -1,0 +1,27 @@
+{% extends './layouts/layout.njk' %}
+
+{% block pageTitle %}
+  {{ siteTitle }}: AHWR Applications
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Home",
+        href: "/"
+      }
+    ]
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      {{ govukSummaryList({
+      classes: "govuk-!-margin-bottom-9",
+      rows: model.userScopes.rows
+    }) }}
+    </div>
+  </div>
+{% endblock %}
