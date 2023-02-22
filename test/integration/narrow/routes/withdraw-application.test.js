@@ -10,7 +10,7 @@ const reference = 'AHWR-555A-FD4C'
 
 applications.withdrawApplication = jest.fn().mockResolvedValue(true)
 
-describe('View Application test', () => {
+describe('Withdraw Application test', () => {
   let crumb
   const url = '/withdraw-application/'
   jest.mock('../../../../app/auth')
