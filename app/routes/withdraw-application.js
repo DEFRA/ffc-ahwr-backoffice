@@ -1,6 +1,7 @@
 const Joi = require('joi')
 const { withdrawApplication } = require('../api/applications')
 const { administrator } = require('../auth/permissions')
+const getUser = require('../auth/get-user')
 
 module.exports = {
   method: 'POST',
@@ -16,7 +17,8 @@ module.exports = {
     },
     handler: async (request, h) => {
       if (request.payload.withdrawConfirmation === 'yes') {
-        await withdrawApplication(request.payload.reference, 'admin', 2)
+        const userName = getUser(request).username
+        await withdrawApplication(request.payload.reference, userName, 2)
       }
       return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
     }

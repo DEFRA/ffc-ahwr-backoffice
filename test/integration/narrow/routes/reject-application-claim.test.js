@@ -14,7 +14,7 @@ describe('Reject Application test', () => {
   let crumb
   const url = '/reject-application-claim/'
   jest.mock('../../../../app/auth')
-  const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
+  let auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
 
   beforeEach(async () => {
     crumb = await getCrumbs(global.__SERVER__)
@@ -48,6 +48,7 @@ describe('Reject Application test', () => {
     })
 
     test('Reject application claim processed', async () => {
+      auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {
         method: 'POST',
         url,
