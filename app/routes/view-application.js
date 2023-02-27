@@ -1,6 +1,6 @@
 const Joi = require('joi')
 const boom = require('@hapi/boom')
-const { getApplication } = require('../api/applications')
+const { getApplication, getApplicationHistory } = require('../api/applications')
 const { administrator, processor, user } = require('../auth/permissions')
 const getStyleClassByStatus = require('../constants/status')
 const ViewModel = require('./models/view-application')
@@ -29,6 +29,7 @@ module.exports = {
       if (!application) {
         throw boom.badRequest()
       }
+      const applicationHistory = await getApplicationHistory(request.params.reference)
 
       const status = upperFirstLetter(application.status.status.toLowerCase())
       const statusClass = getStyleClassByStatus(application.status.status)
@@ -56,7 +57,7 @@ module.exports = {
         approveClaimConfirmationForm,
         rejectClaimConfirmationForm,
         payment: application?.payment,
-        ...new ViewModel(application),
+        ...new ViewModel(application, applicationHistory),
         page: request.query.page
       })
     }

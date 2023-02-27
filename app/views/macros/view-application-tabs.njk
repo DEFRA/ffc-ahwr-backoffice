@@ -24,6 +24,13 @@
   {% endif %}
   {% endset -%}
 
+  {% set historyHtml %}
+  {{ govukTable({
+    head: model.historyData.header,
+    rows: model.historyData.rows
+  }) }}
+  {% endset -%}
+
   {{ govukTabs({
     items: [
       {
@@ -38,6 +45,13 @@
         id: "claim",
         panel: {
           html: claimHtml
+        }
+      },
+      {
+        label: "History",
+        id: "history",
+        panel: {
+          html: historyHtml
         }
       }
     ]

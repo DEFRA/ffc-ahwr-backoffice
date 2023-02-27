@@ -1,5 +1,6 @@
 const Joi = require('joi')
 const { processApplicationClaim } = require('../api/applications')
+const getUser = require('../auth/get-user')
 
 module.exports = {
   method: 'POST',
@@ -14,7 +15,8 @@ module.exports = {
     },
     handler: async (request, h) => {
       if (request.payload.approveClaim === 'yes') {
-        await processApplicationClaim(request.payload.reference, 'admin', true)
+        const userName = getUser(request).username
+        await processApplicationClaim(request.payload.reference, userName, true)
       }
       return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
     }
