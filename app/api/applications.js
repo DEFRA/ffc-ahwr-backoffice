@@ -75,7 +75,7 @@ async function processApplicationClaim (reference, user, approved) {
 }
 
 async function getApplicationHistory (reference) {
-  const url = `${applicationApiUri}/application/getHistory/${reference}`
+  const url = `${applicationApiUri}/application/history/${reference}`
   try {
     const response = await Wreck.get(url, { json: true })
     if (response.res.statusCode !== 200) {

@@ -250,7 +250,7 @@ describe('Application API', () => {
     expect(response).not.toBeNull()
     expect(response.historyRecords).toStrictEqual([])
     expect(Wreck.get).toHaveBeenCalledTimes(1)
-    expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/application/getHistory/${appRef}`, options)
+    expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/application/history/${appRef}`, options)
   })
 
   it('GetApplicationHistory should return valid history records array', async () => {
@@ -274,7 +274,7 @@ describe('Application API', () => {
     expect(response).not.toBeNull()
     expect(response.historyRecords).toStrictEqual([{}])
     expect(Wreck.get).toHaveBeenCalledTimes(1)
-    expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/application/getHistory/${appRef}`, options)
+    expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/application/history/${appRef}`, options)
   })
 
   it('GetApplicationHistory should return empty history records array if api not available', async () => {
@@ -288,6 +288,6 @@ describe('Application API', () => {
     expect(response).not.toBeNull()
     expect(response.historyRecords).toStrictEqual([])
     expect(Wreck.get).toHaveBeenCalledTimes(1)
-    expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/application/getHistory/${appRef}`, options)
+    expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/application/history/${appRef}`, options)
   })
 })

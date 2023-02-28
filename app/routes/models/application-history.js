@@ -32,7 +32,7 @@ const gethistoryTableHeader = () => {
 }
 
 const gethistoryTableRows = (applicationHistory) => {
-  return applicationHistory.historyRecords.map(hr => {
+  return applicationHistory.historyRecords?.map(hr => {
     return [
       { text: hr.date },
       { text: hr.time },

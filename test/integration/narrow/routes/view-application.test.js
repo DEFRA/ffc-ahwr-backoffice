@@ -444,5 +444,37 @@ describe('View Application test', () => {
       expectWithdrawLink($, reference, false)
       expectWithdrawConfirmationPanel($, true)
     })
+
+    test('returns 200 application - valid history tab', async () => {
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.notagreed)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      const options = {
+        method: 'GET',
+        url,
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      const $ = cheerio.load(res.payload)
+      expect($('#history').text()).toContain('History')
+      expect($('thead:nth-child(1) tr:nth-child(1) th:nth-child(1)').text()).toContain('Date')
+      expect($('thead:nth-child(1) tr:nth-child(1) th:nth-child(2)').text()).toContain('Time')
+      expect($('thead:nth-child(1) tr:nth-child(1) th:nth-child(3)').text()).toContain('Action')
+      expect($('thead:nth-child(1) tr:nth-child(1) th:nth-child(4)').text()).toContain('User')
+      expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(1)').text()).toContain('23/03/2023')
+      expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(2)').text()).toContain('10:00:12')
+      expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(3)').text()).toContain('Claim approved')
+      expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(4)').text()).toContain('Daniel Jones')
+      expect($('tbody:nth-child(2) tr:nth-child(2)').text()).toContain('24/03/2023')
+      expect($('tbody:nth-child(2) tr:nth-child(2)').text()).toContain('09:30:00')
+      expect($('tbody:nth-child(2) tr:nth-child(2)').text()).toContain('Withdraw completed')
+      expect($('tbody:nth-child(2) tr:nth-child(2)').text()).toContain('Daniel Jones')
+      expect($('tbody:nth-child(2) tr:nth-child(3)').text()).toContain('25/03/2023')
+      expect($('tbody:nth-child(2) tr:nth-child(3)').text()).toContain('11:10:15')
+      expect($('tbody:nth-child(2) tr:nth-child(3)').text()).toContain('Claim rejected')
+      expect($('tbody:nth-child(2) tr:nth-child(3)').text()).toContain('Amanda Hassan')
+
+      expectPhaseBanner.ok($)
+    })
   })
 })
