@@ -33,6 +33,7 @@ describe('Application-history model test', () => {
     expect(res.rows).toBe(undefined)
   })
   test.each([
+    { statusId: 0, expectedStatus: '' },
     { statusId: 1, expectedStatus: 'Agreement agreed' },
     { statusId: 2, expectedStatus: 'Withdraw completed' },
     { statusId: 3, expectedStatus: 'Data inputted' },
