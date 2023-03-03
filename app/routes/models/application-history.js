@@ -2,22 +2,8 @@ const applicationStatus = require('../../../app/constants/application-status')
 
 const getStatusText = (status) => {
   switch (status) {
-    case applicationStatus.agreed:
-      return 'Agreement agreed'
     case applicationStatus.withdrawn:
       return 'Withdraw completed'
-    case applicationStatus.dataInputted:
-      return 'Data inputted'
-    case applicationStatus.claimed:
-      return 'Claimed'
-    case applicationStatus.inCheck:
-      return 'Claim in check'
-    case applicationStatus.accepted:
-      return 'Agreement accepted'
-    case applicationStatus.notAgreed:
-      return 'Agreement not agreed'
-    case applicationStatus.paid:
-      return 'Claim paid'
     case applicationStatus.readyToPay:
       return 'Claim approved'
     case applicationStatus.rejected:
@@ -32,7 +18,16 @@ const gethistoryTableHeader = () => {
 }
 
 const gethistoryTableRows = (applicationHistory) => {
-  return applicationHistory.historyRecords?.map(hr => {
+  const historyTabAllowedStatus = [applicationStatus.withdrawn, applicationStatus.readyToPay, applicationStatus.rejected]
+  const historyRecords = []
+
+  applicationHistory.historyRecords?.forEach(hr => {
+    if (historyTabAllowedStatus.includes(hr.statusId)) {
+      historyRecords.push(hr)
+    }
+  })
+
+  return historyRecords.map(hr => {
     return [
       { text: hr.date },
       { text: hr.time },
