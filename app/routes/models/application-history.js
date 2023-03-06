@@ -1,4 +1,38 @@
+const moment = require('moment')
 const applicationStatus = require('../../../app/constants/application-status')
+
+const formatDate = (dateToFormat, currentDateFormat = 'YYYY-MM-DD', dateFormat = 'DD/MM/YYYY HH:mm') => {
+  if (dateToFormat) {
+    return moment(dateToFormat, currentDateFormat).utc().format(dateFormat)
+  }
+  return 'Unknown'
+}
+
+const parseData = (payload, key) => {
+  let value = ''
+  const data = payload ? JSON.parse(payload) : {}
+
+  try {
+    value = data[key]
+  } catch (error) {
+    console.log(`${key} not found`)
+  }
+
+  return value
+}
+
+const filterRecords = (applicationHistory) => {
+  const historyTabAllowedStatus = [applicationStatus.withdrawn, applicationStatus.readyToPay, applicationStatus.rejected]
+  const historyRecords = []
+
+  applicationHistory.historyRecords?.forEach(apphr => {
+    if (historyTabAllowedStatus.includes(parseData(apphr.Payload, 'statusId'))) {
+      historyRecords.push(apphr)
+    }
+  })
+
+  return historyRecords
+}
 
 const getStatusText = (status) => {
   switch (status) {
@@ -18,21 +52,14 @@ const gethistoryTableHeader = () => {
 }
 
 const gethistoryTableRows = (applicationHistory) => {
-  const historyTabAllowedStatus = [applicationStatus.withdrawn, applicationStatus.readyToPay, applicationStatus.rejected]
-  const historyRecords = []
+  const historyRecords = filterRecords(applicationHistory)
 
-  applicationHistory.historyRecords?.forEach(hr => {
-    if (historyTabAllowedStatus.includes(hr.statusId)) {
-      historyRecords.push(hr)
-    }
-  })
-
-  return historyRecords.map(hr => {
+  return historyRecords?.map(hr => {
     return [
-      { text: hr.date },
-      { text: hr.time },
-      { text: getStatusText(hr.statusId) },
-      { text: hr.user }
+      { text: formatDate(hr.ChangedOn, moment.ISO_8601, 'DD/MM/YYYY') },
+      { text: formatDate(hr.ChangedOn, moment.ISO_8601, 'HH:mm:ss') },
+      { text: getStatusText(parseData(hr.Payload, 'statusId')) },
+      { text: hr.ChangedBy }
     ]
   })
 }

@@ -64,28 +64,24 @@ describe('Application-history model test', () => {
     const applicationHistoryData = {
       historyRecords: [
         {
-          date: '23/03/2023',
-          time: '10:00:12',
-          statusId: 1,
-          user: 'Test Person 1'
+          ChangedOn: '2023-03-23T10:00:12.000Z',
+          Payload: '{\n  "reference": "AHWR-7C72-8871",\n  "statusId": 1\n}',
+          ChangedBy: 'Test Person 1'
         },
         {
-          date: '24/03/2023',
-          time: '11:00:12',
-          statusId: 2,
-          user: 'Test Person 2'
+          ChangedOn: '2023-03-24T11:00:12.000Z',
+          Payload: '{\n  "reference": "AHWR-7C72-8871",\n  "statusId": 2\n}',
+          ChangedBy: 'Test Person 2'
         },
         {
-          date: '25/03/2023',
-          time: '12:00:12',
-          statusId: 3,
-          user: 'Test Person 3'
+          ChangedOn: '2023-03-253T12:00:12.000Z',
+          Payload: '{\n  "reference": "AHWR-7C72-8871",\n  "statusId": 3\n}',
+          ChangedBy: 'Test Person 3'
         },
         {
-          date: '26/03/2023',
-          time: '13:00:12',
-          statusId: 9,
-          user: 'Test Person 4'
+          ChangedOn: '2023-03-26T13:00:12.000Z',
+          Payload: '{\n  "reference": "AHWR-7C72-8871",\n  "statusId": 9\n}',
+          ChangedBy: 'Test Person 4'
         }
       ]
     }
