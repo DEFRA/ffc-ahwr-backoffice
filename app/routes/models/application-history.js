@@ -5,7 +5,7 @@ const formatDate = (dateToFormat, currentDateFormat = 'YYYY-MM-DD', dateFormat =
   if (dateToFormat) {
     return moment(dateToFormat, currentDateFormat).utc().format(dateFormat)
   }
-  return 'Unknown'
+  return ''
 }
 
 const parseData = (payload, key) => {
