@@ -79,12 +79,12 @@ async function getApplicationHistory (reference) {
   try {
     const response = await Wreck.get(url, { json: true })
     if (response.res.statusCode !== 200) {
-      return { historyRecords: [] }
+      throw new Error(`HTTP ${response.res.statusCode} (${response.res.statusMessage})`)
     }
-
     return response.payload
   } catch (err) {
-    console.log(err)
+    console.error(`Getting application history for ${reference} failed: ${err.message}`)
+
     return { historyRecords: [] }
   }
 }

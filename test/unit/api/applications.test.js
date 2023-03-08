@@ -233,12 +233,15 @@ describe('Application API', () => {
 
   it('GetApplicationHistory should return empty history records array', async () => {
     jest.mock('@hapi/wreck')
+    const consoleErrorSpy = jest.spyOn(console, 'error')
+    const statusCode = 502
+    const statusMessage = 'undefined'
     const wreckResponse = {
       payload: {
         historyRecords: []
       },
       res: {
-        statusCode: 502
+        statusCode: statusCode
       }
     }
 
@@ -251,6 +254,8 @@ describe('Application API', () => {
     expect(response.historyRecords).toStrictEqual([])
     expect(Wreck.get).toHaveBeenCalledTimes(1)
     expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/application/history/${appRef}`, options)
+    expect(consoleErrorSpy).toHaveBeenCalledTimes(1)
+    expect(consoleErrorSpy).toHaveBeenCalledWith(`Getting application history for ${appRef} failed: HTTP ${statusCode} (${statusMessage})`)
   })
 
   it('GetApplicationHistory should return valid history records array', async () => {
