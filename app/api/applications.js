@@ -74,9 +74,25 @@ async function processApplicationClaim (reference, user, approved) {
   }
 }
 
+async function getApplicationHistory (reference) {
+  const url = `${applicationApiUri}/application/history/${reference}`
+  try {
+    const response = await Wreck.get(url, { json: true })
+    if (response.res.statusCode !== 200) {
+      throw new Error(`HTTP ${response.res.statusCode} (${response.res.statusMessage})`)
+    }
+    return response.payload
+  } catch (err) {
+    console.error(`Getting application history for ${reference} failed: ${err.message}`)
+
+    return { historyRecords: [] }
+  }
+}
+
 module.exports = {
   getApplications,
   getApplication,
   withdrawApplication,
-  processApplicationClaim
+  processApplicationClaim,
+  getApplicationHistory
 }

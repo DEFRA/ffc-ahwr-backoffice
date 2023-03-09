@@ -3,6 +3,7 @@ const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const applications = require('../../../../app/api/applications')
 const { administrator } = require('../../../../app/auth/permissions')
 const viewApplicationData = require('.././../../data/view-applications.json')
+const applicationHistoryData = require('../../../data/application-history.json')
 const reference = 'AHWR-555A-FD4C'
 
 function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
@@ -86,6 +87,7 @@ describe('View Application test', () => {
     ])('Withdrawl link feature flag enabled, link displayed as expected for role %s', async (authScope, isWithdrawLinkVisible) => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const options = {
         method: 'GET',
         url,
@@ -104,6 +106,7 @@ describe('View Application test', () => {
     ])('Withdrawl link feature flag disabled, link not displayed for role %s', async (authScope, isWithdrawLinkVisible) => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       jest.clearAllMocks()
       jest.mock('../../../../app/config', () => ({
         ...jest.requireActual('../../../../app/config'),
@@ -136,6 +139,7 @@ describe('View Application test', () => {
         }
       }))
       applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const options = {
         method: 'GET',
         url,
@@ -154,6 +158,7 @@ describe('View Application test', () => {
     ])('Compliance checks feature flag disabled, authorisation panel not displayed for role %s', async (authScope, isComplianceCheckPanelVisible) => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       jest.clearAllMocks()
       jest.mock('../../../../app/config', () => ({
         ...jest.requireActual('../../../../app/config'),
@@ -179,6 +184,7 @@ describe('View Application test', () => {
     ])('returns 200 application agreed - %s role', async (authScope, isWithdrawLinkVisible) => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const options = {
         method: 'GET',
         url,
@@ -221,6 +227,7 @@ describe('View Application test', () => {
     })
     test('returns 200 application applied', async () => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.notagreed)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const options = {
         method: 'GET',
         url,
@@ -263,6 +270,7 @@ describe('View Application test', () => {
     })
     test('returns 200 application data inputted', async () => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.dataInputted)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const options = {
         method: 'GET',
         url,
@@ -295,6 +303,7 @@ describe('View Application test', () => {
     })
     test('returns 200 application claim', async () => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.claim)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const options = {
         method: 'GET',
         url,
@@ -340,6 +349,7 @@ describe('View Application test', () => {
     })
     test('returns 200 application paid', async () => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.paid)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const options = {
         method: 'GET',
         url,
@@ -371,12 +381,13 @@ describe('View Application test', () => {
       expectPhaseBanner.ok($)
     })
     test.each([
-      ['administrator', true],
-      ['processor', false],
-      ['user', false]
-    ])('returns 200 application in check - %s role', async (authScope, isWithdrawLinkVisible) => {
+      ['administrator'],
+      ['processor'],
+      ['user']
+    ])('returns 200 application in check - %s role', async (authScope) => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const options = {
         method: 'GET',
         url,
@@ -418,6 +429,7 @@ describe('View Application test', () => {
     test('withdraw link hidden and withdraw confirmation displayed when withdraw link selected by user', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: ['administrator'] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const url = `/view-application/${reference}?page=1&withdraw=${true}`
       const options = {
         method: 'GET',
@@ -431,6 +443,38 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
       expectWithdrawLink($, reference, false)
       expectWithdrawConfirmationPanel($, true)
+    })
+
+    test('returns 200 application - valid history tab', async () => {
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.notagreed)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      const options = {
+        method: 'GET',
+        url,
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      const $ = cheerio.load(res.payload)
+      expect($('#history').text()).toContain('History')
+      expect($('thead:nth-child(1) tr:nth-child(1) th:nth-child(1)').text()).toContain('Date')
+      expect($('thead:nth-child(1) tr:nth-child(1) th:nth-child(2)').text()).toContain('Time')
+      expect($('thead:nth-child(1) tr:nth-child(1) th:nth-child(3)').text()).toContain('Action')
+      expect($('thead:nth-child(1) tr:nth-child(1) th:nth-child(4)').text()).toContain('User')
+      expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(1)').text()).toContain('23/03/2023')
+      expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(2)').text()).toContain('10:00:12')
+      expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(3)').text()).toContain('Claim approved')
+      expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(4)').text()).toContain('Daniel Jones')
+      expect($('tbody:nth-child(2) tr:nth-child(2)').text()).toContain('24/03/2023')
+      expect($('tbody:nth-child(2) tr:nth-child(2)').text()).toContain('09:30:00')
+      expect($('tbody:nth-child(2) tr:nth-child(2)').text()).toContain('Withdraw completed')
+      expect($('tbody:nth-child(2) tr:nth-child(2)').text()).toContain('Daniel Jones')
+      expect($('tbody:nth-child(2) tr:nth-child(3)').text()).toContain('25/03/2023')
+      expect($('tbody:nth-child(2) tr:nth-child(3)').text()).toContain('11:10:15')
+      expect($('tbody:nth-child(2) tr:nth-child(3)').text()).toContain('Claim rejected')
+      expect($('tbody:nth-child(2) tr:nth-child(3)').text()).toContain('Amanda Hassan')
+
+      expectPhaseBanner.ok($)
     })
   })
 })

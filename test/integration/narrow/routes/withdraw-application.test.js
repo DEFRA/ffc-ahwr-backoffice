@@ -69,7 +69,7 @@ describe('Withdraw Application test', () => {
     })
 
     test('Approve withdraw application', async () => {
-      const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
+      const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {
         method: 'POST',
         url,
