@@ -1,11 +1,13 @@
 const Joi = require('joi')
 const { processApplicationClaim } = require('../api/applications')
 const getUser = require('../auth/get-user')
+const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
 
 module.exports = {
   method: 'POST',
   path: '/reject-application-claim',
   options: {
+    pre: [{ method: preDoubleSubmitHandler }],
     validate: {
       payload: Joi.object({
         rejectClaim: Joi.string().valid('yes', 'no'),

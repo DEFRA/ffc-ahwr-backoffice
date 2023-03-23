@@ -3,11 +3,13 @@ const { withdrawApplication } = require('../api/applications')
 const { administrator } = require('../auth/permissions')
 const getUser = require('../auth/get-user')
 const applicationStatus = require('../constants/application-status')
+const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
 
 module.exports = {
   method: 'POST',
   path: '/withdraw-application',
   options: {
+    pre: [{ method: preDoubleSubmitHandler }],
     auth: { scope: [administrator] },
     validate: {
       payload: Joi.object({

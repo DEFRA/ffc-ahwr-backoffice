@@ -1,7 +1,7 @@
 {% macro viewWithdrawConfirmationForm(applicationId, page, crumb) %}
   <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left">
     <h1 class="govuk-panel__title-s govuk-!-font-size-36 govuk-!-margin-top-1">Are you sure you want to withdraw?</h1>
-    <form method="POST" autocomplete="off" novalidate="novalidate" action="/withdraw-application">
+    <form method="POST" autocomplete="off" novalidate="novalidate" action="/withdraw-application" id="submitForm">
       <button class="govuk-button govuk-button govuk-!-margin-bottom-3" name="withdrawConfirmation" value="yes">Yes</button>
       <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-3" name="withdrawConfirmation" value="no">No</button>
       <input type="hidden" name="reference" value="{{ applicationId }}" />
