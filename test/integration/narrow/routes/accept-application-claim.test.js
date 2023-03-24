@@ -47,10 +47,7 @@ describe('Reject Application test', () => {
       expectPhaseBanner.ok($)
     })
 
-    test.each([
-      { heading: 'Claim complete' },
-      { heading: 'Funding claim failed' }
-    ])('returns 403 when duplicate submission - $crumb', async ({ heading }) => {
+    test('returns 403 when duplicate submission - $crumb', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const crumb = await getCrumbs(global.__SERVER__)
       const options = {
@@ -68,7 +65,6 @@ describe('Reject Application test', () => {
 
       const res1 = await global.__SERVER__.inject(options)
       expect(res1.statusCode).toBe(302)
-      // expect(cheerio.load(res1.payload)('h1').text()).toMatch(heading)
       const res2 = await global.__SERVER__.inject(options)
       expect(res2.statusCode).toBe(403)
       const $ = cheerio.load(res2.payload)
