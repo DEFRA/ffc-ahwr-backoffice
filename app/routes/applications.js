@@ -7,6 +7,7 @@ const keys = require('../session/keys')
 const { administrator, processor, user } = require('../auth/permissions')
 const { ViewModel } = require('./models/application-list')
 const checkValidSearch = require('../lib/search-validation')
+const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
 
 module.exports = [
   {
@@ -58,6 +59,7 @@ module.exports = [
     method: 'POST',
     path: `${currentPath}`,
     options: {
+      pre: [{ method: preDoubleSubmitHandler }],
       auth: { scope: [administrator, processor, user] },
       validate: {
         query: Joi.object({
