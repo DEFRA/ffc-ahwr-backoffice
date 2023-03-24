@@ -69,7 +69,7 @@ describe('Withdraw Application test', () => {
     })
 
     test('returns 403 when duplicate submission - $crumb', async () => {
-      auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+      const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const crumb = await getCrumbs(global.__SERVER__)
       const options = {
         auth,
