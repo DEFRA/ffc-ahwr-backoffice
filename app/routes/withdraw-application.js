@@ -4,6 +4,7 @@ const { administrator } = require('../auth/permissions')
 const getUser = require('../auth/get-user')
 const applicationStatus = require('../constants/application-status')
 const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
+const crumbCache = require('./utils/crumb-cache')
 
 module.exports = {
   method: 'POST',
@@ -22,6 +23,7 @@ module.exports = {
       if (request.payload.withdrawConfirmation === 'yes') {
         const userName = getUser(request).username
         await withdrawApplication(request.payload.reference, userName, applicationStatus.withdrawn)
+        await crumbCache.generateNewCrumb(request, h)
       }
       return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
     }

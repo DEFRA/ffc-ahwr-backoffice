@@ -2,6 +2,7 @@ const Joi = require('joi')
 const { processApplicationClaim } = require('../api/applications')
 const getUser = require('../auth/get-user')
 const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
+const crumbCache = require('./utils/crumb-cache')
 
 module.exports = {
   method: 'POST',
@@ -19,6 +20,7 @@ module.exports = {
       if (request.payload.rejectClaim === 'yes') {
         const userName = getUser(request).username
         await processApplicationClaim(request.payload.reference, userName, false)
+        await crumbCache.generateNewCrumb(request, h)
       }
       return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
     }
