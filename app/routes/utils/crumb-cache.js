@@ -11,9 +11,9 @@ const cacheSubmissionCrumb = async (request, h) => {
 }
 
 const generateNewCrumb = async (request, h) => {
-    request.plugins.crumb = null
-    const crumb = await request.server.plugins.crumb.generate(request, h)
-    console.log('New crumb generated: %s', crumb)
+  request.plugins.crumb = null
+  const crumb = await request.server.plugins.crumb.generate(request, h)
+  console.log('New crumb generated: %s', crumb)
 }
 
 module.exports = {
