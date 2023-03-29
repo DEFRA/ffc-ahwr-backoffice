@@ -1,6 +1,6 @@
 window.onload = function () {
-  const submitForm = document.querySelector('#submitForm')
-  preventDuplicateFormSubmission(submitForm)
+    ['#approveClaimForm', '#rejectClaimForm', '#withdrawForm']
+    .forEach(form => preventDuplicateFormSubmission(document.querySelector(form)))
 }
 
 function preventDuplicateFormSubmission (form) {

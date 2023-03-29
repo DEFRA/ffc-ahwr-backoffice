@@ -3,7 +3,7 @@ const lookupSubmissionCrumb = async (request) => {
   return (await submissionCrumbCache.get(request.plugins.crumb)) ?? {}
 }
 
-const cacheSubmissionCrumb = async (request, h) => {
+const cacheSubmissionCrumb = async (request) => {
   const { submissionCrumbCache } = request.server.app
   const crumb = request.plugins.crumb
   await submissionCrumbCache.set(crumb, { crumb })
