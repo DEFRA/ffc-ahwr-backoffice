@@ -1,7 +1,7 @@
 {% macro viewApproveClaimConfirmationForm(applicationId, page, crumb) %}
   <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left">
     <h1 class="govuk-panel__title-s govuk-!-font-size-36 govuk-!-margin-top-1">Are you sure you want to approve this claim?</h1>
-    <form method="POST" autocomplete="off" novalidate="novalidate" action="/approve-application-claim">
+    <form method="POST" autocomplete="off" novalidate="novalidate" action="/approve-application-claim" id="approveClaimForm">
       <button class="govuk-button govuk-button govuk-!-margin-bottom-3" name="approveClaim" value="yes">Yes</button>
       <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-3" name="approveClaim" value="no">No</button>
       <div class="govuk-warning-text">

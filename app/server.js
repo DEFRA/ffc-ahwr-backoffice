@@ -24,6 +24,12 @@ async function createServer () {
     }
   })
 
+  const submissionCrumbCache = server.cache({
+    expiresIn: 1000 * 60 * 60 * 24,
+    segment: 'submissionCrumbs'
+  }) // 24 hours
+  server.app.submissionCrumbCache = submissionCrumbCache
+
   await server.register(require('./plugins/auth'))
   await server.register(require('@hapi/crumb'))
   await server.register(require('@hapi/inert'))

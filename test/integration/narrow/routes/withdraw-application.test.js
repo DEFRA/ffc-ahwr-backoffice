@@ -68,6 +68,31 @@ describe('Withdraw Application test', () => {
       expectPhaseBanner.ok($)
     })
 
+    test('returns 403 when duplicate submission - $crumb', async () => {
+      const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+      const crumb = await getCrumbs(global.__SERVER__)
+      const options = {
+        auth,
+        method: 'POST',
+        url,
+        payload: {
+          reference,
+          withdrawConfirmation: 'yes',
+          page: 1,
+          crumb
+        },
+        headers: { cookie: `crumb=${crumb}` }
+      }
+
+      const res1 = await global.__SERVER__.inject(options)
+      expect(res1.statusCode).toBe(302)
+      const res2 = await global.__SERVER__.inject(options)
+      expect(res2.statusCode).toBe(403)
+      const $ = cheerio.load(res2.payload)
+      expectPhaseBanner.ok($)
+      expect($('.govuk-heading-l').text()).toEqual('403 - Forbidden')
+    })
+
     test('Approve withdraw application', async () => {
       const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {

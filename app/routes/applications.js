@@ -7,6 +7,7 @@ const keys = require('../session/keys')
 const { administrator, processor, user } = require('../auth/permissions')
 const { ViewModel } = require('./models/application-list')
 const checkValidSearch = require('../lib/search-validation')
+const crumbCache = require('./utils/crumb-cache')
 
 module.exports = [
   {
@@ -21,6 +22,7 @@ module.exports = [
         })
       },
       handler: async (request, h) => {
+        await crumbCache.generateNewCrumb(request, h)
         return h.view(viewTemplate, await new ViewModel(request)) // NOSONAR
       }
     }
