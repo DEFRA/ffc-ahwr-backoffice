@@ -422,7 +422,53 @@ describe('View Application test', () => {
       expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
       expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
       expect($('tbody tr:nth-child(5)').text()).toContain('Yes')
-      expect($('#claim').text()).toContain('Not claimed yet')
+      expect($('#claim').text()).toContain('Claimed')
+
+      expectPhaseBanner.ok($)
+    })
+    test.each([
+      ['administrator'],
+      ['processor'],
+      ['user']
+    ])('returns 200 application ready to pay - %s role', async (authScope) => {
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      const options = {
+        method: 'GET',
+        url,
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      const $ = cheerio.load(res.payload)
+      expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
+      expect($('h2.govuk-heading-l').text()).toContain('Ready to pay')
+      expect($('title').text()).toContain('Administration: User Application')
+      expect($('.govuk-summary-list__row').length).toEqual(4)
+      expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name:')
+      expect($('.govuk-summary-list__value').eq(0).text()).toMatch('Farmer name')
+
+      expect($('.govuk-summary-list__key').eq(1).text()).toMatch('SBI number:')
+      expect($('.govuk-summary-list__value').eq(1).text()).toMatch('333333333')
+
+      expect($('.govuk-summary-list__key').eq(2).text()).toMatch('Address:')
+      expect($('.govuk-summary-list__value').eq(2).text()).toMatch('Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC')
+
+      expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address:')
+      expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
+
+      expect($('tbody tr:nth-child(1)').text()).toContain('Date of agreement')
+      expect($('tbody tr:nth-child(1)').text()).toContain('06/06/2022')
+      expect($('tbody tr:nth-child(2)').text()).toContain('Business details correct')
+      expect($('tbody tr:nth-child(2)').text()).toContain('Yes')
+      expect($('tbody tr:nth-child(3)').text()).toContain('Type of review')
+      expect($('tbody tr:nth-child(3)').text()).toContain('Sheep')
+      expect($('tbody tr:nth-child(4)').text()).toContain('Number of livestock')
+      expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
+      expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
+      expect($('tbody tr:nth-child(5)').text()).toContain('Yes')
+      expect($('#claim').text()).toContain('Claim Approved')
 
       expectPhaseBanner.ok($)
     })
