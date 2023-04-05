@@ -17,7 +17,7 @@
   {% elif(status == "Agreed") %}
     <h2 class="govuk-heading-l">Not claimed yet</h2>
   {% elif(status == "Ready to pay") %}
-    <h2 class="govuk-heading-l">Claim Approved</h2>
+    <h2 class="govuk-heading-l">Claim approved</h2>
     {{ govukTable(model.claimData) }}
   {% elif claimed %}
     <h2 class="govuk-heading-l">Claimed</h2>

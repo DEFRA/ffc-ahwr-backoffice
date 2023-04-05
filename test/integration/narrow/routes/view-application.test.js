@@ -468,7 +468,7 @@ describe('View Application test', () => {
       expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
       expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
       expect($('tbody tr:nth-child(5)').text()).toContain('Yes')
-      expect($('#claim').text()).toContain('Claim Approved')
+      expect($('#claim').text()).toContain('Claim approved')
 
       expectPhaseBanner.ok($)
     })
