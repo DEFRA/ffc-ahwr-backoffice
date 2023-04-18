@@ -18,6 +18,5 @@ data:
   SERVICE_URI: {{ quote .Values.container.serviceUri }}
   APPLICATION_API_URI: {{ quote .Values.container.applicationApiUri }}
   DISPLAY_PAGE_SIZE: {{ quote .Values.container.displayPageSize }}
-  AGREEMENT_WITHDRAWL_ENABLED: {{ quote .Values.container.agreementWithdrawlEnabled }}
-  COMPLIANCE_CHECKS_ENABLED: {{ quote .Values.container.complianceChecksEnabled }}
+  RBAC_ENABLED: {{ quote .Values.container.rbacEnabled }}
 {{- end -}}

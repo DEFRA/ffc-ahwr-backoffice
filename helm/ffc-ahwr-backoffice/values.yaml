@@ -44,8 +44,7 @@ container:
   serviceUri:
   applicationApiUri:
   displayPageSize: 20
-  agreementWithdrawlEnabled:
-  complianceChecksEnabled:
+  rbacEnabled:
   
 deployment:
   cpuThreshold: 40

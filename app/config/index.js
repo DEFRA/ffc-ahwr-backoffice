@@ -40,11 +40,8 @@ const schema = Joi.object({
   useRedis: Joi.boolean().default(false),
   applicationApiUri: Joi.string().uri(),
   displayPageSize: Joi.number().default(20),
-  agreementWithdrawl: {
-    enabled: Joi.bool().default(false)
-  },
-  complianceChecks: {
-    enabled: Joi.bool().default(false)
+  rbac: {
+    enabled: Joi.boolean().default(false)
   }
 })
 
@@ -81,11 +78,8 @@ const config = {
   useRedis: process.env.NODE_ENV !== 'test',
   applicationApiUri: process.env.APPLICATION_API_URI,
   displayPageSize: process.env.DISPLAY_PAGE_SIZE,
-  agreementWithdrawl: {
-    enabled: process.env.AGREEMENT_WITHDRAWL_ENABLED
-  },
-  complianceChecks: {
-    enabled: process.env.COMPLIANCE_CHECKS_ENABLED
+  rbac: {
+    enabled: process.env.RBAC_ENABLED
   }
 }
 
