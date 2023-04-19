@@ -8,23 +8,8 @@
   {% endset -%}
 
   {% set claimHtml %}
-  {% if (status == "In check") %}
-    <h2 class="govuk-heading-l">Claimed</h2>
-    {{ govukTable(model.claimData) }}
-  {% elif(status == "Rejected") %}
-    <h2 class="govuk-heading-l">Not eligible to claim</h2>
-    {{ govukTable(model.claimData) }}
-  {% elif(status == "Agreed") %}
-    <h2 class="govuk-heading-l">Not claimed yet</h2>
-  {% elif(status == "Ready to pay") %}
-    <h2 class="govuk-heading-l">Claim approved</h2>
-    {{ govukTable(model.claimData) }}
-  {% elif claimed %}
-    <h2 class="govuk-heading-l">Claimed</h2>
-    {{ govukTable(model.claimData) }}
-  {% else %}
-    <h2 class="govuk-heading-l">Not eligible to claim</h2>
-  {% endif %}
+  <h2 class="govuk-heading-l">{{ status }}</h2>
+  {{ govukTable(model.claimData) }}
   {% endset -%}
 
   {% set historyHtml %}
