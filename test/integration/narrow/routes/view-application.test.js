@@ -219,7 +219,8 @@ describe('View Application test', () => {
       expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
       expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
       expect($('tbody tr:nth-child(5)').text()).toContain('Yes')
-      expect($('#claim').text()).toContain('Not claimed yet')
+      expect($('#application').text()).toContain('Agreed')
+      expect($('#claim').text()).toContain('Agreed')
 
       expectWithdrawLink($, reference, isWithdrawLinkVisible)
 
@@ -262,7 +263,8 @@ describe('View Application test', () => {
       expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
       expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
       expect($('tbody tr:nth-child(5)').text()).toContain('No')
-      expect($('#claim').text()).toContain('Not eligible to claim')
+      expect($('#application').text()).toContain('Not agreed')
+      expect($('#claim').text()).toContain('Not agreed')
 
       expectWithdrawLink($, reference, false)
 
@@ -295,7 +297,8 @@ describe('View Application test', () => {
       expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address:')
       expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
 
-      expect($('#claim').text()).toContain('Not eligible to claim')
+      expect($('#application').text()).toContain('Data inputted')
+      expect($('#claim').text()).toContain('Data inputted')
 
       expectWithdrawLink($, reference, false)
 
@@ -328,6 +331,7 @@ describe('View Application test', () => {
       expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address:')
       expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
 
+      expect($('#application').text()).toContain('Claimed')
       expect($('#claim').text()).toContain('Claimed')
 
       expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('Date of review')
@@ -359,7 +363,7 @@ describe('View Application test', () => {
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
-      expect($('h2.govuk-heading-l').text()).toContain('Accepted')
+      expect($('h2.govuk-heading-l').text()).toContain('Paid')
       expect($('title').text()).toContain('Administration: User Application')
       expect($('.govuk-summary-list__row').length).toEqual(4)
       expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name:')
@@ -374,7 +378,8 @@ describe('View Application test', () => {
       expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address:')
       expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
 
-      expect($('#claim').text()).toContain('Claimed')
+      expect($('#application').text()).toContain('Paid')
+      expect($('#claim').text()).toContain('Paid')
 
       expectWithdrawLink($, reference, false)
 
@@ -422,7 +427,8 @@ describe('View Application test', () => {
       expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
       expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
       expect($('tbody tr:nth-child(5)').text()).toContain('Yes')
-      expect($('#claim').text()).toContain('Claimed')
+      expect($('#application').text()).toContain('In check')
+      expect($('#claim').text()).toContain('In check')
 
       expectPhaseBanner.ok($)
     })
@@ -468,7 +474,8 @@ describe('View Application test', () => {
       expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
       expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
       expect($('tbody tr:nth-child(5)').text()).toContain('Yes')
-      expect($('#claim').text()).toContain('Claim approved')
+      expect($('#application').text()).toContain('Ready to pay')
+      expect($('#claim').text()).toContain('Ready to pay')
 
       expectPhaseBanner.ok($)
     })
@@ -521,6 +528,31 @@ describe('View Application test', () => {
       expect($('tbody:nth-child(2) tr:nth-child(3)').text()).toContain('Amanda Hassan')
 
       expectPhaseBanner.ok($)
+    })
+
+    test.each([
+      { actualState: viewApplicationData.agreed, expectedState: 'Agreed' },
+      { actualState: viewApplicationData.notagreed, expectedState: 'Not agreed' },
+      { actualState: viewApplicationData.claim, expectedState: 'Claimed' },
+      { actualState: viewApplicationData.dataInputted, expectedState: 'Data inputted' },
+      { actualState: viewApplicationData.paid, expectedState: 'Paid' },
+      { actualState: viewApplicationData.incheck, expectedState: 'In check' },
+      { actualState: viewApplicationData.readytopay, expectedState: 'Ready to pay' },
+      { actualState: viewApplicationData.withdrawn, expectedState: 'Withdrawn' },
+      { actualState: viewApplicationData.accepted, expectedState: 'Accepted' },
+      { actualState: viewApplicationData.rejected, expectedState: 'Rejected' }
+    ])('correct application and claim state displayed for $expectedState', async ({ actualState, expectedState }) => {
+      applications.getApplication.mockReturnValueOnce(actualState)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      const options = {
+        method: 'GET',
+        url,
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+      expect($('#application').text()).toContain(expectedState)
+      expect($('#claim').text()).toContain(expectedState)
     })
   })
 })

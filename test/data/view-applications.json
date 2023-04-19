@@ -2,7 +2,9 @@
   "agreed": {
     "id": "555afd4c-b095-4ce4-b492-800466b53393",
     "reference": "AHWR-555A-FD4C",
-    "status": { "status": "AGREED" },
+    "status": {
+      "status": "AGREED"
+    },
     "data": {
       "declaration": true,
       "whichReview": "sheep",
@@ -27,7 +29,9 @@
   "notagreed": {
     "id": "555afd4c-b095-4ce4-b492-800466b53393",
     "reference": "AHWR-555A-FD4C",
-    "status": { "status": "NOT AGREED" },
+    "status": {
+      "status": "NOT AGREED"
+    },
     "data": {
       "whichReview": "sheep",
       "organisation": {
@@ -50,7 +54,9 @@
   "dataInputted": {
     "id": "555afd4c-b095-4ce4-b492-800466b53393",
     "reference": "AHWR-555A-FD4C",
-    "status": { "status": "DATA INPUTTED" },
+    "status": {
+      "status": "DATA INPUTTED"
+    },
     "data": {
       "declaration": true,
       "whichReview": "sheep",
@@ -74,7 +80,9 @@
   "claim": {
     "id": "555afd4c-b095-4ce4-b492-800466b53393",
     "reference": "AHWR-555A-FD4C",
-    "status": { "status": "CLAIMED" },
+    "status": {
+      "status": "CLAIMED"
+    },
     "data": {
       "declaration": true,
       "whichReview": "pigs",
@@ -103,7 +111,9 @@
   "paid": {
     "id": "555afd4c-b095-4ce4-b492-800466b53393",
     "reference": "AHWR-555A-FD4C",
-    "status": { "status": "ACCEPTED" },
+    "status": {
+      "status": "PAID"
+    },
     "data": {
       "declaration": true,
       "whichReview": "beef",
@@ -125,10 +135,12 @@
         "value": 400,
         "frn": 1102057452,
         "invoiceNumber": "AHWR-F528-5345V001",
-        "invoiceLines": [{
-          "description": "G00 - Gross value of claim",
-          "value": 400
-        }]
+        "invoiceLines": [
+          {
+            "description": "G00 - Gross value of claim",
+            "value": 400
+          }
+        ]
       },
       "createdAt": "2022-06-06T14:27:51.251Z",
       "status": "ACCEPTED"
@@ -141,7 +153,9 @@
   "incheck": {
     "id": "75216bb8-b4e6-40aa-b51f-24e8a90f7195",
     "reference": "AHWR-555A-FD4C",
-    "status": { "status": "IN CHECK" },
+    "status": {
+      "status": "IN CHECK"
+    },
     "data": {
       "declaration": true,
       "whichReview": "sheep",
@@ -166,7 +180,9 @@
   "readytopay": {
     "id": "75216bb8-b4e6-40aa-b51f-24e8a90f7195",
     "reference": "AHWR-555A-FD4C",
-    "status": { "status": "READY TO PAY" },
+    "status": {
+      "status": "READY TO PAY"
+    },
     "data": {
       "declaration": true,
       "whichReview": "sheep",
@@ -187,5 +203,41 @@
     "createdAt": "2022-06-06T14:27:51.251Z",
     "updatedAt": "2022-06-06T14:27:51.775Z",
     "createdBy": "admin"
+  },
+  "withdrawn": {
+    "id": "75216bb8-b4e6-40aa-b51f-24e8a90f7195",
+    "reference": "AHWR-555A-FD4C",
+    "status": {
+      "status": "WITHDRAWN"
+    },
+    "data": {
+      "declaration": true,
+      "whichReview": "sheep",
+      "offerStatus": "withdrawn"
+    }
+  },
+  "accepted": {
+    "id": "75216bb8-b4e6-40aa-b51f-24e8a90f7195",
+    "reference": "AHWR-555A-FD4C",
+    "status": {
+      "status": "ACCEPTED"
+    },
+    "data": {
+      "declaration": true,
+      "whichReview": "sheep",
+      "offerStatus": "accepted"
+    }
+  },
+  "rejected": {
+    "id": "75216bb8-b4e6-40aa-b51f-24e8a90f7195",
+    "reference": "AHWR-555A-FD4C",
+    "status": {
+      "status": "REJECTED"
+    },
+    "data": {
+      "declaration": true,
+      "whichReview": "sheep",
+      "offerStatus": "rejected"
+    }
   }
 }
