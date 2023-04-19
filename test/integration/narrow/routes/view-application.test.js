@@ -541,7 +541,7 @@ describe('View Application test', () => {
       { actualState: viewApplicationData.withdrawn, expectedState: 'Withdrawn' },
       { actualState: viewApplicationData.accepted, expectedState: 'Accepted' },
       { actualState: viewApplicationData.rejected, expectedState: 'Rejected' }
-    ])('correct application and claim state displayed for $expectedState', async ({ actualState, expectedState }) => {
+    ])('correct application and claim status displayed for $expectedState', async ({ actualState, expectedState }) => {
       applications.getApplication.mockReturnValueOnce(actualState)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const options = {
