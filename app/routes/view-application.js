@@ -6,7 +6,6 @@ const getStyleClassByStatus = require('../constants/status')
 const ViewModel = require('./models/view-application')
 const { upperFirstLetter } = require('../lib/display-helper')
 const mapAuth = require('../auth/map-auth')
-const { agreementWithdrawl, complianceChecks } = require('../config/index.js')
 
 module.exports = {
   method: 'GET',
@@ -35,11 +34,11 @@ module.exports = {
       const statusClass = getStyleClassByStatus(application.status.status)
       const mappedAuth = mapAuth(request)
       const withdrawLinkStatus = ['AGREED']
-      const isAgreementAgreedAndUserIsAdmin = agreementWithdrawl.enabled === true && withdrawLinkStatus.includes(application.status.status) && mappedAuth.isAdministrator
+      const isAgreementAgreedAndUserIsAdmin = withdrawLinkStatus.includes(application.status.status) && mappedAuth.isAdministrator
       const withdrawLink = isAgreementAgreedAndUserIsAdmin && !request.query.withdraw
       const withdrawConfirmationForm = isAgreementAgreedAndUserIsAdmin && application.status.status !== 'WITHDRAWN' && request.query.withdraw
 
-      const isApplicationInCheckAndUserIsAdmin = complianceChecks.enabled === true && application.status.status === 'IN CHECK' && mappedAuth.isAdministrator
+      const isApplicationInCheckAndUserIsAdmin = application.status.status === 'IN CHECK' && mappedAuth.isAdministrator
       const claimConfirmationForm = isApplicationInCheckAndUserIsAdmin && !request.query.approve && !request.query.reject
       const approveClaimConfirmationForm = isApplicationInCheckAndUserIsAdmin && request.query.approve
       const rejectClaimConfirmationForm = isApplicationInCheckAndUserIsAdmin && request.query.reject
