@@ -1,0 +1,19 @@
+{% macro viewRecommenderForm(applicationId, page, crumb) %}
+    {# <form method="POST" autocomplete="off" novalidate="novalidate" action="/recommend-claim" id="recommenderForm"> #}
+      <div class="govuk-grid-column-one-third">
+        <div class="govuk-panel govuk-panel--confirmation govuk-panel--align-horizontal govuk-!-text-align-center">
+          <div class="govuk-panel__body">
+            <div class="govuk-grid-row">
+              <button class="govuk-button govuk-button govuk-!-margin-bottom-3" onclick="location.href='/view-application/{{ applicationId }}?page={{page}}&approve=true';" name="recommendToPay" value="yes">Recommend to pay</button>
+            </div>
+            <div class="govuk-grid-row">
+              <button class="govuk-button govuk-button govuk-!-margin-bottom-3" onclick="location.href='/view-application/{{ applicationId }}?page={{page}}&reject=true';" name="recommendToReject" value="yes">Recommend to reject</button>
+            </div>
+          </div>
+          <input type="hidden" name="reference" value="{{ applicationId }}"/>
+          <input type="hidden" name="page" value="{{ page }}"/>
+          <input type="hidden" name="crumb" value="{{crumb}}"/>
+        </div>
+      </div>
+    {# </form> #}
+{% endmacro %}

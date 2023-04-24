@@ -1,0 +1,26 @@
+{% macro viewAuthoriserForm(applicationId, page, crumb, authorisePayment) %}
+    {# <form method="POST" autocomplete="off" novalidate="novalidate" action="/authorise-claim" id="authoriserForm"> #}
+        <div class="govuk-grid-column-one-third">
+            <div class="govuk-panel govuk-panel--confirmation govuk-panel--align-horizontal govuk-!-text-align-center">
+                <div class="govuk-panel__body">
+                    <div class="govuk-grid-row">
+                        {% if authorisePayment %}
+                            <button class="govuk-button govuk-button govuk-!-margin-bottom-3" onclick="location.href='/view-application/{{ applicationId }}?page={{page}}&approve=true';" name="authorisePayment" value="yes">Authorise payment</button>
+                        {% else %}
+                            <button class="govuk-button govuk-button govuk-!-margin-bottom-3" onclick="location.href='/view-application/{{ applicationId }}?page={{page}}&reject=true';"  name="authoriseRejection" value="yes">Reject claim</button>
+                        {% endif %}
+                    </div>
+                    <div class="govuk-grid-row">
+                        <label class="govuk-label govuk-checkboxes__label" for="authoriserForm">            
+                                If you do not agree with this action, contact the person who recommended it and discuss it with them.
+                            </label>
+                    </div>
+                </div>
+                <input type="hidden" name="reference" value="{{ applicationId }}"/>
+                <input type="hidden" name="page" value="{{ page }}"/>
+                <input type="hidden" name="crumb" value="{{crumb}}"/>
+                <input type="hidden" name="authorisePayment" value="{{authorisePayment}}"/>
+            </div>
+        </div>
+    {# </form> #}
+{% endmacro %}

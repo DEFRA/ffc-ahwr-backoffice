@@ -4,6 +4,12 @@
 {% from "./macros/claim-confirmation-form.njk" import viewClaimConfirmationForm %}
 {% from "./macros/approve-claim-confirmation-form.njk" import viewApproveClaimConfirmationForm %}
 {% from "./macros/reject-claim-confirmation-form.njk" import viewRejectClaimConfirmationForm %}
+{% from "./macros/recommender-form.njk" import viewRecommenderForm %}
+{% from "./macros/authoriser-form.njk" import viewAuthoriserForm %}
+{% from "./macros/authoriser-confirmation-to-pay-form.njk" import viewAuthoriserConfirmationToPayForm %}
+{% from "./macros/authoriser-confirmation-to-reject-form.njk" import viewAuthoriserConfirmationToRejectForm %}
+{% from "./macros/recommender-confirmation-to-pay-form.njk" import viewRecommenderConfirmationToPayForm %}
+{% from "./macros/recommender-confirmation-to-reject-form.njk" import viewRecommenderConfirmationToRejectForm %}
 
 {% block pageTitle %}
   {{ siteTitle }}: User Application
@@ -36,12 +42,30 @@
       {% if rejectClaimConfirmationForm %}
         {{ viewRejectClaimConfirmationForm(applicationId, page, crumb) }}
       {% endif %}
-      {{ viewApplicationTabs(model, vetVisit, claimed, payment, status) }}
+      {% if recommendToPayConfirmationForm %}
+        {{ viewRecommenderConfirmationToPayForm(applicationId, page, crumb) }}
+      {% endif %}
+      {% if recommendToRejectConfirmationForm %}
+        {{ viewRecommenderConfirmationToRejectForm(applicationId, page, crumb) }}
+      {% endif %}
+      {% if authoriseToPayConfirmationForm %}
+        {{ viewAuthoriserConfirmationToPayForm(applicationId, page, crumb) }}
+      {% endif %}
+      {% if authoriseToRejectConfirmationForm %}
+        {{ viewAuthoriserConfirmationToRejectForm(applicationId, page, crumb) }}
+      {% endif %}
+      {{ viewApplicationTabs(model, vetVisit, claimed, payment, status, authorisePayment, rejectPayment) }}
       {% if withdrawLink %}
         <a class="govuk-link govuk-body" href="/view-application/{{ applicationId }}?page={{page}}&withdraw=true">Withdraw</a>
       {% endif %}
       {% if claimConfirmationForm %}
         {{ viewClaimConfirmationForm(applicationId, page, crumb) }}
+      {% endif %}
+      {% if recommenderForm %}
+        {{ viewRecommenderForm(applicationId, page, crumb) }}
+      {% endif %}
+      {% if authoriserForm %}
+        {{ viewAuthoriserForm(applicationId, page, crumb, authorisePayment) }}
       {% endif %}
     </div>
   </div>
