@@ -17,7 +17,7 @@ module.exports = {
     handler: async (request, h) => {
       const role = 'Authoriser'
       const stage = 'Claim Approve/Reject'
-      await processStageActions(request, role, stage, 'Rejected')
+      await processStageActions(request, role, stage, 'Rejected', false)
       await crumbCache.generateNewCrumb(request, h)
       return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
     }

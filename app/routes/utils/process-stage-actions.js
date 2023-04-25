@@ -3,7 +3,7 @@ const { processApplicationClaim } = require('../../api/applications')
 const getUser = require('../../auth/get-user')
 const applicationStageActions = require('../../constants/application-stage-actions')
 
-const processStageActions = async (request, role, stage, action) => {
+const processStageActions = async (request, role, stage, action, isClaimToBePaid) => {
   const userName = getUser(request).username
   const stageConfiguration = await getStageConfiguration()
   const step = stageConfiguration
@@ -18,7 +18,7 @@ const processStageActions = async (request, role, stage, action) => {
         stageExecutionRow = await createStageExecution(request.payload.reference, stepId, userName, { action: `${action}` })
         break
       case applicationStageActions.processApplicationClaim:
-        await processApplicationClaim(request.payload.reference, userName, true)
+        await processApplicationClaim(request.payload.reference, userName, isClaimToBePaid)
         break
       case applicationStageActions.updateStageExecutionEntry:
         await updateStageExecution(stageExecutionRow.id)
