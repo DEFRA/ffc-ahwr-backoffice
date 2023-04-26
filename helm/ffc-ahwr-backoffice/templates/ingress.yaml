@@ -1,3 +1,5 @@
 {{- include "ffc-helm-library.azure-ingress" (list . "ffc-ahwr-backoffice.ingress") -}}
 {{- define "ffc-ahwr-backoffice.ingress" -}}
+data:
+  server-tokens: "false"
 {{- end -}}
