@@ -35,71 +35,13 @@
       </div>
     {% else %}
       <div class="govuk-grid-row">
-        <div class="moj-filter-layout__filter">
-          {%- set filterOptionsHtml %}
-          {{ govukCheckboxes({
-                    idPrefix: 'status',
-                    name: 'status',
-                    classes: "govuk-checkboxes--small",
-                    fieldset: {
-                      legend: {
-                        text: 'Status',
-                        classes: 'govuk-fieldset__legend--m'
-                      }
-                    },
-                    items: model.filterStatus
-                    }) }}
-
-          {% endset -%}
-
-          {{ mojFilter({
-                  heading: {
-                    text: 'Filter'
-                  },
-                  selectedFilters: {
-                    heading: {
-                      text: 'Selected filters'
-                    },
-                    clearLink: {
-                      text: 'Clear filters',
-                      href: '/applications/clear'
-                    },
-                    categories: [
-                      {
-                        heading: {
-                          text: 'Status'
-                        },
-                        items: model.selectedStatus
-                      }
-                    ]
-                  },
-                  optionsHtml: filterOptionsHtml
-                }) }}
-        </div>
-
-        <div class="moj-filter-layout__content">
-          {# <div class="moj-action-bar">
-            <div class="moj-action-bar__filter hide_pseudo_after"></div>
-          </div> #}
-          <div class="moj-scrollable-pane">
-
-            <div class="moj-scrollable-pane__wrapper">
-              {{ govukTable({
-          attributes: {
-            'data-module': 'moj-sortable-table'
-          },
-          firstCellIsHeader: false,
-          head: model.header,
-          rows: model.applications
-        }) }}
-              {{ govukPagination({
+        {{ govukPagination({
           previous: model.previous,
           next: model.next,
           items: model.pages
         }) 
         }}
-            </div>
-        </div>
-        {% endif %}
-      </form>
-    {% endblock %}
+      </div>
+    {% endif %}
+  </form>
+{% endblock %}
