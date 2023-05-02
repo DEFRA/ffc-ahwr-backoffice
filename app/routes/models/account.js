@@ -1,4 +1,5 @@
 const getUser = require('../../auth/get-user')
+const config = require('../../config')
 
 const getRows = (request) => {
   const userName = getUser(request).username
@@ -13,7 +14,8 @@ const getRows = (request) => {
 
 function ViewModel (request) {
   this.model = {
-    userScopes: { rows: getRows(request) }
+    userScopes: { rows: getRows(request) },
+    rbac: config.rbac
   }
 }
 
