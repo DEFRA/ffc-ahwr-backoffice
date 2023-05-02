@@ -35,12 +35,25 @@
       </div>
     {% else %}
       <div class="govuk-grid-row">
-        {{ govukPagination({
-          previous: model.previous,
-          next: model.next,
-          items: model.pages
-        }) 
-        }}
+        <div class="moj-scrollable-pane">
+
+            <div class="moj-scrollable-pane__wrapper">
+              {{ govukTable({
+                  attributes: {
+                    'data-module': 'moj-sortable-table'
+                  },
+                  firstCellIsHeader: false,
+                  head: model.header,
+                  rows: model.applications
+                }) }}
+                {{ govukPagination({
+                  previous: model.previous,
+                  next: model.next,
+                  items: model.pages
+                }) 
+              }}
+            </div>
+        </div>
       </div>
     {% endif %}
   </form>
