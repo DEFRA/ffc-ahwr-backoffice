@@ -20,29 +20,36 @@
   }) }}
   {% endset -%}
 
-  {{ govukTabs({
-    items: [
-      {
-        label: "Agreement",
-        id: "application",
-        panel: {
-          html: applicationHtml
-        }
-      },
-      {
-        label: "Claim",
-        id: "claim",
-        panel: {
-          html: claimHtml
-        }
-      },
-      {
-        label: "History",
-        id: "history",
-        panel: {
-          html: historyHtml
-        }
-      }
-    ]
-  }) }}
+
+  <div class="govuk-tabs" data-module="govuk-tabs">
+  <h2 class="govuk-tabs__title">
+    Contents
+  </h2>
+  <ul class="govuk-tabs__list">
+    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" tabindex="4">
+      <a class="govuk-tabs__tab" href="#past-day" tabindex="0">
+        Past day
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item" tabindex="5">
+      <a class="govuk-tabs__tab" href="#past-week" tabindex="1">
+        Past week
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item" tabindex="6">
+      <a class="govuk-tabs__tab" href="#past-month" tabindex="2">
+        Past month
+      </a>
+    </li>
+  </ul>
+  <div class="govuk-tabs__panel" id="past-day">
+    {{ applicationHtml }}
+  </div>
+  <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="past-week">
+    {{ claimHtml }}
+  </div>
+  <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="past-month">
+    {{ historyHtml }}
+  </div>
+</div>
 {% endmacro %}
