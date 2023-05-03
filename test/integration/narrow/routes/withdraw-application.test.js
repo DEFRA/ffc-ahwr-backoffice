@@ -1,6 +1,6 @@
 const cheerio = require('cheerio')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
-const { administrator, processor, user } = require('../../../../app/auth/permissions')
+const { administrator, processor, user, recommender, authoriser } = require('../../../../app/auth/permissions')
 const getCrumbs = require('../../../utils/get-crumbs')
 
 const applications = require('../../../../app/api/applications')
@@ -31,7 +31,7 @@ describe('Withdraw Application test', () => {
     })
 
     test('returns 403 when scope is not administrator', async () => {
-      const auth = { strategy: 'session-auth', credentials: { scope: [processor, user] } }
+      const auth = { strategy: 'session-auth', credentials: { scope: [processor, user, recommender, authoriser] } }
       const options = {
         method: 'POST',
         url,
@@ -52,7 +52,7 @@ describe('Withdraw Application test', () => {
     })
 
     test('returns 403', async () => {
-      const auth = { strategy: 'session-auth', credentials: { scope: [processor, user] } }
+      const auth = { strategy: 'session-auth', credentials: { scope: [processor, user, recommender, authoriser] } }
       const options = {
         method: 'POST',
         url,
