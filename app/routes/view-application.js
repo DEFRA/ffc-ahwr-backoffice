@@ -1,7 +1,7 @@
 const Joi = require('joi')
 const boom = require('@hapi/boom')
 const { getApplication, getApplicationHistory } = require('../api/applications')
-const { administrator, processor, user } = require('../auth/permissions')
+const { administrator, processor, user, recommender, authoriser } = require('../auth/permissions')
 const getStyleClassByStatus = require('../constants/status')
 const ViewModel = require('./models/view-application')
 const { upperFirstLetter } = require('../lib/display-helper')
@@ -11,7 +11,7 @@ module.exports = {
   method: 'GET',
   path: '/view-application/{reference}',
   options: {
-    auth: { scope: [administrator, processor, user] },
+    auth: { scope: [administrator, processor, user, recommender, authoriser] },
     validate: {
       params: Joi.object({
         reference: Joi.string().valid()

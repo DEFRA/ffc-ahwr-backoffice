@@ -4,7 +4,7 @@ const { displayPageSize } = require('../pagination')
 const Joi = require('joi')
 const { setAppSearch, getAppSearch } = require('../session')
 const keys = require('../session/keys')
-const { administrator, processor, user } = require('../auth/permissions')
+const { administrator, processor, user, recommender, authoriser } = require('../auth/permissions')
 const { ViewModel } = require('./models/application-list')
 const checkValidSearch = require('../lib/search-validation')
 const crumbCache = require('./utils/crumb-cache')
@@ -14,7 +14,7 @@ module.exports = [
     method: 'GET',
     path: currentPath,
     options: {
-      auth: { scope: [administrator, processor, user] },
+      auth: { scope: [administrator, processor, user, recommender, authoriser] },
       validate: {
         query: Joi.object({
           page: Joi.number().greater(0).default(1),
@@ -31,7 +31,7 @@ module.exports = [
     method: 'GET',
     path: `${currentPath}/clear`,
     options: {
-      auth: { scope: [administrator, processor, user] },
+      auth: { scope: [administrator, processor, user, recommender, authoriser] },
       handler: async (request, h) => {
         setAppSearch(request, keys.appSearch.filterStatus, [])
         return h.view(viewTemplate, await new ViewModel(request)) // NOSONAR
@@ -42,7 +42,7 @@ module.exports = [
     method: 'GET',
     path: `${currentPath}/remove/{status}`,
     options: {
-      auth: { scope: [administrator, processor, user] },
+      auth: { scope: [administrator, processor, user, recommender, authoriser] },
       validate: {
         params: Joi.object({
           status: Joi.string()
@@ -60,7 +60,7 @@ module.exports = [
     method: 'POST',
     path: `${currentPath}`,
     options: {
-      auth: { scope: [administrator, processor, user] },
+      auth: { scope: [administrator, processor, user, recommender, authoriser] },
       validate: {
         query: Joi.object({
           page: Joi.number().greater(0).default(1),
@@ -91,7 +91,7 @@ module.exports = [
     method: 'GET',
     path: `${currentPath}/sort/{field}/{direction}`,
     options: {
-      auth: { scope: [administrator, processor, user] },
+      auth: { scope: [administrator, processor, user, recommender, authoriser] },
       validate: {
         params: Joi.object({
           field: Joi.string(),
