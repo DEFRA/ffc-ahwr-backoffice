@@ -1,7 +1,7 @@
 const cheerio = require('cheerio')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const { upperFirstLetter } = require('../../../../app/lib/display-helper')
-const { administrator, processor, user } = require('../../../../app/auth/permissions')
+const { administrator, processor, user, recommender, authoriser } = require('../../../../app/auth/permissions')
 
 describe('Account page test', () => {
   const url = '/account'
@@ -25,7 +25,9 @@ describe('Account page test', () => {
       ['Test user 1', [administrator]],
       ['Test user 2', [processor]],
       ['Test user 3', [user]],
-      ['Test user 4', [administrator, processor, user]]
+      ['Test user 4', [recommender]],
+      ['Test user 5', [authoriser]],
+      ['Test user 6', [administrator, processor, user, recommender, authoriser]]
     ])('returns 200, page loads successfully', async (userName, roles) => {
       auth = { strategy: 'session-auth', credentials: { scope: roles, account: { homeAccountId: 'testId', name: userName } } }
       const options = {

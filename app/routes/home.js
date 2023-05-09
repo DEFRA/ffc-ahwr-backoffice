@@ -1,9 +1,9 @@
-const { administrator, processor, user } = require('../auth/permissions')
+const { administrator, processor, user, recommender, authoriser } = require('../auth/permissions')
 module.exports = {
   method: 'GET',
   path: '/',
   options: {
-    auth: { scope: [administrator, processor, user] },
+    auth: { scope: [administrator, processor, user, recommender, authoriser] },
     handler: async (_, h) => {
       return h.view('home')
     }
