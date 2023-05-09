@@ -18,6 +18,9 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
+      {% if model.rbac.enabled %}
+      <h1 class="govuk-heading-m">Role based access</h1>
+      {% endif %}
       {{ govukSummaryList({
       classes: "govuk-!-margin-bottom-9",
       rows: model.userScopes.rows

@@ -1,5 +1,6 @@
 const cheerio = require('cheerio')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
+const { upperFirstLetter } = require('../../../../app/lib/display-helper')
 const { administrator, processor, user, recommender, authoriser } = require('../../../../app/auth/permissions')
 
 describe('Account page test', () => {
@@ -41,8 +42,9 @@ describe('Account page test', () => {
       expect($('.govuk-summary-list__row').length).toEqual(2)
       expect($('.govuk-summary-list__key').eq(0).text()).toMatch('User')
       expect($('.govuk-summary-list__value').eq(0).text()).toMatch(userName)
-      expect($('.govuk-summary-list__key').eq(1).text()).toMatch('Roles')
-      expect($('.govuk-summary-list__value').eq(1).text()).toMatch(roles.join(', '))
+      expect($('.govuk-summary-list__key').eq(1).text()).toMatch('Role')
+      expect($('.govuk-summary-list__value').eq(1).text()).toMatch(roles.map(x => upperFirstLetter(x)).join(', '))
+
       expectPhaseBanner.ok($)
     })
   })
