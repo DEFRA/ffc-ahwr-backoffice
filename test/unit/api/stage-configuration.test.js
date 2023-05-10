@@ -32,7 +32,7 @@ describe('Stage Configuration API', () => {
         return wreckResponse
       })
       const response = await getAllStageConfigurations()
-      expect(response).not.toBeNull()
+      expect(response).not.toStrictEqual([])
       expect(response.stageConfigurations).toStrictEqual(['stage1', 'stage2'])
       expect(Wreck.get).toHaveBeenCalledTimes(1)
       expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/stageconfiguration`, options)
@@ -53,7 +53,7 @@ describe('Stage Configuration API', () => {
         return wreckResponse
       })
       const response = await getAllStageConfigurations()
-      expect(response).toBeNull()
+      expect(response).toStrictEqual([])
       expect(Wreck.get).toHaveBeenCalledTimes(1)
       expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/stageconfiguration`, options)
     })
@@ -65,7 +65,7 @@ describe('Stage Configuration API', () => {
         throw new Error('Error')
       })
       const response = await getAllStageConfigurations()
-      expect(response).toBeNull()
+      expect(response).toStrictEqual([])
       expect(logSpy).toHaveBeenCalledTimes(1)
       expect(logSpy).toHaveBeenCalledWith(new Error('Error'))
       expect(Wreck.get).toHaveBeenCalledTimes(1)
