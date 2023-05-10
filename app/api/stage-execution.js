@@ -35,7 +35,7 @@ async function getStageExecutionByApplication (applicationReference) {
 
 async function addStageExecution (payload) {
   const url = `${applicationApiUri}/stageexecution`
-  console.log(`Application API: Adding stage execution, ${payload}`)
+  console.log(`Application API: Adding stage execution, ${JSON.stringify(payload)}`)
   const options = {
     payload,
     json: true
