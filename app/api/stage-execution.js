@@ -39,6 +39,9 @@ async function updateStageExecution (id) {
   }
   try {
     const response = await Wreck.put(url, options)
+    if (response.res.statusCode !== 200) {
+      return null
+    }
     return response.payload
   } catch (err) {
     console.log(err)

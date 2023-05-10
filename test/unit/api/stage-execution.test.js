@@ -1,0 +1,200 @@
+const Wreck = require('@hapi/wreck')
+jest.mock('@hapi/wreck')
+jest.mock('../../../app/config')
+const { applicationApiUri } = require('../../../app/config')
+const { getAllStageExecutions, addStageExecution, updateStageExecution } = require('../../../app/api/stage-execution')
+
+const payload = {
+  applicationReference: 'AHWR-0000-0000',
+  stageConfigurationId: 2,
+  executedBy: 'Mr User',
+  processedAt: null
+}
+
+describe('Stage Execution API', () => {
+  let logSpy
+
+  beforeEach(() => {
+    logSpy = jest.spyOn(console, 'log')
+  })
+
+  afterEach(() => {
+    logSpy.mockRestore()
+  })
+
+  describe('getAllStageExecutions', () => {
+    test('getAllStageExecutions should return valid stage execution array', async () => {
+      const wreckResponse = {
+        payload: {
+          stageExecutions: ['stage1', 'stage2']
+        },
+        res: {
+          statusCode: 200
+        }
+      }
+      const options = {
+        json: true
+      }
+      Wreck.get = jest.fn(async function (_url, _options) {
+        return wreckResponse
+      })
+      const response = await getAllStageExecutions()
+      expect(response).not.toBeNull()
+      expect(response.stageExecutions).toStrictEqual(['stage1', 'stage2'])
+      expect(Wreck.get).toHaveBeenCalledTimes(1)
+      expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution`, options)
+    })
+    test('getAllStageExecutions should return null', async () => {
+      const wreckResponse = {
+        payload: {
+          stageExecutions: ['stage1', 'stage2']
+        },
+        res: {
+          statusCode: 404
+        }
+      }
+      const options = {
+        json: true
+      }
+      Wreck.get = jest.fn(async function (_url, _options) {
+        return wreckResponse
+      })
+      const response = await getAllStageExecutions()
+      expect(response).toBeNull()
+      expect(Wreck.get).toHaveBeenCalledTimes(1)
+      expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution`, options)
+    })
+    test('getAllStageExecutions should return null when error thrown', async () => {
+      const options = {
+        json: true
+      }
+      Wreck.get = jest.fn(async function (_url, _options) {
+        throw new Error('Error')
+      })
+      const response = await getAllStageExecutions()
+      expect(response).toBeNull()
+      expect(logSpy).toHaveBeenCalledTimes(1)
+      expect(logSpy).toHaveBeenCalledWith(new Error('Error'))
+      expect(Wreck.get).toHaveBeenCalledTimes(1)
+      expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution`, options)
+    })
+  })
+  describe('addStageExecution', () => {
+    test('addStageExecution should return valid stage execution array', async () => {
+      const wreckResponse = {
+        payload: {
+          stageExecution: 'stage1'
+        },
+        res: {
+          statusCode: 200
+        }
+      }
+      const options = {
+        payload,
+        json: true
+      }
+      Wreck.post = jest.fn(async function (_url, _options) {
+        return wreckResponse
+      })
+      const response = await addStageExecution(payload)
+      expect(response).not.toBeNull()
+      expect(response.stageExecution).toStrictEqual('stage1')
+      expect(Wreck.post).toHaveBeenCalledTimes(1)
+      expect(Wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution`, options)
+    })
+    test('addStageExecution should return null', async () => {
+      const wreckResponse = {
+        payload: {
+          stageExecution: 'stage1'
+        },
+        res: {
+          statusCode: 404
+        }
+      }
+      const options = {
+        payload,
+        json: true
+      }
+      Wreck.post = jest.fn(async function (_url, _options) {
+        return wreckResponse
+      })
+      const response = await addStageExecution(payload)
+      expect(response).toBeNull()
+      expect(Wreck.post).toHaveBeenCalledTimes(1)
+      expect(Wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution`, options)
+    })
+    test('addStageExecution should return null when error thrown', async () => {
+      const options = {
+        payload,
+        json: true
+      }
+      Wreck.post = jest.fn(async function (_url, _options) {
+        throw new Error('Error')
+      })
+      const response = await addStageExecution(payload)
+      expect(response).toBeNull()
+      expect(logSpy).toHaveBeenCalledTimes(1)
+      expect(logSpy).toHaveBeenCalledWith(new Error('Error'))
+      expect(Wreck.post).toHaveBeenCalledTimes(1)
+      expect(Wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution`, options)
+    })
+  })
+
+  describe('updateStageExecution', () => {
+    test('updateStageExecution should return valid stage execution', async () => {
+      const wreckResponse = {
+        payload: {
+          stageExecution: 'stage1'
+        },
+        res: {
+          statusCode: 200
+        }
+      }
+      const options = {
+        json: true
+      }
+      Wreck.put = jest.fn(async function (_url, _options) {
+        return wreckResponse
+      })
+      const response = await updateStageExecution(2)
+      expect(response).not.toBeNull()
+      expect(response.stageExecution).toStrictEqual('stage1')
+      expect(Wreck.put).toHaveBeenCalledTimes(1)
+      expect(Wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution/2`, options)
+    })
+    test('updateStageExecution should return null', async () => {
+      const wreckResponse = {
+        payload: {
+          stageExecution: 'stage1'
+        },
+        res: {
+          statusCode: 404
+        }
+      }
+      const options = {
+        json: true
+      }
+      Wreck.put = jest.fn(async function (_url, _options) {
+        return wreckResponse
+      })
+      const response = await updateStageExecution(2)
+      expect(response).toBeNull()
+      expect(Wreck.put).toHaveBeenCalledTimes(1)
+      expect(Wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution/2`, options)
+    })
+    test('updateStageExecution should return null when error thrown', async () => {
+      const options = {
+        json: true
+      }
+      Wreck.put = jest.fn(async function (_url, _options) {
+        throw new Error('Error')
+      })
+      const response = await updateStageExecution(2)
+      expect(response).toBeNull()
+      expect(logSpy).toHaveBeenCalledTimes(1)
+      expect(logSpy).toHaveBeenCalledWith(new Error('Error'))
+      expect(Wreck.put).toHaveBeenCalledTimes(1)
+      expect(Wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution/2`, options)
+    })
+  })
+})
