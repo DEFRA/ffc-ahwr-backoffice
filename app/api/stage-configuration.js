@@ -15,6 +15,21 @@ async function getAllStageConfigurations () {
   }
 }
 
+async function getStageConfigurationById (id) {
+  const url = `${applicationApiUri}/stageconfiguration/${id}`
+  try {
+    const response = await Wreck.get(url, { json: true })
+    if (response.res.statusCode !== 200) {
+      return null
+    }
+    return response.payload
+  } catch (err) {
+    console.log(err)
+    return null
+  }
+}
+
 module.exports = {
-  getAllStageConfigurations
+  getAllStageConfigurations,
+  getStageConfigurationById
 }

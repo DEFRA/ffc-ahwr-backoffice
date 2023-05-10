@@ -14,6 +14,21 @@ async function getAllStageExecutions () {
     return null
   }
 }
+
+async function getStageExecutionById (id) {
+  const url = `${applicationApiUri}/stageexecution/${id}`
+  try {
+    const response = await Wreck.get(url, { json: true })
+    if (response.res.statusCode !== 200) {
+      return null
+    }
+    return response.payload
+  } catch (err) {
+    console.log(err)
+    return null
+  }
+}
+
 async function addStageExecution (payload) {
   const url = `${applicationApiUri}/stageexecution`
   const options = {
@@ -51,6 +66,7 @@ async function updateStageExecution (id) {
 
 module.exports = {
   getAllStageExecutions,
+  getStageExecutionById,
   addStageExecution,
   updateStageExecution
 }
