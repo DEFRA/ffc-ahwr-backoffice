@@ -272,5 +272,4 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBe(expectedResult)
     expect(claimFormHelperResult.claimSubStatus).toBe('Recommend to reject')
   })
-
 })
