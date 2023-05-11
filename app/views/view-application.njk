@@ -4,6 +4,7 @@
 {% from "./macros/claim-confirmation-form.njk" import viewClaimConfirmationForm %}
 {% from "./macros/approve-claim-confirmation-form.njk" import viewApproveClaimConfirmationForm %}
 {% from "./macros/reject-claim-confirmation-form.njk" import viewRejectClaimConfirmationForm %}
+{% from "./macros/recommend-form.njk" import viewRecommendForm %}
 
 {% block pageTitle %}
   {{ siteTitle }}: User Application
@@ -42,6 +43,9 @@
       {% endif %}
       {% if claimConfirmationForm %}
         {{ viewClaimConfirmationForm(applicationId, page, crumb) }}
+      {% endif %}
+      {% if recommendForm %}
+        {{ viewRecommendForm(applicationId, page, crumb) }}
       {% endif %}
     </div>
   </div>

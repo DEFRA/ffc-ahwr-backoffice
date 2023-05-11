@@ -1,0 +1,20 @@
+{% macro viewRecommendForm(applicationId, page, crumb) %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      <div class="govuk-panel govuk-panel--confirmation govuk-panel--align-horizontal govuk-!-text-align-center">
+        <div class="govuk-panel__body">
+          <div class="govuk-grid-row">
+            <button class="govuk-button" onclick="location.href='';">Recommend to pay</button>
+          </div>
+          <div class="govuk-grid-row">
+            <button class="govuk-button" onclick="location.href='';">Recommend to reject</button>
+          </div>
+        </div>
+        <input type="hidden" name="reference" value="{{ applicationId }}"/>
+        <input type="hidden" name="page" value="{{ page }}"/>
+        <input type="hidden" name="crumb" value="{{crumb}}"/>
+      </div>
+    </div>
+  </div>
+{% endmacro %}
