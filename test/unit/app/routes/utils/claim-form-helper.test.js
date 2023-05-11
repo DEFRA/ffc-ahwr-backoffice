@@ -272,4 +272,114 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBe(expectedResult)
     expect(claimFormHelperResult.claimSubStatus).toBe('Recommend to reject')
   })
+
+  test.each([
+    ['administrator'],
+    ['processor'],
+    ['user'],
+    ['recommender'],
+    ['authoriser'],
+    ['processor'],
+    ['administrator, processor, user, recommender, authoriser']
+  ])('For role %s - claim paid, no forms displayed', async (roles) => {
+    const request = {
+      query: {
+        approve: true,
+        reject: false
+      },
+      auth: {
+        isAuthenticated: true,
+        credentials: {
+          scope: roles,
+          account: {
+            homeAccountId: 'testId',
+            name: 'Mr Auth'
+          }
+        }
+      }
+    }
+    const applicationReference = 'testAppRef'
+    const applicationStatus = 'IN CHECK'
+
+    stageExecution.getStageExecutionByApplication.mockResolvedValue([{
+      stageConfigurationId: stageConfigId.claimApproveRejectRecommender,
+      applicationReference: applicationReference,
+      executedBy: 'Mr Recommender',
+      action: {
+        action: stageExecutionActions.recommendToPay
+      }
+    },
+    {
+      stageConfigurationId: stageConfigId.claimApproveRejectAuthoriser,
+      applicationReference: applicationReference,
+      executedBy: 'Mr Auth',
+      action: {
+        action: stageExecutionActions.authorisePayment
+      }
+    }])
+
+    const claimFormHelperResult = await claimFormHelper(request, applicationReference, applicationStatus)
+    expect(claimFormHelperResult.displayRecommendationForm).toBeFalsy()
+    expect(claimFormHelperResult.displayRecommendToPayConfirmationForm).toBeFalsy()
+    expect(claimFormHelperResult.displayRecommendToRejectConfirmationForm).toBeFalsy()
+    expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
+    expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
+    expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
+    expect(claimFormHelperResult.claimSubStatus).toBeNull()
+  })
+
+  test.each([
+    ['administrator'],
+    ['processor'],
+    ['user'],
+    ['recommender'],
+    ['authoriser'],
+    ['processor'],
+    ['administrator, processor, user, recommender, authoriser']
+  ])('For role %s - claim rejected, no forms displayed', async (roles) => {
+    const request = {
+      query: {
+        approve: false,
+        reject: true
+      },
+      auth: {
+        isAuthenticated: true,
+        credentials: {
+          scope: roles,
+          account: {
+            homeAccountId: 'testId',
+            name: 'Mr Auth'
+          }
+        }
+      }
+    }
+    const applicationReference = 'testAppRef'
+    const applicationStatus = 'IN CHECK'
+
+    stageExecution.getStageExecutionByApplication.mockResolvedValue([{
+      stageConfigurationId: stageConfigId.claimApproveRejectRecommender,
+      applicationReference: applicationReference,
+      executedBy: 'Mr Recommender',
+      action: {
+        action: stageExecutionActions.recommendToPay
+      }
+    },
+    {
+      stageConfigurationId: stageConfigId.claimApproveRejectAuthoriser,
+      applicationReference: applicationReference,
+      executedBy: 'Mr Auth',
+      action: {
+        action: stageExecutionActions.authoriseRejection
+      }
+    }])
+
+    const claimFormHelperResult = await claimFormHelper(request, applicationReference, applicationStatus)
+    expect(claimFormHelperResult.displayRecommendationForm).toBeFalsy()
+    expect(claimFormHelperResult.displayRecommendToPayConfirmationForm).toBeFalsy()
+    expect(claimFormHelperResult.displayRecommendToRejectConfirmationForm).toBeFalsy()
+    expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
+    expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
+    expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
+    expect(claimFormHelperResult.claimSubStatus).toBeNull()
+  })
 })
