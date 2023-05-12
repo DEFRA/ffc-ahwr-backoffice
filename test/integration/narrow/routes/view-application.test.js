@@ -4,7 +4,9 @@ const applications = require('../../../../app/api/applications')
 const { administrator } = require('../../../../app/auth/permissions')
 const viewApplicationData = require('.././../../data/view-applications.json')
 const applicationHistoryData = require('../../../data/application-history.json')
+const { when, resetAllWhenMocks } = require('jest-when')
 const reference = 'AHWR-555A-FD4C'
+let claimFormHelper
 
 function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
   if (isWithdrawLinkVisible) {
@@ -14,6 +16,24 @@ function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
     expect(withdrawLink.attr('href')).toMatch(`/view-application/${reference}?page=1&withdraw=true`)
   } else {
     expect($('.govuk-link').not.hasClass)
+  }
+}
+
+function expectRecommendButtons ($, areRecommendButtonsVisible) {
+  console.log('areRecommendButtonsVisible111', areRecommendButtonsVisible)
+  if (areRecommendButtonsVisible) {
+    const recommendToPayButton = $('.govuk-button').eq(0)
+    const recommendToRejectButton = $('.govuk-button').eq(1)
+
+    expect(recommendToPayButton.hasClass('govuk-button'))
+    expect(recommendToPayButton.text()).toMatch('Recommend to pay')
+    expect(recommendToPayButton.attr('onclick')).toMatch("location.href=''")
+
+    expect(recommendToRejectButton.hasClass('govuk-button'))
+    expect(recommendToRejectButton.text()).toMatch('Recommend to reject')
+    expect(recommendToRejectButton.attr('onclick')).toMatch("location.href=''")
+  } else {
+    expect($('.govuk-button').not.hasClass)
   }
 }
 
@@ -56,14 +76,14 @@ describe('View Application test', () => {
         enabled: true
       },
       rbac: {
-        enabled: false
+        enabled: true
       }
     }))
     jest.mock('../../../../app/routes/utils/claim-form-helper')
-    const claimFormHelper = require('../../../../app/routes/utils/claim-form-helper')
+    claimFormHelper = require('../../../../app/routes/utils/claim-form-helper')
 
     claimFormHelper.mockReturnValue({
-      displayRecommendationForm: true,
+      displayRecommendationForm: false,
       displayRecommendToPayConfirmationForm: false,
       displayRecommendToRejectConfirmationForm: false,
       displayAuthorisationForm: false,
@@ -71,6 +91,10 @@ describe('View Application test', () => {
       displayAuthoriseToRejectConfirmationForm: false,
       claimSubStatus: null
     })
+  })
+
+  afterEach(() => {
+    resetAllWhenMocks()
   })
 
   describe(`GET ${url} route`, () => {
@@ -98,8 +122,7 @@ describe('View Application test', () => {
     test.each([
       ['administrator', true],
       ['processor', false],
-      ['user', false],
-      ['recommender', false]
+      ['user', false]
     ])('Withdrawl link feature flag enabled, link displayed as expected for role %s', async (authScope, isWithdrawLinkVisible) => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
@@ -115,6 +138,32 @@ describe('View Application test', () => {
 
       expectWithdrawLink($, reference, isWithdrawLinkVisible)
     })
+
+    test.each([
+      ['administrator', false],
+      ['processor', false],
+      ['user', false],
+      ['recommender', true],
+      ['authoriser', false]
+    ])('RBAC feature flag enabled, link displayed as expected for role %s', async (authScope, areRecommendButtonsVisible) => {
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+        displayRecommendationForm: true
+      })
+      const options = {
+        method: 'GET',
+        url,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+      expectRecommendButtons($, areRecommendButtonsVisible)
+      console.log('got here')
+    })
+
     test.each([
       ['administrator', false],
       ['processor', false],
