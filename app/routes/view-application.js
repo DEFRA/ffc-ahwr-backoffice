@@ -6,6 +6,8 @@ const getStyleClassByStatus = require('../constants/status')
 const ViewModel = require('./models/view-application')
 const { upperFirstLetter } = require('../lib/display-helper')
 const mapAuth = require('../auth/map-auth')
+const claimHelper = require('./utils/claim-form-helper')
+const rbacEnabled = require('../config').rbac.enabled
 
 module.exports = {
   method: 'GET',
@@ -43,6 +45,8 @@ module.exports = {
       const approveClaimConfirmationForm = isApplicationInCheckAndUserIsAdmin && request.query.approve
       const rejectClaimConfirmationForm = isApplicationInCheckAndUserIsAdmin && request.query.reject
 
+      const { displayRecommendationForm } = await claimHelper(request, request.params.reference, application.status.status)
+
       return h.view('view-application', {
         applicationId: application.reference,
         status,
@@ -57,7 +61,8 @@ module.exports = {
         rejectClaimConfirmationForm,
         payment: application?.payment,
         ...new ViewModel(application, applicationHistory),
-        page: request.query.page
+        page: request.query.page,
+        recommendForm: rbacEnabled && displayRecommendationForm
       })
     }
   }
