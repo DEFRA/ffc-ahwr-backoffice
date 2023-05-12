@@ -46,7 +46,7 @@ module.exports = {
       const rejectClaimConfirmationForm = isApplicationInCheckAndUserIsAdmin && request.query.reject
 
       const { displayRecommendationForm } = await claimHelper(request, request.params.reference, application.status.status)
-      console.log('displayRecommendationForm', displayRecommendationForm, 'rbacEnabled', rbacEnabled)
+
       return h.view('view-application', {
         applicationId: application.reference,
         status,
