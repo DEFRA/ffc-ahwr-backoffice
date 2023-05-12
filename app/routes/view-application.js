@@ -63,7 +63,7 @@ module.exports = {
         payment: application?.payment,
         ...new ViewModel(application, applicationHistory),
         page: request.query.page,
-        recommendForm: rbacEnabled && displayRecommendationForm,
+        recommendForm: rbacEnabled && displayRecommendationForm && !request.query.recommendToPay,
         recommendToPay: rbacEnabled && displayRecommendationForm && request.query.recommendToPay
       })
     }
