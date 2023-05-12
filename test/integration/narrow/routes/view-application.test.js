@@ -5,7 +5,6 @@ const { administrator } = require('../../../../app/auth/permissions')
 const viewApplicationData = require('.././../../data/view-applications.json')
 const applicationHistoryData = require('../../../data/application-history.json')
 const reference = 'AHWR-555A-FD4C'
-const claimHelper = require('../../../../app/routes/utils/claim-form-helper')
 
 function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
   if (isWithdrawLinkVisible) {
@@ -60,11 +59,18 @@ describe('View Application test', () => {
         enabled: false
       }
     }))
-    jest.mock('../../../../app/routes/utils/claim-form-helper', () => ({
-      claimHelper: jest.fn().mockReturnValue({
-        displayRecommendationForm: jest.fn().mockReturnValue(true)
-      })
-    }))
+    jest.mock('../../../../app/routes/utils/claim-form-helper')
+    const claimFormHelper = require('../../../../app/routes/utils/claim-form-helper')
+
+    claimFormHelper.mockReturnValue({
+      displayRecommendationForm: true,
+      displayRecommendToPayConfirmationForm: false,
+      displayRecommendToRejectConfirmationForm: false,
+      displayAuthorisationForm: false,
+      displayAuthoriseToPayConfirmationForm: false,
+      displayAuthoriseToRejectConfirmationForm: false,
+      claimSubStatus: null
+    })
   })
 
   describe(`GET ${url} route`, () => {
