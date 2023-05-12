@@ -27,7 +27,7 @@ function expectRecommendButtons ($, areRecommendButtonsVisible) {
 
     expect(recommendToPayButton.hasClass('govuk-button'))
     expect(recommendToPayButton.text()).toMatch('Recommend to pay')
-    expect(recommendToPayButton.attr('onclick')).toMatch("location.href=''")
+    expect(recommendToPayButton.attr('onclick')).toMatch("location.href='/view-application/AHWR-555A-FD4C?page=1&recommendToPay=true';")
 
     expect(recommendToRejectButton.hasClass('govuk-button'))
     expect(recommendToRejectButton.text()).toMatch('Recommend to reject')
