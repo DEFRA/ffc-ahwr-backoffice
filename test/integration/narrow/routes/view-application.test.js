@@ -145,7 +145,7 @@ describe('View Application test', () => {
       ['user', false],
       ['recommender', true],
       ['authoriser', false]
-    ])('RBAC feature flag enabled, link displayed as expected for role %s', async (authScope, areRecommendButtonsVisible) => {
+    ])('RBAC feature flag enabled, recommend buttons displayed as expected for role %s', async (authScope, areRecommendButtonsVisible) => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
