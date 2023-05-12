@@ -22,7 +22,8 @@ module.exports = {
         page: Joi.number().greater(0).default(1),
         withdraw: Joi.bool().default(false),
         approve: Joi.bool().default(false),
-        reject: Joi.bool().default(false)
+        reject: Joi.bool().default(false),
+        recommendToPay: Joi.bool().default(false)
       })
     },
     handler: async (request, h) => {
@@ -62,7 +63,8 @@ module.exports = {
         payment: application?.payment,
         ...new ViewModel(application, applicationHistory),
         page: request.query.page,
-        recommendForm: rbacEnabled && displayRecommendationForm
+        recommendForm: rbacEnabled && displayRecommendationForm,
+        recommendToPay: rbacEnabled && displayRecommendationForm && request.query.recommendToPay
       })
     }
   }

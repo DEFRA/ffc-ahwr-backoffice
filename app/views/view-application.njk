@@ -5,6 +5,7 @@
 {% from "./macros/approve-claim-confirmation-form.njk" import viewApproveClaimConfirmationForm %}
 {% from "./macros/reject-claim-confirmation-form.njk" import viewRejectClaimConfirmationForm %}
 {% from "./macros/recommend-form.njk" import viewRecommendForm %}
+{% from "./macros/recommend-to-pay-confirmation-form.njk" import viewRecommendToPayConfirmationForm %}
 
 {% block pageTitle %}
   {{ siteTitle }}: User Application
@@ -36,6 +37,9 @@
       {% endif %}
       {% if rejectClaimConfirmationForm %}
         {{ viewRejectClaimConfirmationForm(applicationId, page, crumb) }}
+      {% endif %}
+      {% if recommendToPay %}
+        {{ viewRecommendToPayConfirmationForm(applicationId, page, crumb) }}
       {% endif %}
       {{ viewApplicationTabs(model, vetVisit, claimed, payment, status) }}
       {% if withdrawLink %}

@@ -1,0 +1,32 @@
+{% macro viewRecommendToPayConfirmationForm(applicationId, page, crumb) %}
+  {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+  <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left">
+    <a href="/view-application/{{ applicationId }}?page={{page}}" role="button" draggable="false" class="govuk-!-text-align-right" style="text-align:right; display:flex;">Back</a>
+    <form method="POST" autocomplete="off" novalidate="novalidate" action="/recommend-to-pay" id="recommendToPayForm">
+      {{ govukCheckboxes({
+        name: "confirm",
+        fieldset: {
+          legend: {
+            text: "Recommend to pay",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        items: [
+          {
+            value: "checkedAgainstChecklist",
+            text: "I have checked the claim against the verification checklist and it has passed. I recommend the payment is authorised."
+          },
+          {
+            value: "sentChecklist",
+            text: "I have sent the verification checklist to the authoriser explaining why it's passed."
+          }
+        ]
+      }) }}
+      <button class="govuk-button govuk-button govuk-!-margin-bottom-3">Confirm and continue</button>
+      <input type="hidden" name="reference" value="{{ applicationId }}" />
+      <input type="hidden" name="page" value="{{ page }}" />
+      <input type="hidden" name="crumb" value="{{crumb}}"/>
+    </form>
+  </div>
+{% endmacro %}

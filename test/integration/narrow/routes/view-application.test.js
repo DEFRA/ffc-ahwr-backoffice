@@ -161,7 +161,6 @@ describe('View Application test', () => {
       const res = await global.__SERVER__.inject(options)
       const $ = cheerio.load(res.payload)
       expectRecommendButtons($, areRecommendButtonsVisible)
-      console.log('got here')
     })
 
     test.each([
