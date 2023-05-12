@@ -5,6 +5,7 @@ const { administrator } = require('../../../../app/auth/permissions')
 const viewApplicationData = require('.././../../data/view-applications.json')
 const applicationHistoryData = require('../../../data/application-history.json')
 const reference = 'AHWR-555A-FD4C'
+const claimHelper = require('../../../../app/routes/utils/claim-form-helper')
 
 function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
   if (isWithdrawLinkVisible) {
@@ -54,7 +55,15 @@ describe('View Application test', () => {
       ...jest.requireActual('../../../../app/config'),
       agreementWithdrawl: {
         enabled: true
+      },
+      rbac: {
+        enabled: false
       }
+    }))
+    jest.mock('../../../../app/routes/utils/claim-form-helper', () => ({
+      claimHelper: jest.fn().mockReturnValue({
+        displayRecommendationForm: jest.fn().mockReturnValue(true)
+      })
     }))
   })
 
@@ -83,7 +92,8 @@ describe('View Application test', () => {
     test.each([
       ['administrator', true],
       ['processor', false],
-      ['user', false]
+      ['user', false],
+      ['recommender', false]
     ])('Withdrawl link feature flag enabled, link displayed as expected for role %s', async (authScope, isWithdrawLinkVisible) => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
