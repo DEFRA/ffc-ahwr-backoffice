@@ -1,7 +1,7 @@
 {% macro viewRecommendToPayConfirmationForm(applicationId, page, crumb) %}
   {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
   <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left">
-    <a href="/view-application/{{ applicationId }}?page={{page}}" role="button" draggable="false" class="govuk-link govuk-!-text-align-right" style="text-align:right; display:flex; float:right;">Back</a>
+    <p class="govuk-body govuk-!-text-align-right"><a href="/view-application/{{ applicationId }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p>
     <form method="POST" autocomplete="off" novalidate="novalidate" action="/recommend-to-pay" id="recommendToPayForm">
       {{ govukCheckboxes({
         name: "confirm",
