@@ -403,7 +403,7 @@ describe('Claim form helper tests', () => {
     ['authoriser', 'IN CHECK', 'Recommend to reject'],
     ['authoriser', 'READY TO PAY', 'READY TO PAY'],
     ['authoriser', 'REJECTED', 'REJECTED']
-  ])('For role %s - valid sub status displayed', async (roles, applicationStatus, expectedSubStatus) => {
+  ])('For role %s - a valid sub status displayed', async (roles, applicationStatus, expectedSubStatus) => {
     const request = {
       query: {
         approve: false,
