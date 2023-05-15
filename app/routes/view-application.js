@@ -7,7 +7,6 @@ const ViewModel = require('./models/view-application')
 const { upperFirstLetter } = require('../lib/display-helper')
 const mapAuth = require('../auth/map-auth')
 const claimHelper = require('./utils/claim-form-helper')
-const rbacEnabled = require('../config').rbac.enabled
 
 module.exports = {
   method: 'GET',
@@ -22,7 +21,8 @@ module.exports = {
         page: Joi.number().greater(0).default(1),
         withdraw: Joi.bool().default(false),
         approve: Joi.bool().default(false),
-        reject: Joi.bool().default(false)
+        reject: Joi.bool().default(false),
+        recommendToPay: Joi.bool().default(false)
       })
     },
     handler: async (request, h) => {
@@ -45,7 +45,7 @@ module.exports = {
       const approveClaimConfirmationForm = isApplicationInCheckAndUserIsAdmin && request.query.approve
       const rejectClaimConfirmationForm = isApplicationInCheckAndUserIsAdmin && request.query.reject
 
-      const { displayRecommendationForm, displayAuthorisationForm } = await claimHelper(request, request.params.reference, application.status.status)
+      const { displayRecommendationForm, displayRecommendToPayConfirmationForm, displayAuthorisationForm } = await claimHelper(request, request.params.reference, application.status.status)
 
       return h.view('view-application', {
         applicationId: application.reference,
@@ -62,8 +62,9 @@ module.exports = {
         payment: application?.payment,
         ...new ViewModel(application, applicationHistory),
         page: request.query.page,
-        recommendForm: rbacEnabled && displayRecommendationForm,
-        authorisePaymentForm: rbacEnabled && displayAuthorisationForm
+        recommendForm: displayRecommendationForm,
+        recommendToPay: displayRecommendToPayConfirmationForm,
+        authorisePaymentForm: displayAuthorisationForm
       })
     }
   }

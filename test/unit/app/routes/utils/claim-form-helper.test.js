@@ -1,3 +1,13 @@
+jest.mock('../../../../../app/config', () => ({
+  ...jest.requireActual('../../../../../app/config'),
+  agreementWithdrawl: {
+    enabled: true
+  },
+  rbac: {
+    enabled: true
+  }
+}))
+
 const claimFormHelper = require('../../../../../app/routes/utils/claim-form-helper')
 const stageConfigId = require('../../../../../app/constants/application-stage-configuration-ids')
 const stageExecutionActions = require('../../../../../app/constants/application-stage-execution-actions')
@@ -61,7 +71,8 @@ describe('Claim form helper tests', () => {
     const request = {
       query: {
         approve: true,
-        reject: false
+        reject: false,
+        recommendToPay: true
       },
       auth: {
         isAuthenticated: true,
