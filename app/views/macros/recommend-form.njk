@@ -5,10 +5,10 @@
       <div class="govuk-panel govuk-panel--align-horizontal govuk-!-text-align-center">
         <div class="govuk-panel__body">
           <div class="govuk-grid-row">
-            <a class="govuk-button" href="/view-application/{{ applicationId }}?page={{page}}&recommendToPay=true" role="button">Recommend to pay</a>
+            <a class="govuk-button" href="/view-application/{{ applicationId }}?page={{page}}&recommendToPay=true" role="button" id="btn-recommend-to-pay">Recommend to pay</a>
           </div>
           <div class="govuk-grid-row">
-            <a class="govuk-button" role="button" href="">Recommend to reject</a>
+            <a class="govuk-button" role="button" href="" id="btn-recommend-to-reject">Recommend to reject</a>
           </div>
         </div>
         <input type="hidden" name="reference" value="{{ applicationId }}"/>

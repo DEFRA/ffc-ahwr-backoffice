@@ -21,8 +21,8 @@ function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
 
 function expectRecommendButtons ($, areRecommendButtonsVisible) {
   if (areRecommendButtonsVisible) {
-    const recommendToPayButton = $('.govuk-button').eq(0)
-    const recommendToRejectButton = $('.govuk-button').eq(1)
+    const recommendToPayButton = $('.govuk-button').eq(2)
+    const recommendToRejectButton = $('.govuk-button').eq(3)
 
     expect(recommendToPayButton.hasClass('govuk-button'))
     expect(recommendToPayButton.text()).toMatch('Recommend to pay')
@@ -32,7 +32,8 @@ function expectRecommendButtons ($, areRecommendButtonsVisible) {
     expect(recommendToRejectButton.text()).toMatch('Recommend to reject')
     expect(recommendToRejectButton.attr('href')).toMatch('')
   } else {
-    expect($('.govuk-button').not.hasClass)
+    expect($('#btn-recommend-to-pay').length).toEqual(0)
+    expect($('#btn-recommend-to-reject').length).toEqual(0)
   }
 }
 
@@ -139,17 +140,13 @@ describe('View Application test', () => {
     })
 
     test.each([
-      ['administrator', false],
-      ['processor', false],
-      ['user', false],
-      ['recommender', true],
-      ['authoriser', false]
-    ])('RBAC feature flag enabled, recommend buttons displayed as expected for role %s', async (authScope, areRecommendButtonsVisible) => {
-      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
+      true,
+      false
+    ])('RBAC feature flag enabled, recommend buttons displayed as expected for when claim helper returns %s', async (areRecommendButtonsVisible) => {
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
-        displayRecommendationForm: true
+      claimFormHelper.mockReturnValueOnce({
+        displayRecommendationForm: areRecommendButtonsVisible
       })
       const options = {
         method: 'GET',
