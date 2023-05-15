@@ -41,7 +41,7 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
   let subStatus = applicationStatus
   if (!hasClaimAlreadyBeenAuthorised) {
     if (hasClaimBeenRecommendedToPay) {
-      claimSubStatus = 'Recommend to pay'
+      subStatus = 'Recommend to pay'
     } else if (hasClaimBeenRecommendedToReject) {
       subStatus = 'Recommend to reject'
     }
