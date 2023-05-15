@@ -21,8 +21,8 @@ function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
 
 function expectRecommendButtons ($, areRecommendButtonsVisible) {
   if (areRecommendButtonsVisible) {
-    const recommendToPayButton = $('.govuk-button').eq(2)
-    const recommendToRejectButton = $('.govuk-button').eq(3)
+    const recommendToPayButton = $('#btn-recommend-to-pay')
+    const recommendToRejectButton = $('#btn-recommend-to-reject')
 
     expect(recommendToPayButton.hasClass('govuk-button'))
     expect(recommendToPayButton.text()).toMatch('Recommend to pay')
