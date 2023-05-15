@@ -45,7 +45,7 @@ module.exports = {
       const approveClaimConfirmationForm = isApplicationInCheckAndUserIsAdmin && request.query.approve
       const rejectClaimConfirmationForm = isApplicationInCheckAndUserIsAdmin && request.query.reject
 
-      const { displayRecommendationForm, displayRecommendToPayConfirmationForm, displayAuthorisationForm } = await claimHelper(request, request.params.reference, application.status.status)
+      const { displayRecommendationForm, displayRecommendToPayConfirmationForm, displayAuthorisationForm, subStatus } = await claimHelper(request, request.params.reference, application.status.status)
 
       return h.view('view-application', {
         applicationId: application.reference,
@@ -64,7 +64,8 @@ module.exports = {
         page: request.query.page,
         recommendForm: displayRecommendationForm,
         recommendToPay: displayRecommendToPayConfirmationForm,
-        authorisePaymentForm: displayAuthorisationForm
+        authorisePaymentForm: displayAuthorisationForm,
+        subStatus
       })
     }
   }
