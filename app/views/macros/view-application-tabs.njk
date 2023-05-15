@@ -1,14 +1,14 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 
-{% macro viewApplicationTabs(model, vetVisit, claimed, payment, status) %}
+{% macro viewApplicationTabs(model, vetVisit, claimed, payment, subStatus) %}
   {% set applicationHtml %}
-  <h2 class="govuk-heading-l">{{ status }}</h2>
+  <h2 class="govuk-heading-l">{{ subStatus }}</h2>
   {{ govukTable(model.applicationData) }}
   {% endset -%}
 
   {% set claimHtml %}
-  <h2 class="govuk-heading-l">{{ status }}</h2>
+  <h2 class="govuk-heading-l">{{ subStatus }}</h2>
   {{ govukTable(model.claimData) }}
   {% endset -%}
 

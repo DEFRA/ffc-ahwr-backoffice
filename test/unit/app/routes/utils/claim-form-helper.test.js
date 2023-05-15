@@ -56,7 +56,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.claimSubStatus).toBeNull()
+    expect(claimFormHelperResult.subStatus).toBe(applicationStatus)
   })
 
   test.each([
@@ -97,7 +97,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.claimSubStatus).toBeNull()
+    expect(claimFormHelperResult.subStatus).toBe(applicationStatus)
   })
 
   test.each([
@@ -137,7 +137,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.claimSubStatus).toBeNull()
+    expect(claimFormHelperResult.subStatus).toBe(applicationStatus)
   })
 
   test.each([
@@ -185,7 +185,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBe(expectedResult)
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.claimSubStatus).toBe('Recommend to pay')
+    expect(claimFormHelperResult.subStatus).toBe('Recommend to pay')
   })
 
   test.each([
@@ -233,7 +233,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBe(expectedResult)
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.claimSubStatus).toBe('Recommend to pay')
+    expect(claimFormHelperResult.subStatus).toBe('Recommend to pay')
   })
 
   test.each([
@@ -281,7 +281,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBe(expectedResult)
-    expect(claimFormHelperResult.claimSubStatus).toBe('Recommend to reject')
+    expect(claimFormHelperResult.subStatus).toBe('Recommend to reject')
   })
 
   test.each([
@@ -336,7 +336,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.claimSubStatus).toBeNull()
+    expect(claimFormHelperResult.subStatus).toBe(applicationStatus)
   })
 
   test.each([
@@ -391,6 +391,68 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.claimSubStatus).toBeNull()
+    expect(claimFormHelperResult.subStatus).toBe(applicationStatus)
+  })
+
+  test.each([
+    ['recommender', 'IN CHECK', 'IN CHECK'],
+    ['recommender', 'IN CHECK', 'Recommend to pay'],
+    ['recommender', 'IN CHECK', 'Recommend to reject'],
+    ['authoriser', 'IN CHECK', 'IN CHECK'],
+    ['authoriser', 'IN CHECK', 'Recommend to pay'],
+    ['authoriser', 'IN CHECK', 'Recommend to reject'],
+    ['authoriser', 'READY TO PAY', 'READY TO PAY'],
+    ['authoriser', 'REJECTED', 'REJECTED']
+  ])('For role %s - a valid sub status displayed', async (roles, applicationStatus, expectedSubStatus) => {
+    const request = {
+      query: {
+        approve: false,
+        reject: true
+      },
+      auth: {
+        isAuthenticated: true,
+        credentials: {
+          scope: roles,
+          account: {
+            homeAccountId: 'testId',
+            name: 'Mr Auth'
+          }
+        }
+      }
+    }
+    const applicationReference = 'testAppRef'
+    let stageAction
+    switch (expectedSubStatus.toLowerCase()) {
+      case 'recommend to pay':
+        stageAction = stageExecutionActions.recommendToPay
+        break
+      case 'recommend to reject':
+        stageAction = stageExecutionActions.recommendToReject
+        break
+      case 'ready to pay':
+        stageAction = stageExecutionActions.authorisePayment
+        break
+      case 'rejected':
+        stageAction = stageExecutionActions.authoriseRejection
+        break
+      default:
+        break
+    }
+
+    if (expectedSubStatus === 'IN CHECK') {
+      stageExecution.getStageExecutionByApplication.mockResolvedValue([])
+    } else {
+      stageExecution.getStageExecutionByApplication.mockResolvedValue([{
+        stageConfigurationId: stageConfigId.claimApproveRejectRecommender,
+        applicationReference: applicationReference,
+        executedBy: 'Mr Recommender',
+        action: {
+          action: stageAction
+        }
+      }])
+    }
+
+    const claimFormHelperResult = await claimFormHelper(request, applicationReference, applicationStatus)
+    expect(claimFormHelperResult.subStatus).toBe(expectedSubStatus)
   })
 })
