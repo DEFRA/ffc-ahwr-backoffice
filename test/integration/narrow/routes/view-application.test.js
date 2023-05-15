@@ -247,9 +247,13 @@ describe('View Application test', () => {
       ['processor', false],
       ['user', false]
     ])('returns 200 application agreed - %s role', async (authScope, isWithdrawLinkVisible) => {
+      const status = 'Agreed'
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+        subStatus: status
+      })
       const options = {
         method: 'GET',
         url,
@@ -259,7 +263,7 @@ describe('View Application test', () => {
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
-      expect($('h2.govuk-heading-l').text()).toContain('Agreed')
+      expect($('h2.govuk-heading-l').text()).toContain(status)
       expect($('title').text()).toContain('Administration: User Application')
       expect($('.govuk-summary-list__row').length).toEqual(4)
       expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name:')
@@ -284,16 +288,20 @@ describe('View Application test', () => {
       expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
       expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
       expect($('tbody tr:nth-child(5)').text()).toContain('Yes')
-      expect($('#application').text()).toContain('Agreed')
-      expect($('#claim').text()).toContain('Agreed')
+      expect($('#application').text()).toContain(status)
+      expect($('#claim').text()).toContain(status)
 
       expectWithdrawLink($, reference, isWithdrawLinkVisible)
 
       expectPhaseBanner.ok($)
     })
     test('returns 200 application applied', async () => {
+      const status = 'Not agreed'
       applications.getApplication.mockReturnValueOnce(viewApplicationData.notagreed)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+        subStatus: status
+      })
       const options = {
         method: 'GET',
         url,
@@ -303,7 +311,7 @@ describe('View Application test', () => {
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
-      expect($('h2.govuk-heading-l').text()).toContain('Not agreed')
+      expect($('h2.govuk-heading-l').text()).toContain(status)
       expect($('title').text()).toContain('Administration: User Application')
       expect($('.govuk-summary-list__row').length).toEqual(4)
       expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name:')
@@ -328,16 +336,20 @@ describe('View Application test', () => {
       expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
       expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
       expect($('tbody tr:nth-child(5)').text()).toContain('No')
-      expect($('#application').text()).toContain('Not agreed')
-      expect($('#claim').text()).toContain('Not agreed')
+      expect($('#application').text()).toContain(status)
+      expect($('#claim').text()).toContain(status)
 
       expectWithdrawLink($, reference, false)
 
       expectPhaseBanner.ok($)
     })
     test('returns 200 application data inputted', async () => {
+      const status = 'Data inputted'
       applications.getApplication.mockReturnValueOnce(viewApplicationData.dataInputted)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+        subStatus: status
+      })
       const options = {
         method: 'GET',
         url,
@@ -347,7 +359,7 @@ describe('View Application test', () => {
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
-      expect($('h2.govuk-heading-l').text()).toContain('Data inputted')
+      expect($('h2.govuk-heading-l').text()).toContain(status)
       expect($('title').text()).toContain('Administration: User Application')
       expect($('.govuk-summary-list__row').length).toEqual(4)
       expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name:')
@@ -362,16 +374,20 @@ describe('View Application test', () => {
       expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address:')
       expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
 
-      expect($('#application').text()).toContain('Data inputted')
-      expect($('#claim').text()).toContain('Data inputted')
+      expect($('#application').text()).toContain(status)
+      expect($('#claim').text()).toContain(status)
 
       expectWithdrawLink($, reference, false)
 
       expectPhaseBanner.ok($)
     })
     test('returns 200 application claim', async () => {
+      const status = 'Claimed'
       applications.getApplication.mockReturnValueOnce(viewApplicationData.claim)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+        subStatus: status
+      })
       const options = {
         method: 'GET',
         url,
@@ -381,7 +397,7 @@ describe('View Application test', () => {
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
-      expect($('h2.govuk-heading-l').text()).toContain('Claimed')
+      expect($('h2.govuk-heading-l').text()).toContain(status)
       expect($('title').text()).toContain('Administration: User Application')
       expect($('.govuk-summary-list__row').length).toEqual(4)
       expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name:')
@@ -396,8 +412,8 @@ describe('View Application test', () => {
       expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address:')
       expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
 
-      expect($('#application').text()).toContain('Claimed')
-      expect($('#claim').text()).toContain('Claimed')
+      expect($('#application').text()).toContain(status)
+      expect($('#claim').text()).toContain(status)
 
       expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('Date of review')
       expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('07/11/2022')
@@ -417,8 +433,12 @@ describe('View Application test', () => {
       expectPhaseBanner.ok($)
     })
     test('returns 200 application paid', async () => {
+      const status = 'Paid'
       applications.getApplication.mockReturnValueOnce(viewApplicationData.paid)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+        subStatus: status
+      })
       const options = {
         method: 'GET',
         url,
@@ -428,7 +448,7 @@ describe('View Application test', () => {
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
-      expect($('h2.govuk-heading-l').text()).toContain('Paid')
+      expect($('h2.govuk-heading-l').text()).toContain(status)
       expect($('title').text()).toContain('Administration: User Application')
       expect($('.govuk-summary-list__row').length).toEqual(4)
       expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name:')
@@ -443,8 +463,8 @@ describe('View Application test', () => {
       expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address:')
       expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
 
-      expect($('#application').text()).toContain('Paid')
-      expect($('#claim').text()).toContain('Paid')
+      expect($('#application').text()).toContain(status)
+      expect($('#claim').text()).toContain(status)
 
       expectWithdrawLink($, reference, false)
 
@@ -455,9 +475,13 @@ describe('View Application test', () => {
       ['processor'],
       ['user']
     ])('returns 200 application in check - %s role', async (authScope) => {
+      const status = 'In check'
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+        subStatus: status
+      })
       const options = {
         method: 'GET',
         url,
@@ -467,7 +491,7 @@ describe('View Application test', () => {
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
-      expect($('h2.govuk-heading-l').text()).toContain('In check')
+      expect($('h2.govuk-heading-l').text()).toContain(status)
       expect($('title').text()).toContain('Administration: User Application')
       expect($('.govuk-summary-list__row').length).toEqual(4)
       expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name:')
@@ -492,8 +516,8 @@ describe('View Application test', () => {
       expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
       expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
       expect($('tbody tr:nth-child(5)').text()).toContain('Yes')
-      expect($('#application').text()).toContain('In check')
-      expect($('#claim').text()).toContain('In check')
+      expect($('#application').text()).toContain(status)
+      expect($('#claim').text()).toContain(status)
 
       expectPhaseBanner.ok($)
     })
@@ -502,9 +526,13 @@ describe('View Application test', () => {
       ['processor'],
       ['user']
     ])('returns 200 application ready to pay - %s role', async (authScope) => {
+      const status = 'Ready to pay'
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+        subStatus: status
+      })
       const options = {
         method: 'GET',
         url,
@@ -514,7 +542,7 @@ describe('View Application test', () => {
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
-      expect($('h2.govuk-heading-l').text()).toContain('Ready to pay')
+      expect($('h2.govuk-heading-l').text()).toContain(status)
       expect($('title').text()).toContain('Administration: User Application')
       expect($('.govuk-summary-list__row').length).toEqual(4)
       expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name:')
@@ -539,8 +567,8 @@ describe('View Application test', () => {
       expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
       expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
       expect($('tbody tr:nth-child(5)').text()).toContain('Yes')
-      expect($('#application').text()).toContain('Ready to pay')
-      expect($('#claim').text()).toContain('Ready to pay')
+      expect($('#application').text()).toContain(status)
+      expect($('#claim').text()).toContain(status)
 
       expectPhaseBanner.ok($)
     })
@@ -609,6 +637,9 @@ describe('View Application test', () => {
     ])('correct application and claim status displayed for $expectedState', async ({ actualState, expectedState }) => {
       applications.getApplication.mockReturnValueOnce(actualState)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+        subStatus: expectedState
+      })
       const options = {
         method: 'GET',
         url,

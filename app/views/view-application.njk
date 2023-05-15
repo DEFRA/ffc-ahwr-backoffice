@@ -37,7 +37,7 @@
       {% if rejectClaimConfirmationForm %}
         {{ viewRejectClaimConfirmationForm(applicationId, page, crumb) }}
       {% endif %}
-      {{ viewApplicationTabs(model, vetVisit, claimed, payment, status) }}
+      {{ viewApplicationTabs(model, vetVisit, claimed, payment, subStatus) }}
       {% if withdrawLink %}
         <a class="govuk-link govuk-body" href="/view-application/{{ applicationId }}?page={{page}}&withdraw=true">Withdraw</a>
       {% endif %}

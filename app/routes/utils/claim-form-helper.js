@@ -37,12 +37,12 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
   const displayAuthoriseToPayConfirmationForm = isApplicationInCheck && canUserAuthorise && claimCanBeAuthorised && request.query.approve
   const displayAuthoriseToRejectConfirmationForm = isApplicationInCheck && canUserAuthorise && claimCanBeAuthorised && request.query.reject
 
-  let claimSubStatus = null
+  let subStatus = applicationStatus
   if (!hasClaimAlreadyBeenAuthorised) {
     if (hasClaimBeenRecommenedToPay) {
-      claimSubStatus = 'Recommend to pay'
+      subStatus = 'Recommend to pay'
     } else if (hasClaimBeenRecommendedToReject) {
-      claimSubStatus = 'Recommend to reject'
+      subStatus = 'Recommend to reject'
     }
   }
 
@@ -53,7 +53,7 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
     displayAuthorisationForm,
     displayAuthoriseToPayConfirmationForm,
     displayAuthoriseToRejectConfirmationForm,
-    claimSubStatus
+    subStatus
   }
 }
 
