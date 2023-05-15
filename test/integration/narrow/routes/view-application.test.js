@@ -218,6 +218,37 @@ describe('View Application test', () => {
 
       expectWithdrawLink($, reference, isWithdrawLinkVisible)
     })
+
+    test.each([
+      [true, false],
+      [false, true]
+    ])('Compliance checks feature flag enabled, authorisation panel displayed as expected when RBAC enabled/disabled', async (isrbacEnabled, isComplianceCheckPanelVisible) => {
+      auth = { strategy: 'session-auth', credentials: { scope: ['administrator'] } }
+      const isRbac = isrbacEnabled
+      jest.clearAllMocks()
+      jest.mock('../../../../app/config', () => ({
+        ...jest.requireActual('../../../../app/config'),
+        complianceChecks: {
+          enabled: true
+        },
+        rbac: {
+          enabled: isRbac
+        }
+      }))
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      const options = {
+        method: 'GET',
+        url,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      expectComplianceCheckPanel($, isComplianceCheckPanelVisible)
+    })
+
     test.each([
       ['administrator', true],
       ['processor', false],
@@ -279,7 +310,7 @@ describe('View Application test', () => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+      claimFormHelper.mockReturnValueOnce({
         subStatus: status
       })
       const options = {
@@ -327,7 +358,7 @@ describe('View Application test', () => {
       const status = 'Not agreed'
       applications.getApplication.mockReturnValueOnce(viewApplicationData.notagreed)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+      claimFormHelper.mockReturnValueOnce({
         subStatus: status
       })
       const options = {
@@ -375,7 +406,7 @@ describe('View Application test', () => {
       const status = 'Data inputted'
       applications.getApplication.mockReturnValueOnce(viewApplicationData.dataInputted)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+      claimFormHelper.mockReturnValueOnce({
         subStatus: status
       })
       const options = {
@@ -413,7 +444,7 @@ describe('View Application test', () => {
       const status = 'Claimed'
       applications.getApplication.mockReturnValueOnce(viewApplicationData.claim)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+      claimFormHelper.mockReturnValueOnce({
         subStatus: status
       })
       const options = {
@@ -464,7 +495,7 @@ describe('View Application test', () => {
       const status = 'Paid'
       applications.getApplication.mockReturnValueOnce(viewApplicationData.paid)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+      claimFormHelper.mockReturnValueOnce({
         subStatus: status
       })
       const options = {
@@ -507,7 +538,7 @@ describe('View Application test', () => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+      claimFormHelper.mockReturnValueOnce({
         subStatus: status
       })
       const options = {
@@ -558,7 +589,7 @@ describe('View Application test', () => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+      claimFormHelper.mockReturnValueOnce({
         subStatus: status
       })
       const options = {
