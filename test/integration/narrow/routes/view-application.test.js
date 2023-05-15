@@ -20,18 +20,17 @@ function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
 }
 
 function expectRecommendButtons ($, areRecommendButtonsVisible) {
-  console.log('areRecommendButtonsVisible111', areRecommendButtonsVisible)
   if (areRecommendButtonsVisible) {
     const recommendToPayButton = $('.govuk-button').eq(0)
     const recommendToRejectButton = $('.govuk-button').eq(1)
 
     expect(recommendToPayButton.hasClass('govuk-button'))
     expect(recommendToPayButton.text()).toMatch('Recommend to pay')
-    expect(recommendToPayButton.attr('onclick')).toMatch("location.href='/view-application/AHWR-555A-FD4C?page=1&recommendToPay=true';")
+    expect(recommendToPayButton.attr('href')).toMatch('/view-application/AHWR-555A-FD4C?page=1&recommendToPay=true')
 
     expect(recommendToRejectButton.hasClass('govuk-button'))
     expect(recommendToRejectButton.text()).toMatch('Recommend to reject')
-    expect(recommendToRejectButton.attr('onclick')).toMatch("location.href=''")
+    expect(recommendToRejectButton.attr('href')).toMatch('')
   } else {
     expect($('.govuk-button').not.hasClass)
   }
