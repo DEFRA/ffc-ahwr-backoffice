@@ -5,6 +5,17 @@ const stageExecution = require('../../../../../app/api/stage-execution')
 jest.mock('../../../../../app/api/stage-execution')
 
 describe('Claim form helper tests', () => {
+  beforeAll(() => {
+    jest.mock('../../../../../app/config', () => ({
+      ...jest.requireActual('../../../../../app/config'),
+      agreementWithdrawl: {
+        enabled: true
+      },
+      rbac: {
+        enabled: true
+      }
+    }))
+  })
   afterEach(() => {
     jest.clearAllMocks()
   })
@@ -61,7 +72,8 @@ describe('Claim form helper tests', () => {
     const request = {
       query: {
         approve: true,
-        reject: false
+        reject: false,
+        recommendToPay: true
       },
       auth: {
         isAuthenticated: true,
