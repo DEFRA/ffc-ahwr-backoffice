@@ -1,9 +1,4 @@
 const Joi = require('joi')
-const { urlPrefix } = require('../config')
-const { processApplicationClaim } = require('../api/applications')
-const getUser = require('../auth/get-user')
-const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
-const crumbCache = require('./utils/crumb-cache')
 
 module.exports = {
   method: 'POST',
