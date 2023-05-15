@@ -19,6 +19,7 @@ module.exports = {
       }),
       query: Joi.object({
         page: Joi.number().greater(0).default(1),
+        error: Joi.string().allow(null),
         withdraw: Joi.bool().default(false),
         approve: Joi.bool().default(false),
         reject: Joi.bool().default(false),
@@ -64,7 +65,8 @@ module.exports = {
         page: request.query.page,
         recommendForm: displayRecommendationForm,
         recommendToPay: displayRecommendToPayConfirmationForm,
-        authorisePaymentForm: displayAuthorisationForm
+        authorisePaymentForm: displayAuthorisationForm,
+        error: request.query.error
       })
     }
   }
