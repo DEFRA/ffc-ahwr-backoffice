@@ -1,0 +1,28 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% macro viewAuthorisePaymentForm(applicationId, page, crumb) %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      <div id="pnl-authorise-payment" class="govuk-panel govuk-panel--confirmation govuk-panel--align-horizontal govuk-!-text-align-center">
+        <div class="govuk-panel__body">
+          <div class="govuk-grid-row">
+            {{
+              govukButton({
+                text: "Authorise payment",
+                 attributes: {
+                   id: "btn-authorise-payment"
+                },
+                href: "",
+                preventDoubleClick: true
+              })
+            }}
+          </div>
+          <p class="govuk-body">If you do not agree with this action, contact the person who recommended it and discuss it with them.</p>
+        </div>
+        <input type="hidden" name="reference" value="{{ applicationId }}"/>
+        <input type="hidden" name="page" value="{{ page }}"/>
+        <input type="hidden" name="crumb" value="{{crumb}}"/>
+      </div>
+    </div>
+  </div>
+{% endmacro %}

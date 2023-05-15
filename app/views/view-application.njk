@@ -6,6 +6,7 @@
 {% from "./macros/reject-claim-confirmation-form.njk" import viewRejectClaimConfirmationForm %}
 {% from "./macros/recommend-form.njk" import viewRecommendForm %}
 {% from "./macros/recommend-to-pay-confirmation-form.njk" import viewRecommendToPayConfirmationForm %}
+{% from "./macros/view-authorise-payment-form.njk" import viewAuthorisePaymentForm %}
 
 {% block pageTitle %}
   {{ siteTitle }}: User Application
@@ -50,6 +51,9 @@
       {% endif %}
       {% if recommendForm %}
         {{ viewRecommendForm(applicationId, page, crumb) }}
+      {% endif %}
+      {% if authorisePaymentForm %}
+        {{ viewAuthorisePaymentForm(applicationId, page, crumb) }}
       {% endif %}
     </div>
   </div>
