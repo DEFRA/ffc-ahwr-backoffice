@@ -167,6 +167,39 @@ describe('View Application test', () => {
     test.each([
       ['administrator', false],
       ['processor', false],
+      ['user', false],
+      ['recommender', false],
+      ['authoriser', true]
+    ])('RBAC feature flag enabled, authorisation form displayed as expected for role %s', async (authScope, authorisePaymentButtonVisible) => {
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+        displayAuthorisationForm: authorisePaymentButtonVisible
+      })
+      const options = {
+        method: 'GET',
+        url,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      if (authorisePaymentButtonVisible) {
+        const authorisePaymentButton = $('#btn-authorise-payment')
+        expect(authorisePaymentButton.length).toEqual(1)
+        expect(authorisePaymentButton.hasClass('govuk-button'))
+        expect(authorisePaymentButton.text().trim()).toEqual('Authorise payment')
+        expect($('#pnl-authorise-payment input[name=reference]').attr('value')).toEqual(reference)
+      } else {
+        expect($('#btn-authorise-payment').length).toEqual(0)
+      }
+    })
+
+    test.each([
+      ['administrator', false],
+      ['processor', false],
       ['user', false]
     ])('Withdrawl link feature flag disabled, link not displayed for role %s', async (authScope, isWithdrawLinkVisible) => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
