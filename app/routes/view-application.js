@@ -24,8 +24,7 @@ module.exports = {
         withdraw: Joi.bool().default(false),
         approve: Joi.bool().default(false),
         reject: Joi.bool().default(false),
-        recommendToPay: Joi.bool().default(false),
-        authorisePayment: Joi.bool().default(false)
+        recommendToPay: Joi.bool().default(false)
       })
     },
     handler: async (request, h) => {
