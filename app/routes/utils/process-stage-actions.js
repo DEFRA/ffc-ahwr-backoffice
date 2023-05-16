@@ -14,18 +14,19 @@ const processStageActions = async (request, role, stage, action, isClaimToBePaid
   const results = []
   let stageExecutionRow
   const stepId = step.id
+  const payload = {
+    applicationReference: request.payload.reference,
+    stageConfigurationId: stepId,
+    executedAt: new Date(),
+    executedBy: userName,
+    action: {
+      action
+    }
+  }
+
   for (const stageAction of step.action.actions) {
     switch (stageAction) {
       case applicationStageActions.addStageExecutionEntry:
-        const payload = {
-          applicationReference: request.payload.reference,
-          stageConfigurationId: stepId,
-          executedAt: new Date(),
-          executedBy: userName,
-          action: {
-            action
-          }
-        }
         stageExecutionRow = await addStageExecution(payload)
         results.push({ action: 'Added stage execution', stageExecutionRow })
         break
