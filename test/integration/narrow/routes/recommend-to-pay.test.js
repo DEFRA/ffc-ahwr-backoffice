@@ -1,5 +1,3 @@
-const cheerio = require('cheerio')
-const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const { administrator } = require('../../../../app/auth/permissions')
 const getCrumbs = require('../../../utils/get-crumbs')
 
