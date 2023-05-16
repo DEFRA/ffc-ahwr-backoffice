@@ -52,6 +52,24 @@ describe('Recommend To Pay test', () => {
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&error=true`)
     })
 
+    test('returns 302 when validation fails - no page given', async () => {
+      const options = {
+        method: 'POST',
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
+          confirm: 'checkedAgainstChecklist',
+          crumb
+        }
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(302)
+      expect(logSpy).toHaveBeenCalledWith('Backoffice: recommend-to-pay: Error when validating payload: ', expect.any(Error))
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&error=true`)
+    })
+
     test('Redirects correctly on successful validation', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {
@@ -62,6 +80,24 @@ describe('Recommend To Pay test', () => {
         payload: {
           reference,
           page: 1,
+          confirm: ['checkedAgainstChecklist', 'sentChecklist'],
+          crumb
+        }
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(302)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+    })
+
+    test('Redirects correctly on successful validation - no page given', async () => {
+      auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+      const options = {
+        method: 'POST',
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
           confirm: ['checkedAgainstChecklist', 'sentChecklist'],
           crumb
         }
