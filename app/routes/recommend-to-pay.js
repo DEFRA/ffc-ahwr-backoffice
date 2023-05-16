@@ -1,4 +1,5 @@
 const Joi = require('joi')
+const Boom = require('@hapi/boom')
 const crumbCache = require('./utils/crumb-cache')
 const processStageActions = require('./utils/process-stage-actions')
 
@@ -20,6 +21,10 @@ module.exports = {
     handler: async (request, h) => {
       const response = await processStageActions(request, 'Recommender', 'Claim Approve/Reject', 'Recommend to pay', false)
       await crumbCache.generateNewCrumb(request, h)
+      if (response.length === 0) {
+        console.log('Backoffice: recommend-to-pay: Error when processing stage actions')
+        throw Boom.internal('Error when processing stage actions')
+      }
       console.log('Backoffice: recommend-to-pay: Stage execution entry added: ', response)
       return h.redirect(`/view-application/${request.payload.reference}?page=${request.payload.page}`)
     }

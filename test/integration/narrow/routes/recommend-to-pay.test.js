@@ -4,12 +4,11 @@ const getCrumbs = require('../../../utils/get-crumbs')
 const applications = require('../../../../app/api/applications')
 jest.mock('../../../../app/api/applications')
 
-jest.mock('../../../../app/auth/get-user')
-const getUser = require('../../../../app/auth/get-user')
-getUser.mockResolvedValue({ username: 'test' })
+jest.mock('../../../../app/routes/utils/process-stage-actions')
+const processStageActions = require('../../../../app/routes/utils/process-stage-actions')
 
-jest.mock('../../../../app/api/stage-execution')
-const { addStageExecution } = require('../../../../app/api/stage-execution')
+jest.mock('../../../../app/routes/utils/crumb-cache')
+const crumbCache = require('../../../../app/routes/utils/crumb-cache')
 
 jest.mock('@hapi/boom')
 const Boom = require('@hapi/boom')
@@ -82,11 +81,11 @@ describe('Recommend To Pay test', () => {
 
     test('Redirects correctly on successful validation', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
-      addStageExecution.mockResolvedValueOnce(
-        {
-          applicationReference: reference
-        }
-      )
+      const response = [
+        { action: 'addStageExecution', data: { applicationReference: reference } },
+        { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
+      ]
+      processStageActions.mockResolvedValueOnce(response)
       const options = {
         method: 'POST',
         url,
@@ -101,17 +100,19 @@ describe('Recommend To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(logSpy).toHaveBeenCalledWith('Backoffice: recommend-to-pay: Stage execution entry added: ', { applicationReference: reference })
+      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), 'Recommender', 'Claim Approve/Reject', 'Recommend to pay', false)
+      expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
+      expect(logSpy).toHaveBeenCalledWith('Backoffice: recommend-to-pay: Stage execution entry added: ', response)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
 
     test('Redirects correctly on successful validation - no page given', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
-      addStageExecution.mockResolvedValueOnce(
-        {
-          applicationReference: reference
-        }
-      )
+      const response = [
+        { action: 'addStageExecution', data: { applicationReference: reference } },
+        { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
+      ]
+      processStageActions.mockResolvedValueOnce(response)
       const options = {
         method: 'POST',
         url,
@@ -125,13 +126,15 @@ describe('Recommend To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(logSpy).toHaveBeenCalledWith('Backoffice: recommend-to-pay: Stage execution entry added: ', { applicationReference: reference })
+      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), 'Recommender', 'Claim Approve/Reject', 'Recommend to pay', false)
+      expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
+      expect(logSpy).toHaveBeenCalledWith('Backoffice: recommend-to-pay: Stage execution entry added: ', response)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
 
-    test('Returns 500 on api throwing error', async () => {
+    test('Returns 500 on empty results', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
-      addStageExecution.mockResolvedValueOnce([])
+      processStageActions.mockResolvedValueOnce([])
       const options = {
         method: 'POST',
         url,
@@ -146,8 +149,8 @@ describe('Recommend To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(500)
-      expect(logSpy).toHaveBeenCalledWith('Backoffice: recommend-to-pay: Error when adding stage execution entry')
-      expect(Boom.internal).toHaveBeenCalledWith('Error when adding stage execution entry')
+      expect(logSpy).toHaveBeenCalledWith('Backoffice: recommend-to-pay: Error when processing stage actions')
+      expect(Boom.internal).toHaveBeenCalledWith('Error when processing stage actions')
     })
   })
 })
