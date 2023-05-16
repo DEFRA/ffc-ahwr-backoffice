@@ -193,6 +193,34 @@ describe('View Application test', () => {
     })
 
     test.each([
+      false,
+      true
+    ])('RBAC feature flag enabled, authorisation confirm form displayed as expected for role %s', async (displayAuthoriseToPayConfirmationForm) => {
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockResolvedValueOnce({
+        displayAuthoriseToPayConfirmationForm
+      })
+      const options = {
+        method: 'GET',
+        url,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      if (displayAuthoriseToPayConfirmationForm) {
+        const authorisePaymentForm = $('#form-authorise-payment')
+        expect(authorisePaymentForm.length).toEqual(1)
+        expect(authorisePaymentForm.find('.govuk-button').text().trim()).toEqual('Confirm and continue')
+        expect($('#form-authorise-payment input[name=reference]').attr('value')).toEqual(reference)
+      } else {
+        expect($('#form-authorise-payment').length).toEqual(0)
+      }
+    })
+
+    test.each([
       ['administrator', false],
       ['processor', false],
       ['user', false]
