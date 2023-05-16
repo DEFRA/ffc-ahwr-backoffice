@@ -709,5 +709,107 @@ describe('View Application test', () => {
       expect($('#application').text()).toContain(expectedState)
       expect($('#claim').text()).toContain(expectedState)
     })
+
+    test.each([
+      ['Claim confirmation form displayed', 'administrator', false, '', true],
+      ['Claim confirmation form not displayed - rbac enabled', 'administrator', true, '', false],
+      ['Claim confirmation form not displayed - invalid scope', 'user', false, '', false],
+      ['Claim confirmation form not displayed - approve query string true', 'administrator', false, '?approve=true', false],
+      ['Claim confirmation form not displayed - reject query string true', 'administrator', false, '?reject=true', false]
+    ])('%s', async ({ testName, authScope, rbacEnabled, queryParam, exepectedResult }) => {
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      const isRbacEnabled = rbacEnabled
+      jest.clearAllMocks()
+      jest.mock('../../../../app/config', () => ({
+        ...jest.requireActual('../../../../app/config'),
+        complianceChecks: {
+          enabled: true
+        },
+        rbac: {
+          enabled: isRbacEnabled
+        }
+      }))
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      const options = {
+        method: 'GET',
+        url: `/view-application/${reference}/${queryParam}`,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      const panelClass = '.govuk-panel__title-s .govuk-!-font-size-36 .govuk-!-margin-top-1'
+      exepectedResult ? expect($(panelClass).hasClass) : expect($(panelClass).not.hasClass)
+    })
+
+    test.each([
+      ['Approve claim confirmation form displayed', 'administrator', false, '?approve=true', true],
+      ['Approve claim confirmation form not displayed - rbac enabled', 'administrator', true, '?approve=true', false],
+      ['Approve claim confirmation form not displayed - invalid scope', 'user', false, '?approve=true', false],
+      ['Approve claim confirmation form not displayed - approve query string false', 'administrator', false, '?approve=false', false],
+      ['Approve claim confirmation form not displayed - approve query string missing', 'administrator', false, '', false]
+    ])('%s', async ({ testName, authScope, rbacEnabled, queryParam, exepectedResult }) => {
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      const isRbacEnabled = rbacEnabled
+      jest.clearAllMocks()
+      jest.mock('../../../../app/config', () => ({
+        ...jest.requireActual('../../../../app/config'),
+        complianceChecks: {
+          enabled: true
+        },
+        rbac: {
+          enabled: isRbacEnabled
+        }
+      }))
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      const options = {
+        method: 'GET',
+        url: `/view-application/${reference}/${queryParam}`,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      const approveClaimButtonClass = '.govuk-button .govuk-button .govuk-!-margin-bottom-3'
+      exepectedResult ? expect($(approveClaimButtonClass).hasClass) : expect($(approveClaimButtonClass).not.hasClass)
+    })
+
+    test.each([
+      ['Reject claim confirmation form displayed', 'administrator', false, '?reject=true', true],
+      ['Reject claim confirmation form not displayed - rbac enabled', 'administrator', true, '?reject=true', false],
+      ['Reject claim confirmation form not displayed - invalid scope', 'user', false, '?reject=true', false],
+      ['Reject claim confirmation form not displayed - reject query string false', 'administrator', false, '?reject=false', false],
+      ['Reject claim confirmation form not displayed - reject query string missing', 'administrator', false, '', false]
+    ])('%s', async ({ testName, authScope, rbacEnabled, queryParam, exepectedResult }) => {
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      const isRbacEnabled = rbacEnabled
+      jest.clearAllMocks()
+      jest.mock('../../../../app/config', () => ({
+        ...jest.requireActual('../../../../app/config'),
+        complianceChecks: {
+          enabled: true
+        },
+        rbac: {
+          enabled: isRbacEnabled
+        }
+      }))
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      const options = {
+        method: 'GET',
+        url: `/view-application/${reference}/${queryParam}`,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      const rejectClaimButtonClass = '.govuk-button. govuk-button--secondary .govuk-!-margin-bottom-3'
+      exepectedResult ? expect($(rejectClaimButtonClass).hasClass) : expect($(rejectClaimButtonClass).not.hasClass)
+    })
   })
 })
