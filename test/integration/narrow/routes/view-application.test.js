@@ -213,7 +213,7 @@ describe('View Application test', () => {
       if (displayAuthoriseToPayConfirmationForm) {
         const authorisePaymentForm = $('#form-authorise-payment')
         expect(authorisePaymentForm.length).toEqual(1)
-        expect(authorisePaymentForm.find('.govuk-button').text()).toEqual('Confirm and continue')
+        expect(authorisePaymentForm.find('.govuk-button').text().trim()).toEqual('Confirm and continue')
         expect($('#form-authorise-payment input[name=reference]').attr('value')).toEqual(reference)
       } else {
         expect($('#form-authorise-payment').length).toEqual(0)
