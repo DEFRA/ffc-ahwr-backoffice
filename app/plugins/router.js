@@ -14,7 +14,8 @@ const routes = [].concat(
   require('../routes/approve-application-claim'),
   require('../routes/reject-application-claim'),
   require('../routes/withdraw-application'),
-  require('../routes/view-application')
+  require('../routes/view-application'),
+  require('../routes/recommend-to-pay')
 )
 
 module.exports = {
