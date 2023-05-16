@@ -16,7 +16,7 @@ module.exports = {
       }
     },
     handler: async (request, h) => {
-      return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
+      return h.redirect(`/view-application/${request.payload.reference}?page=${request.payload.page}`)
     }
   }
 }
