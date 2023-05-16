@@ -4,7 +4,7 @@
 {% macro viewAuthorisePaymentConfirmForm(applicationId, page, crumb) %}
   <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left">
     <p class="govuk-body govuk-!-text-align-right"><a href="/view-application/{{ applicationId }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p>
-    <form method="POST" autocomplete="off" novalidate="novalidate" action="/authorise-payment" id="form-authorise-payment">
+    <form method="POST" autocomplete="off" novalidate="novalidate" action="/approve-application-claim" id="form-authorise-payment">
       {{ govukCheckboxes({
         name: "confirm",
         fieldset: {
@@ -16,7 +16,7 @@
         },
         items: [
           {
-            value: "authorisedPayment",
+            value: "approveClaim",
             text: "I have reviewed the completed verfication check and agree the claim has passed. I authorise the claim for payment."
           },
           {
