@@ -1,0 +1,36 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+{% macro viewAuthorisePaymentConfirmForm(applicationId, page, crumb) %}
+  <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left">
+    <p class="govuk-body govuk-!-text-align-right"><a href="/view-application/{{ applicationId }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p>
+    <form method="POST" autocomplete="off" novalidate="novalidate" action="/approve-application-claim" id="form-authorise-payment">
+      {{ govukCheckboxes({
+        name: "confirm",
+        fieldset: {
+          legend: {
+            text: "Authorise payment",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        items: [
+          {
+            value: "approveClaim",
+            text: "I have reviewed the completed verfication check and agree the claim has passed. I authorise the claim for payment."
+          },
+          {
+            value: "sentChecklist",
+            text: "I have updated the verfication checklist and sent it back to the recommender to attach to the customer's record in the Customer Relationship Management system."
+          }
+        ]
+      }) }}
+      {{ govukButton({
+        text: "Confirm and continue"
+      }) }}
+      <input type="hidden" name="reference" value="{{ applicationId }}" />
+      <input type="hidden" name="page" value="{{ page }}" />
+      <input type="hidden" name="crumb" value="{{crumb}}"/>
+    </form>
+  </div>
+{% endmacro %}

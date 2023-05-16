@@ -7,6 +7,7 @@
 {% from "./macros/recommend-form.njk" import viewRecommendForm %}
 {% from "./macros/recommend-to-pay-confirmation-form.njk" import viewRecommendToPayConfirmationForm %}
 {% from "./macros/view-authorise-payment-form.njk" import viewAuthorisePaymentForm %}
+{% from "./macros/view-authorise-payment-confirm-form.njk" import viewAuthorisePaymentConfirmForm %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% block pageTitle %}
@@ -53,6 +54,9 @@
       {% endif %}
       {% if recommendToPay %}
         {{ viewRecommendToPayConfirmationForm(applicationId, page, crumb) }}
+      {% endif %}
+      {% if authorisePaymentConfirmForm %}
+        {{ viewAuthorisePaymentConfirmForm(applicationId, page, crumb) }}
       {% endif %}
       {{ viewApplicationTabs(model, vetVisit, claimed, payment, subStatus) }}
       {% if withdrawLink %}

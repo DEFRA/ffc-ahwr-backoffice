@@ -47,7 +47,13 @@ module.exports = {
       const approveClaimConfirmationForm = !rbacEnabled && isApplicationInCheckAndUserIsAdmin && request.query.approve
       const rejectClaimConfirmationForm = !rbacEnabled && isApplicationInCheckAndUserIsAdmin && request.query.reject
 
-      const { displayRecommendationForm, displayRecommendToPayConfirmationForm, displayAuthorisationForm, subStatus } = await claimHelper(request, request.params.reference, application.status.status)
+      const {
+        displayRecommendationForm,
+        displayRecommendToPayConfirmationForm,
+        displayAuthorisationForm,
+        displayAuthoriseToPayConfirmationForm,
+        subStatus
+      } = await claimHelper(request, request.params.reference, application.status.status)
 
       return h.view('view-application', {
         applicationId: application.reference,
@@ -67,8 +73,9 @@ module.exports = {
         recommendForm: displayRecommendationForm,
         recommendToPay: displayRecommendToPayConfirmationForm,
         authorisePaymentForm: displayAuthorisationForm,
-        error: request.query.error,
-        subStatus
+        authorisePaymentConfirmForm: displayAuthoriseToPayConfirmationForm,
+        subStatus,
+        error: request.query.error
       })
     }
   }
