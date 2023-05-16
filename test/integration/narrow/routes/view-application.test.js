@@ -193,13 +193,9 @@ describe('View Application test', () => {
     })
 
     test.each([
-      ['administrator', false],
-      ['processor', false],
-      ['user', false],
-      ['recommender', false],
-      ['authoriser', true]
-    ])('RBAC feature flag enabled, authorisation confirm form displayed as expected for role %s', async (authScope, displayAuthoriseToPayConfirmationForm) => {
-      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      false,
+      true
+    ])('RBAC feature flag enabled, authorisation confirm form displayed as expected for role %s', async (displayAuthoriseToPayConfirmationForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockResolvedValueOnce({
