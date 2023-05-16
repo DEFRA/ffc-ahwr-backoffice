@@ -1,4 +1,5 @@
 const Joi = require('joi')
+const Boom = require('@hapi/boom')
 const { addStageExecution } = require('../api/stage-execution')
 const getUser = require('../auth/get-user')
 
@@ -30,7 +31,7 @@ module.exports = {
       })
       if (response.length === 0) {
         console.log('Backoffice: recommend-to-pay: Error when adding stage execution entry')
-        return h.response('Error when adding stage execution entry').code(500)
+        throw Boom.internal('Error when adding stage execution entry')
       }
       console.log('Backoffice: recommend-to-pay: Stage execution entry added: ', response)
       return h.redirect(`/view-application/${request.payload.reference}?page=${request.payload.page}`)
