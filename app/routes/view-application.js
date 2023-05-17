@@ -20,7 +20,7 @@ module.exports = {
       }),
       query: Joi.object({
         page: Joi.number().greater(0).default(1),
-        error: Joi.string().allow(null),
+        errors: Joi.string().allow(null),
         withdraw: Joi.bool().default(false),
         approve: Joi.bool().default(false),
         reject: Joi.bool().default(false),
@@ -57,6 +57,8 @@ module.exports = {
         subStatus
       } = await claimHelper(request, request.params.reference, application.status.status)
 
+      const errors = request.query.errors ? JSON.parse(request.query.errors) : []
+
       return h.view('view-application', {
         applicationId: application.reference,
         status,
@@ -76,9 +78,14 @@ module.exports = {
         recommendToPay: displayRecommendToPayConfirmationForm,
         recommendToReject: displayRecommendToRejectConfirmationForm,
         authorisePaymentForm: displayAuthorisationForm,
-        authorisePaymentConfirmForm: displayAuthoriseToPayConfirmationForm,
+        authorisePaymentConfirmForm: {
+          display: displayAuthoriseToPayConfirmationForm,
+          errorMessage: errors.map(e => e.href).includes('#authorise-payment-panel')
+            ? { text: 'Select both checkboxes' }
+            : undefined
+        },
         subStatus,
-        error: request.query.error
+        errors
       })
     }
   }

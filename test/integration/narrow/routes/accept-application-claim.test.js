@@ -56,7 +56,7 @@ describe('Reject Application test', () => {
         url,
         payload: {
           reference,
-          approveClaim: 'yes',
+          confirm: ['approveClaim', 'sentChecklist'],
           page: 1,
           crumb
         },
@@ -81,7 +81,7 @@ describe('Reject Application test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
-          approveClaim: 'yes',
+          confirm: ['approveClaim', 'sentChecklist'],
           page: 1,
           crumb
         }
@@ -101,7 +101,7 @@ describe('Reject Application test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
-          approveClaim: 'no',
+          confirm: ['sentChecklist'],
           page: 1,
           crumb
         }
@@ -110,6 +110,27 @@ describe('Reject Application test', () => {
       expect(applications.processApplicationClaim).not.toHaveBeenCalled()
       expect(res.statusCode).toBe(302)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+    })
+
+    test('retuns 400 Bad Request', async () => {
+      const options = {
+        method: 'POST',
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
+          page: 1,
+          crumb
+        }
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(applications.processApplicationClaim).not.toHaveBeenCalled()
+      expect(res.statusCode).toBe(302)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&errors=${encodeURIComponent(JSON.stringify([{
+        text: 'You must select both checkboxes',
+        href: '#authorise-payment-panel'
+      }]))}`)
     })
   })
 })

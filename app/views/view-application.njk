@@ -24,15 +24,10 @@
       }) }}
 {% endblock %}
 {% block content %}
-  {% if error %}
+  {% if errors.length %}
     {{ govukErrorSummary({
       titleText: "There is a problem",
-      errorList: [
-        {
-          text: "You must select both checkboxes",
-          href: "#recommendToPayForm"
-        }
-      ]
+      errorList: errors
     }) }}
   {% endif %}
   <div class="govuk-grid-row">
@@ -59,8 +54,8 @@
       {% if recommendToReject %}
         {{ viewRecommendToRejectConfirmationForm(applicationId, page, crumb) }}
       {% endif %}
-      {% if authorisePaymentConfirmForm %}
-        {{ viewAuthorisePaymentConfirmForm(applicationId, page, crumb) }}
+      {% if authorisePaymentConfirmForm.display %}
+        {{ viewAuthorisePaymentConfirmForm(applicationId, page, crumb, authorisePaymentConfirmForm.errorMessage) }}
       {% endif %}
       {{ viewApplicationTabs(model, vetVisit, claimed, payment, subStatus) }}
       {% if withdrawLink %}
