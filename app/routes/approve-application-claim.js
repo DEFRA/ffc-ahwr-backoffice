@@ -29,7 +29,7 @@ module.exports = {
       }
     },
     handler: async (request, h) => {
-      if (request.payload.approveClaim === 'yes') {
+      if (JSON.stringify(request.payload.confirm) === JSON.stringify(['approveClaim', 'sentChecklist'])) {
         const userName = getUser(request).username
         await processApplicationClaim(request.payload.reference, userName, true)
         await crumbCache.generateNewCrumb(request, h)

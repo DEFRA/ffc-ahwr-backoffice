@@ -56,7 +56,7 @@ describe('Reject Application test', () => {
         url,
         payload: {
           reference,
-          approveClaim: 'yes',
+          confirm: ['approveClaim', 'sentChecklist'],
           page: 1,
           crumb
         },
@@ -81,7 +81,7 @@ describe('Reject Application test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
-          approveClaim: 'yes',
+          confirm: ['approveClaim', 'sentChecklist'],
           page: 1,
           crumb
         }
@@ -101,7 +101,7 @@ describe('Reject Application test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
-          approveClaim: 'no',
+          confirm: ['sentChecklist'],
           page: 1,
           crumb
         }
