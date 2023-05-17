@@ -24,7 +24,8 @@ module.exports = {
         withdraw: Joi.bool().default(false),
         approve: Joi.bool().default(false),
         reject: Joi.bool().default(false),
-        recommendToPay: Joi.bool().default(false)
+        recommendToPay: Joi.bool().default(false),
+        recommendToReject: Joi.bool().default(false)
       })
     },
     handler: async (request, h) => {
@@ -50,6 +51,7 @@ module.exports = {
       const {
         displayRecommendationForm,
         displayRecommendToPayConfirmationForm,
+        displayRecommendToRejectConfirmationForm,
         displayAuthorisationForm,
         displayAuthoriseToPayConfirmationForm,
         subStatus
@@ -72,6 +74,7 @@ module.exports = {
         page: request.query.page,
         recommendForm: displayRecommendationForm,
         recommendToPay: displayRecommendToPayConfirmationForm,
+        recommendToReject: displayRecommendToRejectConfirmationForm,
         authorisePaymentForm: displayAuthorisationForm,
         authorisePaymentConfirmForm: displayAuthoriseToPayConfirmationForm,
         subStatus,

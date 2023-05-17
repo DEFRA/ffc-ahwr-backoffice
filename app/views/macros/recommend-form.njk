@@ -8,7 +8,7 @@
             <a class="govuk-button" href="/view-application/{{ applicationId }}?page={{page}}&recommendToPay=true" role="button" id="btn-recommend-to-pay">Recommend to pay</a>
           </div>
           <div class="govuk-grid-row">
-            <a class="govuk-button" role="button" href="" id="btn-recommend-to-reject">Recommend to reject</a>
+            <a class="govuk-button" role="button" href="/view-application/{{ applicationId }}?page={{page}}&recommendToReject=true" id="btn-recommend-to-reject">Recommend to reject</a>
           </div>
         </div>
         <input type="hidden" name="reference" value="{{ applicationId }}"/>

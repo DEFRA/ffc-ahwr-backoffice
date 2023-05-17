@@ -112,7 +112,8 @@ describe('Claim form helper tests', () => {
     const request = {
       query: {
         approve: false,
-        reject: true
+        reject: true,
+        recommendToReject: true
       },
       auth: {
         isAuthenticated: true,
