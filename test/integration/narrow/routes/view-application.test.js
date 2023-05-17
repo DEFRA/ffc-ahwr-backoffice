@@ -201,9 +201,13 @@ describe('View Application test', () => {
       when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockResolvedValueOnce({
         displayAuthoriseToPayConfirmationForm
       })
+      const ERROR_MESSAGE_TEXT = 'error_message_text'
       const options = {
         method: 'GET',
-        url,
+        url: `${url}?errors=${encodeURIComponent(JSON.stringify([{
+          text: ERROR_MESSAGE_TEXT,
+          href: '#authorise-payment-panel'
+        }]))}`,
         auth
       }
 
@@ -214,7 +218,9 @@ describe('View Application test', () => {
         const authorisePaymentForm = $('#form-authorise-payment')
         expect(authorisePaymentForm.length).toEqual(1)
         expect(authorisePaymentForm.find('.govuk-button').text().trim()).toEqual('Confirm and continue')
-        expect($('#form-authorise-payment input[name=reference]').attr('value')).toEqual(reference)
+        expect(authorisePaymentForm.find('input[name=reference]').attr('value')).toEqual(reference)
+        expect(authorisePaymentForm.find('#confirm-error').text().trim()).toEqual('Error: Select both checkboxes')
+        expect($('.govuk-error-summary .govuk-list').text().trim()).toEqual(ERROR_MESSAGE_TEXT)
       } else {
         expect($('#form-authorise-payment').length).toEqual(0)
       }
