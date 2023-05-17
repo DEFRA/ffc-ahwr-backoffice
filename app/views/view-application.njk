@@ -6,6 +6,7 @@
 {% from "./macros/reject-claim-confirmation-form.njk" import viewRejectClaimConfirmationForm %}
 {% from "./macros/recommend-form.njk" import viewRecommendForm %}
 {% from "./macros/recommend-to-pay-confirmation-form.njk" import viewRecommendToPayConfirmationForm %}
+{% from "./macros/recommend-to-reject-confirmation-form.njk" import viewRecommendToRejectConfirmationForm %}
 {% from "./macros/view-authorise-payment-form.njk" import viewAuthorisePaymentForm %}
 {% from "./macros/view-authorise-payment-confirm-form.njk" import viewAuthorisePaymentConfirmForm %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
@@ -54,6 +55,9 @@
       {% endif %}
       {% if recommendToPay %}
         {{ viewRecommendToPayConfirmationForm(applicationId, page, crumb) }}
+      {% endif %}
+      {% if recommendToReject %}
+        {{ viewRecommendToRejectConfirmationForm(applicationId, page, crumb) }}
       {% endif %}
       {% if authorisePaymentConfirmForm %}
         {{ viewAuthorisePaymentConfirmForm(applicationId, page, crumb) }}
