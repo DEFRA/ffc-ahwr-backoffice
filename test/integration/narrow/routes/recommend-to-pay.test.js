@@ -4,6 +4,15 @@ const getCrumbs = require('../../../utils/get-crumbs')
 const applications = require('../../../../app/api/applications')
 jest.mock('../../../../app/api/applications')
 
+jest.mock('../../../../app/routes/utils/process-stage-actions')
+const processStageActions = require('../../../../app/routes/utils/process-stage-actions')
+
+jest.mock('../../../../app/routes/utils/crumb-cache')
+const crumbCache = require('../../../../app/routes/utils/crumb-cache')
+
+jest.mock('@hapi/boom')
+const Boom = require('@hapi/boom')
+
 const reference = 'AHWR-555A-FD4C'
 const url = '/recommend-to-pay'
 
@@ -72,6 +81,11 @@ describe('Recommend To Pay test', () => {
 
     test('Redirects correctly on successful validation', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+      const response = [
+        { action: 'addStageExecution', data: { applicationReference: reference } },
+        { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
+      ]
+      processStageActions.mockResolvedValueOnce(response)
       const options = {
         method: 'POST',
         url,
@@ -86,11 +100,19 @@ describe('Recommend To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
+      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), 'recommender', 'Claim Approve/Reject', 'Recommend to pay', false)
+      expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
+      expect(logSpy).toHaveBeenCalledWith('Backoffice: recommend-to-pay: Stage execution entry added: ', response)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
 
     test('Redirects correctly on successful validation - no page given', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+      const response = [
+        { action: 'addStageExecution', data: { applicationReference: reference } },
+        { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
+      ]
+      processStageActions.mockResolvedValueOnce(response)
       const options = {
         method: 'POST',
         url,
@@ -104,7 +126,30 @@ describe('Recommend To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
+      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), 'recommender', 'Claim Approve/Reject', 'Recommend to pay', false)
+      expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
+      expect(logSpy).toHaveBeenCalledWith('Backoffice: recommend-to-pay: Stage execution entry added: ', response)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+    })
+
+    test('Returns 500 on empty results', async () => {
+      auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+      processStageActions.mockResolvedValueOnce([])
+      const options = {
+        method: 'POST',
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
+          page: 1,
+          confirm: ['checkedAgainstChecklist', 'sentChecklist'],
+          crumb
+        }
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(500)
+      expect(Boom.internal).toHaveBeenCalledWith('Error when processing stage actions')
     })
   })
 })
