@@ -6,44 +6,50 @@ const applicationStageActions = require('../../constants/application-stage-execu
 
 const processStageActions = async (request, role, stage, action, isClaimToBePaid) => {
   try {
+    console.log(`processStageActions - Processing stage actions for ${JSON.stringify({ payload: request.payload, role, stage, action, isClaimToBePaid })}`)
     const userName = getUser(request).username
     const stageConfigurations = await getAllStageConfigurations()
+    role = role.charAt(0).toUpperCase() + role.slice(1)
     const step = stageConfigurations
       .find(configuration => configuration.role.roles.includes(role) &&
                 configuration.stage === stage)
+    console.log(`processStageActions - Found step ${step} for stageConfigurations ${JSON.stringify(stageConfigurations)}`)
     if (!step) {
       throw new Error(`Error when filtering stage configurations for role ${role} and stage ${stage}`)
     }
     const results = []
     let stageExecutionRow
     const stepId = step.id
-    const payload = {
-      applicationReference: request.payload.reference,
-      stageConfigurationId: stepId,
-      executedAt: new Date(),
-      executedBy: userName,
-      action: {
-        action
-      }
-    }
 
     for (const stageAction of step.action.actions) {
       switch (stageAction) {
         case applicationStageActions.addStageExecutionEntry:
-          stageExecutionRow = await addStageExecution(payload)
+          stageExecutionRow = await addStageExecution({
+            applicationReference: request.payload.reference,
+            stageConfigurationId: stepId,
+            executedAt: new Date(),
+            executedBy: userName,
+            action: {
+              action
+            }
+          })
+          console.log(`processStageActions - Added stage execution ${stageExecutionRow} for stage action ${stageAction}`)
           results.push({ action: 'Added stage execution', stageExecutionRow })
           break
         case applicationStageActions.processApplicationClaim:
           results.push({ action: 'Processed claim', response: await processApplicationClaim(request.payload.reference, userName, isClaimToBePaid) })
+          console.log(`processStageActions - Processed claim ${JSON.stringify(request.payload.reference, userName, isClaimToBePaid)} for stage action ${stageAction}`)
           break
         case applicationStageActions.updateStageExecutionEntry:
           results.push({ action: 'Updated stage execution', response: await updateStageExecution(stageExecutionRow.id) })
+          console.log(`processStageActions - Updated stage execution ${stageExecutionRow.id} for stage action ${stageAction}`)
           break
       }
     }
+    console.log(`processStageActions - Returning results ${results}`)
     return results
   } catch (error) {
-    console.log('Backoffice: processStageActions error: ', error.message)
+    console.log('processStageActions error: ', error.message)
     console.error(error)
     return []
   }

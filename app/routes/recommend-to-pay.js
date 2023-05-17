@@ -2,6 +2,9 @@ const Joi = require('joi')
 const Boom = require('@hapi/boom')
 const crumbCache = require('./utils/crumb-cache')
 const processStageActions = require('./utils/process-stage-actions')
+const permissions = require('../auth/permissions')
+const stages = require('../constants/application-stages')
+const stageExecutionActions = require('../constants/application-stage-execution-actions')
 
 module.exports = {
   method: 'POST',
@@ -19,10 +22,9 @@ module.exports = {
       }
     },
     handler: async (request, h) => {
-      const response = await processStageActions(request, 'Recommender', 'Claim Approve/Reject', 'Recommend to pay', false)
+      const response = await processStageActions(request, permissions.recommender, stages.claimApproveReject, stageExecutionActions.recommendToPay, false)
       await crumbCache.generateNewCrumb(request, h)
       if (response.length === 0) {
-        console.log('Backoffice: recommend-to-pay: Error when processing stage actions')
         throw Boom.internal('Error when processing stage actions')
       }
       console.log('Backoffice: recommend-to-pay: Stage execution entry added: ', response)
