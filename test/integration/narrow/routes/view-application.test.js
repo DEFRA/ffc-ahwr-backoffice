@@ -227,6 +227,74 @@ describe('View Application test', () => {
     })
 
     test.each([
+      false,
+      true
+    ])('RBAC feature flag enabled, recommend to pay confirm form displayed as expected when claim helper returns %s', async (displayRecommendToPayConfirmationForm) => {
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      claimFormHelper.mockResolvedValueOnce({
+        displayRecommendToPayConfirmationForm
+      })
+      const ERROR_MESSAGE_TEXT = 'error_message_text'
+      const options = {
+        method: 'GET',
+        url: `${url}?errors=${encodeURIComponent(JSON.stringify([{
+          text: ERROR_MESSAGE_TEXT,
+          href: '#pnl-recommend-to-pay'
+        }]))}`,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      if (displayRecommendToPayConfirmationForm) {
+        const recommendToPayForm = $('#recommendToPayForm')
+        expect(recommendToPayForm.length).toEqual(1)
+        expect(recommendToPayForm.find('.govuk-button').text().trim()).toEqual('Confirm and continue')
+        expect(recommendToPayForm.find('input[name=reference]').attr('value')).toEqual(reference)
+        expect(recommendToPayForm.find('#confirm-error').text().trim()).toEqual('Error: Select both checkboxes')
+        expect($('.govuk-error-summary .govuk-list').text().trim()).toEqual(ERROR_MESSAGE_TEXT)
+      } else {
+        expect($('#recommendToPayForm').length).toEqual(0)
+      }
+    })
+
+    test.each([
+      false,
+      true
+    ])('RBAC feature flag enabled, recommend to reject confirm form displayed as expected when claim helper returns %s', async (displayRecommendToRejectConfirmationForm) => {
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      claimFormHelper.mockResolvedValueOnce({
+        displayRecommendToRejectConfirmationForm
+      })
+      const ERROR_MESSAGE_TEXT = 'error_message_text'
+      const options = {
+        method: 'GET',
+        url: `${url}?errors=${encodeURIComponent(JSON.stringify([{
+          text: ERROR_MESSAGE_TEXT,
+          href: '#pnl-recommend-to-reject'
+        }]))}`,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      if (displayRecommendToRejectConfirmationForm) {
+        const recommendToRejectForm = $('#recommendToRejectForm')
+        expect(recommendToRejectForm.length).toEqual(1)
+        expect(recommendToRejectForm.find('.govuk-button').text().trim()).toEqual('Confirm and continue')
+        expect(recommendToRejectForm.find('input[name=reference]').attr('value')).toEqual(reference)
+        expect(recommendToRejectForm.find('#confirm-error').text().trim()).toEqual('Error: Select both checkboxes')
+        expect($('.govuk-error-summary .govuk-list').text().trim()).toEqual(ERROR_MESSAGE_TEXT)
+      } else {
+        expect($('#recommendToRejectForm').length).toEqual(0)
+      }
+    })
+
+    test.each([
       ['administrator', false],
       ['processor', false],
       ['user', false]

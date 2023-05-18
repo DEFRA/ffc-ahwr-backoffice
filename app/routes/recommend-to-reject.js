@@ -26,7 +26,7 @@ module.exports = {
     handler: async (request, h) => {
       await crumbCache.generateNewCrumb(request, h)
       if (JSON.stringify(request.payload.confirm) !== JSON.stringify(['checkedAgainstChecklist', 'sentChecklist'])) {
-        throw Boom.internal('Error when processing stage actions')
+        throw Boom.internal('Error when validating payload', request.payload.confirm)
       }
       return h.redirect(`/view-application/${request.payload.reference}?page=${request.payload.page}`)
     }
