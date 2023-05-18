@@ -54,6 +54,7 @@ module.exports = {
         displayRecommendToRejectConfirmationForm,
         displayAuthorisationForm,
         displayAuthoriseToPayConfirmationForm,
+        displayAuthoriseToRejectConfirmationForm,
         subStatus
       } = await claimHelper(request, request.params.reference, application.status.status)
 
@@ -89,6 +90,12 @@ module.exports = {
         authorisePaymentConfirmForm: {
           display: displayAuthoriseToPayConfirmationForm,
           errorMessage: errors.map(e => e.href).includes('#authorise-payment-panel')
+            ? { text: 'Select both checkboxes' }
+            : undefined
+        },
+        rejectClaimConfirmForm: {
+          display: displayAuthoriseToRejectConfirmationForm,
+          errorMessage: errors.map(e => e.href).includes('#reject-claim-panel')
             ? { text: 'Select both checkboxes' }
             : undefined
         },

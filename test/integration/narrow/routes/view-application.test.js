@@ -269,6 +269,40 @@ describe('View Application test', () => {
     test.each([
       false,
       true
+    ])('RBAC feature flag enabled, authorisation confirm form displayed as expected for role %s', async (displayAuthoriseToRejectConfirmationForm) => {
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockResolvedValueOnce({
+        displayAuthoriseToRejectConfirmationForm
+      })
+      const ERROR_MESSAGE_TEXT = 'error_message_text'
+      const options = {
+        method: 'GET',
+        url: `${url}?errors=${encodeURIComponent(JSON.stringify([{
+          text: ERROR_MESSAGE_TEXT,
+          href: '#reject-claim-panel'
+        }]))}`,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      if (displayAuthoriseToRejectConfirmationForm) {
+        const rejectClaimPanel = $('#reject-claim-panel')
+        expect(rejectClaimPanel.length).toEqual(1)
+        expect(rejectClaimPanel.find('.govuk-button').text().trim()).toEqual('Confirm and continue')
+        expect(rejectClaimPanel.find('input[name=reference]').attr('value')).toEqual(reference)
+        expect(rejectClaimPanel.find('#confirm-error').text().trim()).toEqual('Error: Select both checkboxes')
+        expect($('.govuk-error-summary .govuk-list').text().trim()).toEqual(ERROR_MESSAGE_TEXT)
+      } else {
+        expect($('#reject-claim-panel').length).toEqual(0)
+      }
+    })
+
+    test.each([
+      false,
+      true
     ])('RBAC feature flag enabled, recommend to reject confirm form displayed as expected when claim helper returns %s', async (displayRecommendToRejectConfirmationForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)

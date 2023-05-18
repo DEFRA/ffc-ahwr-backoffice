@@ -8,6 +8,7 @@
 {% from "./macros/recommend-confirmation-form.njk" import viewRecommendConfirmationForm %}
 {% from "./macros/view-authorise-or-reject-form.njk" import viewAuthoriseOrRejectForm %}
 {% from "./macros/view-authorise-payment-confirm-form.njk" import viewAuthorisePaymentConfirmForm %}
+{% from "./macros/view-reject-claim-confirm-form.njk" import viewRejectClaimConfirmForm %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% block pageTitle %}
@@ -18,9 +19,9 @@
 {% endset -%}
 {% block beforeContent %}
   {{ govukBackLink({
-        text: "Back",
-        href: backLink
-      }) }}
+    text: "Back",
+    href: backLink
+  }) }}
 {% endblock %}
 {% block content %}
   {% if errors.length %}
@@ -55,6 +56,9 @@
       {% endif %}
       {% if authorisePaymentConfirmForm.display %}
         {{ viewAuthorisePaymentConfirmForm(applicationId, page, crumb, authorisePaymentConfirmForm.errorMessage) }}
+      {% endif %}
+      {% if rejectClaimConfirmForm.display %}
+        {{ viewRejectClaimConfirmForm(applicationId, page, crumb, rejectClaimConfirmForm.errorMessage) }}
       {% endif %}
       {{ viewApplicationTabs(model, vetVisit, claimed, payment, subStatus) }}
       {% if withdrawLink %}
