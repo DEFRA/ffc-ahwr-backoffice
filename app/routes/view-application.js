@@ -87,7 +87,12 @@ module.exports = {
             ? { text: 'Select both checkboxes' }
             : undefined
         },
-        authorisePaymentForm: displayAuthorisationForm,
+        recommendToPay: displayRecommendToPayConfirmationForm,
+        recommendToReject: displayRecommendToRejectConfirmationForm,
+        authoriseOrRejectForm: {
+          display: displayAuthorisationForm,
+          displayAuthorisePaymentButton: subStatus === 'Recommend to pay'
+        },
         authorisePaymentConfirmForm: {
           display: displayAuthoriseToPayConfirmationForm,
           errorMessage: errors.map(e => e.href).includes('#authorise-payment-panel')

@@ -160,17 +160,15 @@ describe('View Application test', () => {
     })
 
     test.each([
-      ['administrator', false],
-      ['processor', false],
-      ['user', false],
-      ['recommender', false],
-      ['authoriser', true]
-    ])('RBAC feature flag enabled, authorisation form displayed as expected for role %s', async (authScope, authorisePaymentButtonVisible) => {
-      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      [true, 'Recommend to pay'],
+      [true, 'Recommend to reject'],
+      [false, '']
+    ])('RBAC feature flag enabled, authorisation form displayed as expected for %s %s', async (authorisePaymentButtonVisible, subStatus) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
-        displayAuthorisationForm: authorisePaymentButtonVisible
+        displayAuthorisationForm: authorisePaymentButtonVisible,
+        subStatus
       })
       const options = {
         method: 'GET',
@@ -182,13 +180,21 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
 
       if (authorisePaymentButtonVisible) {
-        const authorisePaymentButton = $('#btn-authorise-payment')
-        expect(authorisePaymentButton.length).toEqual(1)
-        expect(authorisePaymentButton.hasClass('govuk-button'))
-        expect(authorisePaymentButton.text().trim()).toEqual('Authorise payment')
-        expect($('#pnl-authorise-payment input[name=reference]').attr('value')).toEqual(reference)
+        expect($('#authorise-or-reject-form-panel').length).toEqual(1)
+        const authoriseOrRejectButton = $(subStatus === 'Recommend to pay'
+          ? '#authorise-payment-button'
+          : '#reject-claim-button'
+        )
+        expect(authoriseOrRejectButton.length).toEqual(1)
+        expect(authoriseOrRejectButton.hasClass('govuk-button'))
+        expect(authoriseOrRejectButton.text().trim()).toEqual(subStatus === 'Recommend to pay'
+          ? 'Authorise payment'
+          : 'Reject claim'
+        )
       } else {
-        expect($('#btn-authorise-payment').length).toEqual(0)
+        expect($('#authorise-or-reject-form-panel').length).toEqual(0)
+        expect($('#authorise-payment-button').length).toEqual(0)
+        expect($('#reject-claim-button').length).toEqual(0)
       }
     })
 
