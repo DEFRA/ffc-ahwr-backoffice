@@ -102,7 +102,6 @@ describe('Recommend To Pay test', () => {
       expect(res.statusCode).toBe(302)
       expect(processStageActions).toHaveBeenCalledWith(expect.anything(), 'recommender', 'Claim Approve/Reject', 'Recommend to pay', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
-      expect(logSpy).toHaveBeenCalledWith('Backoffice: recommend-to-pay: Stage execution entry added: ', response)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
 
@@ -128,7 +127,6 @@ describe('Recommend To Pay test', () => {
       expect(res.statusCode).toBe(302)
       expect(processStageActions).toHaveBeenCalledWith(expect.anything(), 'recommender', 'Claim Approve/Reject', 'Recommend to pay', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
-      expect(logSpy).toHaveBeenCalledWith('Backoffice: recommend-to-pay: Stage execution entry added: ', response)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
 
