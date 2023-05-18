@@ -17,7 +17,7 @@ module.exports = {
         const errors = [
           {
             text: 'You must select both checkboxes',
-            href: '#pnl-recommend-to-reject'
+            href: '#pnl-recommend-confirmation'
           }
         ]
         return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&recommendToReject=true&errors=${encodeURIComponent(JSON.stringify(errors))}`).takeover()
