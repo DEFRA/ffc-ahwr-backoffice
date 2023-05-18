@@ -180,6 +180,7 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
 
       if (authorisePaymentButtonVisible) {
+        expect($('#authorise-or-reject-form-panel').length).toEqual(1)
         const authoriseOrRejectButton = $(subStatus === 'Recommend to pay'
           ? '#authorise-payment-button'
           : '#reject-claim-button'
@@ -191,7 +192,9 @@ describe('View Application test', () => {
           : 'Reject claim'
         )
       } else {
+        expect($('#authorise-or-reject-form-panel').length).toEqual(0)
         expect($('#authorise-payment-button').length).toEqual(0)
+        expect($('#reject-claim-button').length).toEqual(0)
       }
     })
 
