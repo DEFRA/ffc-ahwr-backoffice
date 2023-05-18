@@ -149,5 +149,25 @@ describe('Recommend To Pay test', () => {
       expect(res.statusCode).toBe(500)
       expect(Boom.internal).toHaveBeenCalledWith('Error when processing stage actions')
     })
+
+    test('Returns 500 on wrong payload', async () => {
+      auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+      processStageActions.mockResolvedValueOnce([])
+      const options = {
+        method: 'POST',
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
+          page: 1,
+          confirm: ['sentChecklist'],
+          crumb
+        }
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(500)
+      expect(Boom.internal).toHaveBeenCalledWith('Error when validating payload', ['sentChecklist'])
+    })
   })
 })
