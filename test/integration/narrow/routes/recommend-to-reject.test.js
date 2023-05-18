@@ -81,6 +81,11 @@ describe('Recommend To Reject test', () => {
 
     test('Redirects correctly on successful validation', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+      const response = [
+        { action: 'addStageExecution', data: { applicationReference: reference } },
+        { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
+      ]
+      processStageActions.mockResolvedValueOnce(response)
       const options = {
         method: 'POST',
         url,
@@ -101,6 +106,11 @@ describe('Recommend To Reject test', () => {
 
     test('Redirects correctly on successful validation - no page given', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+      const response = [
+        { action: 'addStageExecution', data: { applicationReference: reference } },
+        { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
+      ]
+      processStageActions.mockResolvedValueOnce(response)
       const options = {
         method: 'POST',
         url,
@@ -135,7 +145,7 @@ describe('Recommend To Reject test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(500)
-      expect(Boom.internal).toHaveBeenCalledWith('Error when validating payload', options.payload.confirm)
+      expect(Boom.internal).toHaveBeenCalledWith('Error when processing stage actions')
     })
   })
 })
