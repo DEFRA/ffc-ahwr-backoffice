@@ -7,7 +7,7 @@ const reference = 'AHWR-555A-FD4C'
 
 describe('Reject Application test', () => {
   describe('RBAC enabled', () => {
-    let applications
+    let processStageActions
     let crumb
     const url = '/reject-application-claim/'
     jest.mock('../../../../app/auth')
@@ -21,10 +21,8 @@ describe('Reject Application test', () => {
         }
       }))
 
-      applications = require('../../../../app/api/applications')
-      jest.mock('../../../../app/api/applications')
-
-      applications.processApplicationClaim = jest.fn().mockResolvedValue(true)
+      jest.mock('../../../../app/routes/utils/process-stage-actions')
+      processStageActions = require('../../../../app/routes/utils/process-stage-actions')
     })
 
     afterAll(() => {
@@ -77,6 +75,11 @@ describe('Reject Application test', () => {
           },
           headers: { cookie: `crumb=${crumb}` }
         }
+        const response = [
+          { action: 'addStageExecution', data: { applicationReference: reference } },
+          { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
+        ]
+        processStageActions.mockResolvedValueOnce(response)
 
         const res1 = await global.__SERVER__.inject(options)
         expect(res1.statusCode).toBe(302)
@@ -101,9 +104,21 @@ describe('Reject Application test', () => {
             crumb
           }
         }
+        const response = [
+          { action: 'addStageExecution', data: { applicationReference: reference } },
+          { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
+        ]
+        processStageActions.mockResolvedValueOnce(response)
+
         const res = await global.__SERVER__.inject(options)
-        expect(applications.processApplicationClaim).toHaveBeenCalledTimes(1)
-        expect(applications.processApplicationClaim).toHaveBeenCalledWith(reference, 'admin', false)
+
+        expect(processStageActions).toHaveBeenCalledWith(
+          expect.anything(),
+          'authoriser',
+          'Claim Approve/Reject',
+          'Rejected',
+          false
+        )
         expect(res.statusCode).toBe(302)
         expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
       })
@@ -122,7 +137,7 @@ describe('Reject Application test', () => {
           }
         }
         const res = await global.__SERVER__.inject(options)
-        expect(applications.processApplicationClaim).not.toHaveBeenCalled()
+        expect(processStageActions).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
         expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
       })
@@ -141,7 +156,7 @@ describe('Reject Application test', () => {
         }
       }
       const res = await global.__SERVER__.inject(options)
-      expect(applications.processApplicationClaim).not.toHaveBeenCalled()
+      expect(processStageActions).not.toHaveBeenCalled()
       expect(res.statusCode).toBe(302)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&errors=${encodeURIComponent(JSON.stringify([{
         text: 'You must select both checkboxes',
