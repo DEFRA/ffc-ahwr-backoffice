@@ -46,7 +46,7 @@ const processStageActions = async (request, role, stage, action, isClaimToBePaid
           break
       }
     }
-    console.log(`processStageActions - Returning results ${results}`)
+    console.log(`processStageActions - Stage executions added: ${results}`)
     return results
   } catch (error) {
     console.log('processStageActions error: ', error.message)

@@ -28,12 +28,14 @@ module.exports = {
       }
     },
     handler: async (request, h) => {
+      if (JSON.stringify(request.payload.confirm) !== JSON.stringify(['checkedAgainstChecklist', 'sentChecklist'])) {
+        throw Boom.internal('Error when validating payload', request.payload.confirm)
+      }
       const response = await processStageActions(request, permissions.recommender, stages.claimApproveReject, stageExecutionActions.recommendToPay, false)
       await crumbCache.generateNewCrumb(request, h)
       if (response.length === 0) {
         throw Boom.internal('Error when processing stage actions')
       }
-      console.log('Backoffice: recommend-to-pay: Stage execution entry added: ', response)
       return h.redirect(`/view-application/${request.payload.reference}?page=${request.payload.page}`)
     }
   }
