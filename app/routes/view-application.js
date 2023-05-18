@@ -77,7 +77,10 @@ module.exports = {
         recommendForm: displayRecommendationForm,
         recommendToPay: displayRecommendToPayConfirmationForm,
         recommendToReject: displayRecommendToRejectConfirmationForm,
-        authorisePaymentForm: displayAuthorisationForm,
+        authoriseOrRejectForm: {
+          display: displayAuthorisationForm,
+          displayAuthorisePaymentButton: subStatus === 'Recommend to pay'
+        },
         authorisePaymentConfirmForm: {
           display: displayAuthoriseToPayConfirmationForm,
           errorMessage: errors.map(e => e.href).includes('#authorise-payment-panel')
