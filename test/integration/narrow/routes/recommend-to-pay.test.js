@@ -58,7 +58,7 @@ describe('Recommend To Pay test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
       expect(logSpy).toHaveBeenCalledWith('Backoffice: recommend-to-pay: Error when validating payload: ', expect.any(Error))
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=%5B%7B%22text%22%3A%22You%20must%20select%20both%20checkboxes%22%2C%22href%22%3A%22%23pnl-recommend-to-pay%22%7D%5D`)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=%5B%7B%22text%22%3A%22You%20must%20select%20both%20checkboxes%22%2C%22href%22%3A%22%23pnl-recommend-confirmation%22%7D%5D`)
     })
 
     test('returns 302 when validation fails - no page given', async () => {
@@ -76,7 +76,7 @@ describe('Recommend To Pay test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
       expect(logSpy).toHaveBeenCalledWith('Backoffice: recommend-to-pay: Error when validating payload: ', expect.any(Error))
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=%5B%7B%22text%22%3A%22You%20must%20select%20both%20checkboxes%22%2C%22href%22%3A%22%23pnl-recommend-to-pay%22%7D%5D`)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=%5B%7B%22text%22%3A%22You%20must%20select%20both%20checkboxes%22%2C%22href%22%3A%22%23pnl-recommend-confirmation%22%7D%5D`)
     })
 
     test('Redirects correctly on successful validation', async () => {

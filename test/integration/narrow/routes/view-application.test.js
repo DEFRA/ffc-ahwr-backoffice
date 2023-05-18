@@ -246,7 +246,7 @@ describe('View Application test', () => {
         method: 'GET',
         url: `${url}?errors=${encodeURIComponent(JSON.stringify([{
           text: ERROR_MESSAGE_TEXT,
-          href: '#pnl-recommend-to-pay'
+          href: '#pnl-recommend-confirmation'
         }]))}`,
         auth
       }
@@ -255,14 +255,15 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
 
       if (displayRecommendToPayConfirmationForm) {
-        const recommendToPayForm = $('#recommendToPayForm')
+        const recommendToPayForm = $('#recommendConfirmationForm')
         expect(recommendToPayForm.length).toEqual(1)
         expect(recommendToPayForm.find('.govuk-button').text().trim()).toEqual('Confirm and continue')
+        expect(recommendToPayForm.find('.govuk-label').first().text().trim()).toEqual('I have checked the claim against the verification checklist and it has passed. I recommend the payment is authorised.')
         expect(recommendToPayForm.find('input[name=reference]').attr('value')).toEqual(reference)
         expect(recommendToPayForm.find('#confirm-error').text().trim()).toEqual('Error: Select both checkboxes')
         expect($('.govuk-error-summary .govuk-list').text().trim()).toEqual(ERROR_MESSAGE_TEXT)
       } else {
-        expect($('#recommendToPayForm').length).toEqual(0)
+        expect($('#recommendConfirmationForm').length).toEqual(0)
       }
     })
 
@@ -314,7 +315,7 @@ describe('View Application test', () => {
         method: 'GET',
         url: `${url}?errors=${encodeURIComponent(JSON.stringify([{
           text: ERROR_MESSAGE_TEXT,
-          href: '#pnl-recommend-to-reject'
+          href: '#pnl-recommend-confirmation'
         }]))}`,
         auth
       }
@@ -323,14 +324,15 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
 
       if (displayRecommendToRejectConfirmationForm) {
-        const recommendToRejectForm = $('#recommendToRejectForm')
+        const recommendToRejectForm = $('#recommendConfirmationForm')
         expect(recommendToRejectForm.length).toEqual(1)
         expect(recommendToRejectForm.find('.govuk-button').text().trim()).toEqual('Confirm and continue')
+        expect(recommendToRejectForm.find('.govuk-label').first().text().trim()).toEqual('I have checked the claim against the verification checklist and it has not passed. I recommend the claim is rejected.')
         expect(recommendToRejectForm.find('input[name=reference]').attr('value')).toEqual(reference)
         expect(recommendToRejectForm.find('#confirm-error').text().trim()).toEqual('Error: Select both checkboxes')
         expect($('.govuk-error-summary .govuk-list').text().trim()).toEqual(ERROR_MESSAGE_TEXT)
       } else {
-        expect($('#recommendToRejectForm').length).toEqual(0)
+        expect($('#recommendConfirmationForm').length).toEqual(0)
       }
     })
 
