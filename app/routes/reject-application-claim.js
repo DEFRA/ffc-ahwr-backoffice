@@ -1,9 +1,14 @@
+const Boom = require('@hapi/boom')
 const Joi = require('joi')
 const config = require('../config')
 const { processApplicationClaim } = require('../api/applications')
 const getUser = require('../auth/get-user')
 const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
 const crumbCache = require('./utils/crumb-cache')
+const processStageActions = require('./utils/process-stage-actions')
+const permissions = require('../auth/permissions')
+const stages = require('../constants/application-stages')
+const stageExecutionActions = require('../constants/application-stage-execution-actions')
 
 module.exports = {
   method: 'POST',
@@ -42,9 +47,16 @@ module.exports = {
     handler: async (request, h) => {
       if (config.rbac.enabled) {
         if (JSON.stringify(request.payload.confirm) === JSON.stringify(['rejectClaim', 'sentChecklist'])) {
-          const userName = getUser(request).username
-          await processApplicationClaim(request.payload.reference, userName, false)
-          await crumbCache.generateNewCrumb(request, h)
+          const response = await processStageActions(
+            request,
+            permissions.authoriser,
+            stages.claimApproveReject,
+            stageExecutionActions.authoriseRejection,
+            false
+          )
+          if (response.length === 0) {
+            throw Boom.internal('routes:reject-application-claim: Error when processing stage actions')
+          }
         }
         return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
       } else {
