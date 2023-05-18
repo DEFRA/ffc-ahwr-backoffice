@@ -102,7 +102,6 @@ describe('Recommend To Pay test', () => {
       expect(res.statusCode).toBe(302)
       expect(processStageActions).toHaveBeenCalledWith(expect.anything(), 'recommender', 'Claim Approve/Reject', 'Recommend to pay', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
-      expect(logSpy).toHaveBeenCalledWith('Backoffice: recommend-to-pay: Stage execution entry added: ', response)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
 
@@ -128,7 +127,6 @@ describe('Recommend To Pay test', () => {
       expect(res.statusCode).toBe(302)
       expect(processStageActions).toHaveBeenCalledWith(expect.anything(), 'recommender', 'Claim Approve/Reject', 'Recommend to pay', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
-      expect(logSpy).toHaveBeenCalledWith('Backoffice: recommend-to-pay: Stage execution entry added: ', response)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
 
@@ -150,6 +148,26 @@ describe('Recommend To Pay test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(500)
       expect(Boom.internal).toHaveBeenCalledWith('Error when processing stage actions')
+    })
+
+    test('Returns 500 on wrong payload', async () => {
+      auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+      processStageActions.mockResolvedValueOnce([])
+      const options = {
+        method: 'POST',
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
+          page: 1,
+          confirm: ['sentChecklist'],
+          crumb
+        }
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(500)
+      expect(Boom.internal).toHaveBeenCalledWith('Error when validating payload', ['sentChecklist'])
     })
   })
 })

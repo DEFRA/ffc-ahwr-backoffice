@@ -1,6 +1,10 @@
 const Joi = require('joi')
 const Boom = require('@hapi/boom')
 const crumbCache = require('./utils/crumb-cache')
+const processStageActions = require('./utils/process-stage-actions')
+const permissions = require('../auth/permissions')
+const stages = require('../constants/application-stages')
+const stageExecutionActions = require('../constants/application-stage-execution-actions')
 
 module.exports = {
   method: 'POST',
@@ -24,9 +28,13 @@ module.exports = {
       }
     },
     handler: async (request, h) => {
-      await crumbCache.generateNewCrumb(request, h)
       if (JSON.stringify(request.payload.confirm) !== JSON.stringify(['checkedAgainstChecklist', 'sentChecklist'])) {
         throw Boom.internal('Error when validating payload', request.payload.confirm)
+      }
+      const response = await processStageActions(request, permissions.recommender, stages.claimApproveReject, stageExecutionActions.recommendToReject, false)
+      await crumbCache.generateNewCrumb(request, h)
+      if (response.length === 0) {
+        throw Boom.internal('Error when processing stage actions')
       }
       return h.redirect(`/view-application/${request.payload.reference}?page=${request.payload.page}`)
     }
