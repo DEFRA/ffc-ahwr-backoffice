@@ -8,7 +8,7 @@ const stageExecutionActions = require('../constants/application-stage-execution-
 
 module.exports = {
   method: 'POST',
-  path: '/recommend-to-pay',
+  path: '/recommend-to-reject',
   options: {
     validate: {
       payload: Joi.object({
@@ -17,23 +17,21 @@ module.exports = {
         confirm: Joi.array().items(Joi.string().valid('checkedAgainstChecklist', 'sentChecklist')).required()
       }),
       failAction: async (request, h, error) => {
-        console.log('Backoffice: recommend-to-pay: Error when validating payload: ', error)
+        console.log('Backoffice: recommend-to-reject: Error when validating payload: ', error)
         const errors = [
           {
             text: 'You must select both checkboxes',
-            href: '#pnl-recommend-to-pay'
+            href: '#pnl-recommend-to-reject'
           }
         ]
-        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&recommendToPay=true&errors=${encodeURIComponent(JSON.stringify(errors))}`).takeover()
+        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&recommendToReject=true&errors=${encodeURIComponent(JSON.stringify(errors))}`).takeover()
       }
     },
     handler: async (request, h) => {
-      const response = await processStageActions(request, permissions.recommender, stages.claimApproveReject, stageExecutionActions.recommendToPay, false)
       await crumbCache.generateNewCrumb(request, h)
-      if (response.length === 0) {
+      if (JSON.stringify(request.payload.confirm) !== JSON.stringify(['checkedAgainstChecklist', 'sentChecklist'])) {
         throw Boom.internal('Error when processing stage actions')
       }
-      console.log('Backoffice: recommend-to-pay: Stage execution entry added: ', response)
       return h.redirect(`/view-application/${request.payload.reference}?page=${request.payload.page}`)
     }
   }

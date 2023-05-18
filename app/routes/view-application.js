@@ -75,8 +75,18 @@ module.exports = {
         ...new ViewModel(application, applicationHistory),
         page: request.query.page,
         recommendForm: displayRecommendationForm,
-        recommendToPay: displayRecommendToPayConfirmationForm,
-        recommendToReject: displayRecommendToRejectConfirmationForm,
+        recommendToPay: {
+          display: displayRecommendToPayConfirmationForm,
+          errorMessage: errors.map(e => e.href).includes('#pnl-recommend-to-pay')
+            ? { text: 'Select both checkboxes' }
+            : undefined
+        },
+        recommendToReject: {
+          display: displayRecommendToRejectConfirmationForm,
+          errorMessage: errors.map(e => e.href).includes('#pnl-recommend-to-reject')
+            ? { text: 'Select both checkboxes' }
+            : undefined
+        },
         authorisePaymentForm: displayAuthorisationForm,
         authorisePaymentConfirmForm: {
           display: displayAuthoriseToPayConfirmationForm,

@@ -48,11 +48,11 @@
       {% if rejectClaimConfirmationForm %}
         {{ viewRejectClaimConfirmationForm(applicationId, page, crumb) }}
       {% endif %}
-      {% if recommendToPay %}
-        {{ viewRecommendToPayConfirmationForm(applicationId, page, crumb) }}
+      {% if recommendToPay.display %}
+        {{ viewRecommendToPayConfirmationForm(applicationId, page, crumb, recommendToPay.errorMessage) }}
       {% endif %}
-      {% if recommendToReject %}
-        {{ viewRecommendToRejectConfirmationForm(applicationId, page, crumb) }}
+      {% if recommendToReject.display %}
+        {{ viewRecommendToRejectConfirmationForm(applicationId, page, crumb, recommendToReject.errorMessage) }}
       {% endif %}
       {% if authorisePaymentConfirmForm.display %}
         {{ viewAuthorisePaymentConfirmForm(applicationId, page, crumb, authorisePaymentConfirmForm.errorMessage) }}

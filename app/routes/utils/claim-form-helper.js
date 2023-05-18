@@ -31,7 +31,7 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
     .filter(execution => execution.action.action.includes(stageExecutionActions.authorisePayment) || execution.action.action.includes(stageExecutionActions.authoriseRejection)).length > 0
   const claimCanBeAuthorised = (claimRecommendedToPayByDifferentUser || claimRecommendedToRejectByDifferentUser) && !hasClaimAlreadyBeenAuthorised
 
-  const displayRecommendationForm = isApplicationInCheck && canUserRecommend && canClaimBeRecommended && (!request.query.recommendToPay && !request.query.reject) && rbacEnabled
+  const displayRecommendationForm = isApplicationInCheck && canUserRecommend && canClaimBeRecommended && (!request.query.recommendToPay && !request.query.recommendToReject) && rbacEnabled
   const displayRecommendToPayConfirmationForm = isApplicationInCheck && canUserRecommend && canClaimBeRecommended && request.query.recommendToPay && rbacEnabled
   const displayRecommendToRejectConfirmationForm = isApplicationInCheck && canUserRecommend && canClaimBeRecommended && request.query.recommendToReject && rbacEnabled
   const displayAuthorisationForm = isApplicationInCheck && canUserAuthorise && claimCanBeAuthorised && (!request.query.approve && !request.query.reject) && rbacEnabled

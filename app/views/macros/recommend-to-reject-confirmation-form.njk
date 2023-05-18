@@ -1,6 +1,6 @@
-{% macro viewRecommendToRejectConfirmationForm(applicationId, page, crumb) %}
+{% macro viewRecommendToRejectConfirmationForm(applicationId, page, crumb, errorMessage) %}
   {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
-  <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left">
+  <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="pnl-recommend-to-reject">
     <p class="govuk-body govuk-!-text-align-right"><a href="/view-application/{{ applicationId }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p>
     <form method="POST" autocomplete="off" novalidate="novalidate" action="/recommend-to-reject" id="recommendToRejectForm">
       {{ govukCheckboxes({
@@ -21,7 +21,8 @@
             value: "sentChecklist",
             text: "I have sent the verification checklist to the authoriser explaining why it's failed."
           }
-        ]
+        ],
+        errorMessage: errorMessage
       }) }}
       <button class="govuk-button govuk-button govuk-!-margin-bottom-3">Confirm and continue</button>
       <input type="hidden" name="reference" value="{{ applicationId }}" />
