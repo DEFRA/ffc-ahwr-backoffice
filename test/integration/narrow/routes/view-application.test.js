@@ -235,6 +235,41 @@ describe('View Application test', () => {
     test.each([
       false,
       true
+    ])('RBAC feature flag enabled, recommend to pay confirm form displayed as expected when claim helper returns %s', async (displayRecommendToPayConfirmationForm) => {
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      claimFormHelper.mockResolvedValueOnce({
+        displayRecommendToPayConfirmationForm
+      })
+      const ERROR_MESSAGE_TEXT = 'error_message_text'
+      const options = {
+        method: 'GET',
+        url: `${url}?errors=${encodeURIComponent(JSON.stringify([{
+          text: ERROR_MESSAGE_TEXT,
+          href: '#pnl-recommend-confirmation'
+        }]))}`,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      if (displayRecommendToPayConfirmationForm) {
+        const recommendToPayForm = $('#recommendConfirmationForm')
+        expect(recommendToPayForm.length).toEqual(1)
+        expect(recommendToPayForm.find('.govuk-button').text().trim()).toEqual('Confirm and continue')
+        expect(recommendToPayForm.find('.govuk-label').first().text().trim()).toEqual('I have checked the claim against the verification checklist and it has passed. I recommend the payment is authorised.')
+        expect(recommendToPayForm.find('input[name=reference]').attr('value')).toEqual(reference)
+        expect(recommendToPayForm.find('#confirm-error').text().trim()).toEqual('Error: Select both checkboxes')
+        expect($('.govuk-error-summary .govuk-list').text().trim()).toEqual(ERROR_MESSAGE_TEXT)
+      } else {
+        expect($('#recommendConfirmationForm').length).toEqual(0)
+      }
+    })
+
+    test.each([
+      false,
+      true
     ])('RBAC feature flag enabled, authorisation confirm form displayed as expected for role %s', async (displayAuthoriseToRejectConfirmationForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
@@ -263,6 +298,41 @@ describe('View Application test', () => {
         expect($('.govuk-error-summary .govuk-list').text().trim()).toEqual(ERROR_MESSAGE_TEXT)
       } else {
         expect($('#reject-claim-panel').length).toEqual(0)
+      }
+    })
+
+    test.each([
+      false,
+      true
+    ])('RBAC feature flag enabled, recommend to reject confirm form displayed as expected when claim helper returns %s', async (displayRecommendToRejectConfirmationForm) => {
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      claimFormHelper.mockResolvedValueOnce({
+        displayRecommendToRejectConfirmationForm
+      })
+      const ERROR_MESSAGE_TEXT = 'error_message_text'
+      const options = {
+        method: 'GET',
+        url: `${url}?errors=${encodeURIComponent(JSON.stringify([{
+          text: ERROR_MESSAGE_TEXT,
+          href: '#pnl-recommend-confirmation'
+        }]))}`,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      if (displayRecommendToRejectConfirmationForm) {
+        const recommendToRejectForm = $('#recommendConfirmationForm')
+        expect(recommendToRejectForm.length).toEqual(1)
+        expect(recommendToRejectForm.find('.govuk-button').text().trim()).toEqual('Confirm and continue')
+        expect(recommendToRejectForm.find('.govuk-label').first().text().trim()).toEqual('I have checked the claim against the verification checklist and it has not passed. I recommend the claim is rejected.')
+        expect(recommendToRejectForm.find('input[name=reference]').attr('value')).toEqual(reference)
+        expect(recommendToRejectForm.find('#confirm-error').text().trim()).toEqual('Error: Select both checkboxes')
+        expect($('.govuk-error-summary .govuk-list').text().trim()).toEqual(ERROR_MESSAGE_TEXT)
+      } else {
+        expect($('#recommendConfirmationForm').length).toEqual(0)
       }
     })
 

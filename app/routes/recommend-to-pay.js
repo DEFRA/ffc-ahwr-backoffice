@@ -18,7 +18,13 @@ module.exports = {
       }),
       failAction: async (request, h, error) => {
         console.log('Backoffice: recommend-to-pay: Error when validating payload: ', error)
-        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&recommendToPay=true&error=true`).takeover()
+        const errors = [
+          {
+            text: 'You must select both checkboxes',
+            href: '#pnl-recommend-confirmation'
+          }
+        ]
+        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&recommendToPay=true&errors=${encodeURIComponent(JSON.stringify(errors))}`).takeover()
       }
     },
     handler: async (request, h) => {

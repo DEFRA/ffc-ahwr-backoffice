@@ -5,8 +5,7 @@
 {% from "./macros/approve-claim-confirmation-form.njk" import viewApproveClaimConfirmationForm %}
 {% from "./macros/reject-claim-confirmation-form.njk" import viewRejectClaimConfirmationForm %}
 {% from "./macros/recommend-form.njk" import viewRecommendForm %}
-{% from "./macros/recommend-to-pay-confirmation-form.njk" import viewRecommendToPayConfirmationForm %}
-{% from "./macros/recommend-to-reject-confirmation-form.njk" import viewRecommendToRejectConfirmationForm %}
+{% from "./macros/recommend-confirmation-form.njk" import viewRecommendConfirmationForm %}
 {% from "./macros/view-authorise-or-reject-form.njk" import viewAuthoriseOrRejectForm %}
 {% from "./macros/view-authorise-payment-confirm-form.njk" import viewAuthorisePaymentConfirmForm %}
 {% from "./macros/view-reject-claim-confirm-form.njk" import viewRejectClaimConfirmForm %}
@@ -49,11 +48,11 @@
       {% if rejectClaimConfirmationForm %}
         {{ viewRejectClaimConfirmationForm(applicationId, page, crumb) }}
       {% endif %}
-      {% if recommendToPay %}
-        {{ viewRecommendToPayConfirmationForm(applicationId, page, crumb) }}
+      {% if model.recommendData != false %}
+        {{ viewRecommendConfirmationForm(applicationId, page, crumb, model.recommendData) }}
       {% endif %}
-      {% if recommendToReject %}
-        {{ viewRecommendToRejectConfirmationForm(applicationId, page, crumb) }}
+      {% if recommendToReject.display %}
+        {{ viewRecommendToRejectConfirmationForm(applicationId, page, crumb, recommendToReject.errorMessage) }}
       {% endif %}
       {% if authorisePaymentConfirmForm.display %}
         {{ viewAuthorisePaymentConfirmForm(applicationId, page, crumb, authorisePaymentConfirmForm.errorMessage) }}

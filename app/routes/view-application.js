@@ -59,6 +59,13 @@ module.exports = {
       } = await claimHelper(request, request.params.reference, application.status.status)
 
       const errors = request.query.errors ? JSON.parse(request.query.errors) : []
+      const recommend = {
+        displayRecommendToPayConfirmationForm,
+        displayRecommendToRejectConfirmationForm,
+        errorMessage: errors.map(e => e.href).includes('#pnl-recommend-confirmation')
+          ? { text: 'Select both checkboxes' }
+          : undefined
+      }
 
       return h.view('view-application', {
         applicationId: application.reference,
@@ -73,11 +80,9 @@ module.exports = {
         approveClaimConfirmationForm,
         rejectClaimConfirmationForm,
         payment: application?.payment,
-        ...new ViewModel(application, applicationHistory),
+        ...new ViewModel(application, applicationHistory, recommend),
         page: request.query.page,
         recommendForm: displayRecommendationForm,
-        recommendToPay: displayRecommendToPayConfirmationForm,
-        recommendToReject: displayRecommendToRejectConfirmationForm,
         authoriseOrRejectForm: {
           display: displayAuthorisationForm,
           displayAuthorisePaymentButton: subStatus === 'Recommend to pay'
