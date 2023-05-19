@@ -40,7 +40,7 @@ module.exports = {
           })
         }
         return h
-          .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&errors=${encodeURIComponent(JSON.stringify(errors))}`)
+          .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&reject=true&errors=${encodeURIComponent(JSON.stringify(errors))}`)
           .takeover()
       }
     },
