@@ -92,7 +92,10 @@ describe('Recommend To Pay test', () => {
           confirm: 'checkedAgainstChecklist'
         }
       })}`)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=%5B%7B%22text%22%3A%22You%20must%20select%20both%20checkboxes%22%2C%22href%22%3A%22%23pnl-recommend-confirmation%22%7D%5D`)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=${encodeURIComponent(JSON.stringify([{
+        text: 'You must select both checkboxes',
+        href: '#pnl-recommend-confirmation'
+      }]))}`)
     })
 
     test.each([
@@ -172,7 +175,7 @@ describe('Recommend To Pay test', () => {
       expect(Boom.internal).toHaveBeenCalledWith('Error when processing stage actions')
     })
 
-    test('Returns 500 on wrong payload', async () => {
+    test('Returns 302 on wrong payload', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       processStageActions.mockResolvedValueOnce([])
       const options = {
@@ -188,8 +191,11 @@ describe('Recommend To Pay test', () => {
         }
       }
       const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(500)
-      expect(Boom.internal).toHaveBeenCalledWith('Error when validating payload', ['sentChecklist'])
+      expect(res.statusCode).toBe(302)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=${encodeURIComponent(JSON.stringify([{
+        text: 'You must select both checkboxes',
+        href: '#pnl-recommend-confirmation'
+      }]))}`)
     })
   })
 })

@@ -142,7 +142,10 @@ describe('/approve-application-claim', () => {
         const res = await global.__SERVER__.inject(options)
         expect(processStageActions).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
-        expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+        expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&approve=true&errors=${encodeURIComponent(JSON.stringify([{
+          text: 'You must select both checkboxes',
+          href: '#authorise-payment-panel'
+        }]))}`)
       })
 
       test('retuns 400 Bad Request', async () => {

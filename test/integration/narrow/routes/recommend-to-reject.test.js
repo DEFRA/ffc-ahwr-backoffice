@@ -149,7 +149,7 @@ describe('Recommend To Reject test', () => {
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
 
-    test('Returns 500 on wrong payload', async () => {
+    test('Returns 302 on wrong payload', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       processStageActions.mockResolvedValueOnce([])
       const options = {
@@ -165,8 +165,11 @@ describe('Recommend To Reject test', () => {
         }
       }
       const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(500)
-      expect(Boom.internal).toHaveBeenCalledWith('Error when validating payload', ['sentChecklist'])
+      expect(res.statusCode).toBe(302)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToReject=true&errors=${encodeURIComponent(JSON.stringify([{
+        text: 'You must select both checkboxes',
+        href: '#pnl-recommend-confirmation'
+      }]))}`)
     })
 
     test('Returns 500 on empty results', async () => {
