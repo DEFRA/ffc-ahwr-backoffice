@@ -19,7 +19,10 @@ module.exports = {
     validate: {
       payload: Joi.object(config.rbac.enabled
         ? {
-            confirm: Joi.array().items(Joi.string().valid('rejectClaim', 'sentChecklist')).required(),
+            confirm: Joi.array().items(
+              Joi.string().valid('rejectClaim').required(),
+              Joi.string().valid('sentChecklist').required()
+            ).required(),
             reference: Joi.string().valid(),
             page: Joi.number().greater(0).default(1)
           }
@@ -51,18 +54,16 @@ module.exports = {
         if (!mappedAuth.isAuthoriser && !mappedAuth.isAdministrator) {
           throw Boom.internal('routes:reject-application-claim: User must be an authoriser or an admin')
         }
-        if (JSON.stringify(request.payload.confirm) === JSON.stringify(['rejectClaim', 'sentChecklist'])) {
-          await crumbCache.generateNewCrumb(request, h)
-          const response = await processStageActions(
-            request,
-            mappedAuth.isAuthoriser ? permissions.authoriser : permissions.administrator,
-            stages.claimApproveReject,
-            stageExecutionActions.authoriseRejection,
-            false
-          )
-          if (response.length === 0) {
-            throw Boom.internal('routes:reject-application-claim: Error when processing stage actions')
-          }
+        await crumbCache.generateNewCrumb(request, h)
+        const response = await processStageActions(
+          request,
+          mappedAuth.isAuthoriser ? permissions.authoriser : permissions.administrator,
+          stages.claimApproveReject,
+          stageExecutionActions.authoriseRejection,
+          false
+        )
+        if (response.length === 0) {
+          throw Boom.internal('routes:reject-application-claim: Error when processing stage actions')
         }
         return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
       } else {

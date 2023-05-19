@@ -15,7 +15,10 @@ module.exports = {
       payload: Joi.object({
         reference: Joi.string().valid(),
         page: Joi.number().greater(0).default(1),
-        confirm: Joi.array().items(Joi.string().valid('checkedAgainstChecklist', 'sentChecklist')).required()
+        confirm: Joi.array().items(
+          Joi.string().valid('checkedAgainstChecklist').required(),
+          Joi.string().valid('sentChecklist').required()
+        ).required()
       }),
       failAction: async (request, h, error) => {
         console.log(`routes:recommend-to-reject: Error when validating payload: ${JSON.stringify({
@@ -36,9 +39,6 @@ module.exports = {
       const mappedAuth = mapAuth(request)
       if (!mappedAuth.isRecommender && !mappedAuth.isAdministrator) {
         throw Boom.internal('routes:recommend-to-pay: User must be a recommender or an admin')
-      }
-      if (JSON.stringify(request.payload.confirm) !== JSON.stringify(['checkedAgainstChecklist', 'sentChecklist'])) {
-        throw Boom.internal('Error when validating payload', request.payload.confirm)
       }
       await crumbCache.generateNewCrumb(request, h)
       const response = await processStageActions(
