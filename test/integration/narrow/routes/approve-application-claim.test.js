@@ -1,6 +1,6 @@
 const cheerio = require('cheerio')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
-const { administrator } = require('../../../../app/auth/permissions')
+const { administrator, authoriser } = require('../../../../app/auth/permissions')
 const getCrumbs = require('../../../utils/get-crumbs')
 
 const reference = 'AHWR-555A-FD4C'
@@ -90,8 +90,11 @@ describe('/approve-application-claim', () => {
         expect($('.govuk-heading-l').text()).toEqual('403 - Forbidden')
       })
 
-      test('Approve application claim processed', async () => {
-        auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+      test.each([
+        [authoriser, 'authoriser'],
+        [administrator, 'administrator']
+      ])('Approve application claim processed', async (scope, role) => {
+        auth = { strategy: 'session-auth', credentials: { scope: [scope], account: { homeAccountId: 'testId', name: 'admin' } } }
         const options = {
           method: 'POST',
           url,
@@ -114,7 +117,7 @@ describe('/approve-application-claim', () => {
 
         expect(processStageActions).toHaveBeenCalledWith(
           expect.anything(),
-          'authoriser',
+          role,
           'Claim Approve/Reject',
           'Paid',
           true
