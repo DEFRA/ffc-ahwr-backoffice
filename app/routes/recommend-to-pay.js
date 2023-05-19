@@ -1,5 +1,6 @@
 const Joi = require('joi')
 const Boom = require('@hapi/boom')
+const mapAuth = require('../auth/map-auth')
 const crumbCache = require('./utils/crumb-cache')
 const processStageActions = require('./utils/process-stage-actions')
 const permissions = require('../auth/permissions')
@@ -17,24 +18,38 @@ module.exports = {
         confirm: Joi.array().items(Joi.string().valid('checkedAgainstChecklist', 'sentChecklist')).required()
       }),
       failAction: async (request, h, error) => {
-        console.log('Backoffice: recommend-to-pay: Error when validating payload: ', error)
-        const errors = [
-          {
+        console.log(`routes:recommend-to-pay: Error when validating payload: ${JSON.stringify({
+          errorMessage: error.message,
+          payload: request.payload
+        })}`)
+        const errors = []
+        if (error.details && error.details[0].context.key === 'confirm') {
+          errors.push({
             text: 'You must select both checkboxes',
             href: '#pnl-recommend-confirmation'
-          }
-        ]
+          })
+        }
         return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&recommendToPay=true&errors=${encodeURIComponent(JSON.stringify(errors))}`).takeover()
       }
     },
     handler: async (request, h) => {
-      if (JSON.stringify(request.payload.confirm) !== JSON.stringify(['checkedAgainstChecklist', 'sentChecklist'])) {
-        throw Boom.internal('Error when validating payload', request.payload.confirm)
+      const mappedAuth = mapAuth(request)
+      if (!mappedAuth.isRecommender && !mappedAuth.isAdministrator) {
+        throw Boom.internal('routes:recommend-to-pay: User must be a recommender or an admin')
       }
-      const response = await processStageActions(request, permissions.recommender, stages.claimApproveReject, stageExecutionActions.recommendToPay, false)
+      if (JSON.stringify(request.payload.confirm) !== JSON.stringify(['checkedAgainstChecklist', 'sentChecklist'])) {
+        throw Boom.internal('routes:recommend-to-pay: Error when validating payload', request.payload.confirm)
+      }
       await crumbCache.generateNewCrumb(request, h)
+      const response = await processStageActions(
+        request,
+        mappedAuth.isRecommender ? permissions.recommender : permissions.administrator,
+        stages.claimApproveReject,
+        stageExecutionActions.recommendToPay,
+        false
+      )
       if (response.length === 0) {
-        throw Boom.internal('Error when processing stage actions')
+        throw Boom.internal('routes:recommend-to-pay: Error when processing stage actions')
       }
       return h.redirect(`/view-application/${request.payload.reference}?page=${request.payload.page}`)
     }
