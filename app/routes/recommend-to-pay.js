@@ -38,7 +38,7 @@ module.exports = {
         throw Boom.internal('routes:recommend-to-pay: User must be a recommender or an admin')
       }
       if (JSON.stringify(request.payload.confirm) !== JSON.stringify(['checkedAgainstChecklist', 'sentChecklist'])) {
-        throw Boom.internal('routes:recommend-to-pay: Error when validating payload', request.payload.confirm)
+        throw Boom.internal('Error when validating payload', request.payload.confirm)
       }
       await crumbCache.generateNewCrumb(request, h)
       const response = await processStageActions(
@@ -49,7 +49,7 @@ module.exports = {
         false
       )
       if (response.length === 0) {
-        throw Boom.internal('routes:recommend-to-pay: Error when processing stage actions')
+        throw Boom.internal('Error when processing stage actions')
       }
       return h.redirect(`/view-application/${request.payload.reference}?page=${request.payload.page}`)
     }

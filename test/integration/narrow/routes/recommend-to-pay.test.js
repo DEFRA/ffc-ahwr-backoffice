@@ -169,7 +169,7 @@ describe('Recommend To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(500)
-      expect(Boom.internal).toHaveBeenCalledWith('routes:recommend-to-pay: Error when processing stage actions')
+      expect(Boom.internal).toHaveBeenCalledWith('Error when processing stage actions')
     })
 
     test('Returns 500 on wrong payload', async () => {
@@ -189,7 +189,7 @@ describe('Recommend To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(500)
-      expect(Boom.internal).toHaveBeenCalledWith('routes:recommend-to-pay: Error when validating payload', ['sentChecklist'])
+      expect(Boom.internal).toHaveBeenCalledWith('Error when validating payload', ['sentChecklist'])
     })
   })
 })
