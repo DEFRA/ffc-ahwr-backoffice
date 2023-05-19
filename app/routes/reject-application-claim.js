@@ -2,6 +2,7 @@ const Boom = require('@hapi/boom')
 const Joi = require('joi')
 const config = require('../config')
 const { processApplicationClaim } = require('../api/applications')
+const mapAuth = require('../auth/map-auth')
 const getUser = require('../auth/get-user')
 const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
 const crumbCache = require('./utils/crumb-cache')
@@ -46,11 +47,15 @@ module.exports = {
     },
     handler: async (request, h) => {
       if (config.rbac.enabled) {
+        const mappedAuth = mapAuth(request)
+        if (!mappedAuth.isAuthoriser && !mappedAuth.isAdministrator) {
+          throw Boom.internal('routes:reject-application-claim: User must be an authoriser or an admin')
+        }
         if (JSON.stringify(request.payload.confirm) === JSON.stringify(['rejectClaim', 'sentChecklist'])) {
           await crumbCache.generateNewCrumb(request, h)
           const response = await processStageActions(
             request,
-            permissions.authoriser,
+            mappedAuth.isAuthoriser ? permissions.authoriser : permissions.administrator,
             stages.claimApproveReject,
             stageExecutionActions.authoriseRejection,
             false
