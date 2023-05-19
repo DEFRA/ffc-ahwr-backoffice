@@ -197,5 +197,25 @@ describe('Recommend To Pay test', () => {
         href: '#pnl-recommend-confirmation'
       }]))}`)
     })
+
+    test('Recommend to pay invalid reference', async () => {
+      auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+      const options = {
+        method: 'POST',
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference: 123,
+          confirm: ['recommendToPay', 'sentChecklist'],
+          crumb
+        }
+      }
+
+      const res = await global.__SERVER__.inject(options)
+
+      expect(res.statusCode).toBe(302)
+      expect(res.headers.location).toEqual('/view-application/123?page=1&recommendToPay=true&errors=%5B%5D')
+    })
   })
 })

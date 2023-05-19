@@ -90,6 +90,26 @@ describe('/approve-application-claim', () => {
         expect($('.govuk-heading-l').text()).toEqual('403 - Forbidden')
       })
 
+      test('Approve application invalid reference', async () => {
+        auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+        const options = {
+          method: 'POST',
+          url,
+          auth,
+          headers: { cookie: `crumb=${crumb}` },
+          payload: {
+            reference: 123,
+            confirm: ['approveClaim', 'sentChecklist'],
+            crumb
+          }
+        }
+
+        const res = await global.__SERVER__.inject(options)
+
+        expect(res.statusCode).toBe(302)
+        expect(res.headers.location).toEqual('/view-application/123?page=1&approve=true&errors=%5B%5D')
+      })
+
       test.each([
         [authoriser, 'authoriser'],
         [administrator, 'administrator']
