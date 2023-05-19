@@ -47,6 +47,7 @@ module.exports = {
     handler: async (request, h) => {
       if (config.rbac.enabled) {
         if (JSON.stringify(request.payload.confirm) === JSON.stringify(['rejectClaim', 'sentChecklist'])) {
+          await crumbCache.generateNewCrumb(request, h)
           const response = await processStageActions(
             request,
             permissions.authoriser,
