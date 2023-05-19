@@ -48,7 +48,7 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
   }
 
   console.log(`view-application: ${JSON.stringify({
-    refernce: applicationReference,
+    applicationReference,
     userName,
     applicationStatus,
     subStatus,
