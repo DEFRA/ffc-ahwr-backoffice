@@ -19,12 +19,12 @@ async function getAllStageExecutions () {
 
 async function getStageExecutionByApplication (applicationReference) {
   const url = `${applicationApiUri}/stageexecution/${applicationReference}`
-  console.log(`Application API: Getting stage executions by application ${applicationReference}`)
   try {
     const response = await Wreck.get(url, { json: true })
     if (response.res.statusCode !== 200) {
       throw new Error(`HTTP ${response.res.statusCode} (${response.res.statusMessage})`)
     }
+    console.log(`Application API: Got stage executions by application ${applicationReference}: ${response.payload}`)
     return response.payload
   } catch (err) {
     console.log(`Application API: Error while getting stage executions by application: ${err.message}`)

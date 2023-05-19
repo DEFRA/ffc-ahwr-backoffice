@@ -47,6 +47,20 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
     }
   }
 
+  console.log(`view-application: ${JSON.stringify({
+    refernce: applicationReference,
+    userName,
+    applicationStatus,
+    subStatus,
+    canUserRecommend,
+    canUserAuthorise,
+    canClaimBeRecommended,
+    claimCanBeAuthorised,
+    claimRecommendedToPayByDifferentUser,
+    claimRecommendedToRejectByDifferentUser,
+    hasClaimAlreadyBeenAuthorised
+  })}`)
+
   return {
     displayRecommendationForm,
     displayRecommendToPayConfirmationForm,
