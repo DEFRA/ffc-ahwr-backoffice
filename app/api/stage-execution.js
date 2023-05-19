@@ -27,7 +27,7 @@ async function getStageExecutionByApplication (applicationReference) {
     console.log(`Application API: Got stage executions by application ${applicationReference}: ${response.payload}`)
     return response.payload
   } catch (err) {
-    console.log(`Application API: Error while getting stage executions by application: ${err.message}`)
+    console.log(`Application API: Error while getting stage executions by application ${applicationReference}: ${err.message}`)
     console.error(err)
     return []
   }
