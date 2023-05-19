@@ -54,9 +54,12 @@ describe('Process stage action test', () => {
       { action: 'Updated stage execution', response: 'stage-execution-row' }
     ])
   })
-  test('Role not found should log error and return empty array', async () => {
-    const response = await processStageActions(mockRequest, 'Wrong role', mockStage, 'Recommend to pay', isClaimToBePaid)
-    expect(response).toEqual([])
+
+  test('Role not found should log error and re-throw it', async () => {
+    await expect(
+      processStageActions(mockRequest, 'Wrong role', mockStage, 'Recommend to pay', isClaimToBePaid)
+    ).rejects.toThrow(new Error('Error when filtering stage configurations for role Wrong role and stage Claim Approve/Reject'))
+
     expect(logSpy).toHaveBeenCalledWith('processStageActions error: ', `Error when filtering stage configurations for role Wrong role and stage ${mockStage}`)
     expect(errorSpy).toHaveBeenCalledWith(new Error(`Error when filtering stage configurations for role Wrong role and stage ${mockStage}`)
     )

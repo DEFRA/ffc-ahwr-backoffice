@@ -155,9 +155,9 @@ describe('Recommend To Pay test', () => {
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
 
-    test('Returns 500 on empty results', async () => {
+    test('Returns 500 on on error when processing stage actions', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
-      processStageActions.mockResolvedValueOnce([])
+      processStageActions.mockRejectedValueOnce(new Error('Error when processing stage actions'))
       const options = {
         method: 'POST',
         url,

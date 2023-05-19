@@ -23,7 +23,7 @@ module.exports = {
               Joi.string().valid('rejectClaim').required(),
               Joi.string().valid('sentChecklist').required()
             ).required(),
-            reference: Joi.string().valid(),
+            reference: Joi.string().valid().required(),
             page: Joi.number().greater(0).default(1)
           }
         : {
@@ -50,22 +50,24 @@ module.exports = {
     },
     handler: async (request, h) => {
       if (config.rbac.enabled) {
-        const mappedAuth = mapAuth(request)
-        if (!mappedAuth.isAuthoriser && !mappedAuth.isAdministrator) {
-          throw Boom.internal('routes:reject-application-claim: User must be an authoriser or an admin')
+        try {
+          const userRole = mapAuth(request)
+          if (!userRole.isAuthoriser && !userRole.isAdministrator) {
+            throw Boom.internal('routes:reject-application-claim: User must be an authoriser or an admin')
+          }
+          await processStageActions(
+            request,
+            userRole.isAuthoriser ? permissions.authoriser : permissions.administrator,
+            stages.claimApproveReject,
+            stageExecutionActions.authoriseRejection,
+            false
+          )
+          await crumbCache.generateNewCrumb(request, h)
+          return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
+        } catch (error) {
+          console.error(`routes:reject-application-claim: Error when processing request: ${error.message}`)
+          throw Boom.internal(error.message)
         }
-        await crumbCache.generateNewCrumb(request, h)
-        const response = await processStageActions(
-          request,
-          mappedAuth.isAuthoriser ? permissions.authoriser : permissions.administrator,
-          stages.claimApproveReject,
-          stageExecutionActions.authoriseRejection,
-          false
-        )
-        if (response.length === 0) {
-          throw Boom.internal('routes:reject-application-claim: Error when processing stage actions')
-        }
-        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
       } else {
         if (request.payload.rejectClaim === 'yes') {
           const userName = getUser(request).username
