@@ -3,12 +3,12 @@ const { applicationApiUri } = require('../config')
 
 async function getAllStageConfigurations () {
   const url = `${applicationApiUri}/stageconfiguration`
-  console.log('Application API: Getting all stage configurations')
   try {
     const response = await Wreck.get(url, { json: true })
     if (response.res.statusCode !== 200) {
       throw new Error(`HTTP ${response.res.statusCode} (${response.res.statusMessage})`)
     }
+    console.log(`Application API: Got all stage configurations: ${JSON.stringify(response.payload)}`)
     return response.payload
   } catch (err) {
     console.log(`Application API: Error while getting all stage configurations: ${err.message}`)

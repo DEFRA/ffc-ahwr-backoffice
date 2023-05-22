@@ -5,11 +5,11 @@ const getCrumbs = require('../../../utils/get-crumbs')
 
 const reference = 'AHWR-555A-FD4C'
 
-describe('Reject Application test', () => {
+describe('/approve-application-claim', () => {
   describe('RBAC enabled', () => {
     let processStageActions
     let crumb
-    const url = '/reject-application-claim/'
+    const url = '/approve-application-claim/'
     jest.mock('../../../../app/auth')
     let auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
 
@@ -69,7 +69,7 @@ describe('Reject Application test', () => {
           url,
           payload: {
             reference,
-            confirm: ['rejectClaim', 'sentChecklist'],
+            confirm: ['approveClaim', 'sentChecklist'],
             page: 1,
             crumb
           },
@@ -90,10 +90,30 @@ describe('Reject Application test', () => {
         expect($('.govuk-heading-l').text()).toEqual('403 - Forbidden')
       })
 
+      test('Approve application invalid reference', async () => {
+        auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+        const options = {
+          method: 'POST',
+          url,
+          auth,
+          headers: { cookie: `crumb=${crumb}` },
+          payload: {
+            reference: 123,
+            confirm: ['approveClaim', 'sentChecklist'],
+            crumb
+          }
+        }
+
+        const res = await global.__SERVER__.inject(options)
+
+        expect(res.statusCode).toBe(302)
+        expect(res.headers.location).toEqual('/view-application/123?page=1&approve=true&errors=%5B%5D')
+      })
+
       test.each([
         [authoriser, 'authoriser'],
         [administrator, 'administrator']
-      ])('Reject application claim processed', async (scope, role) => {
+      ])('Approve application claim processed', async (scope, role) => {
         auth = { strategy: 'session-auth', credentials: { scope: [scope], account: { homeAccountId: 'testId', name: 'admin' } } }
         const options = {
           method: 'POST',
@@ -102,7 +122,7 @@ describe('Reject Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference,
-            confirm: ['rejectClaim', 'sentChecklist'],
+            confirm: ['approveClaim', 'sentChecklist'],
             page: 1,
             crumb
           }
@@ -119,34 +139,14 @@ describe('Reject Application test', () => {
           expect.anything(),
           role,
           'Claim Approve/Reject',
-          'Rejected',
-          false
+          'Paid',
+          true
         )
         expect(res.statusCode).toBe(302)
         expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
       })
 
-      test('Reject application invalid reference', async () => {
-        auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
-        const options = {
-          method: 'POST',
-          url,
-          auth,
-          headers: { cookie: `crumb=${crumb}` },
-          payload: {
-            reference: 123,
-            confirm: ['rejectClaim', 'sentChecklist'],
-            crumb
-          }
-        }
-
-        const res = await global.__SERVER__.inject(options)
-
-        expect(res.statusCode).toBe(302)
-        expect(res.headers.location).toEqual('/view-application/123?page=1&reject=true&errors=%5B%5D')
-      })
-
-      test('Reject application claim not processed', async () => {
+      test('Approve application claim not processed', async () => {
         const options = {
           method: 'POST',
           url,
@@ -162,39 +162,39 @@ describe('Reject Application test', () => {
         const res = await global.__SERVER__.inject(options)
         expect(processStageActions).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
-        expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&reject=true&errors=${encodeURIComponent(JSON.stringify([{
+        expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&approve=true&errors=${encodeURIComponent(JSON.stringify([{
           text: 'You must select both checkboxes',
-          href: '#reject-claim-panel'
+          href: '#authorise-payment-panel'
         }]))}`)
       })
-    })
 
-    test('retuns 400 Bad Request', async () => {
-      const options = {
-        method: 'POST',
-        url,
-        auth,
-        headers: { cookie: `crumb=${crumb}` },
-        payload: {
-          reference,
-          page: 1,
-          crumb
+      test('retuns 400 Bad Request', async () => {
+        const options = {
+          method: 'POST',
+          url,
+          auth,
+          headers: { cookie: `crumb=${crumb}` },
+          payload: {
+            reference,
+            page: 1,
+            crumb
+          }
         }
-      }
-      const res = await global.__SERVER__.inject(options)
-      expect(processStageActions).not.toHaveBeenCalled()
-      expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&reject=true&errors=${encodeURIComponent(JSON.stringify([{
-        text: 'You must select both checkboxes',
-        href: '#reject-claim-panel'
-      }]))}`)
+        const res = await global.__SERVER__.inject(options)
+        expect(processStageActions).not.toHaveBeenCalled()
+        expect(res.statusCode).toBe(302)
+        expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&approve=true&errors=${encodeURIComponent(JSON.stringify([{
+          text: 'You must select both checkboxes',
+          href: '#authorise-payment-panel'
+        }]))}`)
+      })
     })
   })
 
   describe('RBAC disabled', () => {
     let applications
     let crumb
-    const url = '/reject-application-claim/'
+    const url = '/approve-application-claim/'
     jest.mock('../../../../app/auth')
     let auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
 
@@ -206,8 +206,8 @@ describe('Reject Application test', () => {
         }
       }))
 
-      applications = require('../../../../app/api/applications')
       jest.mock('../../../../app/api/applications')
+      applications = require('../../../../app/api/applications')
 
       applications.processApplicationClaim = jest.fn().mockResolvedValue(true)
     })
@@ -256,7 +256,7 @@ describe('Reject Application test', () => {
           url,
           payload: {
             reference,
-            rejectClaim: 'yes',
+            approveClaim: 'yes',
             page: 1,
             crumb
           },
@@ -272,7 +272,7 @@ describe('Reject Application test', () => {
         expect($('.govuk-heading-l').text()).toEqual('403 - Forbidden')
       })
 
-      test('Reject application claim processed', async () => {
+      test('Approve application claim processed', async () => {
         auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
         const options = {
           method: 'POST',
@@ -281,19 +281,19 @@ describe('Reject Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference,
-            rejectClaim: 'yes',
+            approveClaim: 'yes',
             page: 1,
             crumb
           }
         }
         const res = await global.__SERVER__.inject(options)
+        expect(applications.processApplicationClaim).toHaveBeenCalledWith(reference, 'admin', true)
         expect(applications.processApplicationClaim).toHaveBeenCalledTimes(1)
-        expect(applications.processApplicationClaim).toHaveBeenCalledWith(reference, 'admin', false)
         expect(res.statusCode).toBe(302)
         expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
       })
 
-      test('Reject application claim not processed', async () => {
+      test('Approve application claim not processed', async () => {
         const options = {
           method: 'POST',
           url,
@@ -301,7 +301,25 @@ describe('Reject Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference,
-            rejectClaim: 'no',
+            approveClaim: 'no',
+            page: 1,
+            crumb
+          }
+        }
+        const res = await global.__SERVER__.inject(options)
+        expect(applications.processApplicationClaim).not.toHaveBeenCalled()
+        expect(res.statusCode).toBe(302)
+        expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+      })
+
+      test('retuns 400 Bad Request', async () => {
+        const options = {
+          method: 'POST',
+          url,
+          auth,
+          headers: { cookie: `crumb=${crumb}` },
+          payload: {
+            reference,
             page: 1,
             crumb
           }

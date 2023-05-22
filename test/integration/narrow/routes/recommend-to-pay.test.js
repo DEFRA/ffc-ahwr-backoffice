@@ -1,4 +1,4 @@
-const { administrator } = require('../../../../app/auth/permissions')
+const { administrator, recommender } = require('../../../../app/auth/permissions')
 const getCrumbs = require('../../../utils/get-crumbs')
 
 const applications = require('../../../../app/api/applications')
@@ -57,8 +57,18 @@ describe('Recommend To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(logSpy).toHaveBeenCalledWith('Backoffice: recommend-to-pay: Error when validating payload: ', expect.any(Error))
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=%5B%7B%22text%22%3A%22You%20must%20select%20both%20checkboxes%22%2C%22href%22%3A%22%23pnl-recommend-confirmation%22%7D%5D`)
+      expect(logSpy).toHaveBeenCalledWith(`routes:recommend-to-pay: Error when validating payload: ${JSON.stringify({
+        errorMessage: '"confirm" must be an array',
+        payload: {
+          reference: 'AHWR-555A-FD4C',
+          page: 1,
+          confirm: 'checkedAgainstChecklist'
+        }
+      })}`)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=${encodeURIComponent(JSON.stringify([{
+        text: 'You must select both checkboxes',
+        href: '#pnl-recommend-confirmation'
+      }]))}`)
     })
 
     test('returns 302 when validation fails - no page given', async () => {
@@ -75,12 +85,24 @@ describe('Recommend To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(logSpy).toHaveBeenCalledWith('Backoffice: recommend-to-pay: Error when validating payload: ', expect.any(Error))
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=%5B%7B%22text%22%3A%22You%20must%20select%20both%20checkboxes%22%2C%22href%22%3A%22%23pnl-recommend-confirmation%22%7D%5D`)
+      expect(logSpy).toHaveBeenCalledWith(`routes:recommend-to-pay: Error when validating payload: ${JSON.stringify({
+        errorMessage: '"confirm" must be an array',
+        payload: {
+          reference: 'AHWR-555A-FD4C',
+          confirm: 'checkedAgainstChecklist'
+        }
+      })}`)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=${encodeURIComponent(JSON.stringify([{
+        text: 'You must select both checkboxes',
+        href: '#pnl-recommend-confirmation'
+      }]))}`)
     })
 
-    test('Redirects correctly on successful validation', async () => {
-      auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+    test.each([
+      [recommender, 'recommender'],
+      [administrator, 'administrator']
+    ])('Redirects correctly on successful validation', async (scope, role) => {
+      auth = { strategy: 'session-auth', credentials: { scope: [scope], account: { homeAccountId: 'testId', name: 'admin' } } }
       const response = [
         { action: 'addStageExecution', data: { applicationReference: reference } },
         { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
@@ -100,13 +122,16 @@ describe('Recommend To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), 'recommender', 'Claim Approve/Reject', 'Recommend to pay', false)
+      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommend to pay', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
 
-    test('Redirects correctly on successful validation - no page given', async () => {
-      auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+    test.each([
+      [recommender, 'recommender'],
+      [administrator, 'administrator']
+    ])('Redirects correctly on successful validation - no page given', async (scope, role) => {
+      auth = { strategy: 'session-auth', credentials: { scope: [scope], account: { homeAccountId: 'testId', name: 'admin' } } }
       const response = [
         { action: 'addStageExecution', data: { applicationReference: reference } },
         { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
@@ -125,14 +150,14 @@ describe('Recommend To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), 'recommender', 'Claim Approve/Reject', 'Recommend to pay', false)
+      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommend to pay', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
 
-    test('Returns 500 on empty results', async () => {
+    test('Returns 500 on on error when processing stage actions', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
-      processStageActions.mockResolvedValueOnce([])
+      processStageActions.mockRejectedValueOnce(new Error('Error when processing stage actions'))
       const options = {
         method: 'POST',
         url,
@@ -150,7 +175,7 @@ describe('Recommend To Pay test', () => {
       expect(Boom.internal).toHaveBeenCalledWith('Error when processing stage actions')
     })
 
-    test('Returns 500 on wrong payload', async () => {
+    test('Returns 302 on wrong payload', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       processStageActions.mockResolvedValueOnce([])
       const options = {
@@ -166,8 +191,31 @@ describe('Recommend To Pay test', () => {
         }
       }
       const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(500)
-      expect(Boom.internal).toHaveBeenCalledWith('Error when validating payload', ['sentChecklist'])
+      expect(res.statusCode).toBe(302)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=${encodeURIComponent(JSON.stringify([{
+        text: 'You must select both checkboxes',
+        href: '#pnl-recommend-confirmation'
+      }]))}`)
+    })
+
+    test('Recommend to pay invalid reference', async () => {
+      auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+      const options = {
+        method: 'POST',
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference: 123,
+          confirm: ['recommendToPay', 'sentChecklist'],
+          crumb
+        }
+      }
+
+      const res = await global.__SERVER__.inject(options)
+
+      expect(res.statusCode).toBe(302)
+      expect(res.headers.location).toEqual('/view-application/123?page=1&recommendToPay=true&errors=%5B%5D')
     })
   })
 })

@@ -51,7 +51,7 @@ const processStageActions = async (request, role, stage, action, isClaimToBePaid
   } catch (error) {
     console.log('processStageActions error: ', error.message)
     console.error(error)
-    return []
+    throw error
   }
 }
 
