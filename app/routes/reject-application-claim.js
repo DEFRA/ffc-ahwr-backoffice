@@ -57,7 +57,7 @@ module.exports = {
           }
           await processStageActions(
             request,
-            userRole.isAuthoriser ? permissions.authoriser : permissions.administrator,
+            permissions.authoriser,
             stages.claimApproveReject,
             stageExecutionActions.authoriseRejection,
             false

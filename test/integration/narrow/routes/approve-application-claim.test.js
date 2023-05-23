@@ -112,7 +112,7 @@ describe('/approve-application-claim', () => {
 
       test.each([
         [authoriser, 'authoriser'],
-        [administrator, 'administrator']
+        [administrator, 'authoriser']
       ])('Approve application claim processed', async (scope, role) => {
         auth = { strategy: 'session-auth', credentials: { scope: [scope], account: { homeAccountId: 'testId', name: 'admin' } } }
         const options = {

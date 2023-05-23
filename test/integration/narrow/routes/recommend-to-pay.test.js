@@ -100,7 +100,7 @@ describe('Recommend To Pay test', () => {
 
     test.each([
       [recommender, 'recommender'],
-      [administrator, 'administrator']
+      [administrator, 'recommender']
     ])('Redirects correctly on successful validation', async (scope, role) => {
       auth = { strategy: 'session-auth', credentials: { scope: [scope], account: { homeAccountId: 'testId', name: 'admin' } } }
       const response = [
@@ -129,7 +129,7 @@ describe('Recommend To Pay test', () => {
 
     test.each([
       [recommender, 'recommender'],
-      [administrator, 'administrator']
+      [administrator, 'recommender']
     ])('Redirects correctly on successful validation - no page given', async (scope, role) => {
       auth = { strategy: 'session-auth', credentials: { scope: [scope], account: { homeAccountId: 'testId', name: 'admin' } } }
       const response = [
