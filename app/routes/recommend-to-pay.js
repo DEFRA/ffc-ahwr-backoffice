@@ -43,7 +43,7 @@ module.exports = {
         }
         await processStageActions(
           request,
-          userRole.isRecommender ? permissions.recommender : permissions.administrator,
+          permissions.recommender,
           stages.claimApproveReject,
           stageExecutionActions.recommendToPay,
           false

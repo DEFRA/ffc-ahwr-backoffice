@@ -92,7 +92,7 @@ describe('Reject Application test', () => {
 
       test.each([
         [authoriser, 'authoriser'],
-        [administrator, 'administrator']
+        [administrator, 'authoriser']
       ])('Reject application claim processed', async (scope, role) => {
         auth = { strategy: 'session-auth', credentials: { scope: [scope], account: { homeAccountId: 'testId', name: 'admin' } } }
         const options = {
