@@ -13,7 +13,7 @@ const processStageActions = async (request, role, stage, action, isClaimToBePaid
     const step = stageConfigurations
       .find(configuration => configuration.role.roles.includes(role) &&
                 configuration.stage === stage)
-    console.log(`processStageActions - Found step ${step} for stageConfigurations ${JSON.stringify(stageConfigurations)}`)
+    console.log(`processStageActions - Found step ${JSON.stringify(step)} for stageConfigurations ${JSON.stringify(stageConfigurations)}`)
     if (!step) {
       throw new Error(`Error when filtering stage configurations for role ${role} and stage ${stage}`)
     }
