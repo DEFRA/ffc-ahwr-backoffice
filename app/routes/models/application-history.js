@@ -71,6 +71,10 @@ const gethistoryTableHeader = () => {
 const gethistoryTableRows = (applicationHistory) => {
   const historyRecords = filterRecords(applicationHistory)
 
+  historyRecords.sort((a, b) => {
+    return new Date(a.ChangedOn) - new Date(b.ChangedOn)
+  })
+
   return historyRecords?.map(hr => {
     return [
       { text: formatDate(hr.ChangedOn, moment.ISO_8601, 'DD/MM/YYYY') },
