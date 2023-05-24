@@ -17,7 +17,6 @@ const parseData = (payload, key) => {
   } catch (error) {
     console.log(`${key} not found`)
   }
-  console.log(`${key} = ${value}`)
   return value
 }
 
@@ -32,7 +31,6 @@ const filterRecords = (applicationHistory) => {
     stageExecutionActions.authoriseRejection
   ]
   const historyRecords = []
-  console.log(applicationHistory, 'filtering record')
   applicationHistory.forEach(apphr => {
     if (historyTabAllowedStatus.includes(parseData(apphr.Payload, 'statusId'))) {
       historyRecords.push(apphr)
