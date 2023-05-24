@@ -56,9 +56,9 @@ const getStatusText = (status) => {
     case stageExecutionActions.recommendToReject:
       return 'Recommend to reject'
     case stageExecutionActions.authorisePayment:
-      return 'Authorised to pay'
+      return 'Authorise to pay'
     case stageExecutionActions.authoriseRejection:
-      return 'Authorised to reject'
+      return 'Authorise to reject'
     default:
       return ''
   }
