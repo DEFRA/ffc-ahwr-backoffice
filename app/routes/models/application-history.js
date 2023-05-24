@@ -1,5 +1,6 @@
 const moment = require('moment')
 const applicationStatus = require('../../../app/constants/application-status')
+const stageExecutionActions = require('../../../app/constants/application-stage-execution-actions')
 
 const formatDate = (dateToFormat, currentDateFormat = 'YYYY-MM-DD', dateFormat = 'DD/MM/YYYY HH:mm') => {
   if (dateToFormat) {
@@ -22,7 +23,15 @@ const parseData = (payload, key) => {
 }
 
 const filterRecords = (applicationHistory) => {
-  const historyTabAllowedStatus = [applicationStatus.withdrawn, applicationStatus.readyToPay, applicationStatus.rejected]
+  const historyTabAllowedStatus = [
+    applicationStatus.withdrawn,
+    applicationStatus.readyToPay,
+    applicationStatus.rejected,
+    stageExecutionActions.recommendToPay,
+    stageExecutionActions.recommendToReject,
+    stageExecutionActions.authorisePayment,
+    stageExecutionActions.authoriseRejection
+  ]
   const historyRecords = []
 
   applicationHistory.historyRecords?.forEach(apphr => {
@@ -42,6 +51,14 @@ const getStatusText = (status) => {
       return 'Claim approved'
     case applicationStatus.rejected:
       return 'Claim rejected'
+    case stageExecutionActions.recommendToPay:
+      return 'Recommend to pay'
+    case stageExecutionActions.recommendToReject:
+      return 'Recommend to reject'
+    case stageExecutionActions.authorisePayment:
+      return 'Authorised to pay'
+    case stageExecutionActions.authoriseRejection:
+      return 'Authorised to reject'
     default:
       return ''
   }
