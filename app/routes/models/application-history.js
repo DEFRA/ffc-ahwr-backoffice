@@ -35,7 +35,7 @@ const filterRecords = (applicationHistory) => {
   const historyRecords = []
 
   applicationHistory.historyRecords?.forEach(apphr => {
-    if (historyTabAllowedStatus.includes(parseData(apphr.Payload, 'statusId'))) {
+    if (historyTabAllowedStatus.includes(parseData(apphr.Payload, 'statusId'), parseData(apphr.Payload, 'subStatus'))) {
       historyRecords.push(apphr)
     }
   })
@@ -43,22 +43,16 @@ const filterRecords = (applicationHistory) => {
   return historyRecords
 }
 
-const getStatusText = (status) => {
+const getStatusText = (status, subStatus) => {
   switch (status) {
     case applicationStatus.withdrawn:
       return 'Withdraw completed'
     case applicationStatus.readyToPay:
-      return 'Claim approved'
+      return subStatus || 'Claim approved'
     case applicationStatus.rejected:
-      return 'Claim rejected'
-    case stageExecutionActions.recommendToPay:
-      return 'Recommend to pay'
-    case stageExecutionActions.recommendToReject:
-      return 'Recommend to reject'
-    case stageExecutionActions.authorisePayment:
-      return 'Authorise to pay'
-    case stageExecutionActions.authoriseRejection:
-      return 'Authorise to reject'
+      return subStatus || 'Claim rejected'
+    case applicationStatus.inCheck:
+      return subStatus
     default:
       return ''
   }
