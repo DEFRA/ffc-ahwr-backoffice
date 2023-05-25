@@ -60,6 +60,7 @@ describe('Application-history model test', () => {
     expect(res.header[3].text).toEqual('User')
     expect(res.rows.length).toBe(0)
   })
+
   test('getHistoryData - Return correct rows', async () => {
     const applicationHistoryData = {
       historyRecords: [
@@ -82,6 +83,26 @@ describe('Application-history model test', () => {
           ChangedOn: '2023-03-26T13:00:12.000Z',
           Payload: '{\n  "reference": "AHWR-7C72-8871",\n  "statusId": 9\n}',
           ChangedBy: 'Test Person 4'
+        },
+        {
+          ChangedOn: '2023-03-27T17:00:17.000Z',
+          Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 5\n, "subStatus": "Recommend to reject"}',
+          ChangedBy: 'Recommender'
+        },
+        {
+          ChangedOn: '2023-03-28T18:00:18.000Z',
+          Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 10\n, "subStatus": "Authorise to reject"}',
+          ChangedBy: 'Authoriser'
+        },
+        {
+          ChangedOn: '2023-03-29T19:00:19.000Z',
+          Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 5\n, "subStatus": "Recommend to pay"}',
+          ChangedBy: 'Recommender'
+        },
+        {
+          ChangedOn: '2023-03-30T20:00:20.000Z',
+          Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 5\n, "subStatus": "Authorise to pay"}',
+          ChangedBy: 'Authoriser'
         }
       ]
     }
@@ -91,14 +112,37 @@ describe('Application-history model test', () => {
     expect(res.header[1].text).toEqual('Time')
     expect(res.header[2].text).toEqual('Action')
     expect(res.header[3].text).toEqual('User')
-    expect(res.rows.length).toEqual(2)
+
+    expect(res.rows.length).toEqual(6)
+
     expect(res.rows[0][0].text).toEqual('24/03/2023')
     expect(res.rows[0][1].text).toEqual('11:00:12')
     expect(res.rows[0][2].text).toEqual('Withdraw completed')
     expect(res.rows[0][3].text).toEqual('Test Person 2')
+
     expect(res.rows[1][0].text).toEqual('26/03/2023')
     expect(res.rows[1][1].text).toEqual('13:00:12')
     expect(res.rows[1][2].text).toEqual('Claim approved')
     expect(res.rows[1][3].text).toEqual('Test Person 4')
+
+    expect(res.rows[2][0].text).toEqual('27/03/2023')
+    expect(res.rows[2][1].text).toEqual('17:00:17')
+    expect(res.rows[2][2].text).toEqual('Recommend to reject')
+    expect(res.rows[2][3].text).toEqual('Recommender')
+
+    expect(res.rows[3][0].text).toEqual('28/03/2023')
+    expect(res.rows[3][1].text).toEqual('18:00:18')
+    expect(res.rows[3][2].text).toEqual('Authorise to reject')
+    expect(res.rows[3][3].text).toEqual('Authoriser')
+
+    expect(res.rows[4][0].text).toEqual('29/03/2023')
+    expect(res.rows[4][1].text).toEqual('19:00:19')
+    expect(res.rows[4][2].text).toEqual('Recommend to pay')
+    expect(res.rows[4][3].text).toEqual('Recommender')
+
+    expect(res.rows[5][0].text).toEqual('30/03/2023')
+    expect(res.rows[5][1].text).toEqual('20:00:20')
+    expect(res.rows[5][2].text).toEqual('Authorise to pay')
+    expect(res.rows[5][3].text).toEqual('Authoriser')
   })
 })

@@ -22,9 +22,13 @@ const parseData = (payload, key) => {
 }
 
 const filterRecords = (applicationHistory) => {
-  const historyTabAllowedStatus = [applicationStatus.withdrawn, applicationStatus.readyToPay, applicationStatus.rejected]
+  const historyTabAllowedStatus = [
+    applicationStatus.withdrawn,
+    applicationStatus.readyToPay,
+    applicationStatus.rejected,
+    applicationStatus.inCheck
+  ]
   const historyRecords = []
-
   applicationHistory.historyRecords?.forEach(apphr => {
     if (historyTabAllowedStatus.includes(parseData(apphr.Payload, 'statusId'))) {
       historyRecords.push(apphr)
@@ -34,14 +38,16 @@ const filterRecords = (applicationHistory) => {
   return historyRecords
 }
 
-const getStatusText = (status) => {
+const getStatusText = (status, subStatus) => {
   switch (status) {
     case applicationStatus.withdrawn:
       return 'Withdraw completed'
     case applicationStatus.readyToPay:
-      return 'Claim approved'
+      return subStatus || 'Claim approved'
     case applicationStatus.rejected:
-      return 'Claim rejected'
+      return subStatus || 'Claim rejected'
+    case applicationStatus.inCheck:
+      return subStatus
     default:
       return ''
   }
@@ -54,11 +60,15 @@ const gethistoryTableHeader = () => {
 const gethistoryTableRows = (applicationHistory) => {
   const historyRecords = filterRecords(applicationHistory)
 
+  historyRecords.sort((a, b) => {
+    return new Date(a.ChangedOn) - new Date(b.ChangedOn)
+  })
+
   return historyRecords?.map(hr => {
     return [
       { text: formatDate(hr.ChangedOn, moment.ISO_8601, 'DD/MM/YYYY') },
       { text: formatDate(hr.ChangedOn, moment.ISO_8601, 'HH:mm:ss') },
-      { text: getStatusText(parseData(hr.Payload, 'statusId')) },
+      { text: getStatusText(parseData(hr.Payload, 'statusId'), parseData(hr.Payload, 'subStatus')) },
       { text: hr.ChangedBy }
     ]
   })
