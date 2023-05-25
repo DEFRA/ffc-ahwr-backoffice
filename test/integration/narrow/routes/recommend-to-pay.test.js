@@ -15,6 +15,8 @@ const Boom = require('@hapi/boom')
 
 const reference = 'AHWR-555A-FD4C'
 const url = '/recommend-to-pay'
+const encodedEmptyArray = 'W10%3D'
+const encodedErrors = 'W3sidGV4dCI6IllvdSBtdXN0IHNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI3BubC1yZWNvbW1lbmQtY29uZmlybWF0aW9uIn1d'
 
 applications.processApplicationClaim = jest.fn().mockResolvedValue(true)
 
@@ -65,10 +67,7 @@ describe('Recommend To Pay test', () => {
           confirm: 'checkedAgainstChecklist'
         }
       })}`)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=${encodeURIComponent(JSON.stringify([{
-        text: 'You must select both checkboxes',
-        href: '#pnl-recommend-confirmation'
-      }]))}`)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=${encodedErrors}`)
     })
 
     test('returns 302 when validation fails - no page given', async () => {
@@ -92,10 +91,7 @@ describe('Recommend To Pay test', () => {
           confirm: 'checkedAgainstChecklist'
         }
       })}`)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=${encodeURIComponent(JSON.stringify([{
-        text: 'You must select both checkboxes',
-        href: '#pnl-recommend-confirmation'
-      }]))}`)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=${encodedErrors}`)
     })
 
     test.each([
@@ -192,10 +188,7 @@ describe('Recommend To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=${encodeURIComponent(JSON.stringify([{
-        text: 'You must select both checkboxes',
-        href: '#pnl-recommend-confirmation'
-      }]))}`)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=${encodedErrors}`)
     })
 
     test('Recommend to pay invalid reference', async () => {
@@ -215,7 +208,7 @@ describe('Recommend To Pay test', () => {
       const res = await global.__SERVER__.inject(options)
 
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual('/view-application/123?page=1&recommendToPay=true&errors=%5B%5D')
+      expect(res.headers.location).toEqual(`/view-application/123?page=1&recommendToPay=true&errors=${encodedEmptyArray}`)
     })
   })
 })
