@@ -1,3 +1,4 @@
+const { Buffer } = require('buffer')
 const Joi = require('joi')
 const boom = require('@hapi/boom')
 const { getApplication, getApplicationHistory } = require('../api/applications')
@@ -58,7 +59,10 @@ module.exports = {
         subStatus
       } = await claimHelper(request, request.params.reference, application.status.status)
 
-      const errors = request.query.errors ? JSON.parse(request.query.errors) : []
+      const errors = request.query.errors
+        ? JSON.parse(Buffer.from(request.query.errors, 'base64').toString('utf8'))
+        : []
+
       const recommend = {
         displayRecommendToPayConfirmationForm,
         displayRecommendToRejectConfirmationForm,

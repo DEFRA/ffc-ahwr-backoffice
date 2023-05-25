@@ -4,6 +4,8 @@ const { administrator, authoriser } = require('../../../../app/auth/permissions'
 const getCrumbs = require('../../../utils/get-crumbs')
 
 const reference = 'AHWR-555A-FD4C'
+const encodedEmptyArray = 'W10%3D'
+const encodedErrors = 'W3sidGV4dCI6IllvdSBtdXN0IHNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI3JlamVjdC1jbGFpbS1wYW5lbCJ9XQ%3D%3D'
 
 describe('Reject Application test', () => {
   describe('RBAC enabled', () => {
@@ -143,7 +145,7 @@ describe('Reject Application test', () => {
         const res = await global.__SERVER__.inject(options)
 
         expect(res.statusCode).toBe(302)
-        expect(res.headers.location).toEqual('/view-application/123?page=1&reject=true&errors=%5B%5D')
+        expect(res.headers.location).toEqual(`/view-application/123?page=1&reject=true&errors=${encodedEmptyArray}`)
       })
 
       test('Reject application claim not processed', async () => {
@@ -162,10 +164,7 @@ describe('Reject Application test', () => {
         const res = await global.__SERVER__.inject(options)
         expect(processStageActions).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
-        expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&reject=true&errors=${encodeURIComponent(JSON.stringify([{
-          text: 'You must select both checkboxes',
-          href: '#reject-claim-panel'
-        }]))}`)
+        expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&reject=true&errors=${encodedErrors}`)
       })
     })
 
@@ -184,10 +183,7 @@ describe('Reject Application test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(processStageActions).not.toHaveBeenCalled()
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&reject=true&errors=${encodeURIComponent(JSON.stringify([{
-        text: 'You must select both checkboxes',
-        href: '#reject-claim-panel'
-      }]))}`)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&reject=true&errors=${encodedErrors}`)
     })
   })
 

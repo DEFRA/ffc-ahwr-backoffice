@@ -1,3 +1,4 @@
+const { Buffer } = require('buffer')
 const Joi = require('joi')
 const Boom = require('@hapi/boom')
 const mapAuth = require('../auth/map-auth')
@@ -32,7 +33,9 @@ module.exports = {
             href: '#pnl-recommend-confirmation'
           })
         }
-        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&recommendToPay=true&errors=${encodeURIComponent(JSON.stringify(errors))}`).takeover()
+        return h
+          .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&recommendToPay=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
+          .takeover()
       }
     },
     handler: async (request, h) => {

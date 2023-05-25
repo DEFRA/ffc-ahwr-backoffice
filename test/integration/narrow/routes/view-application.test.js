@@ -1,4 +1,5 @@
 const cheerio = require('cheerio')
+const { Buffer } = require('buffer')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const applications = require('../../../../app/api/applications')
 const { administrator } = require('../../../../app/auth/permissions')
@@ -210,10 +211,10 @@ describe('View Application test', () => {
       const ERROR_MESSAGE_TEXT = 'error_message_text'
       const options = {
         method: 'GET',
-        url: `${url}?errors=${encodeURIComponent(JSON.stringify([{
+        url: `${url}?errors=${encodeURIComponent(Buffer.from(JSON.stringify([{
           text: ERROR_MESSAGE_TEXT,
           href: '#authorise-payment-panel'
-        }]))}`,
+        }])).toString('base64'))}`,
         auth
       }
 
@@ -244,10 +245,10 @@ describe('View Application test', () => {
       const ERROR_MESSAGE_TEXT = 'error_message_text'
       const options = {
         method: 'GET',
-        url: `${url}?errors=${encodeURIComponent(JSON.stringify([{
+        url: `${url}?errors=${encodeURIComponent(Buffer.from(JSON.stringify([{
           text: ERROR_MESSAGE_TEXT,
           href: '#pnl-recommend-confirmation'
-        }]))}`,
+        }])).toString('base64'))}`,
         auth
       }
 
@@ -279,10 +280,10 @@ describe('View Application test', () => {
       const ERROR_MESSAGE_TEXT = 'error_message_text'
       const options = {
         method: 'GET',
-        url: `${url}?errors=${encodeURIComponent(JSON.stringify([{
+        url: `${url}?errors=${encodeURIComponent(Buffer.from(JSON.stringify([{
           text: ERROR_MESSAGE_TEXT,
           href: '#reject-claim-panel'
-        }]))}`,
+        }])).toString('base64'))}`,
         auth
       }
 
@@ -313,10 +314,10 @@ describe('View Application test', () => {
       const ERROR_MESSAGE_TEXT = 'error_message_text'
       const options = {
         method: 'GET',
-        url: `${url}?errors=${encodeURIComponent(JSON.stringify([{
+        url: `${url}?errors=${encodeURIComponent(Buffer.from(JSON.stringify([{
           text: ERROR_MESSAGE_TEXT,
           href: '#pnl-recommend-confirmation'
-        }]))}`,
+        }])).toString('base64'))}`,
         auth
       }
 
