@@ -4,7 +4,7 @@ const { administrator, authoriser } = require('../../../../app/auth/permissions'
 const getCrumbs = require('../../../utils/get-crumbs')
 
 const reference = 'AHWR-555A-FD4C'
-const encodedErrors = 'W3sidGV4dCI6IllvdSBtdXN0IHNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI2F1dGhvcmlzZS1wYXltZW50LXBhbmVsIn1d'
+const encodedErrors = 'W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI2F1dGhvcmlzZS1wYXltZW50LXBhbmVsIn1d'
 
 describe('/approve-application-claim', () => {
   describe('RBAC enabled', () => {

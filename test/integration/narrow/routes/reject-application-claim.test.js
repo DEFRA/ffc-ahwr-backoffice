@@ -5,7 +5,7 @@ const getCrumbs = require('../../../utils/get-crumbs')
 
 const reference = 'AHWR-555A-FD4C'
 const encodedEmptyArray = 'W10%3D'
-const encodedErrors = 'W3sidGV4dCI6IllvdSBtdXN0IHNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI3JlamVjdC1jbGFpbS1wYW5lbCJ9XQ%3D%3D'
+const encodedErrors = 'W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI3JlamVjdC1jbGFpbS1wYW5lbCJ9XQ%3D%3D'
 
 describe('Reject Application test', () => {
   describe('RBAC enabled', () => {

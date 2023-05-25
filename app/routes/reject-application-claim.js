@@ -40,7 +40,7 @@ module.exports = {
         const errors = []
         if (error.details && error.details[0].context.key === 'confirm') {
           errors.push({
-            text: 'You must select both checkboxes',
+            text: 'Select both checkboxes',
             href: '#reject-claim-panel'
           })
         }
