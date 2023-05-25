@@ -16,7 +16,7 @@ const Boom = require('@hapi/boom')
 const reference = 'AHWR-555A-FD4C'
 const url = '/recommend-to-reject'
 const encodedEmptyArray = 'W10%3D'
-const encodedErrors = 'W3sidGV4dCI6IllvdSBtdXN0IHNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI3BubC1yZWNvbW1lbmQtY29uZmlybWF0aW9uIn1d'
+const encodedErrors = 'W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI3BubC1yZWNvbW1lbmQtY29uZmlybWF0aW9uIn1d'
 
 applications.processApplicationClaim = jest.fn().mockResolvedValue(true)
 
