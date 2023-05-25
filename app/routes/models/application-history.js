@@ -1,6 +1,5 @@
 const moment = require('moment')
 const applicationStatus = require('../../../app/constants/application-status')
-const stageExecutionActions = require('../../../app/constants/application-stage-execution-actions')
 
 const formatDate = (dateToFormat, currentDateFormat = 'YYYY-MM-DD', dateFormat = 'DD/MM/YYYY HH:mm') => {
   if (dateToFormat) {
@@ -27,15 +26,11 @@ const filterRecords = (applicationHistory) => {
     applicationStatus.withdrawn,
     applicationStatus.readyToPay,
     applicationStatus.rejected,
-    stageExecutionActions.recommendToPay,
-    stageExecutionActions.recommendToReject,
-    stageExecutionActions.authorisePayment,
-    stageExecutionActions.authoriseRejection
+    applicationStatus.inCheck
   ]
   const historyRecords = []
-
   applicationHistory.historyRecords?.forEach(apphr => {
-    if (historyTabAllowedStatus.includes(parseData(apphr.Payload, 'statusId'), parseData(apphr.Payload, 'subStatus'))) {
+    if (historyTabAllowedStatus.includes(parseData(apphr.Payload, 'statusId'))) {
       historyRecords.push(apphr)
     }
   })
@@ -73,7 +68,7 @@ const gethistoryTableRows = (applicationHistory) => {
     return [
       { text: formatDate(hr.ChangedOn, moment.ISO_8601, 'DD/MM/YYYY') },
       { text: formatDate(hr.ChangedOn, moment.ISO_8601, 'HH:mm:ss') },
-      { text: getStatusText(parseData(hr.Payload, 'statusId')) },
+      { text: getStatusText(parseData(hr.Payload, 'statusId'), parseData(hr.Payload, 'subStatus')) },
       { text: hr.ChangedBy }
     ]
   })
