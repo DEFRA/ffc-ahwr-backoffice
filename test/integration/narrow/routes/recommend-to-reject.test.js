@@ -15,6 +15,8 @@ const Boom = require('@hapi/boom')
 
 const reference = 'AHWR-555A-FD4C'
 const url = '/recommend-to-reject'
+const encodedEmptyArray = 'W10%3D'
+const encodedErrors = 'W3sidGV4dCI6IllvdSBtdXN0IHNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI3BubC1yZWNvbW1lbmQtY29uZmlybWF0aW9uIn1d'
 
 applications.processApplicationClaim = jest.fn().mockResolvedValue(true)
 
@@ -65,7 +67,7 @@ describe('Recommend To Reject test', () => {
           confirm: 'checkedAgainstChecklist'
         }
       })}`)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToReject=true&errors=%5B%7B%22text%22%3A%22You%20must%20select%20both%20checkboxes%22%2C%22href%22%3A%22%23pnl-recommend-confirmation%22%7D%5D`)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}`)
     })
 
     test('returns 302 when validation fails - no page given', async () => {
@@ -89,7 +91,7 @@ describe('Recommend To Reject test', () => {
           confirm: 'checkedAgainstChecklist'
         }
       })}`)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToReject=true&errors=%5B%7B%22text%22%3A%22You%20must%20select%20both%20checkboxes%22%2C%22href%22%3A%22%23pnl-recommend-confirmation%22%7D%5D`)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}`)
     })
 
     test.each([
@@ -165,10 +167,7 @@ describe('Recommend To Reject test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToReject=true&errors=${encodeURIComponent(JSON.stringify([{
-        text: 'You must select both checkboxes',
-        href: '#pnl-recommend-confirmation'
-      }]))}`)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}`)
     })
 
     test('Recommend to reject invalid reference', async () => {
@@ -188,7 +187,7 @@ describe('Recommend To Reject test', () => {
       const res = await global.__SERVER__.inject(options)
 
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual('/view-application/123?page=1&recommendToReject=true&errors=%5B%5D')
+      expect(res.headers.location).toEqual(`/view-application/123?page=1&recommendToReject=true&errors=${encodedEmptyArray}`)
     })
 
     test('Returns 500 on error when processing stage actions', async () => {

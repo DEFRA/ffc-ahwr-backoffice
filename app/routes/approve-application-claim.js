@@ -1,3 +1,4 @@
+const { Buffer } = require('buffer')
 const Boom = require('@hapi/boom')
 const Joi = require('joi')
 const config = require('../config')
@@ -44,7 +45,7 @@ module.exports = {
           })
         }
         return h
-          .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&approve=true&errors=${encodeURIComponent(JSON.stringify(errors))}`)
+          .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&approve=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
           .takeover()
       }
     },

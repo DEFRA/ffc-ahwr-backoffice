@@ -4,6 +4,7 @@ const { administrator, authoriser } = require('../../../../app/auth/permissions'
 const getCrumbs = require('../../../utils/get-crumbs')
 
 const reference = 'AHWR-555A-FD4C'
+const encodedErrors = 'W3sidGV4dCI6IllvdSBtdXN0IHNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI2F1dGhvcmlzZS1wYXltZW50LXBhbmVsIn1d'
 
 describe('/approve-application-claim', () => {
   describe('RBAC enabled', () => {
@@ -107,7 +108,7 @@ describe('/approve-application-claim', () => {
         const res = await global.__SERVER__.inject(options)
 
         expect(res.statusCode).toBe(302)
-        expect(res.headers.location).toEqual('/view-application/123?page=1&approve=true&errors=%5B%5D')
+        expect(res.headers.location).toEqual('/view-application/123?page=1&approve=true&errors=W10%3D')
       })
 
       test.each([
@@ -162,10 +163,7 @@ describe('/approve-application-claim', () => {
         const res = await global.__SERVER__.inject(options)
         expect(processStageActions).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
-        expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&approve=true&errors=${encodeURIComponent(JSON.stringify([{
-          text: 'You must select both checkboxes',
-          href: '#authorise-payment-panel'
-        }]))}`)
+        expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&approve=true&errors=${encodedErrors}`)
       })
 
       test('retuns 400 Bad Request', async () => {
@@ -183,10 +181,7 @@ describe('/approve-application-claim', () => {
         const res = await global.__SERVER__.inject(options)
         expect(processStageActions).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
-        expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&approve=true&errors=${encodeURIComponent(JSON.stringify([{
-          text: 'You must select both checkboxes',
-          href: '#authorise-payment-panel'
-        }]))}`)
+        expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&approve=true&errors=${encodedErrors}`)
       })
     })
   })
