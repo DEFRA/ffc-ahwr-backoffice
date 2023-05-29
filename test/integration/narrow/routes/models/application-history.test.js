@@ -32,6 +32,7 @@ describe('Application-history model test', () => {
     expect(res.header[3].text).toEqual('User')
     expect(res.rows.length).toBe(0)
   })
+
   test.each([
     { statusId: 0 },
     { statusId: 1 },
@@ -41,14 +42,13 @@ describe('Application-history model test', () => {
     { statusId: 6 },
     { statusId: 7 },
     { statusId: 8 }
-  ])('getHistoryData - Invalid status field', async ({ statusId }) => {
+  ])('getHistoryData - Invalid status field %s', async ({ statusId }) => {
     const applicationHistoryData = {
       historyRecords: [
         {
-          date: '23/03/2023',
-          time: '10:00:12',
-          statusId: statusId,
-          user: 'Daniel Jones'
+          ChangedOn: '2023-03-30T20:00:15.000Z',
+          Payload: `{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": ${statusId}\n}`,
+          ChangedBy: 'Daniel Jones'
         }
       ]
     }
@@ -98,6 +98,11 @@ describe('Application-history model test', () => {
           ChangedOn: '2023-03-29T19:00:19.000Z',
           Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 5\n, "subStatus": "Recommend to pay"}',
           ChangedBy: 'Recommender'
+        },
+        {
+          ChangedOn: '2023-03-30T20:00:15.000Z',
+          Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 5\n}',
+          ChangedBy: 'admin'
         },
         {
           ChangedOn: '2023-03-30T20:00:20.000Z',

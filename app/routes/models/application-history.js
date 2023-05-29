@@ -25,13 +25,18 @@ const filterRecords = (applicationHistory) => {
   const historyTabAllowedStatus = [
     applicationStatus.withdrawn,
     applicationStatus.readyToPay,
-    applicationStatus.rejected,
-    applicationStatus.inCheck
+    applicationStatus.rejected
   ]
   const historyRecords = []
   applicationHistory.historyRecords?.forEach(apphr => {
-    if (historyTabAllowedStatus.includes(parseData(apphr.Payload, 'statusId'))) {
+    const statusId = parseData(apphr.Payload, 'statusId')
+    if (historyTabAllowedStatus.includes(statusId)) {
       historyRecords.push(apphr)
+    }
+    if (statusId === applicationStatus.inCheck) {
+      if (parseData(apphr.Payload, 'subStatus')) {
+        historyRecords.push(apphr)
+      }
     }
   })
 
