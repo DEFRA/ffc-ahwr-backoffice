@@ -22,25 +22,20 @@ const parseData = (payload, key) => {
 }
 
 const filterRecords = (applicationHistory) => {
-  const historyTabAllowedStatus = [
-    applicationStatus.withdrawn,
-    applicationStatus.readyToPay,
-    applicationStatus.rejected
+  return [
+    ...(applicationHistory.historyRecords?.filter(apphr =>
+      [
+        applicationStatus.withdrawn,
+        applicationStatus.readyToPay,
+        applicationStatus.rejected
+      ].includes(parseData(apphr.Payload, 'statusId'))
+    ) || []),
+    ...(applicationHistory.historyRecords?.filter(apphr =>
+      [
+        applicationStatus.inCheck
+      ].includes(parseData(apphr.Payload, 'statusId')) && parseData(apphr.Payload, 'subStatus')
+    ) || [])
   ]
-  const historyRecords = []
-  applicationHistory.historyRecords?.forEach(apphr => {
-    const statusId = parseData(apphr.Payload, 'statusId')
-    if (historyTabAllowedStatus.includes(statusId)) {
-      historyRecords.push(apphr)
-    }
-    if (statusId === applicationStatus.inCheck) {
-      if (parseData(apphr.Payload, 'subStatus')) {
-        historyRecords.push(apphr)
-      }
-    }
-  })
-
-  return historyRecords
 }
 
 const getStatusText = (status, subStatus) => {
