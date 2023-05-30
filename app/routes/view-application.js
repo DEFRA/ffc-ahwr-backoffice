@@ -103,7 +103,7 @@ module.exports = {
             ? { text: 'Select both checkboxes' }
             : undefined
         },
-        subStatus,
+        subStatus: upperFirstLetter(subStatus.toLowerCase()),
         errors
       })
     }
