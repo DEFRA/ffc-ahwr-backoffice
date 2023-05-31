@@ -4,6 +4,7 @@ const { getStageExecutionByApplication } = require('../../api/stage-execution')
 const stageConfigId = require('../../constants/application-stage-configuration-ids')
 const stageExecutionActions = require('../../constants/application-stage-execution-actions')
 const rbacEnabled = require('../../config').rbac.enabled
+const { upperFirstLetter } = require('../../lib/display-helper')
 
 const claimFormHelper = async (request, applicationReference, applicationStatus) => {
   const mappedAuth = mapAuth(request)
@@ -38,7 +39,7 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
   const displayAuthoriseToPayConfirmationForm = isApplicationInCheck && canUserAuthorise && claimCanBeAuthorised && request.query.approve && rbacEnabled
   const displayAuthoriseToRejectConfirmationForm = isApplicationInCheck && canUserAuthorise && claimCanBeAuthorised && request.query.reject && rbacEnabled
 
-  let subStatus = applicationStatus
+  let subStatus = upperFirstLetter(applicationStatus.toLowerCase())
   if (!hasClaimAlreadyBeenAuthorised) {
     if (hasClaimBeenRecommendedToPay) {
       subStatus = 'Recommend to pay'
@@ -58,7 +59,8 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
     claimCanBeAuthorised,
     claimRecommendedToPayByDifferentUser,
     claimRecommendedToRejectByDifferentUser,
-    hasClaimAlreadyBeenAuthorised
+    hasClaimAlreadyBeenAuthorised,
+    rbacEnabled
   })}`)
 
   return {
