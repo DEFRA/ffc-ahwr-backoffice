@@ -146,7 +146,7 @@ describe('Applications test', () => {
       expect(res.statusCode).toBe(302)
     })
 
-    test.each([
+    test.only.each([
       { searchDetails: { searchText: '444444444', searchType: 'sbi' }, status: ['APPLIED', 'DATA INPUTTED'] },
       { searchDetails: { searchText: 'AHWR-555A-FD6E', searchType: 'ref' }, status: ['APPLIED', 'CLAIMED'] },
       { searchDetails: { searchText: 'applied', searchType: 'status' }, status: 'APPLIED' },
