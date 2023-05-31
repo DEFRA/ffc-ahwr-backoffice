@@ -8,7 +8,7 @@ const contentLengthValidationPlugin = {
       let actualLength
 
       if (typeof request.payload === 'object') {
-        actualLength = sizeof({ ...request.payload, crumb: request.plugins.crumb })
+        actualLength = sizeof({ ...request.orig.payload, crumb: request.plugins.crumb })
       } else {
         actualLength = 0
       }

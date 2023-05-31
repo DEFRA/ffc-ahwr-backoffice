@@ -26,9 +26,9 @@ describe('Content Length Validation Plugin', () => {
       method: 'POST',
       url: '/',
       headers: {
-        'content-length': '10'
+        'content-length': '20'
       },
-      payload: '1234567890'
+      payload: { num: '1234567890' }
     })
 
     expect(response.statusCode).toBe(200)
@@ -41,7 +41,7 @@ describe('Content Length Validation Plugin', () => {
       headers: {
         'content-length': '10'
       },
-      payload: '12345'
+      payload: { num: '12345' }
     })
 
     expect(response.statusCode).toBe(400)
