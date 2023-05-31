@@ -56,7 +56,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.subStatus).toBe(applicationStatus)
+    expect(claimFormHelperResult.subStatus).toBe('In check')
   })
 
   test.each([
@@ -97,7 +97,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.subStatus).toBe(applicationStatus)
+    expect(claimFormHelperResult.subStatus).toBe('In check')
   })
 
   test.each([
@@ -138,7 +138,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.subStatus).toBe(applicationStatus)
+    expect(claimFormHelperResult.subStatus).toBe('In check')
   })
 
   test.each([
@@ -337,7 +337,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.subStatus).toBe(applicationStatus)
+    expect(claimFormHelperResult.subStatus).toBe('In check')
   })
 
   test.each([
@@ -392,18 +392,18 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.subStatus).toBe(applicationStatus)
+    expect(claimFormHelperResult.subStatus).toBe('In check')
   })
 
   test.each([
-    ['recommender', 'IN CHECK', 'IN CHECK'],
+    ['recommender', 'IN CHECK', 'In check'],
     ['recommender', 'IN CHECK', 'Recommend to pay'],
     ['recommender', 'IN CHECK', 'Recommend to reject'],
-    ['authoriser', 'IN CHECK', 'IN CHECK'],
+    ['authoriser', 'IN CHECK', 'In check'],
     ['authoriser', 'IN CHECK', 'Recommend to pay'],
     ['authoriser', 'IN CHECK', 'Recommend to reject'],
-    ['authoriser', 'READY TO PAY', 'READY TO PAY'],
-    ['authoriser', 'REJECTED', 'REJECTED']
+    ['authoriser', 'READY TO PAY', 'Ready to pay'],
+    ['authoriser', 'REJECTED', 'Rejected']
   ])('For role %s - a valid sub status displayed', async (roles, applicationStatus, expectedSubStatus) => {
     const request = {
       query: {
@@ -423,24 +423,24 @@ describe('Claim form helper tests', () => {
     }
     const applicationReference = 'testAppRef'
     let stageAction
-    switch (expectedSubStatus.toLowerCase()) {
-      case 'recommend to pay':
+    switch (expectedSubStatus) {
+      case 'Recommend to pay':
         stageAction = stageExecutionActions.recommendToPay
         break
-      case 'recommend to reject':
+      case 'Recommend to reject':
         stageAction = stageExecutionActions.recommendToReject
         break
-      case 'ready to pay':
+      case 'Ready to pay':
         stageAction = stageExecutionActions.authorisePayment
         break
-      case 'rejected':
+      case 'Rejected':
         stageAction = stageExecutionActions.authoriseRejection
         break
       default:
         break
     }
 
-    if (expectedSubStatus === 'IN CHECK') {
+    if (expectedSubStatus === 'In check') {
       stageExecution.getStageExecutionByApplication.mockResolvedValue([])
     } else {
       stageExecution.getStageExecutionByApplication.mockResolvedValue([{
