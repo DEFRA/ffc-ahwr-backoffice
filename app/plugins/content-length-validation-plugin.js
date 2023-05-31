@@ -7,14 +7,8 @@ const contentLengthValidationPlugin = {
       const contentLength = request.headers['content-length']
       let actualLength
 
-      if (typeof request.payload === 'string') {
-        actualLength = Buffer.byteLength(request.payload)
-      } else if (Buffer.isBuffer(request.payload)) {
-        actualLength = request.payload.length
-      } else if (typeof request.payload === 'number') {
-        actualLength = Buffer.byteLength(request.payload.toString())
-      } else if (typeof request.payload === 'object') {
-        actualLength = sizeof(request.payload)
+      if (typeof request.payload === 'object') {
+        actualLength = sizeof({ ...request.payload, crumb: request.plugins.crumb })
       } else {
         actualLength = 0
       }
