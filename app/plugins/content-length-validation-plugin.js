@@ -1,3 +1,5 @@
+const sizeof = require('object-sizeof')
+
 const contentLengthValidationPlugin = {
   name: 'contentLengthValidation',
   register: (server, options) => {
@@ -12,7 +14,7 @@ const contentLengthValidationPlugin = {
       } else if (typeof request.payload === 'number') {
         actualLength = Buffer.byteLength(request.payload.toString())
       } else if (typeof request.payload === 'object') {
-        actualLength = Buffer.byteLength(JSON.stringify(request.payload))
+        actualLength = sizeof(request.payload)
       } else {
         actualLength = 0
       }
