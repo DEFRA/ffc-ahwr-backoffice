@@ -32,7 +32,30 @@ describe('Application-history model test', () => {
     expect(res.header[3].text).toEqual('User')
     expect(res.rows.length).toBe(0)
   })
-
+  test('getHistoryData - Invalid Date Time', async () => {
+    const data = applicationHistoryData
+    data.historyRecords[0].ChangedOn = null
+    data.historyRecords[2].ChangedOn = null
+    const res = getHistoryData(data)
+    expect(res).not.toBeNull()
+    expect(res.header[0].text).toEqual('Date')
+    expect(res.header[1].text).toEqual('Time')
+    expect(res.header[2].text).toEqual('Action')
+    expect(res.header[3].text).toEqual('User')
+    expect(res.rows.length).toEqual(3)
+    expect(res.rows[0][0].text).toEqual('')
+    expect(res.rows[0][1].text).toEqual('')
+    expect(res.rows[0][2].text).toEqual('Claim approved')
+    expect(res.rows[0][3].text).toEqual('Daniel Jones')
+    expect(res.rows[1][0].text).toEqual('')
+    expect(res.rows[1][1].text).toEqual('')
+    expect(res.rows[1][2].text).toEqual('Claim rejected')
+    expect(res.rows[1][3].text).toEqual('Amanda Hassan')
+    expect(res.rows[2][0].text).toEqual('24/03/2023')
+    expect(res.rows[2][1].text).toEqual('09:30:00')
+    expect(res.rows[2][2].text).toEqual('Withdraw completed')
+    expect(res.rows[2][3].text).toEqual('Daniel Jones')
+  })
   test.each([
     { statusId: 0 },
     { statusId: 1 },
