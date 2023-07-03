@@ -59,10 +59,10 @@ describe('Application-claim model test', () => {
 
   test('getClaimData - Valid Data with no claim-claimed event', async () => {
     const res = getClaimData(viewApplicationData.claimWithNoClaimDate, {
-      "eventRecords": [
+      eventRecords: [
         {
-          "EventRaised": "2022-11-09T11:00:00.000Z",
-          "EventType": "claim-createdBy"
+          EventRaised: '2022-11-09T11:00:00.000Z',
+          EventType: 'claim-createdBy'
         }
       ]
     })
