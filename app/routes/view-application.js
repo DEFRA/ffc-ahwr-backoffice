@@ -1,7 +1,7 @@
 const { Buffer } = require('buffer')
 const Joi = require('joi')
 const boom = require('@hapi/boom')
-const { getApplication, getApplicationHistory } = require('../api/applications')
+const { getApplication, getApplicationHistory, getApplicationEvents } = require('../api/applications')
 const { administrator, processor, user, recommender, authoriser } = require('../auth/permissions')
 const getStyleClassByStatus = require('../constants/status')
 const ViewModel = require('./models/view-application')
@@ -35,6 +35,12 @@ module.exports = {
         throw boom.badRequest()
       }
       const applicationHistory = await getApplicationHistory(request.params.reference)
+
+      const claimDataStatus = ['IN CHECK', 'REJECTED', 'READY TO PAY']
+      let applicationEvents
+      if ((application?.claimed || claimDataStatus.includes(application?.status?.status)) && !application?.data?.dateOfClaim) {
+        applicationEvents = await getApplicationEvents(application?.data?.organisation.sbi)
+      }
 
       const status = upperFirstLetter(application.status.status.toLowerCase())
       const statusClass = getStyleClassByStatus(application.status.status)
@@ -84,7 +90,7 @@ module.exports = {
         approveClaimConfirmationForm,
         rejectClaimConfirmationForm,
         payment: application?.payment,
-        ...new ViewModel(application, applicationHistory, recommend),
+        ...new ViewModel(application, applicationHistory, recommend, applicationEvents),
         page: request.query.page,
         recommendForm: displayRecommendationForm,
         authoriseOrRejectForm: {

@@ -89,10 +89,26 @@ async function getApplicationHistory (reference) {
   }
 }
 
+async function getApplicationEvents (reference) {
+  const url = `${applicationApiUri}/application/events/${reference}`
+  try {
+    const response = await Wreck.get(url, { json: true })
+    if (response.res.statusCode !== 200) {
+      throw new Error(`HTTP ${response.res.statusCode} (${response.res.statusMessage})`)
+    }
+    return response.payload
+  } catch (err) {
+    console.error(`Getting application events for ${reference} failed: ${err.message}`)
+
+    return { eventRecords: [] }
+  }
+}
+
 module.exports = {
   getApplications,
   getApplication,
   withdrawApplication,
   processApplicationClaim,
-  getApplicationHistory
+  getApplicationHistory,
+  getApplicationEvents
 }

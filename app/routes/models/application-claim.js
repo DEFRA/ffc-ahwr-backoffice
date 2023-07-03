@@ -1,8 +1,21 @@
 const { formatedDateToUk, upperFirstLetter } = require('../../lib/display-helper')
 
-module.exports = (application) => {
-  const { data, updatedAt } = application
-  const formatedDate = formatedDateToUk(updatedAt)
+module.exports = (application, applicationEvents) => {
+  const { data } = application
+  let formatedDate = ''
+
+  if (data?.dateOfClaim) {
+    formatedDate = formatedDateToUk(data?.dateOfClaim)
+  } else {
+    let filteredEvents
+    if (applicationEvents?.eventRecords) {
+      filteredEvents = applicationEvents.eventRecords.filter(event => event.EventType === 'claim-claimed')
+      if (filteredEvents.length !== 0) {
+        formatedDate = formatedDateToUk(filteredEvents[0].EventRaised)
+      }
+    }
+  }
+
   return {
     firstCellIsHeader: true,
     rows: [
