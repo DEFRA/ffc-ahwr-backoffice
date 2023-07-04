@@ -9,6 +9,7 @@ const { upperFirstLetter } = require('../lib/display-helper')
 const mapAuth = require('../auth/map-auth')
 const claimHelper = require('./utils/claim-form-helper')
 const rbacEnabled = require('../config').rbac.enabled
+const applicationStatus = require('../constants/application-status')
 
 module.exports = {
   method: 'GET',
@@ -36,9 +37,13 @@ module.exports = {
       }
       const applicationHistory = await getApplicationHistory(request.params.reference)
 
-      const claimDataStatus = ['IN CHECK', 'REJECTED', 'READY TO PAY']
+      // const claimDataStatus = ['IN CHECK', 'REJECTED', 'READY TO PAY']
       let applicationEvents
-      if ((application?.claimed || claimDataStatus.includes(application?.status?.status)) && !application?.data?.dateOfClaim) {
+      if ((application?.claimed ||
+        application?.statusId === applicationStatus.inCheck ||
+        application?.statusId === applicationStatus.readyToPay ||
+        application?.statusId === applicationStatus.rejected) &&
+        !application?.data?.dateOfClaim) {
         applicationEvents = await getApplicationEvents(application?.data?.organisation.sbi)
       }
 
