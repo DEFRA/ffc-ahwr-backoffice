@@ -7,8 +7,12 @@ const limit = 20
 const offset = 0
 let searchText = ''
 let searchType = ''
-const { getApplications, getApplication, withdrawApplication, processApplicationClaim, getApplicationHistory } = require('../../../app/api/applications')
+const { getApplications, getApplication, withdrawApplication, processApplicationClaim, getApplicationHistory, getApplicationEvents } = require('../../../app/api/applications')
 describe('Application API', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('GetApplications should return empty applications array', async () => {
     jest.mock('@hapi/wreck')
     const wreckResponse = {
@@ -294,5 +298,70 @@ describe('Application API', () => {
     expect(response.historyRecords).toStrictEqual([])
     expect(Wreck.get).toHaveBeenCalledTimes(1)
     expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/application/history/${appRef}`, options)
+  })
+
+  it('GetApplicationEvents should return empty records array', async () => {
+    jest.mock('@hapi/wreck')
+    const consoleErrorSpy = jest.spyOn(console, 'error')
+    const statusCode = 502
+    const statusMessage = 'undefined'
+    const wreckResponse = {
+      payload: {
+        eventRecords: []
+      },
+      res: {
+        statusCode: statusCode
+      }
+    }
+
+    const options = { json: true }
+    Wreck.get = jest.fn(async function (_url, _options) {
+      return wreckResponse
+    })
+    const response = await getApplicationEvents(appRef)
+    expect(response).not.toBeNull()
+    expect(response.eventRecords).toStrictEqual([])
+    expect(Wreck.get).toHaveBeenCalledTimes(1)
+    expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/application/events/${appRef}`, options)
+    expect(consoleErrorSpy).toHaveBeenCalledTimes(1)
+    expect(consoleErrorSpy).toHaveBeenCalledWith(`Getting application events for ${appRef} failed: HTTP ${statusCode} (${statusMessage})`)
+  })
+
+  it('GetApplicationEvents should return valid records array', async () => {
+    jest.mock('@hapi/wreck')
+    const wreckResponse = {
+      payload: {
+        eventRecords: [{
+
+        }]
+      },
+      res: {
+        statusCode: 200
+      }
+    }
+
+    const options = { json: true }
+    Wreck.get = jest.fn(async function (_url, _options) {
+      return wreckResponse
+    })
+    const response = await getApplicationEvents(appRef)
+    expect(response).not.toBeNull()
+    expect(response.eventRecords).toStrictEqual([{}])
+    expect(Wreck.get).toHaveBeenCalledTimes(1)
+    expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/application/events/${appRef}`, options)
+  })
+
+  it('GetApplicationEvents should return empty records array if api not available', async () => {
+    jest.mock('@hapi/wreck')
+
+    const options = { json: true }
+    Wreck.get = jest.fn(async function (_url, _options) {
+      throw new Error('fakeError')
+    })
+    const response = await getApplicationEvents(appRef)
+    expect(response).not.toBeNull()
+    expect(response.eventRecords).toStrictEqual([])
+    expect(Wreck.get).toHaveBeenCalledTimes(1)
+    expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/application/events/${appRef}`, options)
   })
 })
