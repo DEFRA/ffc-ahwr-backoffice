@@ -30,4 +30,19 @@ describe('Parse data tests', () => {
     expect(parsedData.raisedOn).toBe('')
     expect(parsedData.raisedBy).toBe('')
   })
+
+  test('Parse data - No event', async () => {
+    const parsedData = parseData(
+      [
+        {
+          EventRaised: '2022-11-09T11:00:00.000Z',
+          EventType: 'claim-createdBy'
+        }
+      ]
+      , 'claim-claimed', 'claimed')
+
+    expect(parsedData.value).toBe('')
+    expect(parsedData.raisedOn).toBe('')
+    expect(parsedData.raisedBy).toBe('')
+  })
 })
