@@ -1,4 +1,5 @@
 const { formatedDateToUk, upperFirstLetter } = require('../../lib/display-helper')
+const { parseData } = require('../utils/parse-data')
 
 module.exports = (application, applicationEvents) => {
   const { data } = application
@@ -11,7 +12,8 @@ module.exports = (application, applicationEvents) => {
     if (applicationEvents?.eventRecords) {
       filteredEvents = applicationEvents.eventRecords.filter(event => event.EventType === 'claim-claimed')
       if (filteredEvents.length !== 0) {
-        formatedDate = formatedDateToUk(filteredEvents[0].EventRaised)
+        const claimClaimed = parseData(filteredEvents, 'claim-claimed', 'claimed')
+        formatedDate = formatedDateToUk(claimClaimed?.raisedOn)
       }
     }
   }
