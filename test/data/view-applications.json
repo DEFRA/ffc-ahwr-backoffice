@@ -102,7 +102,8 @@
       "vetName": "testVet",
       "vetRcvs": "1234234",
       "visitDate": "2022-11-07T00:00:00.000Z",
-      "dateOfClaim": "2022-11-08T00:00:00.000Z"
+      "dateOfClaim": "2022-11-09T00:00:00.000Z",
+      "dateOfTesting": "2022-11-08T00:00:00.000Z"
     },
     "claimed": true,
     "createdAt": "2022-06-06T14:27:51.251Z",
@@ -133,7 +134,8 @@
       "urnResult": "134242",
       "vetName": "testVet",
       "vetRcvs": "1234234",
-      "visitDate": "2022-11-07T00:00:00.000Z"
+      "visitDate": "2022-11-07T00:00:00.000Z",
+      "dateOfTesting": "2022-11-08T00:00:00.000Z"
     },
     "claimed": true,
     "createdAt": "2022-06-06T14:27:51.251Z",

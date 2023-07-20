@@ -79,6 +79,9 @@ describe('View Application test', () => {
       },
       rbac: {
         enabled: true
+      },
+      dateOfTesting: {
+        enabled: false
       }
     }))
     jest.mock('../../../../app/routes/utils/claim-form-helper')
@@ -621,12 +624,12 @@ describe('View Application test', () => {
       expect($('#application').text()).toContain(status)
       expect($('#claim').text()).toContain(status)
 
-      expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('Date of claim')
-      expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('08/11/2022')
-      expect($('tbody:nth-child(1) tr:nth-child(2)').text()).toContain('Review details confirmed')
-      expect($('tbody:nth-child(1) tr:nth-child(2)').text()).toContain('Yes')
-      expect($('tbody:nth-child(1) tr:nth-child(3)').text()).toContain('Date of review')
-      expect($('tbody:nth-child(1) tr:nth-child(3)').text()).toContain('07/11/2022')
+      expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('Date of review')
+      expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('07/11/2022')
+      expect($('tbody:nth-child(1) tr:nth-child(2)').text()).toContain('Date of claim')
+      expect($('tbody:nth-child(1) tr:nth-child(2)').text()).toContain('09/11/2022')
+      expect($('tbody:nth-child(1) tr:nth-child(3)').text()).toContain('Review details confirmed')
+      expect($('tbody:nth-child(1) tr:nth-child(3)').text()).toContain('Yes')
       expect($('tbody:nth-child(1) tr:nth-child(4)').text()).toContain('Vet’s name')
       expect($('tbody:nth-child(1) tr:nth-child(4)').text()).toContain('testVet')
       expect($('tbody:nth-child(1) tr:nth-child(5)').text()).toContain('Vet’s RCVS number')
@@ -674,12 +677,12 @@ describe('View Application test', () => {
       expect($('#application').text()).toContain(status)
       expect($('#claim').text()).toContain(status)
 
-      expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('Date of claim')
-      expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('09/11/2022')
-      expect($('tbody:nth-child(1) tr:nth-child(2)').text()).toContain('Review details confirmed')
-      expect($('tbody:nth-child(1) tr:nth-child(2)').text()).toContain('Yes')
-      expect($('tbody:nth-child(1) tr:nth-child(3)').text()).toContain('Date of review')
-      expect($('tbody:nth-child(1) tr:nth-child(3)').text()).toContain('07/11/2022')
+      expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('Date of review')
+      expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('07/11/2022')
+      expect($('tbody:nth-child(1) tr:nth-child(2)').text()).toContain('Date of claim')
+      expect($('tbody:nth-child(1) tr:nth-child(2)').text()).toContain('09/11/2022')
+      expect($('tbody:nth-child(1) tr:nth-child(3)').text()).toContain('Review details confirmed')
+      expect($('tbody:nth-child(1) tr:nth-child(3)').text()).toContain('Yes')
       expect($('tbody:nth-child(1) tr:nth-child(4)').text()).toContain('Vet’s name')
       expect($('tbody:nth-child(1) tr:nth-child(4)').text()).toContain('testVet')
       expect($('tbody:nth-child(1) tr:nth-child(5)').text()).toContain('Vet’s RCVS number')
@@ -691,6 +694,7 @@ describe('View Application test', () => {
 
       expectPhaseBanner.ok($)
     })
+
     test('returns 200 application paid', async () => {
       const status = 'Paid'
       applications.getApplication.mockReturnValueOnce(viewApplicationData.paid)
