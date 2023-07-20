@@ -42,6 +42,9 @@ const schema = Joi.object({
   displayPageSize: Joi.number().default(20),
   rbac: {
     enabled: Joi.boolean().default(false)
+  },
+  dateOfTesting: {
+    enabled: Joi.bool().default(false)
   }
 })
 
@@ -80,6 +83,9 @@ const config = {
   displayPageSize: process.env.DISPLAY_PAGE_SIZE,
   rbac: {
     enabled: process.env.RBAC_ENABLED
+  },
+  dateOfTesting: {
+    enabled: process.env.DATE_OF_TESTING_ENABLED
   }
 }
 

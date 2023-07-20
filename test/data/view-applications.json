@@ -102,7 +102,8 @@
       "vetName": "testVet",
       "vetRcvs": "1234234",
       "visitDate": "2022-11-07T00:00:00.000Z",
-      "dateOfClaim": "2022-11-08T00:00:00.000Z"
+      "dateOfClaim": "2022-11-09T00:00:00.000Z",
+      "dateOfTesting": "2022-11-08T00:00:00.000Z"
     },
     "claimed": true,
     "createdAt": "2022-06-06T14:27:51.251Z",
@@ -110,6 +111,38 @@
     "createdBy": "admin"
   },
   "claimWithNoClaimDate": {
+    "id": "555afd4c-b095-4ce4-b492-800466b53393",
+    "reference": "AHWR-555A-FD4C",
+    "status": {
+      "status": "CLAIMED"
+    },
+    "data": {
+      "declaration": true,
+      "whichReview": "pigs",
+      "organisation": {
+        "cph": "33/333/3333",
+        "sbi": "333333333",
+        "name": "My Farm",
+        "email": "test@test.com",
+        "farmerName": "Farmer name",
+        "isTest": true,
+        "address": "Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC"
+      },
+      "eligibleSpecies": "yes",
+      "confirmCheckDetails": "yes",
+      "detailsCorrect": "yes",
+      "urnResult": "134242",
+      "vetName": "testVet",
+      "vetRcvs": "1234234",
+      "visitDate": "2022-11-07T00:00:00.000Z",
+      "dateOfTesting": "2022-11-08T00:00:00.000Z"
+    },
+    "claimed": true,
+    "createdAt": "2022-06-06T14:27:51.251Z",
+    "updatedAt": "2022-12-07T14:27:51.775Z",
+    "createdBy": "admin"
+  },
+  "claimWithNoDateOfTesting": {
     "id": "555afd4c-b095-4ce4-b492-800466b53393",
     "reference": "AHWR-555A-FD4C",
     "status": {
