@@ -20,7 +20,7 @@ module.exports = (application, applicationEvents) => {
   }
 
   if (config.dateOfTesting.enabled) {
-    let formatedDateOfTesting
+    let formatedDateOfTesting = ''
     if (data?.dateOfTesting) {
       formatedDateOfTesting = formatedDateToUk(data?.dateOfTesting)
     }
