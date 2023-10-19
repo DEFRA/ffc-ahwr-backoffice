@@ -74,6 +74,25 @@ async function processApplicationClaim (reference, user, approved) {
   }
 }
 
+
+async function updateApplicationStatus (reference, user, status) {
+  const url = `${applicationApiUri}/application/${reference}`
+  const options = {
+    payload: {
+      user,
+      status
+    },
+    json: true
+  }
+  try {
+    await Wreck.put(url, options)
+    return true
+  } catch (err) {
+    console.log(err)
+    return false
+  }
+}
+
 async function getApplicationHistory (reference) {
   const url = `${applicationApiUri}/application/history/${reference}`
   try {
@@ -110,5 +129,6 @@ module.exports = {
   withdrawApplication,
   processApplicationClaim,
   getApplicationHistory,
-  getApplicationEvents
+  getApplicationEvents,
+  updateApplicationStatus
 }

@@ -67,7 +67,8 @@ module.exports = {
         displayAuthorisationForm,
         displayAuthoriseToPayConfirmationForm,
         displayAuthoriseToRejectConfirmationForm,
-        subStatus
+        subStatus,
+        displayMoveToInCheckFromHold
       } = await claimHelper(request, request.params.reference, application.status.status)
 
       const errors = request.query.errors
@@ -115,7 +116,8 @@ module.exports = {
             : undefined
         },
         subStatus,
-        errors
+        errors,
+        displayMoveToInCheckFromHold
       })
     }
   }

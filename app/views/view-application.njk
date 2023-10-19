@@ -40,6 +40,9 @@
       {{ govukSummaryList({
         rows: model.listData.rows
       }) }}
+      {% if displayMoveToInCheckFromHold %}
+        {{ viewRejectClaimOnHoldForm(applicationId, page, crumb) }}
+      {% endif %}
       {% if withdrawConfirmationForm %}
         {{ viewWithdrawConfirmationForm(applicationId, page, crumb) }}
       {% endif %}
