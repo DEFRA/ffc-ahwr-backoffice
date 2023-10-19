@@ -74,7 +74,6 @@ async function processApplicationClaim (reference, user, approved) {
   }
 }
 
-
 async function updateApplicationStatus (reference, user, status) {
   const url = `${applicationApiUri}/application/${reference}`
   const options = {

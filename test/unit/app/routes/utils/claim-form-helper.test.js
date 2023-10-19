@@ -172,7 +172,7 @@ describe('Claim form helper tests', () => {
 
     stageExecution.getStageExecutionByApplication.mockResolvedValue([{
       stageConfigurationId: stageConfigId.claimApproveRejectRecommender,
-      applicationReference: applicationReference,
+      applicationReference,
       executedBy: 'Mr Recommender',
       action: {
         action: stageExecutionActions.recommendToPay
@@ -220,7 +220,7 @@ describe('Claim form helper tests', () => {
 
     stageExecution.getStageExecutionByApplication.mockResolvedValue([{
       stageConfigurationId: stageConfigId.claimApproveRejectRecommender,
-      applicationReference: applicationReference,
+      applicationReference,
       executedBy: 'Mr Recommender',
       action: {
         action: stageExecutionActions.recommendToPay
@@ -268,7 +268,7 @@ describe('Claim form helper tests', () => {
 
     stageExecution.getStageExecutionByApplication.mockResolvedValue([{
       stageConfigurationId: stageConfigId.claimApproveRejectRecommender,
-      applicationReference: applicationReference,
+      applicationReference,
       executedBy: 'Mr Recommender',
       action: {
         action: stageExecutionActions.recommendToReject
@@ -315,7 +315,7 @@ describe('Claim form helper tests', () => {
 
     stageExecution.getStageExecutionByApplication.mockResolvedValue([{
       stageConfigurationId: stageConfigId.claimApproveRejectRecommender,
-      applicationReference: applicationReference,
+      applicationReference,
       executedBy: 'Mr Recommender',
       action: {
         action: stageExecutionActions.recommendToPay
@@ -323,7 +323,7 @@ describe('Claim form helper tests', () => {
     },
     {
       stageConfigurationId: stageConfigId.claimApproveRejectAuthoriser,
-      applicationReference: applicationReference,
+      applicationReference,
       executedBy: 'Mr Auth',
       action: {
         action: stageExecutionActions.authorisePayment
@@ -370,7 +370,7 @@ describe('Claim form helper tests', () => {
 
     stageExecution.getStageExecutionByApplication.mockResolvedValue([{
       stageConfigurationId: stageConfigId.claimApproveRejectRecommender,
-      applicationReference: applicationReference,
+      applicationReference,
       executedBy: 'Mr Recommender',
       action: {
         action: stageExecutionActions.recommendToPay
@@ -378,7 +378,7 @@ describe('Claim form helper tests', () => {
     },
     {
       stageConfigurationId: stageConfigId.claimApproveRejectAuthoriser,
-      applicationReference: applicationReference,
+      applicationReference,
       executedBy: 'Mr Auth',
       action: {
         action: stageExecutionActions.authoriseRejection
@@ -445,7 +445,7 @@ describe('Claim form helper tests', () => {
     } else {
       stageExecution.getStageExecutionByApplication.mockResolvedValue([{
         stageConfigurationId: stageConfigId.claimApproveRejectRecommender,
-        applicationReference: applicationReference,
+        applicationReference,
         executedBy: 'Mr Recommender',
         action: {
           action: stageAction

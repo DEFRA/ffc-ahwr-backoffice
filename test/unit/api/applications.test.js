@@ -245,7 +245,7 @@ describe('Application API', () => {
         historyRecords: []
       },
       res: {
-        statusCode: statusCode
+        statusCode
       }
     }
 
@@ -310,7 +310,7 @@ describe('Application API', () => {
         eventRecords: []
       },
       res: {
-        statusCode: statusCode
+        statusCode
       }
     }
 

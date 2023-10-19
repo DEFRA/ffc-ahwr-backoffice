@@ -14,11 +14,11 @@ module.exports = {
   options: {
     pre: [{ method: preDoubleSubmitHandler }],
     validate: {
-      payload: Joi.object( {
-          rejectOnHoldClaim: Joi.string().valid('yes', 'no'),
-            reference: Joi.string().valid(),
-            page: Joi.number().greater(0).default(1)
-          }),
+      payload: Joi.object({
+        rejectOnHoldClaim: Joi.string().valid('yes', 'no'),
+        reference: Joi.string().valid(),
+        page: Joi.number().greater(0).default(1)
+      }),
       failAction: async (request, h, error) => {
         console.log(`routes:reject-application-claim: Error when validating payload: ${JSON.stringify({
           errorMessage: error.message,
@@ -42,7 +42,7 @@ module.exports = {
           if (!userRole.isAuthoriser && !userRole.isRecommender && !userRole.isAdministrator) {
             throw Boom.internal('routes:reject-on-hold-claim: User must be an authoriser/recommender or an admin')
           }
-          
+
           if (request.payload.rejectOnHoldClaim === 'yes') {
             const userName = getUser(request).username
             await updateApplicationStatus(request.payload.reference, userName, 11)
@@ -53,7 +53,7 @@ module.exports = {
           console.error(`routes:reject-on-hold-claim: Error when processing request: ${error.message}`)
           throw Boom.internal(error.message)
         }
-      } 
+      }
     }
   }
 }
