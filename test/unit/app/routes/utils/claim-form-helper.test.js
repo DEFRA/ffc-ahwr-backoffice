@@ -56,6 +56,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
+    expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
     expect(claimFormHelperResult.subStatus).toBe('In check')
   })
 
@@ -97,6 +98,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
+    expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
     expect(claimFormHelperResult.subStatus).toBe('In check')
   })
 
@@ -138,6 +140,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
+    expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
     expect(claimFormHelperResult.subStatus).toBe('In check')
   })
 
@@ -186,6 +189,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBe(expectedResult)
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
+    expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
     expect(claimFormHelperResult.subStatus).toBe('Recommend to pay')
   })
 
@@ -234,6 +238,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBe(expectedResult)
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
+    expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
     expect(claimFormHelperResult.subStatus).toBe('Recommend to pay')
   })
 
@@ -282,6 +287,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBe(expectedResult)
+    expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
     expect(claimFormHelperResult.subStatus).toBe('Recommend to reject')
   })
 
@@ -337,6 +343,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
+    expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
     expect(claimFormHelperResult.subStatus).toBe('In check')
   })
 
@@ -392,6 +399,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
+    expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
     expect(claimFormHelperResult.subStatus).toBe('In check')
   })
 
@@ -455,5 +463,37 @@ describe('Claim form helper tests', () => {
 
     const claimFormHelperResult = await claimFormHelper(request, applicationReference, applicationStatus)
     expect(claimFormHelperResult.subStatus).toBe(expectedSubStatus)
+  })
+
+  test.each([
+    ['recommender', 'ON HOLD'],
+    ['recommender', 'ON HOLD'],
+    ['recommender', 'ON HOLD'],
+    ['authoriser', 'ON HOLD'],
+    ['authoriser', 'ON HOLD'],
+    ['authoriser', 'ON HOLD'],
+    ['authoriser', 'ON HOLD'],
+    ['authoriser', 'ON HOLD']
+  ])('Move to IN CHECK from ON HOLD For role %s - a valid status displayed', async (roles, applicationStatus) => {
+    const request = {
+      query: {
+        approve: false,
+        reject: false
+      },
+      auth: {
+        isAuthenticated: true,
+        credentials: {
+          scope: roles,
+          account: {
+            homeAccountId: 'testId',
+            name: 'Mr Auth'
+          }
+        }
+      }
+    }
+    const applicationReference = 'testAppRef'
+
+    const claimFormHelperResult = await claimFormHelper(request, applicationReference, applicationStatus)
+    expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBe(true)
   })
 })

@@ -235,6 +235,24 @@ describe('Application API', () => {
     expect(Wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/application/claim`, options)
   })
 
+  it('updateApplicationStatus should return false if api not available', async () => {
+    jest.mock('@hapi/wreck')
+    const options = {
+      payload: {
+        user: 'test',
+        status: 11
+      },
+      json: true
+    }
+    Wreck.post = jest.fn(async function (_url, _options) {
+      throw (new Error('fakeError'))
+    })
+    const response = await updateApplicationStatus(appRef, 'test', 11)
+    expect(response).toBe(false)
+    expect(Wreck.put).toHaveBeenCalledTimes(1)
+    expect(Wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/application/${appRef}`, options)
+  })
+
   it('updateApplicationStatus should return true after successful API request', async () => {
     jest.mock('@hapi/wreck')
     const options = {
