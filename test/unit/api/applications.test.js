@@ -7,7 +7,7 @@ const limit = 20
 const offset = 0
 let searchText = ''
 let searchType = ''
-const { getApplications, getApplication, withdrawApplication, processApplicationClaim, getApplicationHistory, getApplicationEvents } = require('../../../app/api/applications')
+const { getApplications, getApplication, withdrawApplication, processApplicationClaim, getApplicationHistory, getApplicationEvents, updateApplicationStatus } = require('../../../app/api/applications')
 describe('Application API', () => {
   afterEach(() => {
     jest.clearAllMocks()
@@ -233,6 +233,30 @@ describe('Application API', () => {
     expect(response).toBe(true)
     expect(Wreck.post).toHaveBeenCalledTimes(1)
     expect(Wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/application/claim`, options)
+  })
+
+  it('updateApplicationStatus should return true after successful API request', async () => {
+    jest.mock('@hapi/wreck')
+    const options = {
+      payload: {
+        user: 'test',
+        status: 11
+      },
+      json: true
+    }
+    const wreckResponse = {
+      res: {
+        statusCode: 200
+      }
+    }
+
+    Wreck.put = jest.fn(async function (_url, _options) {
+      return wreckResponse
+    })
+    const response = await updateApplicationStatus(appRef, 'test', 11)
+    expect(response).toBe(true)
+    expect(Wreck.put).toHaveBeenCalledTimes(1)
+    expect(Wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/application/${appRef}`, options)
   })
 
   it('GetApplicationHistory should return empty history records array', async () => {
