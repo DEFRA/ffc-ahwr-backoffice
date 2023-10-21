@@ -25,7 +25,7 @@ module.exports = {
           payload: request.payload
         })}`)
         const errors = []
-        if (error.details && error.details[0].context.key === 'confirm') {
+        if (error.details) {
           errors.push({
             text: 'Error while moving status to IN CHECK.'
           })
