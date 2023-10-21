@@ -244,7 +244,7 @@ describe('Application API', () => {
       },
       json: true
     }
-    Wreck.post = jest.fn(async function (_url, _options) {
+    Wreck.put = jest.fn(async function (_url, _options) {
       throw (new Error('fakeError'))
     })
     const response = await updateApplicationStatus(appRef, 'test', 11)
