@@ -2,6 +2,7 @@ const config = require('./config')
 const Hapi = require('@hapi/hapi')
 const catbox = config.useRedis ? require('@hapi/catbox-redis') : require('@hapi/catbox-memory')
 const cacheConfig = config.useRedis ? config.cache.options : {}
+const onHoldAppScheduler = require('./crons/process-on-hold/scheduler')
 
 const getSecurityPolicy = () => "default-src 'self';" +
 "object-src 'none';" +
@@ -73,6 +74,8 @@ async function createServer () {
   if (config.isDev) {
     await server.register(require('blipp'))
   }
+
+  await server.register(onHoldAppScheduler)
 
   return server
 }

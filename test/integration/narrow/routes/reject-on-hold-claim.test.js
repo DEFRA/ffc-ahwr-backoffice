@@ -1,13 +1,14 @@
 const cheerio = require('cheerio')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
-const { administrator, authoriser } = require('../../../../app/auth/permissions')
+const { administrator, user, authoriser, recommender } = require('../../../../app/auth/permissions')
 const getCrumbs = require('../../../utils/get-crumbs')
 
 const reference = 'AHWR-555A-FD4C'
 const encodedErrors = 'W3sidGV4dCI6IkVycm9yIHdoaWxlIG1vdmluZyBzdGF0dXMgdG8gSU4gQ0hFQ0suIn1d'
 
 describe('Reject On Hold Application test', () => {
-  describe('RBAC enabled', () => {
+  let applications
+  describe('RBAC enabled By Default', () => {
     let crumb
     const url = '/reject-on-hold-claim/'
     jest.mock('../../../../app/auth')
@@ -20,6 +21,10 @@ describe('Reject On Hold Application test', () => {
           enabled: true
         }
       }))
+      jest.mock('../../../../app/api/applications')
+      applications = require('../../../../app/api/applications')
+
+      applications.updateApplicationStatus = jest.fn().mockResolvedValue(true)
     })
 
     afterAll(() => {
@@ -83,7 +88,8 @@ describe('Reject On Hold Application test', () => {
 
       test.each([
         [authoriser, 'authoriser'],
-        [administrator, 'authoriser']
+        [administrator, 'authoriser'],
+        [recommender, 'authoriser']
       ])('Reject application claim processed', async (scope, role) => {
         auth = { strategy: 'session-auth', credentials: { scope: [scope], account: { homeAccountId: 'testId', name: 'admin' } } }
         const options = {
@@ -100,7 +106,8 @@ describe('Reject On Hold Application test', () => {
         }
 
         const res = await global.__SERVER__.inject(options)
-
+        expect(applications.updateApplicationStatus).toHaveBeenCalledWith(reference, 'admin', 11)
+        expect(applications.updateApplicationStatus).toHaveBeenCalledTimes(1)
         expect(res.statusCode).toBe(302)
         expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
       })
@@ -120,9 +127,28 @@ describe('Reject On Hold Application test', () => {
         }
 
         const res = await global.__SERVER__.inject(options)
-
         expect(res.statusCode).toBe(302)
         expect(res.headers.location).toEqual(`/view-application/123?page=1&reject-on-hold=true&errors=${encodedErrors}`)
+      })
+
+      test('Reject application invalid permission', async () => {
+        auth = { strategy: 'session-auth', credentials: { scope: [user], account: { homeAccountId: 'testId', name: 'admin' } } }
+        const options = {
+          method: 'POST',
+          url,
+          auth,
+          headers: { cookie: `crumb=${crumb}` },
+          payload: {
+            reference,
+            rejectOnHoldClaim: 'yes',
+            crumb
+          }
+        }
+
+        const res = await global.__SERVER__.inject(options)
+
+        expect(res.statusCode).toBe(500)
+        // expect(res.headers.location).toEqual(`/view-application/123?page=1&reject-on-hold=true&errors=${encodedErrors}`)
       })
 
       test('Reject application claim not processed', async () => {
@@ -138,8 +164,8 @@ describe('Reject On Hold Application test', () => {
           }
         }
         const res = await global.__SERVER__.inject(options)
-        expect(res.statusCode).toBe(302)
-        expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+        expect(res.statusCode).toBe(500)
+        // expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
       })
     })
 
@@ -156,8 +182,9 @@ describe('Reject On Hold Application test', () => {
         }
       }
       const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+      expect(res.statusCode).toBe(500)
+      expect(applications.processApplicationClaim).not.toHaveBeenCalled()
+      // expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
   })
 })

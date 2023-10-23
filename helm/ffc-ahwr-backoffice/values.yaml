@@ -46,6 +46,8 @@ container:
   displayPageSize: 20
   rbacEnabled:  
   dateOfTestingEnabled:
+  onHoldAppProcessEnabled:
+  onHoldAppProcessSchedule:
   
 deployment:
   cpuThreshold: 40

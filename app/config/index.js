@@ -45,6 +45,10 @@ const schema = Joi.object({
   },
   dateOfTesting: {
     enabled: Joi.bool().default(false)
+  },
+  onHoldAppScheduler: {
+    enabled: Joi.bool().default(true),
+    schedule: Joi.string().default('0 18 * * 1-5')
   }
 })
 
@@ -86,6 +90,10 @@ const config = {
   },
   dateOfTesting: {
     enabled: process.env.DATE_OF_TESTING_ENABLED
+  },
+  onHoldAppScheduler: {
+    enabled: process.env.ON_HOLD_APP_PROCESS_ENABLED,
+    schedule: process.env.ON_HOLD_APP_PROCESS_SCHEDULE
   }
 }
 
