@@ -34,7 +34,7 @@ describe('Process process on hold applications function test.', () => {
 
   test('test error while running process', async () => {
     const processOnHoldApplications = require('../../../app/crons/process-on-hold/process')
-    getApplications.mockImplementation(() => {
+    getApplications.mockImplementation(async () => {
       throw new Error('Invalid something error')
     })
     const result = await processOnHoldApplications()
@@ -45,7 +45,7 @@ describe('Process process on hold applications function test.', () => {
 
   test('test error handled', async () => {
     const processOnHoldApplications = require('../../../app/crons/process-on-hold/process')
-    processApplicationClaim.mockImplementation(() => {
+    processApplicationClaim.mockImplementation(async () => {
       throw new Error('Invalid something error')
     })
     const result = await processOnHoldApplications()

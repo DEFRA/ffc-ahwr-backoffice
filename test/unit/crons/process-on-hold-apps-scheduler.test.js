@@ -19,7 +19,7 @@ describe('Process On Hold Applications plugin test', () => {
         schedule: jest.fn()
       }
     })
-    jest.mock('../../../app/crons/process-on-hold/process', () => jest.fn())
+    jest.mock('../../../app/crons/process-on-hold/process', async () => jest.fn())
     require('../../../app/crons/process-on-hold/process')
     const processOnHoldAppsScheduler = require('../../../app/crons/process-on-hold/scheduler')
     await processOnHoldAppsScheduler.plugin.register()
