@@ -7,6 +7,7 @@ const mapAuth = require('../auth/map-auth')
 const getUser = require('../auth/get-user')
 const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
 const crumbCache = require('./utils/crumb-cache')
+const applicationStatus = require('../constants/application-status')
 
 module.exports = {
   method: 'POST',
@@ -45,7 +46,8 @@ module.exports = {
 
           if (request.payload.rejectOnHoldClaim === 'yes') {
             const userName = getUser(request).username
-            await updateApplicationStatus(request.payload.reference, userName, 11)
+            const result = await updateApplicationStatus(request.payload.reference, userName, applicationStatus.inCheck)
+            console.log(`Application ${request.payload.reference}, moved to IN CHECK Status from ON HOLD => ${result}`)
             await crumbCache.generateNewCrumb(request, h)
           }
           return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)

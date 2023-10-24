@@ -8,7 +8,7 @@ jest.mock('../../../../app/api/applications')
 
 const reference = 'AHWR-555A-FD4C'
 
-applications.withdrawApplication = jest.fn().mockResolvedValue(true)
+applications.updateApplicationStatus = jest.fn().mockResolvedValue(true)
 
 describe('Withdraw Application test', () => {
   let crumb
@@ -108,7 +108,7 @@ describe('Withdraw Application test', () => {
         }
       }
       const res = await global.__SERVER__.inject(options)
-      expect(applications.withdrawApplication).toHaveBeenCalledTimes(1)
+      expect(applications.updateApplicationStatus).toHaveBeenCalledTimes(1)
       expect(res.statusCode).toBe(302)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
@@ -128,7 +128,7 @@ describe('Withdraw Application test', () => {
         }
       }
       const res = await global.__SERVER__.inject(options)
-      expect(applications.withdrawApplication).toHaveBeenCalledTimes(0)
+      expect(applications.updateApplicationStatus).toHaveBeenCalledTimes(0)
       expect(res.statusCode).toBe(302)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })

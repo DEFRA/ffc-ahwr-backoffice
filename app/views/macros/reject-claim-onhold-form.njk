@@ -1,10 +1,14 @@
 {% macro viewRejectClaimOnHoldForm(applicationId, page, crumb) %}
-  <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left">
-    <form method="POST" autocomplete="off" novalidate="novalidate" action="/reject-on-hold-claim" id="rejectClaimOnHoldForm">
-      <button class="govuk-button govuk-button govuk-!-margin-bottom-3" name="rejectOnHoldClaim" value="yes">Move to IN CHECK</button>
-      <input type="hidden" name="reference" value="{{ applicationId }}" />
-      <input type="hidden" name="page" value="{{ page }}" />
-      <input type="hidden" name="crumb" value="{{crumb}}"/>
-    </form>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left">
+        <form method="POST" autocomplete="off" novalidate="novalidate" action="/reject-on-hold-claim" id="rejectClaimOnHoldForm">
+          <button class="govuk-button govuk-button govuk-!-margin-bottom-3" name="rejectOnHoldClaim" value="yes">Move to IN CHECK</button>
+          <input type="hidden" name="reference" value="{{ applicationId }}" />
+          <input type="hidden" name="page" value="{{ page }}" />
+          <input type="hidden" name="crumb" value="{{crumb}}"/>
+        </form>
+      </div>
+    </div>
   </div>
 {% endmacro %}

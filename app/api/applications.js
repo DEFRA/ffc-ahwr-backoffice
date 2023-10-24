@@ -84,7 +84,10 @@ async function updateApplicationStatus (reference, user, status) {
     json: true
   }
   try {
-    await Wreck.put(url, options)
+    const response = await Wreck.put(url, options)
+    if (response.res.statusCode !== 200) {
+      return null
+    }
     return true
   } catch (err) {
     console.log(err)

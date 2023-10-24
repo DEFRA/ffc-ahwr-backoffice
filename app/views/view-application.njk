@@ -9,6 +9,7 @@
 {% from "./macros/view-authorise-or-reject-form.njk" import viewAuthoriseOrRejectForm %}
 {% from "./macros/view-authorise-payment-confirm-form.njk" import viewAuthorisePaymentConfirmForm %}
 {% from "./macros/view-reject-claim-confirm-form.njk" import viewRejectClaimConfirmForm %}
+{% from "./macros/reject-claim-onhold-form.njk" import viewRejectClaimOnHoldForm %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% block pageTitle %}
@@ -40,9 +41,6 @@
       {{ govukSummaryList({
         rows: model.listData.rows
       }) }}
-      {% if displayMoveToInCheckFromHold %}
-        {{ viewRejectClaimOnHoldForm(applicationId, page, crumb) }}
-      {% endif %}
       {% if withdrawConfirmationForm %}
         {{ viewWithdrawConfirmationForm(applicationId, page, crumb) }}
       {% endif %}
@@ -76,6 +74,9 @@
       {% endif %}
       {% if authoriseOrRejectForm.display %}
         {{ viewAuthoriseOrRejectForm(applicationId, page, crumb, authoriseOrRejectForm.displayAuthorisePaymentButton) }}
+      {% endif %}
+      {% if displayMoveToInCheckFromHold %}
+        {{ viewRejectClaimOnHoldForm(applicationId, page, crumb) }}
       {% endif %}
     </div>
   </div>

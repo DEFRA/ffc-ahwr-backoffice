@@ -106,7 +106,7 @@ describe('Reject On Hold Application test', () => {
         }
 
         const res = await global.__SERVER__.inject(options)
-        expect(applications.updateApplicationStatus).toHaveBeenCalledWith(reference, 'admin', 11)
+        expect(applications.updateApplicationStatus).toHaveBeenCalledWith(reference, 'admin', 5)
         expect(applications.updateApplicationStatus).toHaveBeenCalledTimes(1)
         expect(res.statusCode).toBe(302)
         expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
@@ -148,7 +148,6 @@ describe('Reject On Hold Application test', () => {
         const res = await global.__SERVER__.inject(options)
 
         expect(res.statusCode).toBe(500)
-        // expect(res.headers.location).toEqual(`/view-application/123?page=1&reject-on-hold=true&errors=${encodedErrors}`)
       })
 
       test('Reject application claim not processed', async () => {
@@ -165,7 +164,6 @@ describe('Reject On Hold Application test', () => {
         }
         const res = await global.__SERVER__.inject(options)
         expect(res.statusCode).toBe(500)
-        // expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
       })
     })
 
@@ -184,7 +182,6 @@ describe('Reject On Hold Application test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(500)
       expect(applications.processApplicationClaim).not.toHaveBeenCalled()
-      // expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
   })
 })
