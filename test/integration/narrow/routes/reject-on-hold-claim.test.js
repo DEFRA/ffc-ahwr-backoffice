@@ -146,11 +146,11 @@ describe('Reject On Hold Application test', () => {
         }
 
         const res = await global.__SERVER__.inject(options)
-
         expect(res.statusCode).toBe(500)
       })
 
       test('Reject application claim not processed', async () => {
+        auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
         const options = {
           method: 'POST',
           url,
@@ -163,7 +163,8 @@ describe('Reject On Hold Application test', () => {
           }
         }
         const res = await global.__SERVER__.inject(options)
-        expect(res.statusCode).toBe(500)
+        expect(res.statusCode).toBe(302)
+        expect(applications.updateApplicationStatus).not.toHaveBeenCalled()
       })
     })
 
@@ -180,8 +181,8 @@ describe('Reject On Hold Application test', () => {
         }
       }
       const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(500)
-      expect(applications.processApplicationClaim).not.toHaveBeenCalled()
+      expect(res.statusCode).toBe(302)
+      expect(applications.updateApplicationStatus).not.toHaveBeenCalled()
     })
   })
 })
