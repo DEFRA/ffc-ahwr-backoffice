@@ -13,6 +13,7 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
   const userName = getUser(request).username
   const stageExecutions = await getStageExecutionByApplication(applicationReference)
   const isApplicationInCheck = (applicationStatus === 'IN CHECK')
+  const isApplicationOnHold = (applicationStatus === 'ON HOLD')
 
   const canClaimBeRecommended = stageExecutions.length === 0
   const recommendToPayRecords = stageExecutions
@@ -38,6 +39,7 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
   const displayAuthorisationForm = isApplicationInCheck && canUserAuthorise && claimCanBeAuthorised && (!request.query.approve && !request.query.reject) && rbacEnabled
   const displayAuthoriseToPayConfirmationForm = isApplicationInCheck && canUserAuthorise && claimCanBeAuthorised && request.query.approve && rbacEnabled
   const displayAuthoriseToRejectConfirmationForm = isApplicationInCheck && canUserAuthorise && claimCanBeAuthorised && request.query.reject && rbacEnabled
+  const displayMoveToInCheckFromHold = isApplicationOnHold && (canUserAuthorise || canUserRecommend) && rbacEnabled
 
   let subStatus = upperFirstLetter(applicationStatus.toLowerCase())
   if (!hasClaimAlreadyBeenAuthorised) {
@@ -60,7 +62,8 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
     claimRecommendedToPayByDifferentUser,
     claimRecommendedToRejectByDifferentUser,
     hasClaimAlreadyBeenAuthorised,
-    rbacEnabled
+    rbacEnabled,
+    displayMoveToInCheckFromHold
   })}`)
 
   return {
@@ -70,7 +73,8 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
     displayAuthorisationForm,
     displayAuthoriseToPayConfirmationForm,
     displayAuthoriseToRejectConfirmationForm,
-    subStatus
+    subStatus,
+    displayMoveToInCheckFromHold
   }
 }
 

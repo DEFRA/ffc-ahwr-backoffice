@@ -1,5 +1,5 @@
 const Joi = require('joi')
-const { withdrawApplication } = require('../api/applications')
+const { updateApplicationStatus } = require('../api/applications')
 const { administrator } = require('../auth/permissions')
 const getUser = require('../auth/get-user')
 const applicationStatus = require('../constants/application-status')
@@ -22,7 +22,7 @@ module.exports = {
     handler: async (request, h) => {
       if (request.payload.withdrawConfirmation === 'yes') {
         const userName = getUser(request).username
-        await withdrawApplication(request.payload.reference, userName, applicationStatus.withdrawn)
+        await updateApplicationStatus(request.payload.reference, userName, applicationStatus.withdrawn)
         await crumbCache.generateNewCrumb(request, h)
       }
       return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)

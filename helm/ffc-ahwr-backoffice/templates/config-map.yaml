@@ -20,4 +20,6 @@ data:
   DISPLAY_PAGE_SIZE: {{ quote .Values.container.displayPageSize }}
   RBAC_ENABLED: {{ quote .Values.container.rbacEnabled }}
   DATE_OF_TESTING_ENABLED: {{ quote .Values.container.dateOfTestingEnabled }}
+  ON_HOLD_APP_PROCESS_ENABLED: {{ quote .Values.container.onHoldAppProcessEnabled }}
+  ON_HOLD_APP_PROCESS_SCHEDULE: {{ quote .Values.container.onHoldAppProcessSchedule }}
 {{- end -}}
