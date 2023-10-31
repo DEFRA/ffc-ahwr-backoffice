@@ -21,8 +21,7 @@ module.exports = {
       payload: Joi.object(config.rbac.enabled
         ? {
             confirm: Joi.array().items(
-              Joi.string().valid('rejectClaim').required(),
-              Joi.string().valid('sentChecklist').required()
+              Joi.string().valid('rejectClaim').required()
             ).required(),
             reference: Joi.string().valid().required(),
             page: Joi.number().greater(0).default(1)

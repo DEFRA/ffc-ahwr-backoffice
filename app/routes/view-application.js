@@ -27,7 +27,8 @@ module.exports = {
         approve: Joi.bool().default(false),
         reject: Joi.bool().default(false),
         recommendToPay: Joi.bool().default(false),
-        recommendToReject: Joi.bool().default(false)
+        recommendToReject: Joi.bool().default(false),
+        rejectOnHold: Joi.bool().default(false)
       })
     },
     handler: async (request, h) => {
@@ -68,7 +69,8 @@ module.exports = {
         displayAuthoriseToPayConfirmationForm,
         displayAuthoriseToRejectConfirmationForm,
         subStatus,
-        displayMoveToInCheckFromHold
+        displayMoveToInCheckFromHold,
+        displayOnHoldConfirmationForm
       } = await claimHelper(request, request.params.reference, application.status.status)
 
       const errors = request.query.errors
@@ -113,6 +115,12 @@ module.exports = {
           display: displayAuthoriseToRejectConfirmationForm,
           errorMessage: errors.map(e => e.href).includes('#reject-claim-panel')
             ? { text: 'Select both checkboxes' }
+            : undefined
+        },
+        onHoldConfirmationForm: {
+          display: displayOnHoldConfirmationForm,
+          errorMessage: errors.map(e => e.href).includes('#onhold-claim-panel')
+            ? { text: 'Select checkbox' }
             : undefined
         },
         subStatus,

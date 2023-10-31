@@ -1,0 +1,31 @@
+{% macro viewOnHoldClaimConfirmationForm(applicationId, page, crumb) %}
+  {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+  {% from "govuk/components/button/macro.njk" import govukButton %}
+  <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="onhold-claim-panel">
+    <form method="POST" autocomplete="off" novalidate="novalidate" action="/reject-on-hold-claim" id="rejectClaimOnHoldForm">
+      {{ govukCheckboxes({
+        name: "confirm",
+        fieldset: {
+          legend: {
+            text: "Move to IN CHECK status",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        items: [
+          {
+            value: "rejectOnHoldClaim",
+            text: "I have reviewed claim. I'm not satisfied with it."
+          }
+        ],
+        errorMessage: errorMessage
+      }) }}
+      {{ govukButton({
+        text: "Confirm and continue"
+      }) }}
+      <input type="hidden" name="reference" value="{{ applicationId }}" />
+      <input type="hidden" name="page" value="{{ page }}" />
+      <input type="hidden" name="crumb" value="{{crumb}}"/>
+    </form>
+  </div>
+{% endmacro %}
