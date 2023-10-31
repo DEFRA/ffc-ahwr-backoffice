@@ -2,8 +2,8 @@ const { processApplicationClaim, getApplications } = require('../../api/applicat
 const processOnHoldApplications = async () => {
   try {
     const searchType = 'status'
-    const searchText = 'on hold'
-    const apps = await getApplications(searchType, searchText, 0, 9999, [], null)
+    const searchText = 'ON HOLD'
+    const apps = await getApplications(searchType, searchText, 9999, 0, [], { field: 'CREATEDAT', direction: 'ASC'})
     if (apps.total > 0) {
       const applicationRefs = apps.applications.map(a => a.reference)
       console.log(`${new Date().toISOString()} processing OnHold applications:processing records: ${JSON.stringify({ applicationRefs })}`)
