@@ -21,7 +21,8 @@ module.exports = {
       payload: Joi.object(config.rbac.enabled
         ? {
             confirm: Joi.array().items(
-              Joi.string().valid('rejectClaim').required()
+              Joi.string().valid('rejectClaim').required(),
+              Joi.string().valid('sentChecklist').required()
             ).required(),
             reference: Joi.string().valid().required(),
             page: Joi.number().greater(0).default(1)
@@ -53,7 +54,7 @@ module.exports = {
         try {
           const userRole = mapAuth(request)
           if (!userRole.isAuthoriser && !userRole.isAdministrator) {
-            throw Boom.internal('routes:reject-application-claim: User must be an authoriser or an admin')
+            throw Boom.unauthorized('routes:reject-application-claim: User must be an authoriser or an admin')
           }
           await processStageActions(
             request,

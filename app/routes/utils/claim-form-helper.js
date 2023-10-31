@@ -41,7 +41,7 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
   const displayAuthoriseToRejectConfirmationForm = isApplicationInCheck && canUserAuthorise && claimCanBeAuthorised && request.query.reject && rbacEnabled
   const displayMoveToInCheckFromHold = isApplicationOnHold && (canUserAuthorise || canUserRecommend) && !request.query.rejectOnHold && rbacEnabled
   const displayOnHoldConfirmationForm = isApplicationOnHold && (canUserAuthorise || canUserRecommend) && request.query.rejectOnHold && rbacEnabled
-  console.log(request.query.rejectOnHold, 'request.query.rejectOnHold', displayOnHoldConfirmationForm, 'displayOnHoldConfirmationForm', displayMoveToInCheckFromHold, 'displayMoveToInCheckFromHold')
+
   let subStatus = upperFirstLetter(applicationStatus.toLowerCase())
   if (!hasClaimAlreadyBeenAuthorised) {
     if (hasClaimBeenRecommendedToPay) {

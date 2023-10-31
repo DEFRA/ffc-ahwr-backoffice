@@ -4,7 +4,6 @@ const { administrator, user, authoriser, recommender } = require('../../../../ap
 const getCrumbs = require('../../../utils/get-crumbs')
 
 const reference = 'AHWR-555A-FD4C'
-const encodedErrors = 'W3sidGV4dCI6IkVycm9yIHdoaWxlIG1vdmluZyBzdGF0dXMgdG8gSU4gQ0hFQ0suIn1d'
 
 describe('Reject On Hold Application test', () => {
   let applications
@@ -71,7 +70,7 @@ describe('Reject On Hold Application test', () => {
           url,
           payload: {
             reference,
-            rejectOnHoldClaim: 'yes',
+            confirm: 'rejectOnHoldClaim',
             page: 1,
             crumb
           },
@@ -99,7 +98,7 @@ describe('Reject On Hold Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference,
-            rejectOnHoldClaim: 'yes',
+            confirm: 'rejectOnHoldClaim',
             page: 1,
             crumb
           }
@@ -121,14 +120,14 @@ describe('Reject On Hold Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference: 123,
-            rejectOnHoldClaim: 'yes',
+            confirm: 'rejectOnHoldClaim',
             crumb
           }
         }
 
         const res = await global.__SERVER__.inject(options)
         expect(res.statusCode).toBe(302)
-        expect(res.headers.location).toEqual(`/view-application/123?page=1&reject-on-hold=true&errors=${encodedErrors}`)
+        expect(res.headers.location).toEqual('/view-application/123?page=1&rejectOnHold=true&errors=W10%3D')
       })
 
       test('Reject application invalid permission', async () => {
@@ -140,7 +139,7 @@ describe('Reject On Hold Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference,
-            rejectOnHoldClaim: 'yes',
+            confirm: 'rejectOnHoldClaim',
             crumb
           }
         }

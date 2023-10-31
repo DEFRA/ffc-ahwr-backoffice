@@ -42,16 +42,14 @@ module.exports = {
         try {
           const userRole = mapAuth(request)
           if (!userRole.isAuthoriser && !userRole.isRecommender && !userRole.isAdministrator) {
-            throw Boom.internal('routes:reject-on-hold-claim: User must be an authoriser/recommender or an admin')
+            throw Boom.unauthorized('routes:reject-on-hold-claim: User must be an authoriser/recommender or an admin')
           }
-          console.log(request.payload, 'success request.payload')
           if (request.payload.confirm === 'rejectOnHoldClaim') {
             const userName = getUser(request).username
             const result = await updateApplicationStatus(request.payload.reference, userName, applicationStatus.inCheck)
             console.log(`Application ${request.payload.reference}, moved to IN CHECK Status from ON HOLD => ${result}`)
             await crumbCache.generateNewCrumb(request, h)
           }
-          console.log(res.socket.destroyed);
           return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
         } catch (error) {
           console.error(`routes:reject-on-hold-claim: Error when processing request: ${error.message}`)
