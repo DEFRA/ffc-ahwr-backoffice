@@ -4,8 +4,10 @@ const processOnHoldApplications = async () => {
     const searchType = 'status'
     const searchText = 'ON HOLD'
     const apps = await getApplications(searchType, searchText, 9999, 0, [], { field: 'CREATEDAT', direction: 'ASC' })
+    const datePast24Hrs = new Date()
+    datePast24Hrs.setDate(datePast24Hrs.getDate() - 1)
     if (apps.total > 0) {
-      const applicationRefs = apps.applications.map(a => a.reference)
+      const applicationRefs = apps.applications.filter(a => new Date(a.updatedAt) <= datePast24Hrs).map(a => a.reference)
       console.log(`${new Date().toISOString()} processing OnHold applications:processing records: ${JSON.stringify({ applicationRefs })}`)
       for (const appRef of applicationRefs) {
         await processApplicationClaim(appRef, 'admin', true)
