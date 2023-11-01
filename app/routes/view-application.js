@@ -28,7 +28,8 @@ module.exports = {
         approve: Joi.bool().default(false),
         reject: Joi.bool().default(false),
         recommendToPay: Joi.bool().default(false),
-        recommendToReject: Joi.bool().default(false)
+        recommendToReject: Joi.bool().default(false),
+        debug: Joi.bool().default(false)
       })
     },
     handler: async (request, h) => {
@@ -85,8 +86,12 @@ module.exports = {
       }
 
       let paymentDetails = null
-      if (application?.statusId === applicationStatus.readyToPay && request.query.params.debug === 'true') {
-        paymentDetails = getPayment(application.reference)
+      if (application?.statusId === applicationStatus.readyToPay && (request.query.debug ?? false) === 'true') {
+        paymentDetails = await getPayment(application.reference)
+        if(paymentDetails){
+          paymentDetails = JSON.stringify(paymentDetails)
+        }
+        console.log(paymentDetails)
       }
 
       return h.view('view-application', {

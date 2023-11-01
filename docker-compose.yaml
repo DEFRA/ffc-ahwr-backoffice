@@ -24,3 +24,4 @@ services:
       DISPLAY_PAGE_SIZE: 20      
       RBAC_ENABLED: ${RBAC_ENABLED:-false}
       DATE_OF_TESTING_ENABLED: ${DATE_OF_TESTING_ENABLED:-false}
+      PAYMENT_API_URI: http://host.docker.internal:3005/api
