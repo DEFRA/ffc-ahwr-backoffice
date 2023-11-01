@@ -88,7 +88,7 @@ module.exports = {
       let paymentDetails = null
       if (application?.statusId === applicationStatus.readyToPay && (request.query.debug ?? false) === 'true') {
         paymentDetails = await getPayment(application.reference)
-        if(paymentDetails){
+        if (paymentDetails) {
           paymentDetails = JSON.stringify(paymentDetails)
         }
         console.log(paymentDetails)
