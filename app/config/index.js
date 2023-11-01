@@ -39,6 +39,7 @@ const schema = Joi.object({
   serviceUri: Joi.string().uri(),
   useRedis: Joi.boolean().default(false),
   applicationApiUri: Joi.string().uri(),
+  paymentApiUri: Joi.string().uri(),
   displayPageSize: Joi.number().default(20),
   rbac: {
     enabled: Joi.boolean().default(false)
@@ -84,6 +85,7 @@ const config = {
   serviceUri: process.env.SERVICE_URI,
   useRedis: process.env.NODE_ENV !== 'test',
   applicationApiUri: process.env.APPLICATION_API_URI,
+  paymentApiUri: process.env.PAYMENT_API_URI,
   displayPageSize: process.env.DISPLAY_PAGE_SIZE,
   rbac: {
     enabled: process.env.RBAC_ENABLED

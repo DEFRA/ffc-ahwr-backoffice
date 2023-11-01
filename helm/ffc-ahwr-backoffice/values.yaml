@@ -48,6 +48,7 @@ container:
   dateOfTestingEnabled:
   onHoldAppProcessEnabled:
   onHoldAppProcessSchedule:
+  paymentApiUri:
   
 deployment:
   cpuThreshold: 40

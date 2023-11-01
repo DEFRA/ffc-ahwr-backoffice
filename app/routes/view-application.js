@@ -10,6 +10,7 @@ const mapAuth = require('../auth/map-auth')
 const claimHelper = require('./utils/claim-form-helper')
 const rbacEnabled = require('../config').rbac.enabled
 const applicationStatus = require('../constants/application-status')
+const { getPayment } = require('../api/payments')
 
 module.exports = {
   method: 'GET',
@@ -83,7 +84,13 @@ module.exports = {
           : undefined
       }
 
+      let paymentDetails = null
+      if (application?.statusId === applicationStatus.readyToPay && request.query.params.debug === 'true') {
+        paymentDetails = getPayment(application.reference)
+      }
+
       return h.view('view-application', {
+        paymentDetails,
         applicationId: application.reference,
         status,
         statusClass,
