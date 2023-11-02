@@ -17,7 +17,8 @@ describe('Process process on hold applications function test.', () => {
     processApplicationClaim.mockResolvedValue(true)
     getApplications.mockResolvedValue({
       applications: [{
-        reference: 'ABC-XYZ-123'
+        reference: 'ABC-XYZ-123',
+        updatedAt: '2023-10-01T19:40:00.424Z'
       }],
       total: 1
     })
@@ -69,7 +70,8 @@ describe('Process process on hold applications function test.', () => {
   test('success to process on hold application', async () => {
     getApplications.mockResolvedValueOnce({
       applications: [{
-        reference: 'ABC-XYZ-123'
+        reference: 'ABC-XYZ-123',
+        updatedAt: '2023-10-01T19:40:00.424Z'
       }],
       total: 1
     })
@@ -78,5 +80,20 @@ describe('Process process on hold applications function test.', () => {
     expect(result).toBeTruthy()
     expect(getApplications).toHaveBeenCalled()
     expect(processApplicationClaim).toHaveBeenCalled()
+  })
+
+  test('success to process on hold application - no application', async () => {
+    getApplications.mockResolvedValueOnce({
+      applications: [{
+        reference: 'ABC-XYZ-123',
+        updatedAt: new Date()
+      }],
+      total: 1
+    })
+    const processOnHoldApplications = require('../../../app/crons/process-on-hold/process')
+    const result = await processOnHoldApplications()
+    expect(result).toBeTruthy()
+    expect(getApplications).toHaveBeenCalled()
+    expect(processApplicationClaim).not.toHaveBeenCalled()
   })
 })
