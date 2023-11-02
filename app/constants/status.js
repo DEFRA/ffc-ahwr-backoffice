@@ -1,3 +1,4 @@
+// TODO: Check how On Hold should be added here 
 const status = {
   APPLIED: {
     styleClass: 'govuk-tag--green'
