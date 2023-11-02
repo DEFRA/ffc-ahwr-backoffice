@@ -28,8 +28,7 @@ module.exports = {
         approve: Joi.bool().default(false),
         reject: Joi.bool().default(false),
         recommendToPay: Joi.bool().default(false),
-        recommendToReject: Joi.bool().default(false),
-        debug: Joi.bool().default(false)
+        recommendToReject: Joi.bool().default(false)
       })
     },
     handler: async (request, h) => {
@@ -86,16 +85,34 @@ module.exports = {
       }
 
       let paymentDetails = null
-      if (application?.statusId === applicationStatus.readyToPay && (request.query.debug ?? false) === 'true') {
+      if (application?.statusId === applicationStatus.readyToPay) {
         paymentDetails = await getPayment(application.reference)
-        if (paymentDetails) {
-          paymentDetails = JSON.stringify(paymentDetails)
-        }
         console.log(paymentDetails)
+        if (paymentDetails) {
+          if (paymentDetails.status !== 'on-hold') {
+            paymentDetails = {
+              firstCellIsHeader: true,
+              rows: [
+                [{ text: 'Pay Status' }, { text: paymentDetails.status }],
+                [{ text: 'Value' }, { text: `£ ${paymentDetails.data.value}` }],
+                [{ text: 'Invoice No' }, { text: paymentDetails.data.invoiceNumber }],
+                [{ text: 'Due Date' }, { text: paymentDetails.data.dueDate }],
+                [{ text: 'FRN' }, { text: paymentDetails.data.frn }]
+              ]
+            }
+          } else {
+            paymentDetails = {
+              firstCellIsHeader: true,
+              rows: [
+                [{ text: 'Pay Status' }, { text: paymentDetails.status }],
+                [{ text: 'Value' }, { text: `£ ${paymentDetails.data.value}` }]
+              ]
+            }
+          }
+        }
       }
 
       return h.view('view-application', {
-        paymentDetails,
         applicationId: application.reference,
         status,
         statusClass,
@@ -107,7 +124,7 @@ module.exports = {
         claimConfirmationForm,
         approveClaimConfirmationForm,
         rejectClaimConfirmationForm,
-        payment: application?.payment,
+        payment: paymentDetails,
         ...new ViewModel(application, applicationHistory, recommend, applicationEvents),
         page: request.query.page,
         recommendForm: displayRecommendationForm,

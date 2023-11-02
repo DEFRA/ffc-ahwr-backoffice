@@ -2,6 +2,7 @@ const cheerio = require('cheerio')
 const { Buffer } = require('buffer')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const applications = require('../../../../app/api/applications')
+const { getPayment } = require('../../../../app/api/payments')
 const { administrator } = require('../../../../app/auth/permissions')
 const viewApplicationData = require('.././../../data/view-applications.json')
 const applicationHistoryData = require('../../../data/application-history.json')
@@ -63,6 +64,7 @@ function expectWithdrawConfirmationPanel ($, istWithdrawConfirmationPanelVisible
 }
 
 jest.mock('../../../../app/api/applications')
+jest.mock('../../../../app/api/payments')
 
 describe('View Application test', () => {
   const url = `/view-application/${reference}`
@@ -1015,6 +1017,57 @@ describe('View Application test', () => {
 
       const rejectClaimButtonClass = '.govuk-button. govuk-button--secondary .govuk-!-margin-bottom-3'
       exepectedResult ? expect($(rejectClaimButtonClass).hasClass) : expect($(rejectClaimButtonClass).not.hasClass)
+    })
+
+    test.each([
+      { actualState: viewApplicationData.readytopay, expectedState: 'Ready to pay' }
+    ])('correct payment, application and claim status displayed for $expectedState', async ({ actualState, expectedState }) => {
+      auth = { strategy: 'session-auth', credentials: { scope: ['administrator'] } }
+      applications.getApplication.mockReturnValueOnce(actualState)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      applications.getApplicationEvents.mockReturnValueOnce(applicationEventData)
+      getPayment.mockReturnValueOnce({
+        payload: {
+          status: 'success',
+          data: {
+            frn: 1102123838,
+            sbi: '105233388',
+            value: 684,
+            ledger: 'AP',
+            dueDate: '12/12/2022',
+            currency: 'GBP',
+            schemeId: 4,
+            deliveryBody: 'RP00',
+            invoiceLines: [
+              {
+                value: 684,
+                fundCode: 'DOM10',
+                schemeCode: '18004',
+                description: 'G00 - Gross value of claim',
+                standardCode: 'AHWR-Pigs'
+              }
+            ],
+            sourceSystem: 'AHWR',
+            correlationId: '73fdeeef-d4e9-4626-8870-c3dce333ec52',
+            invoiceNumber: 'AHWR-E972-D5F5V001',
+            marketingYear: 2022,
+            agreementNumber: 'AHWR-E972-D5F5',
+            paymentRequestNumber: 1
+          }
+        }
+      })
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+        subStatus: expectedState
+      })
+      const options = {
+        method: 'GET',
+        url: `${url}`,
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+      expect($('#application').text()).toContain(expectedState)
+      expect($('#claim').text()).toContain(expectedState)
     })
   })
 })

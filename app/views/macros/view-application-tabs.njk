@@ -20,6 +20,15 @@
   }) }}
   {% endset -%}
 
+  
+  {% set paymentHtml %}
+  <h2 class="govuk-heading-l">Payment</h2>
+  {{ govukTable({
+    head: payment.header,
+    rows: payment.rows
+  }) }}
+  {% endset -%}
+
   {{ govukTabs({
     items: [
       {
@@ -41,6 +50,13 @@
         id: "history",
         panel: {
           html: historyHtml
+        }
+      },
+      {
+        label: "Payment",
+        id: "payment",
+        panel: {
+          html: paymentHtml
         }
       }
     ]

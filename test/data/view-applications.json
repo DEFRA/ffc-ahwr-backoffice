@@ -247,6 +247,7 @@
   "readytopay": {
     "id": "75216bb8-b4e6-40aa-b51f-24e8a90f7195",
     "reference": "AHWR-555A-FD4C",
+    "statusId": 9,
     "status": {
       "status": "READY TO PAY"
     },
