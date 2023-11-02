@@ -1040,6 +1040,7 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
       expect($('#application').text()).toContain(expectedState)
       expect($('#claim').text()).toContain(expectedState)
+      expect($('#payment').text()).toContain('Payment')
     })
     test.each([
       { actualState: viewApplicationData.readytopay, expectedState: 'Ready to pay' }
@@ -1049,11 +1050,9 @@ describe('View Application test', () => {
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       applications.getApplicationEvents.mockReturnValueOnce(applicationEventData)
       getPayment.mockReturnValueOnce({
-        payload: {
-          status: 'on-hold',
-          data: {
-            value: 684
-          }
+        status: 'on-hold',
+        data: {
+          value: 684
         }
       })
       when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
@@ -1068,6 +1067,32 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
       expect($('#application').text()).toContain(expectedState)
       expect($('#claim').text()).toContain(expectedState)
+      expect($('#payment').text()).toContain('Payment')
+    })
+    test.each([
+      { actualState: viewApplicationData.readytopay, expectedState: 'Ready to pay' }
+    ])('empty payment, application and claim status displayed for $expectedState', async ({ actualState, expectedState }) => {
+      auth = { strategy: 'session-auth', credentials: { scope: ['administrator'] } }
+      applications.getApplication.mockReturnValueOnce(actualState)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      applications.getApplicationEvents.mockReturnValueOnce(applicationEventData)
+      getPayment.mockReturnValueOnce({
+        payload: null
+      })
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+        subStatus: expectedState
+      })
+      const options = {
+        method: 'GET',
+        url: `${url}`,
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+      expect($('#application').text()).toContain(expectedState)
+      expect($('#claim').text()).toContain(expectedState)
+      expect($('#payment').text()).not.toContain('684')
+      expect($('#payment').text()).not.toContain('on-hold')
     })
   })
 })

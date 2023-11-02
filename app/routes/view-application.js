@@ -87,7 +87,6 @@ module.exports = {
       let paymentDetails = null
       if (application?.statusId === applicationStatus.readyToPay) {
         paymentDetails = await getPayment(application.reference)
-        console.log(paymentDetails)
         if (paymentDetails) {
           if (paymentDetails.status !== 'on-hold') {
             paymentDetails = {
