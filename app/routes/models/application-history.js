@@ -27,7 +27,9 @@ const filterRecords = (applicationHistory) => {
       [
         applicationStatus.withdrawn,
         applicationStatus.readyToPay,
-        applicationStatus.rejected
+        applicationStatus.rejected,
+        applicationStatus.onHold,
+        applicationStatus.inCheck
       ].includes(parseData(apphr.Payload, 'statusId'))
     ) || []),
     ...(applicationHistory.historyRecords?.filter(apphr =>
