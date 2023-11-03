@@ -61,6 +61,7 @@ describe('Application-history model test', () => {
     { statusId: 1 },
     { statusId: 3 },
     { statusId: 4 },
+    { statusId: 5 },
     { statusId: 6 },
     { statusId: 7 },
     { statusId: 8 }
@@ -123,7 +124,7 @@ describe('Application-history model test', () => {
         },
         {
           ChangedOn: '2023-03-30T20:00:15.000Z',
-          Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 5\n, "subStatus": "Authorise to pay"}',
+          Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 5\n}',
           ChangedBy: 'admin'
         },
         {
@@ -140,7 +141,7 @@ describe('Application-history model test', () => {
     expect(res.header[2].text).toEqual('Action')
     expect(res.header[3].text).toEqual('User')
 
-    expect(res.rows.length).toEqual(11)
+    expect(res.rows.length).toEqual(6)
 
     expect(res.rows[0][0].text).toEqual('24/03/2023')
     expect(res.rows[0][1].text).toEqual('11:00:12')
@@ -157,29 +158,19 @@ describe('Application-history model test', () => {
     expect(res.rows[2][2].text).toEqual('Recommend to reject')
     expect(res.rows[2][3].text).toEqual('Recommender')
 
-    expect(res.rows[3][0].text).toEqual('27/03/2023')
-    expect(res.rows[3][1].text).toEqual('17:00:17')
-    expect(res.rows[3][2].text).toEqual('Recommend to reject')
-    expect(res.rows[3][3].text).toEqual('Recommender')
+    expect(res.rows[3][0].text).toEqual('28/03/2023')
+    expect(res.rows[3][1].text).toEqual('18:00:18')
+    expect(res.rows[3][2].text).toEqual('Authorise to reject')
+    expect(res.rows[3][3].text).toEqual('Authoriser')
 
-    expect(res.rows[4][0].text).toEqual('28/03/2023')
-    expect(res.rows[4][1].text).toEqual('18:00:18')
-    expect(res.rows[4][2].text).toEqual('Authorise to reject')
-    expect(res.rows[4][3].text).toEqual('Authoriser')
+    expect(res.rows[4][0].text).toEqual('29/03/2023')
+    expect(res.rows[4][1].text).toEqual('19:00:19')
+    expect(res.rows[4][2].text).toEqual('Recommend to pay')
+    expect(res.rows[4][3].text).toEqual('Recommender')
 
-    expect(res.rows[5][0].text).toEqual('29/03/2023')
-    expect(res.rows[5][1].text).toEqual('19:00:19')
-    expect(res.rows[5][2].text).toEqual('Recommend to pay')
-    expect(res.rows[5][3].text).toEqual('Recommender')
-
-    expect(res.rows[6][0].text).toEqual('29/03/2023')
-    expect(res.rows[6][1].text).toEqual('19:00:19')
-    expect(res.rows[6][2].text).toEqual('Recommend to pay')
-    expect(res.rows[6][3].text).toEqual('Recommender')
-
-    expect(res.rows[7][0].text).toEqual('30/03/2023')
-    expect(res.rows[7][1].text).toEqual('20:00:15')
-    expect(res.rows[7][2].text).toEqual('Authorise to pay')
-    expect(res.rows[7][3].text).toEqual('admin')
+    expect(res.rows[5][0].text).toEqual('30/03/2023')
+    expect(res.rows[5][1].text).toEqual('20:00:20')
+    expect(res.rows[5][2].text).toEqual('Authorise to pay')
+    expect(res.rows[5][3].text).toEqual('Authoriser')
   })
 })
