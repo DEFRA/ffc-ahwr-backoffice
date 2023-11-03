@@ -131,6 +131,11 @@ describe('Application-history model test', () => {
           ChangedOn: '2023-03-30T20:00:20.000Z',
           Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 5\n, "subStatus": "Authorise to pay"}',
           ChangedBy: 'Authoriser'
+        },
+        {
+          ChangedOn: '2023-03-31T20:00:20.000Z',
+          Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 11\n}',
+          ChangedBy: 'admin'
         }
       ]
     }
@@ -141,7 +146,7 @@ describe('Application-history model test', () => {
     expect(res.header[2].text).toEqual('Action')
     expect(res.header[3].text).toEqual('User')
 
-    expect(res.rows.length).toEqual(6)
+    expect(res.rows.length).toEqual(7)
 
     expect(res.rows[0][0].text).toEqual('24/03/2023')
     expect(res.rows[0][1].text).toEqual('11:00:12')
@@ -172,5 +177,10 @@ describe('Application-history model test', () => {
     expect(res.rows[5][1].text).toEqual('20:00:20')
     expect(res.rows[5][2].text).toEqual('Authorise to pay')
     expect(res.rows[5][3].text).toEqual('Authoriser')
+
+    expect(res.rows[6][0].text).toEqual('31/03/2023')
+    expect(res.rows[6][1].text).toEqual('20:00:20')
+    expect(res.rows[6][2].text).toEqual('On Hold')
+    expect(res.rows[6][3].text).toEqual('admin')
   })
 })
