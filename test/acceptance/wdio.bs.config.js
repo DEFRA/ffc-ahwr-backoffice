@@ -211,17 +211,17 @@ exports.config = {
   framework: 'cucumber',
   specFileRetries: 0,
   specFileRetriesDelay: 30,
-  reporters: ['spec',
-    [HtmlReporter, {
-      debug: false,
-      outputDir: './html-reports/',
-      filename: 'feature-report.html',
-      reportTitle: 'Feature Test Report',
-      showInBrowser: false,
-      useOnAfterCommandForScreenshot: false,
-      LOG: logger
-    }]
-  ],
+  // reporters: ['spec',
+  //   [HtmlReporter, {
+  //     debug: false,
+  //     outputDir: './html-reports/',
+  //     filename: 'feature-report.html',
+  //     reportTitle: 'Feature Test Report',
+  //     showInBrowser: false,
+  //     useOnAfterCommandForScreenshot: false,
+  //     LOG: logger
+  //   }]
+ // ],
   // If you are using Cucumber you need to specify the location of your step definitions.
   cucumberOpts: {
     require: ['./steps/**/*.js'], // <string[]> (file/dir) require files before executing features
