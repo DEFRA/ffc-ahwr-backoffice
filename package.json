@@ -58,6 +58,7 @@
     "@types/hapi__hapi": "^20.0.10",
     "@types/jest": "^28.1.6",
     "@types/node": "^18.0.6",
+    "@wdio/browserstack-service": "^8.21.0",
     "blipp": "^4.0.2",
     "cheerio": "^1.0.0-rc.10",
     "clean-webpack-plugin": "^4.0.0",

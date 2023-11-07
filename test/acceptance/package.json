@@ -26,7 +26,7 @@
     "generate-report:cucumber-html": "node cucumber-reporter/cucumber-report.js",
     "test:debug": "node --inspect-brk=0.0.0.0 ./node_modules/@wdio/cli/bin/wdio.js wdio.bs.config.js"
   },
-"dependencies": {
+  "dependencies": {
     "@axe-core/webdriverio": "^4.7.3",
     "@babel/cli": "^7.2.3",
     "@babel/plugin-proposal-export-default-from": "^7.5.2",
@@ -47,20 +47,21 @@
     "selenium": "^2.20.0",
     "selenium-server": "^3.141.59",
     "selenium-standalone": "^6.24.0"
-},
-"overrides": {
+  },
+  "overrides": {
     "notifications-node-client": {
-        "jsonwebtoken": "9.0.0"
+      "jsonwebtoken": "9.0.0"
     },
     "@azure/identity": {
-        "jsonwebtoken": "9.0.0"
+      "jsonwebtoken": "9.0.0"
     },
     "semver": "7.5.2"
-},
-"devDependencies": {
+  },
+  "devDependencies": {
     "@babel/core": "^7.23.2",
     "@wdio/allure-reporter": "^8.8.6",
     "@wdio/browser-runner": "^8.20.5",
+    "@wdio/browserstack-service": "^8.21.0",
     "@wdio/cli": "^8.20.5",
     "@wdio/cucumber-framework": "^8.20.3",
     "@wdio/selenium-standalone-service": "^8.8.6",
@@ -69,17 +70,17 @@
     "cucumber-html-reporter": "6.0.0",
     "wdio-chromedriver-service": "^8.1.1",
     "webdriverio": "7.33.0"
-},
-"standard": {
+  },
+  "standard": {
     "globals": [
-        "browser",
-        "it",
-        "expect",
-        "describe",
-        "jest",
-        "beforeEach",
-        "assert",
-        "$"
+      "browser",
+      "it",
+      "expect",
+      "describe",
+      "jest",
+      "beforeEach",
+      "assert",
+      "$"
     ]
-}
+  }
 }
