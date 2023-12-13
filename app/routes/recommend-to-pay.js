@@ -4,6 +4,7 @@ const Boom = require('@hapi/boom')
 const mapAuth = require('../auth/map-auth')
 const crumbCache = require('./utils/crumb-cache')
 const processStageActions = require('./utils/process-stage-actions')
+const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
 const permissions = require('../auth/permissions')
 const stages = require('../constants/application-stages')
 const stageExecutionActions = require('../constants/application-stage-execution-actions')
@@ -12,6 +13,7 @@ module.exports = {
   method: 'POST',
   path: '/recommend-to-pay',
   options: {
+    pre: [{ method: preDoubleSubmitHandler }],
     validate: {
       payload: Joi.object({
         confirm: Joi.array().items(
