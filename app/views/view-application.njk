@@ -82,6 +82,11 @@
       {% if displayMoveToInCheckFromHold %}
         {{ viewRejectClaimOnHoldForm(applicationId, page, crumb) }}
       {% endif %}
+      {% if displayOnHoldConfirmationForm %}
+        {{ viewOnHoldClaimConfirmationForm(applicationId, page, crumb) }}
+      {% endif %}
+
+      
     </div>
   </div>
 {% endblock %}

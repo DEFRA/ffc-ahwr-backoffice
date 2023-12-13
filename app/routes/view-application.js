@@ -125,7 +125,8 @@ module.exports = {
         },
         subStatus,
         errors,
-        displayMoveToInCheckFromHold
+        displayMoveToInCheckFromHold,
+        displayOnHoldConfirmationForm
       })
     }
   }
