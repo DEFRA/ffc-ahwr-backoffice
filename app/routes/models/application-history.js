@@ -22,7 +22,6 @@ const parseData = (payload, key) => {
 }
 
 const filterRecords = (applicationHistory) => {
-  console.log('applicationHistory before filter', applicationHistory)
   return [
     ...(applicationHistory.historyRecords?.filter(apphr =>
       [
@@ -45,7 +44,7 @@ const getStatusText = (status, subStatus) => {
     case applicationStatus.rejected:
       return subStatus || 'Claim rejected'
     case applicationStatus.inCheck:
-        return subStatus === undefined ? 'Moved to In Check' : subStatus
+      return subStatus === undefined ? 'Moved to In Check' : subStatus
     case applicationStatus.onHold:
       return subStatus || 'On Hold'
     default:
