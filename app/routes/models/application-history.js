@@ -28,13 +28,9 @@ const filterRecords = (applicationHistory) => {
         applicationStatus.withdrawn,
         applicationStatus.readyToPay,
         applicationStatus.rejected,
-        applicationStatus.onHold
-      ].includes(parseData(apphr.Payload, 'statusId'))
-    ) || []),
-    ...(applicationHistory.historyRecords?.filter(apphr =>
-      [
+        applicationStatus.onHold,
         applicationStatus.inCheck
-      ].includes(parseData(apphr.Payload, 'statusId')) && parseData(apphr.Payload, 'subStatus')
+      ].includes(parseData(apphr.Payload, 'statusId'))
     ) || [])
   ]
 }
@@ -48,7 +44,7 @@ const getStatusText = (status, subStatus) => {
     case applicationStatus.rejected:
       return subStatus || 'Claim rejected'
     case applicationStatus.inCheck:
-      return subStatus
+      return subStatus === undefined ? 'Moved to In Check' : subStatus
     case applicationStatus.onHold:
       return subStatus || 'On Hold'
     default:

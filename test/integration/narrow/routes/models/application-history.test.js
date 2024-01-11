@@ -56,12 +56,12 @@ describe('Application-history model test', () => {
     expect(res.rows[2][2].text).toEqual('Withdraw completed')
     expect(res.rows[2][3].text).toEqual('Daniel Jones')
   })
+
   test.each([
     { statusId: 0 },
     { statusId: 1 },
     { statusId: 3 },
     { statusId: 4 },
-    { statusId: 5 },
     { statusId: 6 },
     { statusId: 7 },
     { statusId: 8 }
@@ -123,17 +123,17 @@ describe('Application-history model test', () => {
           ChangedBy: 'Recommender'
         },
         {
-          ChangedOn: '2023-03-30T20:00:15.000Z',
-          Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 5\n}',
-          ChangedBy: 'admin'
-        },
-        {
           ChangedOn: '2023-03-30T20:00:20.000Z',
           Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 5\n, "subStatus": "Authorise to pay"}',
           ChangedBy: 'Authoriser'
         },
         {
-          ChangedOn: '2023-03-31T20:00:20.000Z',
+          ChangedOn: '2023-03-30T21:00:21.000Z',
+          Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 5\n}',
+          ChangedBy: 'admin'
+        },
+        {
+          ChangedOn: '2023-03-31T22:00:22.000Z',
           Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 11\n}',
           ChangedBy: 'admin'
         }
@@ -146,7 +146,7 @@ describe('Application-history model test', () => {
     expect(res.header[2].text).toEqual('Action')
     expect(res.header[3].text).toEqual('User')
 
-    expect(res.rows.length).toEqual(7)
+    expect(res.rows.length).toEqual(8)
 
     expect(res.rows[0][0].text).toEqual('24/03/2023')
     expect(res.rows[0][1].text).toEqual('11:00:12')
@@ -178,9 +178,14 @@ describe('Application-history model test', () => {
     expect(res.rows[5][2].text).toEqual('Authorise to pay')
     expect(res.rows[5][3].text).toEqual('Authoriser')
 
-    expect(res.rows[6][0].text).toEqual('31/03/2023')
-    expect(res.rows[6][1].text).toEqual('20:00:20')
-    expect(res.rows[6][2].text).toEqual('On Hold')
+    expect(res.rows[6][0].text).toEqual('30/03/2023')
+    expect(res.rows[6][1].text).toEqual('21:00:21')
+    expect(res.rows[6][2].text).toEqual('Moved to In Check')
     expect(res.rows[6][3].text).toEqual('admin')
+
+    expect(res.rows[7][0].text).toEqual('31/03/2023')
+    expect(res.rows[7][1].text).toEqual('22:00:22')
+    expect(res.rows[7][2].text).toEqual('On Hold')
+    expect(res.rows[7][3].text).toEqual('admin')
   })
 })

@@ -15,7 +15,7 @@
         items: recommend.checkBoxes,
         errorMessage: recommend.errorMessage
       }) }}
-      <button class="govuk-button govuk-button govuk-!-margin-bottom-3">Confirm and continue</button>
+      <button class="govuk-button govuk-button govuk-!-margin-bottom-3" data-prevent-double-click="true">Confirm and continue</button>
       <input type="hidden" name="reference" value="{{ applicationId }}" />
       <input type="hidden" name="page" value="{{ page }}" />
       <input type="hidden" name="crumb" value="{{crumb}}"/>
