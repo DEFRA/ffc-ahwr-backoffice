@@ -56,13 +56,12 @@ describe('Application-history model test', () => {
     expect(res.rows[2][2].text).toEqual('Withdraw completed')
     expect(res.rows[2][3].text).toEqual('Daniel Jones')
   })
-  // need to split out status 5 from this and change back to 0...
+
   test.each([
     { statusId: 0 },
     { statusId: 1 },
     { statusId: 3 },
     { statusId: 4 },
-    // { statusId: 5 },
     { statusId: 6 },
     { statusId: 7 },
     { statusId: 8 }
