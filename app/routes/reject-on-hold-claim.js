@@ -15,24 +15,40 @@ module.exports = {
   options: {
     pre: [{ method: preDoubleSubmitHandler }],
     validate: {
-      payload: Joi.object({
-        rejectOnHoldClaim: Joi.string().valid('yes', 'no'),
-        reference: Joi.string().valid(),
-        page: Joi.number().greater(0).default(1)
-      }),
+      payload: Joi.object(config.rbac.enabled
+        ? {
+            confirm: Joi.array().items(
+              Joi.string().valid('recommendToMoveOnHoldClaim').required(),
+              Joi.string().valid('updateIssuesLog').required()
+            ).required(),
+            rejectOnHoldClaim: Joi.string().valid('yes').required(),
+            reference: Joi.string().valid().required(),
+            page: Joi.number().greater(0).default(1)
+          }
+        : {
+            confirm: Joi.array().items(
+              Joi.string().valid('recommendToMoveOnHoldClaim'),
+              Joi.string().valid('updateIssuesLog')
+            ),
+            //rejectOnHoldClaim: Joi.string().valid('yes'),
+            reference: Joi.string().valid(),
+            page: Joi.number().greater(0).default(1)
+          }),
       failAction: async (request, h, error) => {
-        console.log(`routes:reject-application-claim: Error when validating payload: ${JSON.stringify({
+        console.log(`routes:reject-on-hold-claim: Error when validating payload: ${JSON.stringify({
           errorMessage: error.message,
           payload: request.payload
         })}`)
         const errors = []
-        if (error.details) {
+        if (error.details && error.details[0].context.key === 'confirm') {
           errors.push({
-            text: 'Error while moving status to IN CHECK.'
+            text: 'Select both checkboxes',
+            href: '#on-hold-claim-panel'
           })
         }
+        // TODO: Get right redirect settings for view-application page
         return h
-          .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&reject-on-hold=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
+          .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&moveToInCheck=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
           .takeover()
       }
     },
@@ -41,20 +57,27 @@ module.exports = {
         try {
           const userRole = mapAuth(request)
           if (!userRole.isAuthoriser && !userRole.isRecommender && !userRole.isAdministrator) {
-            throw Boom.internal('routes:reject-on-hold-claim: User must be an authoriser/recommender or an admin')
+            throw Boom.unauthorized('routes:reject-on-hold-claim: User must be an authoriser/recommender or an admin')
           }
-
           if (request.payload.rejectOnHoldClaim === 'yes') {
             const userName = getUser(request).username
             const result = await updateApplicationStatus(request.payload.reference, userName, applicationStatus.inCheck)
             console.log(`Application ${request.payload.reference}, moved to IN CHECK Status from ON HOLD => ${result}`)
             await crumbCache.generateNewCrumb(request, h)
           }
-          return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
+          return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&rejectOnHoldClaim=true`)
         } catch (error) {
           console.error(`routes:reject-on-hold-claim: Error when processing request: ${error.message}`)
           throw Boom.internal(error.message)
         }
+      } else {
+        if (request.payload.rejectOnHoldClaim === 'yes') {
+          const userName = getUser(request).username
+          const result = await updateApplicationStatus(request.payload.reference, userName, applicationStatus.inCheck)
+          console.log(`Application ${request.payload.reference}, moved to IN CHECK Status from ON HOLD => ${result}`)
+          await crumbCache.generateNewCrumb(request, h)
+        }
+        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
       }
     }
   }

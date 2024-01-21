@@ -7,6 +7,7 @@ const rbacEnabled = require('../../config').rbac.enabled
 const { upperFirstLetter } = require('../../lib/display-helper')
 
 const claimFormHelper = async (request, applicationReference, applicationStatus) => {
+  console.log('request in claimHelper', request)
   const mappedAuth = mapAuth(request)
   const canUserRecommend = (mappedAuth.isAdministrator || mappedAuth.isRecommender)
   const canUserAuthorise = (mappedAuth.isAdministrator || mappedAuth.isAuthoriser)
@@ -39,7 +40,8 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
   const displayAuthorisationForm = isApplicationInCheck && canUserAuthorise && claimCanBeAuthorised && (!request.query.approve && !request.query.reject) && rbacEnabled
   const displayAuthoriseToPayConfirmationForm = isApplicationInCheck && canUserAuthorise && claimCanBeAuthorised && request.query.approve && rbacEnabled
   const displayAuthoriseToRejectConfirmationForm = isApplicationInCheck && canUserAuthorise && claimCanBeAuthorised && request.query.reject && rbacEnabled
-  const displayMoveToInCheckFromHold = isApplicationOnHold && (canUserAuthorise || canUserRecommend) && rbacEnabled
+  const displayMoveToInCheckFromHold = isApplicationOnHold && (canUserAuthorise || canUserRecommend) && !request.query.moveToInCheck && rbacEnabled
+  const displayOnHoldConfirmationForm = isApplicationOnHold && (canUserAuthorise || canUserRecommend) && request.query.moveToInCheck && rbacEnabled
 
   let subStatus = upperFirstLetter(applicationStatus.toLowerCase())
   if (!hasClaimAlreadyBeenAuthorised) {
@@ -63,7 +65,8 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
     claimRecommendedToRejectByDifferentUser,
     hasClaimAlreadyBeenAuthorised,
     rbacEnabled,
-    displayMoveToInCheckFromHold
+    displayMoveToInCheckFromHold,
+    displayOnHoldConfirmationForm
   })}`)
 
   return {
@@ -73,8 +76,9 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
     displayAuthorisationForm,
     displayAuthoriseToPayConfirmationForm,
     displayAuthoriseToRejectConfirmationForm,
-    subStatus,
-    displayMoveToInCheckFromHold
+    displayMoveToInCheckFromHold,
+    displayOnHoldConfirmationForm,
+    subStatus
   }
 }
 

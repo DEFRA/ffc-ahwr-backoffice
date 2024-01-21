@@ -10,6 +10,7 @@
 {% from "./macros/view-authorise-payment-confirm-form.njk" import viewAuthorisePaymentConfirmForm %}
 {% from "./macros/view-reject-claim-confirm-form.njk" import viewRejectClaimConfirmForm %}
 {% from "./macros/reject-claim-onhold-form.njk" import viewRejectClaimOnHoldForm %}
+{% from "./macros/move-claim-to-in-check-confirmation-form.njk" import viewMoveClaimToInCheckConfirmationForm %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% block pageTitle %}
@@ -61,6 +62,10 @@
       {% endif %}
       {% if rejectClaimConfirmForm.display %}
         {{ viewRejectClaimConfirmForm(applicationId, page, crumb, rejectClaimConfirmForm.errorMessage) }}
+      {% endif %}
+      {# TODO: Move to Claim tab ? Check where to place this... #}
+      {% if onHoldConfirmationForm.display %}
+        {{ viewMoveClaimToInCheckConfirmationForm(applicationId, page, crumb) }}
       {% endif %}
       {{ viewApplicationTabs(model, vetVisit, claimed, payment, subStatus) }}
       {% if withdrawLink %}

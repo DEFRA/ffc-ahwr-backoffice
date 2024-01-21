@@ -54,7 +54,7 @@ module.exports = {
         try {
           const userRole = mapAuth(request)
           if (!userRole.isAuthoriser && !userRole.isAdministrator) {
-            throw Boom.internal('routes:reject-application-claim: User must be an authoriser or an admin')
+            throw Boom.unauthorized('routes:reject-application-claim: User must be an authoriser or an admin')
           }
           await processStageActions(
             request,
