@@ -18,7 +18,7 @@ module.exports = (recommend) => {
   }
   if (recommend.displayRecommendToRejectConfirmationForm) {
     return {
-      header: 'Recommend to reject',
+      header: 'Recommended to reject',
       checkBoxes: [
         {
           value: 'checkedAgainstChecklist',

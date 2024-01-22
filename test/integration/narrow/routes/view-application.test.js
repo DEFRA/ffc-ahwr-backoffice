@@ -31,7 +31,7 @@ function expectRecommendButtons ($, areRecommendButtonsVisible) {
     expect(recommendToPayButton.attr('href')).toMatch('/view-application/AHWR-555A-FD4C?page=1&recommendToPay=true')
 
     expect(recommendToRejectButton.hasClass('govuk-button'))
-    expect(recommendToRejectButton.text()).toMatch('Recommend to reject')
+    expect(recommendToRejectButton.text()).toMatch('Recommended to reject')
     expect(recommendToRejectButton.attr('href')).toMatch('')
   } else {
     expect($('#btn-recommend-to-pay').length).toEqual(0)
@@ -166,7 +166,7 @@ describe('View Application test', () => {
 
     test.each([
       [true, 'Recommended to pay'],
-      [true, 'Recommend to reject'],
+      [true, 'Recommended to reject'],
       [false, '']
     ])('RBAC feature flag enabled, authorisation form displayed as expected for %s %s', async (authorisePaymentButtonVisible, subStatus) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
@@ -309,7 +309,7 @@ describe('View Application test', () => {
     test.each([
       false,
       true
-    ])('RBAC feature flag enabled, recommend to reject confirm form displayed as expected when claim helper returns %s', async (displayRecommendToRejectConfirmationForm) => {
+    ])('RBAC feature flag enabled, recommended to reject confirm form displayed as expected when claim helper returns %s', async (displayRecommendToRejectConfirmationForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       claimFormHelper.mockResolvedValueOnce({

@@ -20,7 +20,7 @@ const encodedErrors = 'W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI
 
 applications.processApplicationClaim = jest.fn().mockResolvedValue(true)
 
-describe('Recommend To Reject test', () => {
+describe('Recommended To Reject test', () => {
   let crumb
   let logSpy
 

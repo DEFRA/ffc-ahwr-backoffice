@@ -16,7 +16,7 @@
   |CRN number|  
   |AHWR-1EA0-57B2|
 
-   Scenario Outline:  Enter Back office URl Then Recommend to Reject
+   Scenario Outline:  Enter Back office URl Then Recommended to Reject
  
    
     When user enters the <CRN number>
@@ -87,7 +87,7 @@ Scenario Outline:  Enter Back office URl Then withdraw the claim
   |CRN number|  
   |106518248|
 
-   Scenario Outline:  Enter Back office URl Then Recommend to Reject
+   Scenario Outline:  Enter Back office URl Then Recommended to Reject
        
     When user enters the <CRN number>
     Then search button is clicked
