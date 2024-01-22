@@ -1,20 +1,9 @@
 {% macro viewRecommendForm(applicationId, page, crumb) %}
-
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-third">
-      <div class="govuk-panel govuk-panel--confirmation govuk-panel--align-horizontal govuk-!-text-align-center">
-        <div class="govuk-panel__body">
-          <div class="govuk-grid-row">
-            <a class="govuk-button" href="/view-application/{{ applicationId }}?page={{page}}&recommendToPay=true" role="button" id="btn-recommend-to-pay">Recommended to pay</a>
-          </div>
-          <div class="govuk-grid-row">
-            <a class="govuk-button" role="button" href="/view-application/{{ applicationId }}?page={{page}}&recommendToReject=true" id="btn-recommend-to-reject">Recommended to reject</a>
-          </div>
-        </div>
-        <input type="hidden" name="reference" value="{{ applicationId }}"/>
-        <input type="hidden" name="page" value="{{ page }}"/>
-        <input type="hidden" name="crumb" value="{{crumb}}"/>
-      </div>
-    </div>
+  <div class="govuk-button-group">
+    <a class="govuk-button" href="/view-application/{{ applicationId }}?page={{page}}&recommendToPay=true" role="button" id="btn-recommend-to-pay">Recommended to pay</a>
+    <a class="govuk-button" role="button" href="/view-application/{{ applicationId }}?page={{page}}&recommendToReject=true" id="btn-recommend-to-reject">Recommended to reject</a>
+    <input type="hidden" name="reference" value="{{ applicationId }}"/>
+    <input type="hidden" name="page" value="{{ page }}"/>
+    <input type="hidden" name="crumb" value="{{crumb}}"/>
   </div>
 {% endmacro %}
