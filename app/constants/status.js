@@ -42,7 +42,7 @@ const getStyleClassByStatus = (value) => {
   const v = Object.keys(status).map(i => i === value)
   if (v.filter(s => s === true).length > 0) {
     return status[value].styleClass
-  } else { return 'govuk-tag--grey' }
+  } else { return 'govuk-tag--orange' }
 }
 
 module.exports = getStyleClassByStatus

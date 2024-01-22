@@ -119,7 +119,7 @@ describe('Application-history model test', () => {
         },
         {
           ChangedOn: '2023-03-29T19:00:19.000Z',
-          Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 5\n, "subStatus": "Recommend to pay"}',
+          Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 5\n, "subStatus": "Recommended to pay"}',
           ChangedBy: 'Recommender'
         },
         {
@@ -170,7 +170,7 @@ describe('Application-history model test', () => {
 
     expect(res.rows[4][0].text).toEqual('29/03/2023')
     expect(res.rows[4][1].text).toEqual('19:00:19')
-    expect(res.rows[4][2].text).toEqual('Recommend to pay')
+    expect(res.rows[4][2].text).toEqual('Recommended to pay')
     expect(res.rows[4][3].text).toEqual('Recommender')
 
     expect(res.rows[5][0].text).toEqual('30/03/2023')

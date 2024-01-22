@@ -27,7 +27,7 @@ function expectRecommendButtons ($, areRecommendButtonsVisible) {
     const recommendToRejectButton = $('#btn-recommend-to-reject')
 
     expect(recommendToPayButton.hasClass('govuk-button'))
-    expect(recommendToPayButton.text()).toMatch('Recommend to pay')
+    expect(recommendToPayButton.text()).toMatch('Recommended to pay')
     expect(recommendToPayButton.attr('href')).toMatch('/view-application/AHWR-555A-FD4C?page=1&recommendToPay=true')
 
     expect(recommendToRejectButton.hasClass('govuk-button'))
@@ -165,7 +165,7 @@ describe('View Application test', () => {
     })
 
     test.each([
-      [true, 'Recommend to pay'],
+      [true, 'Recommended to pay'],
       [true, 'Recommend to reject'],
       [false, '']
     ])('RBAC feature flag enabled, authorisation form displayed as expected for %s %s', async (authorisePaymentButtonVisible, subStatus) => {
@@ -186,13 +186,13 @@ describe('View Application test', () => {
 
       if (authorisePaymentButtonVisible) {
         expect($('#authorise-or-reject-form-panel').length).toEqual(1)
-        const authoriseOrRejectButton = $(subStatus === 'Recommend to pay'
+        const authoriseOrRejectButton = $(subStatus === 'Recommended to pay'
           ? '#authorise-payment-button'
           : '#reject-claim-button'
         )
         expect(authoriseOrRejectButton.length).toEqual(1)
         expect(authoriseOrRejectButton.hasClass('govuk-button'))
-        expect(authoriseOrRejectButton.text().trim()).toEqual(subStatus === 'Recommend to pay'
+        expect(authoriseOrRejectButton.text().trim()).toEqual(subStatus === 'Recommended to pay'
           ? 'Authorise payment'
           : 'Reject claim'
         )
@@ -240,7 +240,7 @@ describe('View Application test', () => {
     test.each([
       false,
       true
-    ])('RBAC feature flag enabled, recommend to pay confirm form displayed as expected when claim helper returns %s', async (displayRecommendToPayConfirmationForm) => {
+    ])('RBAC feature flag enabled, recommended to pay confirm form displayed as expected when claim helper returns %s', async (displayRecommendToPayConfirmationForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       claimFormHelper.mockResolvedValueOnce({

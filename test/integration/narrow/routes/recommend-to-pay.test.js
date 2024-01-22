@@ -20,7 +20,7 @@ const encodedErrors = 'W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI
 
 applications.processApplicationClaim = jest.fn().mockResolvedValue(true)
 
-describe('Recommend To Pay test', () => {
+describe('Recommended To Pay test', () => {
   let crumb
   let logSpy
 
@@ -118,7 +118,7 @@ describe('Recommend To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommend to pay', false)
+      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommended to pay', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
@@ -146,7 +146,7 @@ describe('Recommend To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommend to pay', false)
+      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommended to pay', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
@@ -191,7 +191,7 @@ describe('Recommend To Pay test', () => {
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=${encodedErrors}`)
     })
 
-    test('Recommend to pay invalid reference', async () => {
+    test('Recommended to pay invalid reference', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {
         method: 'POST',
