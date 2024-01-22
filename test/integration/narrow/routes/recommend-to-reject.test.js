@@ -118,7 +118,7 @@ describe('Recommended To Reject test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommend to reject', false)
+      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommended to reject', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
@@ -146,7 +146,7 @@ describe('Recommended To Reject test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommend to reject', false)
+      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommended to reject', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
@@ -170,7 +170,7 @@ describe('Recommended To Reject test', () => {
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}`)
     })
 
-    test('Recommend to reject invalid reference', async () => {
+    test('Recommended to reject invalid reference', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {
         method: 'POST',
