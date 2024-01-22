@@ -1,5 +1,5 @@
 module.exports = {
-  recommendToPay: 'Recommend to pay',
+  recommendToPay: 'Recommended to pay',
   recommendToReject: 'Recommended to reject',
   authorisePayment: 'Paid',
   authoriseRejection: 'Rejected',
