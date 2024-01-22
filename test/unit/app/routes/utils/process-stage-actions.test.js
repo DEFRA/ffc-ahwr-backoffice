@@ -47,7 +47,7 @@ describe('Process stage action test', () => {
     errorSpy = jest.spyOn(console, 'error')
   })
   test('Process all actions', async () => {
-    const response = await processStageActions(mockRequest, mockRole, mockStage, 'Recommend to pay', isClaimToBePaid)
+    const response = await processStageActions(mockRequest, mockRole, mockStage, 'Recommended to pay', isClaimToBePaid)
     expect(response).toEqual([
       { action: 'Added stage execution', stageExecutionRow: 'stage-execution-row' },
       { action: 'Processed claim', response: 'claim-processed' },
@@ -57,7 +57,7 @@ describe('Process stage action test', () => {
 
   test('Role not found should log error and re-throw it', async () => {
     await expect(
-      processStageActions(mockRequest, 'Wrong role', mockStage, 'Recommend to pay', isClaimToBePaid)
+      processStageActions(mockRequest, 'Wrong role', mockStage, 'Recommended to pay', isClaimToBePaid)
     ).rejects.toThrow(new Error('Error when filtering stage configurations for role Wrong role and stage Claim Approve/Reject'))
 
     expect(logSpy).toHaveBeenCalledWith('processStageActions error: ', `Error when filtering stage configurations for role Wrong role and stage ${mockStage}`)

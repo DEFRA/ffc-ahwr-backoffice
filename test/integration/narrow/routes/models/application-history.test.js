@@ -109,7 +109,7 @@ describe('Application-history model test', () => {
         },
         {
           ChangedOn: '2023-03-27T17:00:17.000Z',
-          Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 5\n, "subStatus": "Recommend to reject"}',
+          Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 5\n, "subStatus": "Recommended to reject"}',
           ChangedBy: 'Recommender'
         },
         {
@@ -119,7 +119,7 @@ describe('Application-history model test', () => {
         },
         {
           ChangedOn: '2023-03-29T19:00:19.000Z',
-          Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 5\n, "subStatus": "Recommend to pay"}',
+          Payload: '{\n  "reference": "AHWR-1C5B-568I",\n  "statusId": 5\n, "subStatus": "Recommended to pay"}',
           ChangedBy: 'Recommender'
         },
         {
@@ -160,7 +160,7 @@ describe('Application-history model test', () => {
 
     expect(res.rows[2][0].text).toEqual('27/03/2023')
     expect(res.rows[2][1].text).toEqual('17:00:17')
-    expect(res.rows[2][2].text).toEqual('Recommend to reject')
+    expect(res.rows[2][2].text).toEqual('Recommended to reject')
     expect(res.rows[2][3].text).toEqual('Recommender')
 
     expect(res.rows[3][0].text).toEqual('28/03/2023')
@@ -170,7 +170,7 @@ describe('Application-history model test', () => {
 
     expect(res.rows[4][0].text).toEqual('29/03/2023')
     expect(res.rows[4][1].text).toEqual('19:00:19')
-    expect(res.rows[4][2].text).toEqual('Recommend to pay')
+    expect(res.rows[4][2].text).toEqual('Recommended to pay')
     expect(res.rows[4][3].text).toEqual('Recommender')
 
     expect(res.rows[5][0].text).toEqual('30/03/2023')

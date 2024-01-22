@@ -1,7 +1,7 @@
 module.exports = (recommend) => {
   if (recommend.displayRecommendToPayConfirmationForm) {
     return {
-      header: 'Recommend to pay',
+      header: 'Recommended to pay',
       checkBoxes: [
         {
           value: 'checkedAgainstChecklist',
@@ -18,7 +18,7 @@ module.exports = (recommend) => {
   }
   if (recommend.displayRecommendToRejectConfirmationForm) {
     return {
-      header: 'Recommend to reject',
+      header: 'Recommended to reject',
       checkBoxes: [
         {
           value: 'checkedAgainstChecklist',
