@@ -192,7 +192,7 @@ describe('View Application test', () => {
         )
         expect(authoriseOrRejectButton.length).toEqual(1)
         expect(authoriseOrRejectButton.hasClass('govuk-button'))
-        expect(authoriseOrRejectButton.text().trim()).toEqual(subStatus === 'Recommended to pay'
+        expect(authoriseOrRejectButton.text().trim()).toEqual(subStatus === 'Recommend to pay'
           ? 'Authorise payment'
           : 'Reject claim'
         )

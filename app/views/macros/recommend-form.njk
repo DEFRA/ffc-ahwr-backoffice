@@ -1,7 +1,7 @@
 {% macro viewRecommendForm(applicationId, page, crumb) %}
   <div class="govuk-button-group">
-    <a class="govuk-button" href="/view-application/{{ applicationId }}?page={{page}}&recommendToPay=true" role="button" id="btn-recommend-to-pay">Recommended to pay</a>
-    <a class="govuk-button" role="button" href="/view-application/{{ applicationId }}?page={{page}}&recommendToReject=true" id="btn-recommend-to-reject">Recommended to reject</a>
+    <a class="govuk-button" href="/view-application/{{ applicationId }}?page={{page}}&recommendToPay=true" role="button" id="btn-recommend-to-pay">Recommend to pay</a>
+    <a class="govuk-button" role="button" href="/view-application/{{ applicationId }}?page={{page}}&recommendToReject=true" id="btn-recommend-to-reject">Recommend to reject</a>
     <input type="hidden" name="reference" value="{{ applicationId }}"/>
     <input type="hidden" name="page" value="{{ page }}"/>
     <input type="hidden" name="crumb" value="{{crumb}}"/>
