@@ -68,7 +68,7 @@ describe('Claim form helper tests', () => {
     ['authoriser', false],
     ['processor, user', false],
     ['administrator, processor, user, recommender, authoriser', true]
-  ])('For role %s - recommend to pay confirmation form displayed is %s', async (roles, expectedResult) => {
+  ])('For role %s - recommended to pay confirmation form displayed is %s', async (roles, expectedResult) => {
     const request = {
       query: {
         approve: true,
@@ -110,7 +110,7 @@ describe('Claim form helper tests', () => {
     ['authoriser', false],
     ['processor, user', false],
     ['administrator, processor, user, recommender, authoriser', true]
-  ])('For role %s - recommend to reject confirmation form displayed is %s', async (roles, expectedResult) => {
+  ])('For role %s - recommended to reject confirmation form displayed is %s', async (roles, expectedResult) => {
     const request = {
       query: {
         approve: false,
@@ -190,7 +190,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
-    expect(claimFormHelperResult.subStatus).toBe('Recommend to pay')
+    expect(claimFormHelperResult.subStatus).toBe('Recommended to pay')
   })
 
   test.each([
@@ -239,7 +239,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBe(expectedResult)
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
-    expect(claimFormHelperResult.subStatus).toBe('Recommend to pay')
+    expect(claimFormHelperResult.subStatus).toBe('Recommended to pay')
   })
 
   test.each([
@@ -288,7 +288,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBe(expectedResult)
     expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
-    expect(claimFormHelperResult.subStatus).toBe('Recommend to reject')
+    expect(claimFormHelperResult.subStatus).toBe('Recommended to reject')
   })
 
   test.each([
@@ -405,11 +405,11 @@ describe('Claim form helper tests', () => {
 
   test.each([
     ['recommender', 'IN CHECK', 'In check'],
-    ['recommender', 'IN CHECK', 'Recommend to pay'],
-    ['recommender', 'IN CHECK', 'Recommend to reject'],
+    ['recommender', 'IN CHECK', 'Recommended to pay'],
+    ['recommender', 'IN CHECK', 'Recommended to reject'],
     ['authoriser', 'IN CHECK', 'In check'],
-    ['authoriser', 'IN CHECK', 'Recommend to pay'],
-    ['authoriser', 'IN CHECK', 'Recommend to reject'],
+    ['authoriser', 'IN CHECK', 'Recommended to pay'],
+    ['authoriser', 'IN CHECK', 'Recommended to reject'],
     ['authoriser', 'READY TO PAY', 'Ready to pay'],
     ['authoriser', 'REJECTED', 'Rejected']
   ])('For role %s - a valid sub status displayed', async (roles, applicationStatus, expectedSubStatus) => {
@@ -432,10 +432,10 @@ describe('Claim form helper tests', () => {
     const applicationReference = 'testAppRef'
     let stageAction
     switch (expectedSubStatus) {
-      case 'Recommend to pay':
+      case 'Recommended to pay':
         stageAction = stageExecutionActions.recommendToPay
         break
-      case 'Recommend to reject':
+      case 'Recommended to reject':
         stageAction = stageExecutionActions.recommendToReject
         break
       case 'Ready to pay':

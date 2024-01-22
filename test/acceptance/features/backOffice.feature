@@ -1,7 +1,7 @@
 @smoke1
  Feature: back office 
 
-   Scenario Outline:  Enter Back office URl Then Recommend to Pay
+   Scenario Outline:  Enter Back office URl Then Recommended to Pay
    Given the user is on the backoffice URL
    Then enter email credentials
     When clicks on application link
@@ -16,7 +16,7 @@
   |CRN number|  
   |AHWR-1EA0-57B2|
 
-   Scenario Outline:  Enter Back office URl Then Recommend to Reject
+   Scenario Outline:  Enter Back office URl Then Recommended to Reject
  
    
     When user enters the <CRN number>
@@ -72,7 +72,7 @@ Scenario Outline:  Enter Back office URl Then withdraw the claim
   |CRN number|  
   |AHWR-B00E-B781|
 
-   Scenario Outline:  Enter Back office URl Then Recommend to Pay
+   Scenario Outline:  Enter Back office URl Then Recommended to Pay
    
     
     When user enters the <CRN number>
@@ -87,7 +87,7 @@ Scenario Outline:  Enter Back office URl Then withdraw the claim
   |CRN number|  
   |106518248|
 
-   Scenario Outline:  Enter Back office URl Then Recommend to Reject
+   Scenario Outline:  Enter Back office URl Then Recommended to Reject
        
     When user enters the <CRN number>
     Then search button is clicked
