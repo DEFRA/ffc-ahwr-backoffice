@@ -27,11 +27,11 @@ function expectRecommendButtons ($, areRecommendButtonsVisible) {
     const recommendToRejectButton = $('#btn-recommend-to-reject')
 
     expect(recommendToPayButton.hasClass('govuk-button'))
-    expect(recommendToPayButton.text()).toMatch('Recommended to pay')
+    expect(recommendToPayButton.text()).toMatch('Recommend to pay')
     expect(recommendToPayButton.attr('href')).toMatch('/view-application/AHWR-555A-FD4C?page=1&recommendToPay=true')
 
     expect(recommendToRejectButton.hasClass('govuk-button'))
-    expect(recommendToRejectButton.text()).toMatch('Recommended to reject')
+    expect(recommendToRejectButton.text()).toMatch('Recommend to reject')
     expect(recommendToRejectButton.attr('href')).toMatch('')
   } else {
     expect($('#btn-recommend-to-pay').length).toEqual(0)
@@ -165,8 +165,8 @@ describe('View Application test', () => {
     })
 
     test.each([
-      [true, 'Recommended to pay'],
-      [true, 'Recommended to reject'],
+      [true, 'Recommend to pay'],
+      [true, 'Recommend to reject'],
       [false, '']
     ])('RBAC feature flag enabled, authorisation form displayed as expected for %s %s', async (authorisePaymentButtonVisible, subStatus) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
@@ -192,7 +192,7 @@ describe('View Application test', () => {
         )
         expect(authoriseOrRejectButton.length).toEqual(1)
         expect(authoriseOrRejectButton.hasClass('govuk-button'))
-        expect(authoriseOrRejectButton.text().trim()).toEqual(subStatus === 'Recommend to pay'
+        expect(authoriseOrRejectButton.text().trim()).toEqual(subStatus === 'Recommended to pay'
           ? 'Authorise payment'
           : 'Reject claim'
         )
