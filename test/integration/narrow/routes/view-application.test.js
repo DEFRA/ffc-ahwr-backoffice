@@ -186,13 +186,13 @@ describe('View Application test', () => {
 
       if (authorisePaymentButtonVisible) {
         expect($('#authorise-or-reject-form-panel').length).toEqual(1)
-        const authoriseOrRejectButton = $(subStatus === 'Recommend to pay'
+        const authoriseOrRejectButton = $(subStatus === 'Recommended to pay'
           ? '#authorise-payment-button'
           : '#reject-claim-button'
         )
         expect(authoriseOrRejectButton.length).toEqual(1)
         expect(authoriseOrRejectButton.hasClass('govuk-button'))
-        expect(authoriseOrRejectButton.text().trim()).toEqual(subStatus === 'Recommend to pay'
+        expect(authoriseOrRejectButton.text().trim()).toEqual(subStatus === 'Recommended to pay'
           ? 'Authorise payment'
           : 'Reject claim'
         )
@@ -240,7 +240,7 @@ describe('View Application test', () => {
     test.each([
       false,
       true
-    ])('RBAC feature flag enabled, recommend to pay confirm form displayed as expected when claim helper returns %s', async (displayRecommendToPayConfirmationForm) => {
+    ])('RBAC feature flag enabled, recommended to pay confirm form displayed as expected when claim helper returns %s', async (displayRecommendToPayConfirmationForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       claimFormHelper.mockResolvedValueOnce({
@@ -309,7 +309,7 @@ describe('View Application test', () => {
     test.each([
       false,
       true
-    ])('RBAC feature flag enabled, recommend to reject confirm form displayed as expected when claim helper returns %s', async (displayRecommendToRejectConfirmationForm) => {
+    ])('RBAC feature flag enabled, recommended to reject confirm form displayed as expected when claim helper returns %s', async (displayRecommendToRejectConfirmationForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       claimFormHelper.mockResolvedValueOnce({

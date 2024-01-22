@@ -107,7 +107,7 @@ module.exports = {
         recommendForm: displayRecommendationForm,
         authoriseOrRejectForm: {
           display: displayAuthorisationForm,
-          displayAuthorisePaymentButton: subStatus === 'Recommend to pay'
+          displayAuthorisePaymentButton: subStatus === 'Recommended to pay'
         },
         authorisePaymentConfirmForm: {
           display: displayAuthoriseToPayConfirmationForm,
