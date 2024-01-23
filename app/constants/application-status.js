@@ -9,5 +9,7 @@ module.exports = {
   paid: 8,
   readyToPay: 9,
   rejected: 10,
-  onHold: 11
+  onHold: 11,
+  recommendToPay: 12,
+  recommendToReject: 13
 }
