@@ -69,7 +69,7 @@ module.exports = {
         subStatus,
         displayMoveToInCheckFromHold
       } = await claimHelper(request, request.params.reference, application.status.status)
-console.log('displayAuthoriseToPayConfirmationForm', displayAuthoriseToPayConfirmationForm)
+
       const errors = request.query.errors
         ? JSON.parse(Buffer.from(request.query.errors, 'base64').toString('utf8'))
         : []
