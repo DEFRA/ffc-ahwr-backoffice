@@ -64,13 +64,12 @@ module.exports = {
         displayRecommendationForm,
         displayRecommendToPayConfirmationForm,
         displayRecommendToRejectConfirmationForm,
-        displayAuthorisationForm,
         displayAuthoriseToPayConfirmationForm,
         displayAuthoriseToRejectConfirmationForm,
         subStatus,
         displayMoveToInCheckFromHold
       } = await claimHelper(request, request.params.reference, application.status.status)
-
+console.log('displayAuthoriseToPayConfirmationForm', displayAuthoriseToPayConfirmationForm)
       const errors = request.query.errors
         ? JSON.parse(Buffer.from(request.query.errors, 'base64').toString('utf8'))
         : []
@@ -99,10 +98,6 @@ module.exports = {
         ...new ViewModel(application, applicationHistory, recommend, applicationEvents),
         page: request.query.page,
         recommendForm: displayRecommendationForm,
-        authoriseOrRejectForm: {
-          display: displayAuthorisationForm,
-          displayAuthorisePaymentButton: subStatus === 'Recommended to pay'
-        },
         authorisePaymentConfirmForm: {
           display: displayAuthoriseToPayConfirmationForm,
           errorMessage: errors.map(e => e.href).includes('#authorise-payment-panel')

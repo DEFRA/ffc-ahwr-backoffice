@@ -13,8 +13,8 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
   const userName = getUser(request).username
   const stageExecutions = await getStageExecutionByApplication(applicationReference)
   const isApplicationInCheck = (applicationStatus === 'IN CHECK')
-  const isApplicationApproveRecommend = (applicationStatus === 'RECOMMENDED TO PAY')
-  const isApplicationRejectRecommend = (applicationStatus === 'RECOMMENDED TO REJECT')
+  const isApplicationApproveRecommend = (applicationStatus === 'Recommended to Pay')
+  const isApplicationRejectRecommend = (applicationStatus === 'Recommended to Reject')
   const isApplicationOnHold = (applicationStatus === 'ON HOLD')
 
   const canClaimBeRecommended = stageExecutions.length === 0
@@ -38,9 +38,8 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
   const displayRecommendationForm = isApplicationInCheck && canUserRecommend && canClaimBeRecommended && (!request.query.recommendToPay && !request.query.recommendToReject) && rbacEnabled
   const displayRecommendToPayConfirmationForm = isApplicationInCheck && canUserRecommend && canClaimBeRecommended && request.query.recommendToPay && rbacEnabled
   const displayRecommendToRejectConfirmationForm = isApplicationInCheck && canUserRecommend && canClaimBeRecommended && request.query.recommendToReject && rbacEnabled
-  const displayAuthorisationForm = isApplicationInCheck && canUserAuthorise && claimCanBeAuthorised && (!request.query.approve && !request.query.reject) && rbacEnabled
-  const displayAuthoriseToPayConfirmationForm = isApplicationApproveRecommend && canUserAuthorise && claimCanBeAuthorised && request.query.approve && rbacEnabled
-  const displayAuthoriseToRejectConfirmationForm = isApplicationRejectRecommend && canUserAuthorise && claimCanBeAuthorised && request.query.reject && rbacEnabled
+  const displayAuthoriseToPayConfirmationForm = isApplicationApproveRecommend && canUserAuthorise && claimCanBeAuthorised && rbacEnabled
+  const displayAuthoriseToRejectConfirmationForm = isApplicationRejectRecommend && canUserAuthorise && claimCanBeAuthorised && rbacEnabled
   const displayMoveToInCheckFromHold = isApplicationOnHold && (canUserAuthorise || canUserRecommend) && rbacEnabled
 
   let subStatus = upperFirstLetter(applicationStatus.toLowerCase())
@@ -72,7 +71,6 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
     displayRecommendationForm,
     displayRecommendToPayConfirmationForm,
     displayRecommendToRejectConfirmationForm,
-    displayAuthorisationForm,
     displayAuthoriseToPayConfirmationForm,
     displayAuthoriseToRejectConfirmationForm,
     subStatus,
