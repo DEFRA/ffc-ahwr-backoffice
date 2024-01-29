@@ -73,9 +73,6 @@ module.exports = {
         displayMoveToInCheckFromHold,
         displayOnHoldConfirmationForm
       } = await claimHelper(request, request.params.reference, application.status.status)
-      // TODO: Remember to remove
-      console.log('displayMoveToInCheckFromHold', displayMoveToInCheckFromHold)
-      console.log('displayOnHoldConfirmationForm', displayOnHoldConfirmationForm)
 
       const errors = request.query.errors
         ? JSON.parse(Buffer.from(request.query.errors, 'base64').toString('utf8'))
