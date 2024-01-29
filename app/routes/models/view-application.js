@@ -4,7 +4,7 @@ const getClaimData = require('./application-claim')
 const getHistoryData = require('./application-history')
 const getRecommendData = require('./recommend-claim')
 
-const claimDataStatus = ['IN CHECK', 'REJECTED', 'READY TO PAY', 'ON HOLD']
+const claimDataStatus = ['IN CHECK', 'REJECTED', 'READY TO PAY', 'ON HOLD','RECOMMENDED TO PAY', 'RECOMMENDED TO REJECT']
 
 function ViewModel (application, applicationHistory, recommend, applicationEvents) {
   this.model = {
