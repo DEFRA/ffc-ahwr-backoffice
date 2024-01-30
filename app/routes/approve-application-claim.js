@@ -56,6 +56,7 @@ module.exports = {
           if (!userRole.isAuthoriser && !userRole.isAdministrator) {
             throw Boom.internal('routes:approve-application-claim: User must be an authoriser or an admin')
           }
+          console.log(`processStageActions( ${request}, ${permissions.authoriser}, ${stages.claimApproveReject}, ${stageExecutionActions.authorisePayment}, ${true})`)
           await processStageActions(
             request,
             permissions.authoriser,

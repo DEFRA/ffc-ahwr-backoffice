@@ -64,7 +64,6 @@ module.exports = {
         displayRecommendationForm,
         displayRecommendToPayConfirmationForm,
         displayRecommendToRejectConfirmationForm,
-        displayAuthorisationForm,
         displayAuthoriseToPayConfirmationForm,
         displayAuthoriseToRejectConfirmationForm,
         subStatus,
@@ -99,10 +98,6 @@ module.exports = {
         ...new ViewModel(application, applicationHistory, recommend, applicationEvents),
         page: request.query.page,
         recommendForm: displayRecommendationForm,
-        authoriseOrRejectForm: {
-          display: displayAuthorisationForm,
-          displayAuthorisePaymentButton: subStatus === 'Recommended to pay'
-        },
         authorisePaymentConfirmForm: {
           display: displayAuthoriseToPayConfirmationForm,
           errorMessage: errors.map(e => e.href).includes('#authorise-payment-panel')

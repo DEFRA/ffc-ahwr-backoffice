@@ -53,7 +53,6 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayRecommendationForm).toBe(expectedResult)
     expect(claimFormHelperResult.displayRecommendToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayRecommendToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
@@ -95,7 +94,6 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayRecommendationForm).toBeFalsy()
     expect(claimFormHelperResult.displayRecommendToPayConfirmationForm).toBe(expectedResult)
     expect(claimFormHelperResult.displayRecommendToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
@@ -137,7 +135,6 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayRecommendationForm).toBeFalsy()
     expect(claimFormHelperResult.displayRecommendToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayRecommendToRejectConfirmationForm).toBe(expectedResult)
-    expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
@@ -186,7 +183,6 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayRecommendationForm).toBeFalsy()
     expect(claimFormHelperResult.displayRecommendToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayRecommendToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.displayAuthorisationForm).toBe(expectedResult)
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
@@ -220,7 +216,7 @@ describe('Claim form helper tests', () => {
       }
     }
     const applicationReference = 'testAppRef'
-    const applicationStatus = 'IN CHECK'
+    const applicationStatus = 'Recommended to Pay'
 
     stageExecution.getStageExecutionByApplication.mockResolvedValue([{
       stageConfigurationId: stageConfigId.claimApproveRejectRecommender,
@@ -235,7 +231,6 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayRecommendationForm).toBeFalsy()
     expect(claimFormHelperResult.displayRecommendToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayRecommendToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBe(expectedResult)
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
@@ -269,7 +264,7 @@ describe('Claim form helper tests', () => {
       }
     }
     const applicationReference = 'testAppRef'
-    const applicationStatus = 'IN CHECK'
+    const applicationStatus = 'Recommended to Reject'
 
     stageExecution.getStageExecutionByApplication.mockResolvedValue([{
       stageConfigurationId: stageConfigId.claimApproveRejectRecommender,
@@ -284,7 +279,6 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayRecommendationForm).toBeFalsy()
     expect(claimFormHelperResult.displayRecommendToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayRecommendToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBe(expectedResult)
     expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
@@ -340,7 +334,6 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayRecommendationForm).toBeFalsy()
     expect(claimFormHelperResult.displayRecommendToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayRecommendToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
@@ -396,7 +389,6 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayRecommendationForm).toBeFalsy()
     expect(claimFormHelperResult.displayRecommendToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayRecommendToRejectConfirmationForm).toBeFalsy()
-    expect(claimFormHelperResult.displayAuthorisationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
