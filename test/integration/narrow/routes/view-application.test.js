@@ -166,13 +166,12 @@ describe('View Application test', () => {
 
     test.each([
       [true, 'Recommend to pay'],
-      [true, 'Recommend to reject'],
       [false, '']
-    ])('RBAC feature flag enabled, authorisation form displayed as expected for %s %s', async (authorisePaymentButtonVisible, subStatus) => {
+    ])('Present autorisation for payment panel when RBAC feature flag enabled ', async (authorisePaymentButtonVisible, subStatus) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
-        displayAuthorisationForm: authorisePaymentButtonVisible,
+        displayAuthoriseToPayConfirmationForm: authorisePaymentButtonVisible,
         subStatus
       })
       const options = {
@@ -185,21 +184,35 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
 
       if (authorisePaymentButtonVisible) {
-        expect($('#authorise-or-reject-form-panel').length).toEqual(1)
-        const authoriseOrRejectButton = $(subStatus === 'Recommended to pay'
-          ? '#authorise-payment-button'
-          : '#reject-claim-button'
-        )
-        expect(authoriseOrRejectButton.length).toEqual(1)
-        expect(authoriseOrRejectButton.hasClass('govuk-button'))
-        expect(authoriseOrRejectButton.text().trim()).toEqual(subStatus === 'Recommended to pay'
-          ? 'Authorise payment'
-          : 'Reject claim'
-        )
+        expect($('#authorise-payment-panel').length).toEqual(1)
       } else {
-        expect($('#authorise-or-reject-form-panel').length).toEqual(0)
-        expect($('#authorise-payment-button').length).toEqual(0)
-        expect($('#reject-claim-button').length).toEqual(0)
+        expect($('#authorise-payment-panel').length).toEqual(0)
+      }
+    })
+
+    test.each([
+      [true, 'Recommend to reject'],
+      [false, '']
+    ])('Present autorisation for reject panel when RBAC feature flag enabled ', async (authorisePaymentButtonVisible, subStatus) => {
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+        displayAuthoriseToPayConfirmationForm: authorisePaymentButtonVisible,
+        subStatus
+      })
+      const options = {
+        method: 'GET',
+        url,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      if (authorisePaymentButtonVisible) {
+        expect($('#authorise-payment-panel').length).toEqual(1)
+      } else {
+        expect($('#authorise-payment-panel').length).toEqual(0)
       }
     })
 
