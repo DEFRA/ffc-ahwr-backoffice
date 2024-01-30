@@ -13,7 +13,7 @@ const processStageActions = async (request, role, stage, action, isClaimToBePaid
     const step = stageConfigurations
       .find(configuration => configuration.role.roles.includes(role) &&
                 configuration.stage === stage)
-    console.log(`processStageActions - Found step ${step} for stageConfigurations ${JSON.stringify(stageConfigurations)}`)
+    console.log(`processStageActions - Found step ${JSON.stringify(step)} for stageConfigurations ${JSON.stringify(stageConfigurations)}`)
     if (!step) {
       throw new Error(`Error when filtering stage configurations for role ${role} and stage ${stage}`)
     }
@@ -33,7 +33,7 @@ const processStageActions = async (request, role, stage, action, isClaimToBePaid
               action
             }
           })
-          console.log(`processStageActions - Added stage execution ${stageExecutionRow} for stage action ${stageAction}`)
+          console.log(`processStageActions - Added stage execution ${JSON.stringify(stageExecutionRow)} for stage action ${stageAction}`)
           results.push({ action: 'Added stage execution', stageExecutionRow })
           break
         case applicationStageActions.processApplicationClaim:
