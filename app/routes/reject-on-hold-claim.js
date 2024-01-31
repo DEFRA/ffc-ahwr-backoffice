@@ -30,7 +30,7 @@ module.exports = {
               Joi.string().valid('recommendToMoveOnHoldClaim'),
               Joi.string().valid('updateIssuesLog')
             ),
-            //rejectOnHoldClaim: Joi.string().valid('yes'),
+            rejectOnHoldClaim: Joi.string().valid('yes'),
             reference: Joi.string().valid(),
             page: Joi.number().greater(0).default(1)
           }),
@@ -43,10 +43,9 @@ module.exports = {
         if (error.details && error.details[0].context.key === 'confirm') {
           errors.push({
             text: 'Select both checkboxes',
-            href: '#on-hold-claim-panel'
+            href: '#confirm-move-to-in-check-panel'
           })
         }
-        // TODO: Get right redirect settings for view-application page
         return h
           .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&moveToInCheck=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
           .takeover()
@@ -65,7 +64,7 @@ module.exports = {
             console.log(`Application ${request.payload.reference}, moved to IN CHECK Status from ON HOLD => ${result}`)
             await crumbCache.generateNewCrumb(request, h)
           }
-          return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&rejectOnHoldClaim=true`)
+          return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
         } catch (error) {
           console.error(`routes:reject-on-hold-claim: Error when processing request: ${error.message}`)
           throw Boom.internal(error.message)

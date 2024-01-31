@@ -28,8 +28,7 @@ module.exports = {
         reject: Joi.bool().default(false),
         recommendToPay: Joi.bool().default(false),
         recommendToReject: Joi.bool().default(false),
-        moveToInCheck: Joi.bool().default(false),
-        rejectOnHoldClaim: Joi.bool().default(false)
+        moveToInCheck: Joi.bool().default(false)
       })
     },
     handler: async (request, h) => {
@@ -39,7 +38,6 @@ module.exports = {
       }
       const applicationHistory = await getApplicationHistory(request.params.reference)
 
-      // const claimDataStatus = ['IN CHECK', 'REJECTED', 'READY TO PAY']
       let applicationEvents
       if ((application?.claimed ||
         application?.statusId === applicationStatus.inCheck ||
@@ -115,7 +113,7 @@ module.exports = {
         },
         onHoldConfirmationForm: {
           display: displayOnHoldConfirmationForm,
-          errorMessage: errors.map(e => e.href).includes('#onhold-claim-panel')
+          errorMessage: errors.map(e => e.href).includes('#confirm-move-to-in-check-panel')
             ? { text: 'Select both checkboxes' }
             : undefined
         },
