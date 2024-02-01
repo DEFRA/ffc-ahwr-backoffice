@@ -4,9 +4,8 @@ const { administrator, user, authoriser, recommender } = require('../../../../ap
 const getCrumbs = require('../../../utils/get-crumbs')
 
 const reference = 'AHWR-555A-FD4C'
-const encodedErrors = 'W3sidGV4dCI6IkVycm9yIHdoaWxlIG1vdmluZyBzdGF0dXMgdG8gSU4gQ0hFQ0suIn1d'
 
-describe('Reject On Hold Application test', () => {
+describe('Reject On Hold (move to In Check) Application test', () => {
   let applications
   describe('RBAC enabled By Default', () => {
     let crumb
@@ -72,6 +71,7 @@ describe('Reject On Hold Application test', () => {
           payload: {
             reference,
             rejectOnHoldClaim: 'yes',
+            confirm: ['recommendToMoveOnHoldClaim', 'updateIssuesLog'],
             page: 1,
             crumb
           },
@@ -100,6 +100,7 @@ describe('Reject On Hold Application test', () => {
           payload: {
             reference,
             rejectOnHoldClaim: 'yes',
+            confirm: ['recommendToMoveOnHoldClaim', 'updateIssuesLog'],
             page: 1,
             crumb
           }
@@ -122,13 +123,36 @@ describe('Reject On Hold Application test', () => {
           payload: {
             reference: 123,
             rejectOnHoldClaim: 'yes',
+            confirm: ['recommendToMoveOnHoldClaim', 'updateIssuesLog'],
+            crumb
+          }
+        }
+        
+        const res = await global.__SERVER__.inject(options)
+        expect(res.statusCode).toBe(302)
+        const encodedErrors = 'W10%3D'
+        expect(res.headers.location).toEqual(`/view-application/123?page=1&moveToInCheck=true&errors=${encodedErrors}`)
+      })
+
+      test('Reject application with one unchecked checkbox', async () => {
+        auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+        const options = {
+          method: 'POST',
+          url,
+          auth,
+          headers: { cookie: `crumb=${crumb}` },
+          payload: {
+            reference,
+            rejectOnHoldClaim: 'yes',
+            confirm: ['recommendToMoveOnHoldClaim'],
             crumb
           }
         }
 
         const res = await global.__SERVER__.inject(options)
         expect(res.statusCode).toBe(302)
-        expect(res.headers.location).toEqual(`/view-application/123?page=1&reject-on-hold=true&errors=${encodedErrors}`)
+        const encodedErrors = 'W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI2NvbmZpcm0tbW92ZS10by1pbi1jaGVjay1wYW5lbCJ9XQ%3D%3D'
+        expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&moveToInCheck=true&errors=${encodedErrors}`)
       })
 
       test('Reject application invalid permission', async () => {
@@ -141,6 +165,7 @@ describe('Reject On Hold Application test', () => {
           payload: {
             reference,
             rejectOnHoldClaim: 'yes',
+            confirm: ['recommendToMoveOnHoldClaim', 'updateIssuesLog'],
             crumb
           }
         }
