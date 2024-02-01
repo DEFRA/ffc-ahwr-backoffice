@@ -127,7 +127,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
             crumb
           }
         }
-        
+
         const res = await global.__SERVER__.inject(options)
         expect(res.statusCode).toBe(302)
         const encodedErrors = 'W10%3D'
