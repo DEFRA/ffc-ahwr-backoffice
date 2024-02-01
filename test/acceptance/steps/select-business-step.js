@@ -1,5 +1,5 @@
 const { Given, When, Then } = require('@wdio/cucumber-framework')
-const SelectBusinessPage = require('../pages/select-business-page')
+const SelectBusinessPage = require('../pages/back-office-page')
 const selectBusinessPage = new SelectBusinessPage()
 
 Given(/^the user is on the (.*) page$/, async function (page) {

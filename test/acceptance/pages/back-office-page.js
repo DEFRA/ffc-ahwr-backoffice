@@ -12,8 +12,8 @@ const BACK_BUTTON='.govuk-back-link'
 const WITHDRAW='//a[text()="Withdraw"]'
 const WITHDRAW_TRUE='[value="yes"]'
 const WITHDRAW_FALSE='[value="no"]'
-const RECCOMEND_TO_PAY='#btn-recommend-to-pay'
-const RECCOMEND_TO_REJECT='#btn-recommend-to-pay'
+const RECOMMEND_TO_PAY='#btn-recommend-to-pay'
+const RECOMMEND_TO_REJECT='#btn-recommend-to-reject'
 const APPLICATION_NOT_FOUND_EXPECTED='No Applications found.'
 const APPLICATION_NOT_FOUND_ACTUAL='.govuk-error-message'
 const CONFIRM_PAYMENT='//button[text()="Confirm and continue"]'
@@ -24,13 +24,33 @@ const Email_Input='#i0116'
 const Email_Pwd='[name="passwd"]'
 const Next='#idSIButton9'
 const BACK='.govuk-back-link'
+// For subStatuses
+const MOVETOINCHECK_BUTTON='button[value="yes"]'
+const INCHECK_TEXT_ACTUAL='.govuk-tag.govuk-tag--orange'
+const INCHECK_TEXT_EXPECTED='IN CHECK'
+const CONFIRM_AND_CONTINUE='//button[text()="Confirm and continue"]'
+const RECOMMENDED_TO_PAY_TEXT_ACTUAL='.govuk-tag.govuk-tag--orange'
+const RECOMMENDED_TO_PAY_TEXT_EXPECTED='RECOMMENDED TO PAY'
+const RECOMMENDED_TO_REJECT_TEXT_ACTUAL='.govuk-tag.govuk-tag--orange'
+const RECOMMENDED_TO_REJECT_TEXT_EXPECTED='RECOMMENDED TO REJECT'
+const CHECKBOX_NOT_SELECTED_EXPECTED='Select both checkboxes'
+const CHECKBOX_NOT_SELECTED_ACTUAL='.govuk-error-message'
+const CLAIM_TAB='#tab_claim'
+const HISTORY_TAB='#tab_history'
+const READY_TO_PAY_TEXT_ACTUAL='//span[contains(@class, "govuk-tag govuk-tag")]'
+const READY_TO_PAY_TEXT_EXPECTED='READY TO PAY'
+const REJECTED_TEXT_ACTUAL='.govuk-tag.govuk-tag--red'
+const REJECTED_TEXT_EXPECTED='REJECTED'
+const CONFIRM_AND_CONTINUE_AUTHORISE='//*[@id="form-authorise-payment"]/button'
+const CONFIRM_AND_CONTINUE_REJECT_CLAIM='//button[@class="govuk-button"]'
+
 class BackOfficePage extends CommonActions {
     async getHomePage() {
       const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs))
         await this.open()
         await sleep(10000)
       }
-    async enterCRN(value){
+    async enterAgreementNumber(value){
           await this.sendKey(SEARCH_TEXT,value)
     }
     async clickOnApplicationButton() {
@@ -54,6 +74,9 @@ class BackOfficePage extends CommonActions {
     async clickOnViewDetails() {
         await this.clickOn(VIEW_DETAILS)
       } 
+    async clickOnMoveToIncheckButton(){
+        await this.clickOn(MOVETOINCHECK_BUTTON)
+    }
     async clickOnAuthorisePayment() {
         await this.clickOn(AUTHORISE_PAYMENT)
       }
@@ -76,18 +99,72 @@ class BackOfficePage extends CommonActions {
     async clickOnConfirmNotToWithdraw() {
         await this.clickOn(WITHDRAW_FALSE)
       } 
-async recommendToPay(){
-  await this.clickOn(RECCOMEND_TO_PAY)
-}
-async recommendToReject(){
-  await this.clickOn(RECCOMEND_TO_REJECT)
-}
+
+    async recommendToPay(){
+        await this.clickOn(RECOMMEND_TO_PAY)
+      }
+
+    async recommendToReject(){
+        await this.clickOn(RECOMMEND_TO_REJECT)
+      }
+
+    async clickOnConfirmAndContinue(){
+      await this.clickOn(CONFIRM_AND_CONTINUE)
+    }
+
+    async clickOnConfirmAndContinueAuthorise(){
+      await this.clickOn(CONFIRM_AND_CONTINUE_AUTHORISE)
+    }
+
+    async clickOnConfirmAndContinueRejectClaim(){
+      await this.clickOn(CONFIRM_AND_CONTINUE_REJECT_CLAIM)
+    }
+
     async clickonPaymentConfirm(){
       await this.clickOn(CONFIRM_PAYMENT)
     } 
       
     async applicationNotFound(){
       await this.elementToContainText(APPLICATION_NOT_FOUND_ACTUAL,APPLICATION_NOT_FOUND_EXPECTED)
+    }
+
+    async checkboxNotSelected(){
+      await this.elementToContainText(CHECKBOX_NOT_SELECTED_ACTUAL,CHECKBOX_NOT_SELECTED_EXPECTED)
+    }
+
+    async isElementIncheckExist(){
+      await this.elementToContainText(INCHECK_TEXT_ACTUAL,INCHECK_TEXT_EXPECTED)
+    }
+    
+    async clickOnClaimTab(){
+      await this.clickOn(CLAIM_TAB)
+    }
+
+    async clickOnHistoryTab(){
+      await this.clickOn(HISTORY_TAB)
+    }
+    async isElementRecommedToPayButtonExist(){
+      await this.isElementExist(RECOMMEND_TO_PAY)
+    }
+
+    async isElementRecommendToRejectButtonExist(){
+      await this.isElementExist(RECOMMEND_TO_REJECT)
+    }
+
+    async isElementRecommendedToPayExist(){
+      await this.elementToContainText(RECOMMENDED_TO_PAY_TEXT_ACTUAL,RECOMMENDED_TO_PAY_TEXT_EXPECTED)
+    }
+
+    async isElementRecommendedToRejectExist(){
+      await this.elementToContainText(RECOMMENDED_TO_REJECT_TEXT_ACTUAL,RECOMMENDED_TO_REJECT_TEXT_EXPECTED)
+    }
+
+    async isElementReadyToPayExist(){
+      await this.elementToContainText(READY_TO_PAY_TEXT_ACTUAL,READY_TO_PAY_TEXT_EXPECTED)
+    }
+
+    async isElementRejectedExist(){
+      await this.elementToContainText(REJECTED_TEXT_ACTUAL,REJECTED_TEXT_EXPECTED)
     }
 
     async clickonBack(){
