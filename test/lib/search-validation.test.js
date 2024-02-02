@@ -26,6 +26,7 @@ describe('Set sesrch params test', () => {
     { status: 'reject' },
     { status: 'recommended to reject' },
     { status: 'paid' },
+    { status: 'rejected' },
     { status: 'not agreed' },
     { status: 'ready' },
     { status: 'ready to pay' },

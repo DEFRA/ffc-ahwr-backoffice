@@ -5,13 +5,10 @@ const getStyleClassByStatus = require('../../constants/status')
 const keys = require('../../session/keys')
 const { serviceUri } = require('../../config')
 
-class ViewModel {
-  constructor (request, page) {
-    return (async () => {
-      this.model = await createModel(request, page)
-      return this
-    })()
-  }
+const viewModel = (request, page) => {
+  return (async () => {
+    return { model: await createModel(request, page) }
+  })()
 }
 
 const getApplicationTableHeader = (sortField) => {
@@ -136,4 +133,4 @@ async function createModel (request, page) {
   }
 }
 
-module.exports = { ViewModel, getApplicationTableHeader }
+module.exports = { viewModel, getApplicationTableHeader, createModel }
