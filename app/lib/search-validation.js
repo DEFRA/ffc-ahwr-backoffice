@@ -14,6 +14,7 @@ const validStatus = [
   'reject',
   'recommended to reject',
   'paid',
+  'rejected',
   'not agreed',
   'agreed',
   'ready to pay',
