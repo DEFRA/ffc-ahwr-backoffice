@@ -22,7 +22,7 @@
     "test:smoke:test": "wdio wdio.config.js  --cucumberOpts.tagExpression='@smoke1'",
     "test:negative:snd": "ENV=snd wdio wdio.config.js  --cucumberOpts.tagExpression='@negative'",
     "test:negative:dev": "wdio wdio.config.js  --cucumberOpts.tagExpression='@negative'",
-    "generate-report:allure": "allure generate allure-results --clean",
+    "generate-report:allure": "allure generate allure-results --clean && allure open",
     "generate-report:cucumber-html": "node cucumber-reporter/cucumber-report.js",
     "test:debug": "node --inspect-brk=0.0.0.0 ./node_modules/@wdio/cli/bin/wdio.js wdio.bs.config.js"
   },
@@ -66,10 +66,12 @@
     "@wdio/cucumber-framework": "^8.20.3",
     "@wdio/selenium-standalone-service": "^8.8.6",
     "babel-jest": "^24.8.0",
-    "chromedriver": "^119.0.0",
+    "chromedriver": "^121.0.0",
     "cucumber-html-reporter": "6.0.0",
     "wdio-chromedriver-service": "^8.1.1",
-    "webdriverio": "7.33.0"
+    "webdriverio": "7.33.0",
+    "allure-commandline": "^2.25.0",
+    "@wdio/spec-reporter": "^8.28.6"
   },
   "standard": {
     "globals": [
