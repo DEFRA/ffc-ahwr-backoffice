@@ -12,15 +12,6 @@ const viewModel = (request, page) => {
   })()
 }
 
-// class ViewModel {
-//   constructor (request, page) {
-//     return (async () => {
-//       this.model = await createModel(request, page)
-//       return this
-//     })()
-//   }
-// }
-
 const getApplicationTableHeader = (sortField) => {
   const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
   const headerColumns = [{
