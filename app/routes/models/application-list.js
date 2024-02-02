@@ -7,8 +7,7 @@ const { serviceUri } = require('../../config')
 
 const viewModel = (request, page) => {
   return (async () => {
-    this.model = await createModel(request, page)
-    return this
+    return { model: await createModel(request, page) }
   })()
 }
 
@@ -134,4 +133,4 @@ async function createModel (request, page) {
   }
 }
 
-module.exports = { viewModel, getApplicationTableHeader }
+module.exports = { viewModel, getApplicationTableHeader, createModel }
