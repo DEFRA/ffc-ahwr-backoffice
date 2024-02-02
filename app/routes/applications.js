@@ -5,7 +5,7 @@ const Joi = require('joi')
 const { setAppSearch, getAppSearch } = require('../session')
 const keys = require('../session/keys')
 const { administrator, processor, user, recommender, authoriser } = require('../auth/permissions')
-const { ViewModel } = require('./models/application-list')
+const { viewModel } = require('./models/application-list')
 const checkValidSearch = require('../lib/search-validation')
 const crumbCache = require('./utils/crumb-cache')
 
@@ -23,7 +23,7 @@ module.exports = [
       },
       handler: async (request, h) => {
         await crumbCache.generateNewCrumb(request, h)
-        return h.view(viewTemplate, await new ViewModel(request)) // NOSONAR
+        return h.view(viewTemplate, await viewModel(request)) // NOSONAR
       }
     }
   },
@@ -34,7 +34,7 @@ module.exports = [
       auth: { scope: [administrator, processor, user, recommender, authoriser] },
       handler: async (request, h) => {
         setAppSearch(request, keys.appSearch.filterStatus, [])
-        return h.view(viewTemplate, await new ViewModel(request)) // NOSONAR
+        return h.view(viewTemplate, await viewModel(request)) // NOSONAR
       }
     }
   },
@@ -52,7 +52,7 @@ module.exports = [
         let filterStatus = getAppSearch(request, keys.appSearch.filterStatus)
         filterStatus = filterStatus.filter(s => s !== request.params.status)
         setAppSearch(request, keys.appSearch.filterStatus, filterStatus)
-        return h.view(viewTemplate, await new ViewModel(request)) // NOSONAR
+        return h.view(viewTemplate, await viewModel(request)) // NOSONAR
       }
     }
   },
@@ -80,7 +80,7 @@ module.exports = [
           const { searchText, searchType } = checkValidSearch(request.payload.searchText)
           setAppSearch(request, keys.appSearch.searchText, searchText ?? '')
           setAppSearch(request, keys.appSearch.searchType, searchType ?? '')
-          return h.view(viewTemplate, await new ViewModel(request, 1)) // NOSONAR
+          return h.view(viewTemplate, await viewModel(request, 1)) // NOSONAR
         } catch (err) {
           return h.view(viewTemplate, { ...request.payload, error: err }).code(400).takeover()
         }

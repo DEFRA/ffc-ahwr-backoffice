@@ -5,14 +5,21 @@ const getStyleClassByStatus = require('../../constants/status')
 const keys = require('../../session/keys')
 const { serviceUri } = require('../../config')
 
-class ViewModel {
-  constructor (request, page) {
-    return (async () => {
-      this.model = await createModel(request, page)
-      return this
-    })()
-  }
+const viewModel = (request, page) => {
+  return (async () => {
+    this.model = await createModel(request, page)
+    return this
+  })()
 }
+
+// class ViewModel {
+//   constructor (request, page) {
+//     return (async () => {
+//       this.model = await createModel(request, page)
+//       return this
+//     })()
+//   }
+// }
 
 const getApplicationTableHeader = (sortField) => {
   const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
@@ -136,4 +143,4 @@ async function createModel (request, page) {
   }
 }
 
-module.exports = { ViewModel, getApplicationTableHeader }
+module.exports = { viewModel, getApplicationTableHeader }
