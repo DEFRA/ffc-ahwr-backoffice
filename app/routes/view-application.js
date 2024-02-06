@@ -79,9 +79,7 @@ module.exports = {
       const recommend = {
         displayRecommendToPayConfirmationForm,
         displayRecommendToRejectConfirmationForm,
-        errorMessage: errors.map(e => e.href).includes('#pnl-recommend-confirmation')
-          ? { text: 'Select both checkboxes' }
-          : undefined
+        errorMessage: checkboxErrors(errors, 'pnl-recommend-confirmation')
       }
 
       return h.view('view-application', {
