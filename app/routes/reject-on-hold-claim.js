@@ -9,7 +9,7 @@ const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
 const crumbCache = require('./utils/crumb-cache')
 const applicationStatus = require('../constants/application-status')
 
-const processRejectOnHoldClaim = async (request, applicationStatus) => {
+const processRejectOnHoldClaim = async (request, applicationStatus, h) => {
   if (request.payload.rejectOnHoldClaim === 'yes') {
     const userName = getUser(request).username
     const result = await updateApplicationStatus(request.payload.reference, userName, applicationStatus.inCheck)
@@ -74,7 +74,7 @@ module.exports = {
           throw Boom.internal(error.message)
         }
       } else {
-        await processRejectOnHoldClaim(request, applicationStatus)
+        await processRejectOnHoldClaim(request, applicationStatus, h)
         return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
       }
     }
