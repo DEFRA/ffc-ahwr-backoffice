@@ -9,6 +9,15 @@ const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
 const crumbCache = require('./utils/crumb-cache')
 const applicationStatus = require('../constants/application-status')
 
+const processRejectOnHoldClaim = async (request, applicationStatus) => {
+  if (request.payload.rejectOnHoldClaim === 'yes') {
+    const userName = getUser(request).username
+    const result = await updateApplicationStatus(request.payload.reference, userName, applicationStatus.inCheck)
+    console.log(`Application ${request.payload.reference}, moved to IN CHECK Status from ON HOLD => ${result}`)
+    await crumbCache.generateNewCrumb(request, h)
+  }
+}
+
 module.exports = {
   method: 'POST',
   path: '/reject-on-hold-claim',
@@ -58,24 +67,14 @@ module.exports = {
           if (!userRole.isAuthoriser && !userRole.isRecommender && !userRole.isAdministrator) {
             throw Boom.unauthorized('routes:reject-on-hold-claim: User must be an authoriser/recommender or an admin')
           }
-          if (request.payload.rejectOnHoldClaim === 'yes') {
-            const userName = getUser(request).username
-            const result = await updateApplicationStatus(request.payload.reference, userName, applicationStatus.inCheck)
-            console.log(`Application ${request.payload.reference}, moved to IN CHECK Status from ON HOLD => ${result}`)
-            await crumbCache.generateNewCrumb(request, h)
-          }
+          await processRejectOnHoldClaim(request, applicationStatus)
           return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
         } catch (error) {
           console.error(`routes:reject-on-hold-claim: Error when processing request: ${error.message}`)
           throw Boom.internal(error.message)
         }
       } else {
-        if (request.payload.rejectOnHoldClaim === 'yes') {
-          const userName = getUser(request).username
-          const result = await updateApplicationStatus(request.payload.reference, userName, applicationStatus.inCheck)
-          console.log(`Application ${request.payload.reference}, moved to IN CHECK Status from ON HOLD => ${result}`)
-          await crumbCache.generateNewCrumb(request, h)
-        }
+        await processRejectOnHoldClaim(request, applicationStatus)
         return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
       }
     }
