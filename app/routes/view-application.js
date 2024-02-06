@@ -10,6 +10,7 @@ const mapAuth = require('../auth/map-auth')
 const claimHelper = require('./utils/claim-form-helper')
 const rbacEnabled = require('../config').rbac.enabled
 const applicationStatus = require('../constants/application-status')
+const checkboxErrors = require('./utils/checkbox-errors')
 
 module.exports = {
   method: 'GET',
@@ -101,21 +102,15 @@ module.exports = {
         recommendForm: displayRecommendationForm,
         authorisePaymentConfirmForm: {
           display: displayAuthoriseToPayConfirmationForm,
-          errorMessage: errors.map(e => e.href).includes('#authorise-payment-panel')
-            ? { text: 'Select both checkboxes' }
-            : undefined
+          errorMessage: checkboxErrors(errors, 'authorise-payment-panel')
         },
         rejectClaimConfirmForm: {
           display: displayAuthoriseToRejectConfirmationForm,
-          errorMessage: errors.map(e => e.href).includes('#reject-claim-panel')
-            ? { text: 'Select both checkboxes' }
-            : undefined
+          errorMessage: checkboxErrors(errors, 'reject-claim-panel')
         },
         onHoldConfirmationForm: {
           display: displayOnHoldConfirmationForm,
-          errorMessage: errors.map(e => e.href).includes('#confirm-move-to-in-check-panel')
-            ? { text: 'Select both checkboxes' }
-            : undefined
+          errorMessage: checkboxErrors(errors, 'confirm-move-to-in-check-panel')
         },
         displayMoveToInCheckFromHold,
         subStatus,
