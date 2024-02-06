@@ -8,6 +8,7 @@ const getUser = require('../auth/get-user')
 const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
 const crumbCache = require('./utils/crumb-cache')
 const applicationStatus = require('../constants/application-status')
+const { failActionConsoleLog, failActionTwoCheckboxes } = require('../routes/utils/fail-action-two-checkboxes')
 
 const processRejectOnHoldClaim = async (request, applicationStatus, h) => {
   if (request.payload.rejectOnHoldClaim === 'yes') {
@@ -44,17 +45,9 @@ module.exports = {
             page: Joi.number().greater(0).default(1)
           }),
       failAction: async (request, h, error) => {
-        console.log(`routes:reject-on-hold-claim: Error when validating payload: ${JSON.stringify({
-          errorMessage: error.message,
-          payload: request.payload
-        })}`)
-        const errors = []
-        if (error.details && error.details[0].context.key === 'confirm') {
-          errors.push({
-            text: 'Select both checkboxes',
-            href: '#confirm-move-to-in-check-panel'
-          })
-        }
+        failActionConsoleLog(request, error, 'reject-on-hold-claim')
+        const errors = await failActionTwoCheckboxes(error, 'confirm-move-to-in-check-panel')
+
         return h
           .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&moveToInCheck=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
           .takeover()

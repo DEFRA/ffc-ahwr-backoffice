@@ -11,6 +11,7 @@ const processStageActions = require('./utils/process-stage-actions')
 const permissions = require('../auth/permissions')
 const stages = require('../constants/application-stages')
 const stageExecutionActions = require('../constants/application-stage-execution-actions')
+const { failActionConsoleLog, failActionTwoCheckboxes } = require('../routes/utils/fail-action-two-checkboxes')
 
 module.exports = {
   method: 'POST',
@@ -33,17 +34,9 @@ module.exports = {
             page: Joi.number().greater(0).default(1)
           }),
       failAction: async (request, h, error) => {
-        console.log(`routes:approve-application-claim: Error when validating payload: ${JSON.stringify({
-          errorMessage: error.message,
-          payload: request.payload
-        })}`)
-        const errors = []
-        if (error.details && error.details[0].context.key === 'confirm') {
-          errors.push({
-            text: 'Select both checkboxes',
-            href: '#authorise-payment-panel'
-          })
-        }
+        failActionConsoleLog(request, error, 'approve-application-claim')
+        const errors = await failActionTwoCheckboxes(error, 'authorise-payment-panel')
+
         return h
           .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&approve=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
           .takeover()
