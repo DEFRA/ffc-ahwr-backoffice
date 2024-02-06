@@ -26,13 +26,12 @@
         ],
         errorMessage: errorMessage
       }) }}
-      <button class="govuk-button" name="rejectOnHoldClaim" value="yes" data-prevent-double-click="true">Confirm and continue</button>
-      {# {{ govukButton({
-        text: "Confirm and continue"
-        name: "rejectOnHoldClaim"
-        value: "yes"
+      {{ govukButton({
+        text: "Confirm and continue",
+        name: "rejectOnHoldClaim",
+        value: "yes",
         preventDoubleClick: true
-      }) }} #}
+      }) }}
       <input type="hidden" name="reference" value="{{ applicationId }}" />
       <input type="hidden" name="page" value="{{ page }}" />
       <input type="hidden" name="crumb" value="{{crumb}}"/>
