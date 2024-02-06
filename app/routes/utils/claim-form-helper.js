@@ -7,7 +7,6 @@ const rbacEnabled = require('../../config').rbac.enabled
 const { upperFirstLetter } = require('../../lib/display-helper')
 
 const claimFormHelper = async (request, applicationReference, applicationStatus) => {
-  console.log('request in claimHelper', request)
   const mappedAuth = mapAuth(request)
   const canUserRecommend = (mappedAuth.isAdministrator || mappedAuth.isRecommender)
   const canUserAuthorise = (mappedAuth.isAdministrator || mappedAuth.isAuthoriser)
