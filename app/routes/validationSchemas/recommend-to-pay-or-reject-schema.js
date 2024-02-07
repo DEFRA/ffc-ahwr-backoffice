@@ -11,4 +11,3 @@ const recommendToPayOrRejectSchema =
   })
 
 module.exports = recommendToPayOrRejectSchema
-  
