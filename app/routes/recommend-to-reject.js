@@ -8,20 +8,14 @@ const permissions = require('../auth/permissions')
 const stages = require('../constants/application-stages')
 const stageExecutionActions = require('../constants/application-stage-execution-actions')
 const { failActionConsoleLog, failActionTwoCheckboxes } = require('../routes/utils/fail-action-two-checkboxes')
+const recommendToPayOrRejectSchema = require('./validationSchemas/recommend-to-pay-or-reject')
 
 module.exports = {
   method: 'POST',
   path: '/recommend-to-reject',
   options: {
     validate: {
-      payload: Joi.object({
-        confirm: Joi.array().items(
-          Joi.string().valid('checkedAgainstChecklist').required(),
-          Joi.string().valid('sentChecklist').required()
-        ).required(),
-        reference: Joi.string().valid().required(),
-        page: Joi.number().greater(0).default(1)
-      }),
+      payload: recommendToPayOrRejectSchema,
       failAction: async (request, h, error) => {
         failActionConsoleLog(request, error, 'recommend-to-reject')
         const errors = await failActionTwoCheckboxes(error, 'pnl-recommend-confirmation')
