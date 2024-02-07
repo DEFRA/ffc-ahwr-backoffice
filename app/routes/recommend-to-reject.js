@@ -1,5 +1,4 @@
 const { Buffer } = require('buffer')
-const Joi = require('joi')
 const Boom = require('@hapi/boom')
 const mapAuth = require('../auth/map-auth')
 const crumbCache = require('./utils/crumb-cache')
@@ -8,7 +7,7 @@ const permissions = require('../auth/permissions')
 const stages = require('../constants/application-stages')
 const stageExecutionActions = require('../constants/application-stage-execution-actions')
 const { failActionConsoleLog, failActionTwoCheckboxes } = require('../routes/utils/fail-action-two-checkboxes')
-const recommendToPayOrRejectSchema = require('./validationSchemas/recommend-to-pay-or-reject')
+const recommendToPayOrRejectSchema = require('./validationSchemas/recommend-to-pay-or-reject-schema')
 
 module.exports = {
   method: 'POST',

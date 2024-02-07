@@ -1,6 +1,5 @@
 const { Buffer } = require('buffer')
 const Boom = require('@hapi/boom')
-const Joi = require('joi')
 const config = require('../config')
 const { updateApplicationStatus } = require('../api/applications')
 const mapAuth = require('../auth/map-auth')
@@ -9,6 +8,7 @@ const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
 const crumbCache = require('./utils/crumb-cache')
 const applicationStatus = require('../constants/application-status')
 const { failActionConsoleLog, failActionTwoCheckboxes } = require('../routes/utils/fail-action-two-checkboxes')
+const { onHoldToInCheckSchema, onHoldToInCheckRbacDisabledSchema } = require('./validationSchemas/on-hold-to-in-check-schema')
 
 const processRejectOnHoldClaim = async (request, applicationStatus, h) => {
   if (request.payload.rejectOnHoldClaim === 'yes') {
@@ -25,25 +25,7 @@ module.exports = {
   options: {
     pre: [{ method: preDoubleSubmitHandler }],
     validate: {
-      payload: Joi.object(config.rbac.enabled
-        ? {
-            confirm: Joi.array().items(
-              Joi.string().valid('recommendToMoveOnHoldClaim').required(),
-              Joi.string().valid('updateIssuesLog').required()
-            ).required(),
-            rejectOnHoldClaim: Joi.string().valid('yes').required(),
-            reference: Joi.string().valid().required(),
-            page: Joi.number().greater(0).default(1)
-          }
-        : {
-            confirm: Joi.array().items(
-              Joi.string().valid('recommendToMoveOnHoldClaim'),
-              Joi.string().valid('updateIssuesLog')
-            ),
-            rejectOnHoldClaim: Joi.string().valid('yes'),
-            reference: Joi.string().valid(),
-            page: Joi.number().greater(0).default(1)
-          }),
+      payload: config.rbac.enabled ? onHoldToInCheckSchema : onHoldToInCheckRbacDisabledSchema,
       failAction: async (request, h, error) => {
         failActionConsoleLog(request, error, 'reject-on-hold-claim')
         const errors = await failActionTwoCheckboxes(error, 'confirm-move-to-in-check-panel')
