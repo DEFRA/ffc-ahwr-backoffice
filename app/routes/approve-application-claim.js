@@ -1,4 +1,3 @@
-const { Buffer } = require('buffer')
 const Boom = require('@hapi/boom')
 const Joi = require('joi')
 const config = require('../config')
@@ -12,6 +11,7 @@ const permissions = require('../auth/permissions')
 const stages = require('../constants/application-stages')
 const stageExecutionActions = require('../constants/application-stage-execution-actions')
 const { failActionConsoleLog, failActionTwoCheckboxes } = require('../routes/utils/fail-action-two-checkboxes')
+const { redirectWithError, redirectToViewApplication } = require('../routes/helpers')
 
 module.exports = {
   method: 'POST',
@@ -36,10 +36,7 @@ module.exports = {
       failAction: async (request, h, error) => {
         failActionConsoleLog(request, error, 'approve-application-claim')
         const errors = await failActionTwoCheckboxes(error, 'authorise-payment-panel')
-
-        return h
-          .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&approve=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
-          .takeover()
+        return redirectWithError(h, request.payload.reference, request?.payload?.page || 1, errors, 'failed validation for approve-application-claim')
       }
     },
     handler: async (request, h) => {
@@ -58,7 +55,7 @@ module.exports = {
             true
           )
           await crumbCache.generateNewCrumb(request, h)
-          return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
+          return redirectToViewApplication(h, request.payload.reference, request?.payload?.page || 1)
         } catch (error) {
           console.error(`routes:approve-application-claim: Error when processing request: ${error.message}`)
           throw Boom.internal(error.message)
@@ -69,7 +66,7 @@ module.exports = {
           await processApplicationClaim(request.payload.reference, userName, true)
           await crumbCache.generateNewCrumb(request, h)
         }
-        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
+        return redirectToViewApplication(h, request.payload.reference, request?.payload?.page || 1)
       }
     }
   }
