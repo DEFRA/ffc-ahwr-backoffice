@@ -63,5 +63,35 @@ describe('Holiday Functions', () => {
 
       await expect(isTodayHoliday()).resolves.toBe(false)
     })
+
+    it('when Events NULL should return false if today is not a holiday', async () => {
+      const mockEvents = null
+      Wreck.get.mockResolvedValue({
+        payload: {
+          'england-and-wales': {
+            events: mockEvents
+          }
+        }
+      })
+
+      await expect(isTodayHoliday()).resolves.toBe(false)
+    })
+
+    it('when payload NULL should return false if today is not a holiday', async () => {
+      const payloadNull = null
+      Wreck.get.mockResolvedValue({
+        payload: payloadNull
+      })
+
+      await expect(isTodayHoliday()).resolves.toBe(false)
+    })
+
+    it('when payload not have division should return false if today is not a holiday', async () => {
+      Wreck.get.mockResolvedValue({
+        payload: {}
+      })
+
+      await expect(isTodayHoliday()).resolves.toBe(false)
+    })
   })
 })

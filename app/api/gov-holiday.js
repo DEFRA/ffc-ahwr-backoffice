@@ -4,7 +4,7 @@ async function getHolidayCalendarForEngland () {
   const url = 'https://www.gov.uk/bank-holidays.json'
   try {
     const { payload } = await Wreck.get(url, { json: true })
-    if (!payload || !payload['england-and-wales'] || !payload['england-and-wales'].events) {
+    if (!(payload?.['england-and-wales']?.events)) {
       throw new Error('Invalid payload structure')
     }
     return payload['england-and-wales'].events // Returns only the events for England and Wales
