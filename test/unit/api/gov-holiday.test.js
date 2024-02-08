@@ -95,11 +95,19 @@ describe('Holiday Functions', () => {
     })
 
     it('when isTodayHoliday throw error should return false if today is not a holiday', async () => {
-      jest.mock('../../../app/api/gov-holiday', () => ({
-        isTodayHoliday: jest.fn().mockReturnValue(new Error('Something Wrong')),
-        getHolidayCalendarForEngland: jest.fn().mockReturnValue(new Error('Something Wrong'))
-      }))
+      Wreck.get.mockResolvedValue({
+        payload: {
+          'england-and-wales': {
+            events: {}
+          }
+        }
+      })
+      // Spy on console.error to verify it was called
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+
       await expect(isTodayHoliday()).resolves.toBe(false)
+      // Verify console.error was called with the expected message
+      expect(consoleSpy).toHaveBeenCalledWith('Checking holiday failed: holidays.some is not a function')
     })
   })
 })
