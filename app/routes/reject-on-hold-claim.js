@@ -1,6 +1,5 @@
 const { Buffer } = require('buffer')
 const Boom = require('@hapi/boom')
-const Joi = require('joi')
 const config = require('../config')
 const { updateApplicationStatus } = require('../api/applications')
 const mapAuth = require('../auth/map-auth')
@@ -8,6 +7,17 @@ const getUser = require('../auth/get-user')
 const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
 const crumbCache = require('./utils/crumb-cache')
 const applicationStatus = require('../constants/application-status')
+const { failActionConsoleLog, failActionTwoCheckboxes } = require('../routes/utils/fail-action-two-checkboxes')
+const { onHoldToInCheckSchema, onHoldToInCheckRbacDisabledSchema } = require('./validationSchemas/on-hold-to-in-check-schema')
+
+const processRejectOnHoldClaim = async (request, applicationStatus, h) => {
+  if (request.payload.rejectOnHoldClaim === 'yes') {
+    const userName = getUser(request).username
+    const result = await updateApplicationStatus(request.payload.reference, userName, applicationStatus.inCheck)
+    console.log(`Application ${request.payload.reference}, moved to IN CHECK Status from ON HOLD => ${result}`)
+    await crumbCache.generateNewCrumb(request, h)
+  }
+}
 
 module.exports = {
   method: 'POST',
@@ -15,24 +25,13 @@ module.exports = {
   options: {
     pre: [{ method: preDoubleSubmitHandler }],
     validate: {
-      payload: Joi.object({
-        rejectOnHoldClaim: Joi.string().valid('yes', 'no'),
-        reference: Joi.string().valid(),
-        page: Joi.number().greater(0).default(1)
-      }),
+      payload: config.rbac.enabled ? onHoldToInCheckSchema : onHoldToInCheckRbacDisabledSchema,
       failAction: async (request, h, error) => {
-        console.log(`routes:reject-application-claim: Error when validating payload: ${JSON.stringify({
-          errorMessage: error.message,
-          payload: request.payload
-        })}`)
-        const errors = []
-        if (error.details) {
-          errors.push({
-            text: 'Error while moving status to IN CHECK.'
-          })
-        }
+        failActionConsoleLog(request, error, 'reject-on-hold-claim')
+        const errors = await failActionTwoCheckboxes(error, 'confirm-move-to-in-check-panel')
+
         return h
-          .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&reject-on-hold=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
+          .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&moveToInCheck=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
           .takeover()
       }
     },
@@ -41,20 +40,17 @@ module.exports = {
         try {
           const userRole = mapAuth(request)
           if (!userRole.isAuthoriser && !userRole.isRecommender && !userRole.isAdministrator) {
-            throw Boom.internal('routes:reject-on-hold-claim: User must be an authoriser/recommender or an admin')
+            throw Boom.unauthorized('routes:reject-on-hold-claim: User must be an authoriser/recommender or an admin')
           }
-
-          if (request.payload.rejectOnHoldClaim === 'yes') {
-            const userName = getUser(request).username
-            const result = await updateApplicationStatus(request.payload.reference, userName, applicationStatus.inCheck)
-            console.log(`Application ${request.payload.reference}, moved to IN CHECK Status from ON HOLD => ${result}`)
-            await crumbCache.generateNewCrumb(request, h)
-          }
+          await processRejectOnHoldClaim(request, applicationStatus, h)
           return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
         } catch (error) {
           console.error(`routes:reject-on-hold-claim: Error when processing request: ${error.message}`)
           throw Boom.internal(error.message)
         }
+      } else {
+        await processRejectOnHoldClaim(request, applicationStatus, h)
+        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
       }
     }
   }

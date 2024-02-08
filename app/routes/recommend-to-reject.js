@@ -1,5 +1,4 @@
 const { Buffer } = require('buffer')
-const Joi = require('joi')
 const Boom = require('@hapi/boom')
 const mapAuth = require('../auth/map-auth')
 const crumbCache = require('./utils/crumb-cache')
@@ -7,32 +6,19 @@ const processStageActions = require('./utils/process-stage-actions')
 const permissions = require('../auth/permissions')
 const stages = require('../constants/application-stages')
 const stageExecutionActions = require('../constants/application-stage-execution-actions')
+const { failActionConsoleLog, failActionTwoCheckboxes } = require('../routes/utils/fail-action-two-checkboxes')
+const recommendToPayOrRejectSchema = require('./validationSchemas/recommend-to-pay-or-reject-schema')
 
 module.exports = {
   method: 'POST',
   path: '/recommend-to-reject',
   options: {
     validate: {
-      payload: Joi.object({
-        confirm: Joi.array().items(
-          Joi.string().valid('checkedAgainstChecklist').required(),
-          Joi.string().valid('sentChecklist').required()
-        ).required(),
-        reference: Joi.string().valid().required(),
-        page: Joi.number().greater(0).default(1)
-      }),
+      payload: recommendToPayOrRejectSchema,
       failAction: async (request, h, error) => {
-        console.log(`routes:recommend-to-reject: Error when validating payload: ${JSON.stringify({
-          errorMessage: error.message,
-          payload: request.payload
-        })}`)
-        const errors = []
-        if (error.details && error.details[0].context.key === 'confirm') {
-          errors.push({
-            text: 'Select both checkboxes',
-            href: '#pnl-recommend-confirmation'
-          })
-        }
+        failActionConsoleLog(request, error, 'recommend-to-reject')
+        const errors = await failActionTwoCheckboxes(error, 'pnl-recommend-confirmation')
+
         return h
           .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&recommendToReject=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
           .takeover()

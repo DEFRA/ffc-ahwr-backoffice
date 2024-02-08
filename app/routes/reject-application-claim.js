@@ -11,6 +11,7 @@ const processStageActions = require('./utils/process-stage-actions')
 const permissions = require('../auth/permissions')
 const stages = require('../constants/application-stages')
 const stageExecutionActions = require('../constants/application-stage-execution-actions')
+const { failActionConsoleLog, failActionTwoCheckboxes } = require('../routes/utils/fail-action-two-checkboxes')
 
 module.exports = {
   method: 'POST',
@@ -33,17 +34,9 @@ module.exports = {
             page: Joi.number().greater(0).default(1)
           }),
       failAction: async (request, h, error) => {
-        console.log(`routes:reject-application-claim: Error when validating payload: ${JSON.stringify({
-          errorMessage: error.message,
-          payload: request.payload
-        })}`)
-        const errors = []
-        if (error.details && error.details[0].context.key === 'confirm') {
-          errors.push({
-            text: 'Select both checkboxes',
-            href: '#reject-claim-panel'
-          })
-        }
+        failActionConsoleLog(request, error, 'reject-application-claim')
+        const errors = await failActionTwoCheckboxes(error, 'reject-claim-panel')
+
         return h
           .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&reject=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
           .takeover()
@@ -54,7 +47,7 @@ module.exports = {
         try {
           const userRole = mapAuth(request)
           if (!userRole.isAuthoriser && !userRole.isAdministrator) {
-            throw Boom.internal('routes:reject-application-claim: User must be an authoriser or an admin')
+            throw Boom.unauthorized('routes:reject-application-claim: User must be an authoriser or an admin')
           }
           await processStageActions(
             request,

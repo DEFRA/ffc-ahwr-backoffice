@@ -9,7 +9,7 @@
 {% from "./macros/view-authorise-or-reject-form.njk" import viewAuthoriseOrRejectForm %}
 {% from "./macros/view-authorise-payment-confirm-form.njk" import viewAuthorisePaymentConfirmForm %}
 {% from "./macros/view-reject-claim-confirm-form.njk" import viewRejectClaimConfirmForm %}
-{% from "./macros/reject-claim-onhold-form.njk" import viewRejectClaimOnHoldForm %}
+{% from "./macros/move-claim-to-in-check-confirmation-form.njk" import viewMoveClaimToInCheckConfirmationForm %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% block pageTitle %}
@@ -62,7 +62,10 @@
       {% if rejectClaimConfirmForm.display %}
         {{ viewRejectClaimConfirmForm(applicationId, page, crumb, rejectClaimConfirmForm.errorMessage) }}
       {% endif %}
-      {{ viewApplicationTabs(model, vetVisit, claimed, payment, subStatus) }}
+      {% if onHoldConfirmationForm.display %}
+        {{ viewMoveClaimToInCheckConfirmationForm(applicationId, page, crumb, onHoldConfirmationForm.errorMessage) }}
+      {% endif %}
+      {{ viewApplicationTabs(model, vetVisit, claimed, payment, subStatus, displayMoveToInCheckFromHold, applicationId, page) }}
       {% if withdrawLink %}
         <a class="govuk-link govuk-body" href="/view-application/{{ applicationId }}?page={{page}}&withdraw=true">Withdraw</a>
       {% endif %}
@@ -74,9 +77,6 @@
       {% endif %}
       {% if authoriseOrRejectForm.display %}
         {{ viewAuthoriseOrRejectForm(applicationId, page, crumb, authoriseOrRejectForm.displayAuthorisePaymentButton) }}
-      {% endif %}
-      {% if displayMoveToInCheckFromHold %}
-        {{ viewRejectClaimOnHoldForm(applicationId, page, crumb) }}
       {% endif %}
     </div>
   </div>
