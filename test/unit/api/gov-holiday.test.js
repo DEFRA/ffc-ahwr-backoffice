@@ -93,5 +93,13 @@ describe('Holiday Functions', () => {
 
       await expect(isTodayHoliday()).resolves.toBe(false)
     })
+
+    it('when isTodayHoliday throw error should return false if today is not a holiday', async () => {
+      jest.mock('../../../app/api/gov-holiday', () => ({
+        isTodayHoliday: jest.fn().mockReturnValue(new Error('Something Wrong')),
+        getHolidayCalendarForEngland: jest.fn()
+      }))
+      await expect(isTodayHoliday()).resolves.toBe(false)
+    })
   })
 })
