@@ -186,7 +186,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
-    expect(claimFormHelperResult.subStatus).toBe('Recommended to pay')
+    expect(claimFormHelperResult.subStatus.toUpperCase()).toBe(applicationStatus)
   })
 
   test.each([
