@@ -20,7 +20,7 @@ const getRecommendationAndAuthorizationStatus = async (userName, applicationRefe
   const hasClaimBeenRecommendedToReject = processRecords(stageExecutionActions.recommendToReject, false)
   const claimRecommendedToPayByDifferentUser = processRecords(stageExecutionActions.recommendToPay, false)
   const claimRecommendedToRejectByDifferentUser = processRecords(stageExecutionActions.recommendToReject, false)
-  
+
   // Check if claim has already been authorised
   const hasClaimAlreadyBeenAuthorised = stageExecutions
     .filter(execution => execution.stageConfigurationId === stageConfigId.claimApproveRejectAuthoriser)
@@ -42,7 +42,7 @@ const determineDisplayForms = (applicationStatus, authStatus, recommendStatus, q
   const isApplicationApproveRecommend = (applicationStatus === 'Recommended to Pay')
   const isApplicationRejectRecommend = (applicationStatus === 'Recommended to Reject')
   const isApplicationOnHold = (applicationStatus === 'ON HOLD')
-  
+
   return {
     displayRecommendationForm: isApplicationInCheck && authStatus.canUserRecommend && recommendStatus.canClaimBeRecommended && !query.recommendToPay && !query.recommendToReject && rbacEnabled,
     displayRecommendToPayConfirmationForm: isApplicationInCheck && authStatus.canUserRecommend && recommendStatus.canClaimBeRecommended && query.recommendToPay && rbacEnabled,
@@ -67,11 +67,8 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
   const recommendStatus = await getRecommendationAndAuthorizationStatus(userName, applicationReference)
   const displayForms = determineDisplayForms(applicationStatus, mappedAuth, recommendStatus, request.query)
 
-  let subStatus = upperFirstLetter(applicationStatus.toLowerCase())
-  if (!recommendStatus.hasClaimAlreadyBeenAuthorised) {
-    subStatus = recommendStatus.hasClaimBeenRecommendedToPay ? 'Recommended to pay' : recommendStatus.hasClaimBeenRecommendedToReject ? 'Recommended to reject' : subStatus
-  }
-  
+  const subStatus = upperFirstLetter(applicationStatus.toLowerCase())
+
   return {
     ...displayForms,
     subStatus

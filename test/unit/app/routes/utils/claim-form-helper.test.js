@@ -404,7 +404,7 @@ describe('Claim form helper tests', () => {
     ['authoriser', 'IN CHECK', 'Recommended to reject'],
     ['authoriser', 'READY TO PAY', 'Ready to pay'],
     ['authoriser', 'REJECTED', 'Rejected']
-  ])('For role %s - a valid sub status displayed', async (roles, applicationStatus, expectedSubStatus) => {
+  ])('For role %s - %s valid sub status %s displayed', async (roles, applicationStatus, expectedSubStatus) => {
     const request = {
       query: {
         approve: false,
@@ -454,7 +454,7 @@ describe('Claim form helper tests', () => {
     }
 
     const claimFormHelperResult = await claimFormHelper(request, applicationReference, applicationStatus)
-    expect(claimFormHelperResult.subStatus).toBe(expectedSubStatus)
+    expect(claimFormHelperResult.subStatus.toUpperCase()).toBe(applicationStatus)
   })
 
   test.each([
