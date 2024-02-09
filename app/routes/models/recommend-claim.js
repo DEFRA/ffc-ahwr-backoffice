@@ -1,6 +1,8 @@
 module.exports = (recommend) => {
+  let response = {} // Initialize as an empty object
+
   if (recommend.displayRecommendToPayConfirmationForm) {
-    return {
+    response = {
       header: 'Recommend to pay',
       checkBoxes: [
         {
@@ -15,9 +17,8 @@ module.exports = (recommend) => {
       errorMessage: recommend.errorMessage,
       formAction: '/recommend-to-pay'
     }
-  }
-  if (recommend.displayRecommendToRejectConfirmationForm) {
-    return {
+  } else if (recommend.displayRecommendToRejectConfirmationForm) {
+    response = {
       header: 'Recommend to reject',
       checkBoxes: [
         {
@@ -33,5 +34,7 @@ module.exports = (recommend) => {
       formAction: '/recommend-to-reject'
     }
   }
-  return false
+
+  // Return the response object, which will be empty if none of the conditions are met
+  return response
 }
