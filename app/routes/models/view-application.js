@@ -7,12 +7,13 @@ const getRecommendData = require('./recommend-claim')
 const claimDataStatus = ['IN CHECK', 'REJECTED', 'READY TO PAY', 'ON HOLD', 'Recommended to Pay', 'Recommended to Reject']
 
 function ViewModel (application, applicationHistory, recommend, applicationEvents) {
+  const recommendFormData = getRecommendData(recommend)
   this.model = {
     applicationData: getFarmerApplication(application),
     listData: { rows: getOrganisationRows(application?.data?.organisation) },
     claimData: application?.claimed || claimDataStatus.includes(application?.status?.status) ? getClaimData(application, applicationEvents) : false,
     historyData: getHistoryData(applicationHistory),
-    recommendData: getRecommendData(recommend)
+    recommendData: Object.entries(recommendFormData).length === 0 ? false : recommendFormData
   }
 }
 
