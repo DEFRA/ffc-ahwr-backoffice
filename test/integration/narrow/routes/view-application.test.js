@@ -2,10 +2,12 @@ const cheerio = require('cheerio')
 const { Buffer } = require('buffer')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const applications = require('../../../../app/api/applications')
+const { getPayment } = require('../../../../app/api/payments')
 const { administrator } = require('../../../../app/auth/permissions')
 const viewApplicationData = require('.././../../data/view-applications.json')
 const applicationHistoryData = require('../../../data/application-history.json')
 const applicationEventData = require('../../../data/application-events.json')
+const paymentData = require('../../../data/payments.json')
 const { when, resetAllWhenMocks } = require('jest-when')
 const reference = 'AHWR-555A-FD4C'
 let claimFormHelper
@@ -63,6 +65,7 @@ function expectWithdrawConfirmationPanel ($, istWithdrawConfirmationPanelVisible
 }
 
 jest.mock('../../../../app/api/applications')
+jest.mock('../../../../app/api/payments')
 
 describe('View Application test', () => {
   const url = `/view-application/${reference}`
@@ -1028,6 +1031,81 @@ describe('View Application test', () => {
 
       const rejectClaimButtonClass = '.govuk-button. govuk-button--secondary .govuk-!-margin-bottom-3'
       exepectedResult ? expect($(rejectClaimButtonClass).hasClass) : expect($(rejectClaimButtonClass).not.hasClass)
+    })
+
+    test.each([
+      { actualState: viewApplicationData.readytopay, expectedState: 'Ready to pay' }
+    ])('correct payment, application and claim status displayed for $expectedState', async ({ actualState, expectedState }) => {
+      auth = { strategy: 'session-auth', credentials: { scope: ['administrator'] } }
+      applications.getApplication.mockReturnValueOnce(actualState)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      applications.getApplicationEvents.mockReturnValueOnce(applicationEventData)
+      getPayment.mockReturnValueOnce(paymentData)
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+        subStatus: expectedState
+      })
+      const options = {
+        method: 'GET',
+        url: `${url}`,
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+      expect($('#application').text()).toContain(expectedState)
+      expect($('#claim').text()).toContain(expectedState)
+      expect($('#payment').text()).toContain('Payment')
+    })
+    test.each([
+      { actualState: viewApplicationData.readytopay, expectedState: 'Ready to pay' }
+    ])('onHold payment, application and claim status displayed for $expectedState', async ({ actualState, expectedState }) => {
+      auth = { strategy: 'session-auth', credentials: { scope: ['administrator'] } }
+      applications.getApplication.mockReturnValueOnce(actualState)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      applications.getApplicationEvents.mockReturnValueOnce(applicationEventData)
+      getPayment.mockReturnValueOnce({
+        status: 'on-hold',
+        data: {
+          value: 684
+        }
+      })
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+        subStatus: expectedState
+      })
+      const options = {
+        method: 'GET',
+        url: `${url}`,
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+      expect($('#application').text()).toContain(expectedState)
+      expect($('#claim').text()).toContain(expectedState)
+      expect($('#payment').text()).toContain('Payment')
+    })
+    test.each([
+      { actualState: viewApplicationData.readytopay, expectedState: 'Ready to pay' }
+    ])('empty payment, application and claim status displayed for $expectedState', async ({ actualState, expectedState }) => {
+      auth = { strategy: 'session-auth', credentials: { scope: ['administrator'] } }
+      applications.getApplication.mockReturnValueOnce(actualState)
+      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      applications.getApplicationEvents.mockReturnValueOnce(applicationEventData)
+      getPayment.mockReturnValueOnce({
+        payload: null
+      })
+      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+        subStatus: expectedState
+      })
+      const options = {
+        method: 'GET',
+        url: `${url}`,
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+      expect($('#application').text()).toContain(expectedState)
+      expect($('#claim').text()).toContain(expectedState)
+      expect($('#payment').text()).not.toContain('684')
+      expect($('#payment').text()).not.toContain('on-hold')
     })
   })
 })
