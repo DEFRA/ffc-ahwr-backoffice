@@ -1,5 +1,27 @@
 const appRefRegEx = /^AHWR-[\da-f]{4}-[\da-f]{4}$/i
-const validStatus = ['agreed', 'applied', 'withdrawn', 'data inputted', 'claimed', 'in check', 'accepted', 'rejected', 'paid', 'not agreed', 'ready to pay', 'on hold']
+const validStatus = [
+  'agreed',
+  'applied',
+  'withdrawn',
+  'data inputted',
+  'inputted',
+  'claimed',
+  'in check',
+  'check',
+  'recommended',
+  'pay',
+  'recommended to pay',
+  'reject',
+  'recommended to reject',
+  'paid',
+  'rejected',
+  'not agreed',
+  'agreed',
+  'ready to pay',
+  'ready',
+  'hold',
+  'on hold'
+]
 const sbiRegEx = /^[\0-9]{9}$/i
 
 module.exports = (searchText) => {

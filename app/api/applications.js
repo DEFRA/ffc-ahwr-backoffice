@@ -1,5 +1,6 @@
 const Wreck = require('@hapi/wreck')
 const { applicationApiUri } = require('../config')
+
 async function getApplication (reference) {
   const url = `${applicationApiUri}/application/get/${reference}`
   try {
@@ -13,6 +14,7 @@ async function getApplication (reference) {
     return null
   }
 }
+
 async function getApplications (searchType, searchText, limit, offset, filterStatus, sort) {
   const url = `${applicationApiUri}/application/search`
   const options = {

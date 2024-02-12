@@ -24,7 +24,7 @@ async function getStageExecutionByApplication (applicationReference) {
     if (response.res.statusCode !== 200) {
       throw new Error(`HTTP ${response.res.statusCode} (${response.res.statusMessage})`)
     }
-    console.log(`Application API: Got stage executions by application ${applicationReference}: ${response.payload}`)
+    console.log(`Application API: Got stage executions by application ${JSON.stringify(applicationReference)}: ${JSON.stringify(response.payload)}`)
     return response.payload
   } catch (err) {
     console.log(`Application API: Error while getting stage executions by application ${applicationReference}: ${err.message}`)

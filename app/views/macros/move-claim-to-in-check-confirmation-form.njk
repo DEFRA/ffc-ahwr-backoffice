@@ -1,0 +1,40 @@
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% macro viewMoveClaimToInCheckConfirmationForm(applicationId, page, crumb, errorMessage) %}
+  <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="confirm-move-to-in-check-panel">
+    <p class="govuk-body govuk-!-text-align-right"><a href="/view-application/{{ applicationId }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p>
+    <form method="POST" autocomplete="off" novalidate="novalidate" action="/reject-on-hold-claim" id="rejectClaimOnHoldForm">
+      {{ govukCheckboxes({
+        name: "confirm",
+        fieldset: {
+          legend: {
+            text: "Move claim to 'in check'",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        items: [
+          {
+            value: "recommendToMoveOnHoldClaim",
+            text: "I have reviewed this claim and recommend it is moved to ‘in check‘"
+          },
+          {
+            value: "updateIssuesLog",
+            text: "I have updated the issues log to show this claim is now ‘in check’"
+          }
+        ],
+        errorMessage: errorMessage
+      }) }}
+      {{ govukButton({
+        text: "Confirm and continue",
+        name: "rejectOnHoldClaim",
+        value: "yes",
+        preventDoubleClick: true
+      }) }}
+      <input type="hidden" name="reference" value="{{ applicationId }}" />
+      <input type="hidden" name="page" value="{{ page }}" />
+      <input type="hidden" name="crumb" value="{{crumb}}"/>
+    </form>
+  </div>
+{% endmacro %}

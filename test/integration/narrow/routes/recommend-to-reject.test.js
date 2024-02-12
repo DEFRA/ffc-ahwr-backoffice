@@ -20,7 +20,7 @@ const encodedErrors = 'W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI
 
 applications.processApplicationClaim = jest.fn().mockResolvedValue(true)
 
-describe('Recommend To Reject test', () => {
+describe('Recommended To Reject test', () => {
   let crumb
   let logSpy
 
@@ -170,7 +170,7 @@ describe('Recommend To Reject test', () => {
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}`)
     })
 
-    test('Recommend to reject invalid reference', async () => {
+    test('Recommended to reject invalid reference', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {
         method: 'POST',

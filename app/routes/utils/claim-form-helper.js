@@ -6,75 +6,72 @@ const stageExecutionActions = require('../../constants/application-stage-executi
 const rbacEnabled = require('../../config').rbac.enabled
 const { upperFirstLetter } = require('../../lib/display-helper')
 
-const claimFormHelper = async (request, applicationReference, applicationStatus) => {
-  const mappedAuth = mapAuth(request)
-  const canUserRecommend = (mappedAuth.isAdministrator || mappedAuth.isRecommender)
-  const canUserAuthorise = (mappedAuth.isAdministrator || mappedAuth.isAuthoriser)
-  const userName = getUser(request).username
+const getRecommendationAndAuthorizationStatus = async (userName, applicationReference) => {
   const stageExecutions = await getStageExecutionByApplication(applicationReference)
-  const isApplicationInCheck = (applicationStatus === 'IN CHECK')
-  const isApplicationOnHold = (applicationStatus === 'ON HOLD')
-
   const canClaimBeRecommended = stageExecutions.length === 0
-  const recommendToPayRecords = stageExecutions
+  // Process recommendation records
+  const processRecords = (actionType, executedByUser) => stageExecutions
     .filter(execution => execution.stageConfigurationId === stageConfigId.claimApproveRejectRecommender)
-    .filter(execution => execution.action.action.includes(stageExecutionActions.recommendToPay))
-  const hasClaimBeenRecommendedToPay = recommendToPayRecords.length > 0
-  const claimRecommendedToPayByDifferentUser = recommendToPayRecords
-    .filter(execution => execution.executedBy !== userName).length > 0
-  const recommendToRejectRecords = stageExecutions
-    .filter(execution => execution.stageConfigurationId === stageConfigId.claimApproveRejectRecommender)
-    .filter(execution => execution.action.action.includes(stageExecutionActions.recommendToReject))
-  const hasClaimBeenRecommendedToReject = recommendToRejectRecords.length > 0
-  const claimRecommendedToRejectByDifferentUser = recommendToRejectRecords
-    .filter(execution => execution.executedBy !== userName).length > 0
+    .filter(execution => execution.action.action.includes(actionType))
+    .filter(execution => executedByUser ? execution.executedBy === userName : execution.executedBy !== userName)
+    .length > 0
+
+  const hasClaimBeenRecommendedToPay = processRecords(stageExecutionActions.recommendToPay, false)
+  const hasClaimBeenRecommendedToReject = processRecords(stageExecutionActions.recommendToReject, false)
+  const claimRecommendedToPayByDifferentUser = processRecords(stageExecutionActions.recommendToPay, false)
+  const claimRecommendedToRejectByDifferentUser = processRecords(stageExecutionActions.recommendToReject, false)
+
+  // Check if claim has already been authorised
   const hasClaimAlreadyBeenAuthorised = stageExecutions
     .filter(execution => execution.stageConfigurationId === stageConfigId.claimApproveRejectAuthoriser)
-    .filter(execution => execution.action.action.includes(stageExecutionActions.authorisePayment) || execution.action.action.includes(stageExecutionActions.authoriseRejection)).length > 0
-  const claimCanBeAuthorised = (claimRecommendedToPayByDifferentUser || claimRecommendedToRejectByDifferentUser) && !hasClaimAlreadyBeenAuthorised
+    .some(execution => [stageExecutionActions.authorisePayment, stageExecutionActions.authoriseRejection].includes(execution.action.action))
 
-  const displayRecommendationForm = isApplicationInCheck && canUserRecommend && canClaimBeRecommended && (!request.query.recommendToPay && !request.query.recommendToReject) && rbacEnabled
-  const displayRecommendToPayConfirmationForm = isApplicationInCheck && canUserRecommend && canClaimBeRecommended && request.query.recommendToPay && rbacEnabled
-  const displayRecommendToRejectConfirmationForm = isApplicationInCheck && canUserRecommend && canClaimBeRecommended && request.query.recommendToReject && rbacEnabled
-  const displayAuthorisationForm = isApplicationInCheck && canUserAuthorise && claimCanBeAuthorised && (!request.query.approve && !request.query.reject) && rbacEnabled
-  const displayAuthoriseToPayConfirmationForm = isApplicationInCheck && canUserAuthorise && claimCanBeAuthorised && request.query.approve && rbacEnabled
-  const displayAuthoriseToRejectConfirmationForm = isApplicationInCheck && canUserAuthorise && claimCanBeAuthorised && request.query.reject && rbacEnabled
-  const displayMoveToInCheckFromHold = isApplicationOnHold && (canUserAuthorise || canUserRecommend) && rbacEnabled
-
-  let subStatus = upperFirstLetter(applicationStatus.toLowerCase())
-  if (!hasClaimAlreadyBeenAuthorised) {
-    if (hasClaimBeenRecommendedToPay) {
-      subStatus = 'Recommend to pay'
-    } else if (hasClaimBeenRecommendedToReject) {
-      subStatus = 'Recommend to reject'
-    }
-  }
-
-  console.log(`view-application: ${JSON.stringify({
-    applicationReference,
-    userName,
-    applicationStatus,
-    subStatus,
-    canUserRecommend,
-    canUserAuthorise,
+  return {
     canClaimBeRecommended,
-    claimCanBeAuthorised,
+    hasClaimBeenRecommendedToPay,
+    hasClaimBeenRecommendedToReject,
     claimRecommendedToPayByDifferentUser,
     claimRecommendedToRejectByDifferentUser,
     hasClaimAlreadyBeenAuthorised,
-    rbacEnabled,
-    displayMoveToInCheckFromHold
-  })}`)
+    claimCanBeAuthorised: (claimRecommendedToPayByDifferentUser || claimRecommendedToRejectByDifferentUser) && !hasClaimAlreadyBeenAuthorised
+  }
+}
+
+const determineDisplayForms = (applicationStatus, authStatus, recommendStatus, query) => {
+  const isApplicationInCheck = (applicationStatus === 'IN CHECK')
+  const isApplicationApproveRecommend = (applicationStatus === 'Recommended to Pay')
+  const isApplicationRejectRecommend = (applicationStatus === 'Recommended to Reject')
+  const isApplicationOnHold = (applicationStatus === 'ON HOLD')
 
   return {
-    displayRecommendationForm,
-    displayRecommendToPayConfirmationForm,
-    displayRecommendToRejectConfirmationForm,
-    displayAuthorisationForm,
-    displayAuthoriseToPayConfirmationForm,
-    displayAuthoriseToRejectConfirmationForm,
-    subStatus,
-    displayMoveToInCheckFromHold
+    displayRecommendationForm: isApplicationInCheck && authStatus.canUserRecommend && recommendStatus.canClaimBeRecommended && !query.recommendToPay && !query.recommendToReject && rbacEnabled,
+    displayRecommendToPayConfirmationForm: isApplicationInCheck && authStatus.canUserRecommend && recommendStatus.canClaimBeRecommended && query.recommendToPay && rbacEnabled,
+    displayRecommendToRejectConfirmationForm: isApplicationInCheck && authStatus.canUserRecommend && recommendStatus.canClaimBeRecommended && query.recommendToReject && rbacEnabled,
+    displayAuthoriseToPayConfirmationForm: isApplicationApproveRecommend && authStatus.canUserAuthorise && recommendStatus.claimCanBeAuthorised && rbacEnabled,
+    displayAuthoriseToRejectConfirmationForm: isApplicationRejectRecommend && authStatus.canUserAuthorise && recommendStatus.claimCanBeAuthorised && rbacEnabled,
+    displayMoveToInCheckFromHold: isApplicationOnHold && (authStatus.canUserAuthorise || authStatus.canUserRecommend) && !query.moveToInCheck && rbacEnabled,
+    displayOnHoldConfirmationForm: isApplicationOnHold && (authStatus.canUserAuthorise || authStatus.canUserRecommend) && query.moveToInCheck && rbacEnabled
+  }
+}
+
+const claimFormHelper = async (request, applicationReference, applicationStatus) => {
+  const userName = getUser(request).username
+  const mappedAuth = {
+    isAdministrator: mapAuth(request).isAdministrator,
+    isRecommender: mapAuth(request).isRecommender,
+    isAuthoriser: mapAuth(request).isAuthoriser,
+    canUserRecommend: mapAuth(request).isAdministrator || mapAuth(request).isRecommender,
+    canUserAuthorise: mapAuth(request).isAdministrator || mapAuth(request).isAuthoriser
+  }
+
+  const recommendStatus = await getRecommendationAndAuthorizationStatus(userName, applicationReference)
+  const displayForms = determineDisplayForms(applicationStatus, mappedAuth, recommendStatus, request.query)
+
+  const subStatus = upperFirstLetter(applicationStatus.toLowerCase())
+
+  return {
+    ...displayForms,
+    subStatus
   }
 }
 

@@ -3,7 +3,7 @@
 
 {% macro viewRejectClaimConfirmForm(applicationId, page, crumb, errorMessage) %}
   <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="reject-claim-panel">
-    <p class="govuk-body govuk-!-text-align-right"><a href="/view-application/{{ applicationId }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p>
+    {# <p class="govuk-body govuk-!-text-align-right"><a href="/view-application/{{ applicationId }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p> #}
     <form method="POST" autocomplete="off" novalidate="novalidate" action="/reject-application-claim">
       {{ govukCheckboxes({
         name: "confirm",

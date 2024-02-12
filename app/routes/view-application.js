@@ -11,6 +11,7 @@ const claimHelper = require('./utils/claim-form-helper')
 const rbacEnabled = require('../config').rbac.enabled
 const applicationStatus = require('../constants/application-status')
 const { getPayment } = require('../api/payments')
+const checkboxErrors = require('./utils/checkbox-errors')
 
 module.exports = {
   method: 'GET',
@@ -28,7 +29,8 @@ module.exports = {
         approve: Joi.bool().default(false),
         reject: Joi.bool().default(false),
         recommendToPay: Joi.bool().default(false),
-        recommendToReject: Joi.bool().default(false)
+        recommendToReject: Joi.bool().default(false),
+        moveToInCheck: Joi.bool().default(false)
       })
     },
     handler: async (request, h) => {
@@ -38,7 +40,6 @@ module.exports = {
       }
       const applicationHistory = await getApplicationHistory(request.params.reference)
 
-      // const claimDataStatus = ['IN CHECK', 'REJECTED', 'READY TO PAY']
       let applicationEvents
       if ((application?.claimed ||
         application?.statusId === applicationStatus.inCheck ||
@@ -65,11 +66,11 @@ module.exports = {
         displayRecommendationForm,
         displayRecommendToPayConfirmationForm,
         displayRecommendToRejectConfirmationForm,
-        displayAuthorisationForm,
         displayAuthoriseToPayConfirmationForm,
         displayAuthoriseToRejectConfirmationForm,
         subStatus,
-        displayMoveToInCheckFromHold
+        displayMoveToInCheckFromHold,
+        displayOnHoldConfirmationForm
       } = await claimHelper(request, request.params.reference, application.status.status)
 
       const errors = request.query.errors
@@ -79,9 +80,7 @@ module.exports = {
       const recommend = {
         displayRecommendToPayConfirmationForm,
         displayRecommendToRejectConfirmationForm,
-        errorMessage: errors.map(e => e.href).includes('#pnl-recommend-confirmation')
-          ? { text: 'Select both checkboxes' }
-          : undefined
+        errorMessage: checkboxErrors(errors, 'pnl-recommend-confirmation')
       }
 
       let paymentDetails = null
@@ -127,25 +126,21 @@ module.exports = {
         ...new ViewModel(application, applicationHistory, recommend, applicationEvents),
         page: request.query.page,
         recommendForm: displayRecommendationForm,
-        authoriseOrRejectForm: {
-          display: displayAuthorisationForm,
-          displayAuthorisePaymentButton: subStatus === 'Recommend to pay'
-        },
         authorisePaymentConfirmForm: {
           display: displayAuthoriseToPayConfirmationForm,
-          errorMessage: errors.map(e => e.href).includes('#authorise-payment-panel')
-            ? { text: 'Select both checkboxes' }
-            : undefined
+          errorMessage: checkboxErrors(errors, 'authorise-payment-panel')
         },
         rejectClaimConfirmForm: {
           display: displayAuthoriseToRejectConfirmationForm,
-          errorMessage: errors.map(e => e.href).includes('#reject-claim-panel')
-            ? { text: 'Select both checkboxes' }
-            : undefined
+          errorMessage: checkboxErrors(errors, 'reject-claim-panel')
         },
+        onHoldConfirmationForm: {
+          display: displayOnHoldConfirmationForm,
+          errorMessage: checkboxErrors(errors, 'confirm-move-to-in-check-panel')
+        },
+        displayMoveToInCheckFromHold,
         subStatus,
-        errors,
-        displayMoveToInCheckFromHold
+        errors
       })
     }
   }

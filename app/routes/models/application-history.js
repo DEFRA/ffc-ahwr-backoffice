@@ -27,13 +27,12 @@ const filterRecords = (applicationHistory) => {
       [
         applicationStatus.withdrawn,
         applicationStatus.readyToPay,
-        applicationStatus.rejected
+        applicationStatus.rejected,
+        applicationStatus.onHold,
+        applicationStatus.inCheck,
+        applicationStatus.recommendToPay,
+        applicationStatus.recommendToReject
       ].includes(parseData(apphr.Payload, 'statusId'))
-    ) || []),
-    ...(applicationHistory.historyRecords?.filter(apphr =>
-      [
-        applicationStatus.inCheck
-      ].includes(parseData(apphr.Payload, 'statusId')) && parseData(apphr.Payload, 'subStatus')
     ) || [])
   ]
 }
@@ -47,7 +46,13 @@ const getStatusText = (status, subStatus) => {
     case applicationStatus.rejected:
       return subStatus || 'Claim rejected'
     case applicationStatus.inCheck:
-      return subStatus
+      return subStatus === undefined ? 'Moved to In Check' : subStatus
+    case applicationStatus.onHold:
+      return subStatus || 'On Hold'
+    case applicationStatus.recommendToPay:
+      return "Claim moved to 'recommended to pay'"
+    case applicationStatus.recommendToReject:
+      return "Claim moved to 'recommended to reject'"
     default:
       return ''
   }
@@ -63,6 +68,11 @@ const gethistoryTableRows = (applicationHistory) => {
   historyRecords.sort((a, b) => {
     return new Date(a.ChangedOn) - new Date(b.ChangedOn)
   })
+  console.log(historyRecords.length, 'Before sort')
+  historyRecords.filter(function (item, pos, ary) {
+    return !pos || item.Payload.statusId !== ary[pos - 1].Payload.statusId
+  })
+  console.log(historyRecords.length, 'After sort')
 
   return historyRecords?.map(hr => {
     return [
