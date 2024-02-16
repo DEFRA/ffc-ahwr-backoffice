@@ -25,10 +25,11 @@ const Email_Pwd='[name="passwd"]'
 const Next='#idSIButton9'
 const BACK='.govuk-back-link'
 // For subStatuses
-const MOVETOINCHECK_BUTTON='button[value="yes"]'
+const MOVE_TO_INCHECK_BUTTON='#move-to-in-check > a'
 const INCHECK_TEXT_ACTUAL='.govuk-tag.govuk-tag--orange'
 const INCHECK_TEXT_EXPECTED='IN CHECK'
-const CONFIRM_AND_CONTINUE='//button[text()="Confirm and continue"]'
+const CONFIRM_AND_CONTINUE_INCHECK='#rejectClaimOnHoldForm > button'
+const CONFIRM_AND_CONTINUE_RECOMMEND='#recommendConfirmationForm > button'
 const RECOMMENDED_TO_PAY_TEXT_ACTUAL='.govuk-tag.govuk-tag--orange'
 const RECOMMENDED_TO_PAY_TEXT_EXPECTED='RECOMMENDED TO PAY'
 const RECOMMENDED_TO_REJECT_TEXT_ACTUAL='.govuk-tag.govuk-tag--orange'
@@ -37,6 +38,10 @@ const CHECKBOX_NOT_SELECTED_EXPECTED='Select both checkboxes'
 const CHECKBOX_NOT_SELECTED_ACTUAL='.govuk-error-message'
 const CLAIM_TAB='#tab_claim'
 const HISTORY_TAB='#tab_history'
+const DATE_HEADER='#history > table > thead > tr > th:nth-child(1)'
+const TIME_HEADER='#history > table > thead > tr > th:nth-child(2)'
+const ACTION_HEADER='#history > table > thead > tr > th:nth-child(3)'
+const USER_HEADER='#history > table > thead > tr > th:nth-child(4)'
 const READY_TO_PAY_TEXT_ACTUAL='//span[contains(@class, "govuk-tag govuk-tag")]'
 const READY_TO_PAY_TEXT_EXPECTED='READY TO PAY'
 const REJECTED_TEXT_ACTUAL='.govuk-tag.govuk-tag--red'
@@ -75,7 +80,7 @@ class BackOfficePage extends CommonActions {
         await this.clickOn(VIEW_DETAILS)
       } 
     async clickOnMoveToIncheckButton(){
-        await this.clickOn(MOVETOINCHECK_BUTTON)
+        await this.clickOn(INCHECK_BUTTON)
     }
     async clickOnAuthorisePayment() {
         await this.clickOn(AUTHORISE_PAYMENT)
@@ -108,11 +113,13 @@ class BackOfficePage extends CommonActions {
         await this.clickOn(RECOMMEND_TO_REJECT)
       }
 
-    async clickOnConfirmAndContinue(){
-      await this.clickOn(CONFIRM_AND_CONTINUE)
+    async clickOnConfirmAndContinueIncheck(){
+      await this.clickOn(CONFIRM_AND_CONTINUE_INCHECK)
     }
-
-    async clickOnConfirmAndContinueAuthorise(){
+    async clickOnConfirmAndContinueRecommend(){
+      await this.clickOn(CONFIRM_AND_CONTINUE_RECOMMEND)
+    }
+       async clickOnConfirmAndContinueAuthorise(){
       await this.clickOn(CONFIRM_AND_CONTINUE_AUTHORISE)
     }
 
@@ -150,7 +157,11 @@ class BackOfficePage extends CommonActions {
     async isElementRecommendToRejectButtonExist(){
       await this.isElementExist(RECOMMEND_TO_REJECT)
     }
-
+    async isElementIncheckButtonExist(){
+      await this.isElementExist(MOVE_TO_INCHECK_BUTTON)
+      await this.clickOn(MOVE_TO_INCHECK_BUTTON)
+    }
+    
     async isElementRecommendedToPayExist(){
       await this.elementToContainText(RECOMMENDED_TO_PAY_TEXT_ACTUAL,RECOMMENDED_TO_PAY_TEXT_EXPECTED)
     }
@@ -162,7 +173,12 @@ class BackOfficePage extends CommonActions {
     async isElementReadyToPayExist(){
       await this.elementToContainText(READY_TO_PAY_TEXT_ACTUAL,READY_TO_PAY_TEXT_EXPECTED)
     }
-
+    async checkDetailsHistory(){
+      await this.isElementExist(DATE_HEADER)
+      await this.isElementExist(TIME_HEADER)
+      await this.isElementExist(ACTION_HEADER)
+      await this.isElementExist(USER_HEADER)
+    }
     async isElementRejectedExist(){
       await this.elementToContainText(REJECTED_TEXT_ACTUAL,REJECTED_TEXT_EXPECTED)
     }

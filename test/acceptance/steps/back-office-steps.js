@@ -21,8 +21,8 @@ Then(/^click on view application$/,async function(){
   await backOfficePage.clickOnViewDetails()
 }) 
 
-Then(/^click on move to incheck button$/,async function(){
-  await backOfficePage.clickOnMoveToIncheckButton()
+Then(/^click on incheck button$/,async function(){
+  await backOfficePage.clickOnIncheckButton()
 })
 
 Then(/^verify RecommendToPay button$/,async function(){
@@ -31,6 +31,10 @@ Then(/^verify RecommendToPay button$/,async function(){
 
 Then(/^verify RecommendToReject button$/,async function(){
   await backOfficePage.isElementRecommendToRejectButtonExist()
+})
+
+Then(/^verify and click move claim to incheck button$/,async function(){
+  await backOfficePage.isElementIncheckButtonExist()
 })
 
 Then(/^validate the incheck text$/,async function(){
@@ -47,6 +51,9 @@ When(/^click on history tab$/,async function(){
 
 When(/^select the checkboxes$/,async function(){
   await backOfficePage.clickOnCheckbox() 
+})
+Then(/^verify details available$/,async function(){
+  await backOfficePage.checkDetailsHistory()
 })
 
 Then(/^authorise the payment$/,async function(){
@@ -85,8 +92,11 @@ Then(/^click on Recommend to Reject$/,async function(){
   await backOfficePage.recommendToReject()
 })
 
-Then(/^click on confirm and continue$/,async function(){
-  await backOfficePage.clickOnConfirmAndContinue()
+Then(/^click on confirm and continue for incheck$/,async function(){
+  await backOfficePage.clickOnConfirmAndContinueIncheck()
+})
+Then(/^click on confirm and continue for recommend$/,async function(){
+  await backOfficePage.clickOnConfirmAndContinueRecommend()
 })
 
 Then(/^click on confirm and continue for authorise$/,async function(){
