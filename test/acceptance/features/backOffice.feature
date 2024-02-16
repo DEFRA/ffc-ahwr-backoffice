@@ -1,4 +1,4 @@
-@smoke1
+@smoke
  Feature: back office 
 
    Scenario Outline:  Enter Back office URl Then Recommended to Pay
