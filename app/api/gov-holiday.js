@@ -14,11 +14,23 @@ async function getHolidayCalendarForEngland () {
   }
 }
 
+async function isTodayCustomHoliday () {
+  const url = `${process.env.APPLICATION_SERVICE_URI}/holidays/isTodayHoliday`
+  try {
+    await Wreck.get(url)
+    return true
+  } catch(err) {
+    console.error(`today is not a custom holiday : ${err.message}`)
+    return false
+  }
+}
+
 async function isTodayHoliday () {
   try {
     const holidays = await getHolidayCalendarForEngland()
     const today = new Date().toISOString().split('T')[0] // Format today's date as YYYY-MM-DD
     const isHoliday = holidays.some(holiday => holiday.date === today)
+    // if ( !isHoliday) isHoliday = await isTodayCustomHoliday()
     return isHoliday
   } catch (err) {
     console.error(`Checking holiday failed: ${err.message}`)
@@ -28,5 +40,6 @@ async function isTodayHoliday () {
 
 module.exports = {
   isTodayHoliday,
-  getHolidayCalendarForEngland
+  getHolidayCalendarForEngland,
+  isTodayCustomHoliday
 }
