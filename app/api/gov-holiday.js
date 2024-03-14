@@ -15,7 +15,7 @@ async function getHolidayCalendarForEngland () {
 }
 
 async function isTodayCustomHoliday () {
-  const url = `${process.env.APPLICATION_SERVICE_URI}/holidays/isTodayHoliday`
+  const url = `${process.env.APPLICATION_API_URI}/holidays/isTodayHoliday`
   try {
     await Wreck.get(url)
     console.error('today is a custom holiday')
