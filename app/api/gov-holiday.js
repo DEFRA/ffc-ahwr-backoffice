@@ -18,8 +18,9 @@ async function isTodayCustomHoliday () {
   const url = `${process.env.APPLICATION_SERVICE_URI}/holidays/isTodayHoliday`
   try {
     await Wreck.get(url)
+    console.error('today is a custom holiday')
     return true
-  } catch(err) {
+  } catch (err) {
     console.error(`today is not a custom holiday : ${err.message}`)
     return false
   }
@@ -27,10 +28,10 @@ async function isTodayCustomHoliday () {
 
 async function isTodayHoliday () {
   try {
-    const holidays = await getHolidayCalendarForEngland()
+    const holidays = await module.exports.getHolidayCalendarForEngland()
     const today = new Date().toISOString().split('T')[0] // Format today's date as YYYY-MM-DD
-    const isHoliday = holidays.some(holiday => holiday.date === today)
-    // if ( !isHoliday) isHoliday = await isTodayCustomHoliday()
+    let isHoliday = holidays?.some(holiday => holiday.date === today)
+    if (!isHoliday) isHoliday = await module.exports.isTodayCustomHoliday()
     return isHoliday
   } catch (err) {
     console.error(`Checking holiday failed: ${err.message}`)
