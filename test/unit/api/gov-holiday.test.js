@@ -5,11 +5,6 @@
 // const Holidays = require('../../../app/api/gov-holiday')
 const holidays = require('../../../app/api/gov-holiday')
 
-// Mocking the @hapi/wreck module
-// jest.mock('@hapi/wreck', () => ({
-//   get: jest.fn()
-// }))
-
 const Wreck = require('@hapi/wreck')
 
 describe('Holiday Functions', () => {

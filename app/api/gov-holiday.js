@@ -18,7 +18,7 @@ async function isTodayCustomHoliday () {
   const url = `${process.env.APPLICATION_API_URI}/holidays/isTodayHoliday`
   try {
     await Wreck.get(url)
-    console.error('today is a custom holiday')
+    console.log('today is a custom holiday')
     return true
   } catch (err) {
     console.error(`today is not a custom holiday : ${err.message}`)
