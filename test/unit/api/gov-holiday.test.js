@@ -65,15 +65,18 @@ describe('Holiday Functions', () => {
 
   describe('isTodayCustomHoliday', () => {
     let consoleSpy
+    let consoleSpyLog
     let wreckGetSpy
 
     beforeEach(() => {
       consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+      consoleSpyLog = jest.spyOn(console, 'log').mockImplementation(() => {})
       wreckGetSpy = jest.spyOn(Wreck, 'get')
     })
 
     afterEach(() => {
       consoleSpy.mockRestore()
+      consoleSpyLog.mockRestore()
       wreckGetSpy.mockRestore()
     })
 
@@ -83,7 +86,7 @@ describe('Holiday Functions', () => {
       })
 
       expect(await holidays.isTodayCustomHoliday()).toBeTruthy()
-      expect(consoleSpy).toHaveBeenCalledWith('today is a custom holiday')
+      expect(consoleSpyLog).toHaveBeenCalledWith('today is a custom holiday')
     })
 
     it('should return false when response is no 200', async () => {
