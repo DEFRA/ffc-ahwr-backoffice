@@ -544,7 +544,7 @@ describe('View Application test', () => {
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
       expect($('h2.govuk-heading-l').text()).toContain(status)
       expect($('title').text()).toContain('Administration: User Application')
-      
+
       expectApplicationDetails($)
 
       expect($('tbody tr:nth-child(1)').text()).toContain('Date agreement rejected')
