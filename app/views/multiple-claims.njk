@@ -1,0 +1,361 @@
+{% extends './layouts/layout.njk'%}
+{%block pageTitle %}
+    {{ siteTitle }} - User Claims - multiple
+{%endblock%}
+    {%block content %}
+        <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+
+            <!-- Title + Search -->
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+
+                    <h1 class="govuk-caption-l govuk-!-margin-bottom-3">
+       All business claims
+    </h1>
+
+                    <h2 class="govuk-heading-l">
+      P &amp; D Fearnley &amp; Sons
+    </h2>
+
+                    <!--User details-->
+                    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+          Name
+        </dt>
+                            <dd class="govuk-summary-list__value">
+                                <p>Phil Fearnley</p>
+                            </dd>
+                        </div>
+
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+          SBI number
+        </dt>
+                            <dd class="govuk-summary-list__value">
+          103491987
+        </dd>
+                        </div>
+
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+          Address
+        </dt>
+                            <dd class="govuk-summary-list__value">
+          Manor Farm Rd, Harleston IP20 0AX
+        </dd>
+                        </div>
+
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+          Email address 
+        </dt>
+                            <dd class="govuk-summary-list__value">
+                                <p>fearnley-sons@hotmail.com</p>
+                            </dd>
+                        </div>
+
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+          Date of agreement
+        </dt>
+                            <dd class="govuk-summary-list__value">
+                                <p>1/11/2022</p>
+                            </dd>
+                        </div>
+                    </dl>
+
+                    <h1 class="govuk-heading-xl govuk-!-margin-bottom-7"></h1>
+                </div>
+            </div>
+
+            <table class="govuk-table" data-module="moj-sortable-table">
+
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+
+                        <th scope="col" class="govuk-table__header" aria-sort="none">
+                            <button type="button" data-index="0">Claim number</button>
+                        </th>
+
+                        <th scope="col" class="govuk-table__header" aria-sort="none">
+                            <button type="button" data-index="1">Type of visit</button>
+                        </th>
+
+                        <th scope="col" class="govuk-table__header" aria-sort="none">
+                            <button type="button" data-index="2">Species</button>
+                        </th>
+
+                        <th scope="col" class="govuk-table__header" aria-sort="none">
+                            <button type="button" data-index="3">Claim date</button>
+                        </th>
+
+                        <th scope="col" class="govuk-table__header" aria-sort="none">
+                            <button type="button" data-index="4">Status</button>
+                        </th>
+
+                        <th scope="col" class="govuk-table__header" aria-sort="none">
+                            <button type="button" data-index="5">Details</button>
+                        </th>
+
+                    </tr>
+                </thead>
+
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+
+                        <td class="govuk-table__cell">AHWR-F021-721B</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Type of visit">Review</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Beef cattle">Beef cattle</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="11/08/2022">11/08/2022</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="Agreed">
+                            <strong class="govuk-tag ">Ready to pay</strong>
+                        </td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="#">
+                            <a href="../back-office/internal/review-beef-cattle.html">View details</a>
+                        </td>
+
+                    </tr>
+
+                    <tr class="govuk-table__row">
+
+                        <td class="govuk-table__cell">AHWR-F021-721B</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Type of visit">Review</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Beef cattle">Dairy cattle</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="11/08/2022">11/08/2022</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="Agreed">
+                            <strong class="govuk-tag ">Ready to pay</strong>
+                        </td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="#">
+                            <a href="../back-office/internal/review-dairy-cattle.html">View details</a>
+                        </td>
+
+                    </tr>
+
+                    <tr class="govuk-table__row">
+
+                        <td class="govuk-table__cell">AHWR-F021-721B</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Type of visit">Review</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Beef cattle">Sheep</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="11/08/2022">11/08/2022</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="Agreed">
+                            <strong class="govuk-tag ">Ready to pay</strong>
+                        </td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="#">
+                            <a href="../back-office/internal/review-sheep">View details</a>
+                        </td>
+
+                    </tr>
+
+                    <tr class="govuk-table__row">
+
+                        <td class="govuk-table__cell">AHWR-F021-721B</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Type of visit">Review</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Beef cattle">Pigs</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="11/08/2022">11/08/2022</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="Agreed">
+                            <strong class="govuk-tag ">Ready to pay</strong>
+                        </td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="#">
+                            <a href="../back-office/internal/review-pigs">View details</a>
+                        </td>
+
+                    </tr>
+
+                    <tr class="govuk-table__row">
+
+                        <td class="govuk-table__cell">AHWR-F021-721B</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Type of visit">Endemics</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Beef cattle">Beef cattle</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="11/08/2022">11/08/2022</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="Agreed">
+                            <strong class="govuk-tag ">Ready to pay</strong>
+                        </td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="#">
+                            <a href="../back-office/internal/endemics-beef-cattle.html">View details</a>
+                        </td>
+
+                    </tr>
+
+                    <tr class="govuk-table__row">
+
+                        <td class="govuk-table__cell">AHWR-F021-721B</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Type of visit">Endemics</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Beef cattle">Dairy cattle</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="11/08/2022">11/08/2022</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="Agreed">
+                            <strong class="govuk-tag ">Ready to pay</strong>
+                        </td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="#">
+                            <a href="../back-office/internal/endemics-dairy-cattle.html">View details</a>
+                        </td>
+
+                    </tr>
+
+                    <tr class="govuk-table__row">
+
+                        <td class="govuk-table__cell">AHWR-F021-721B</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Type of visit">Endemics</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Beef cattle">Sheep</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="11/08/2022">11/08/2022</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="Agreed">
+                            <strong class="govuk-tag ">Ready to pay</strong>
+                        </td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="#">
+                            <a href="../back-office/internal/endemics-sheep.html">View details</a>
+                        </td>
+
+                    </tr>
+
+                    <tr class="govuk-table__row">
+
+                        <td class="govuk-table__cell">AHWR-F021-721B</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Type of visit">Endemics</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Beef cattle">Pigs</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="11/08/2022">11/08/2022</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="Agreed">
+                            <strong class="govuk-tag ">Ready to pay</strong>
+                        </td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="#">
+                            <a href="../back-office/internal/endemics-pigs.html">View details</a>
+                        </td>
+
+                    </tr>
+
+                    <tr class="govuk-table__row">
+
+                        <td class="govuk-table__cell">AHWR-F021-721B</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Type of visit">Endemics</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Beef cattle">Beef Cattle</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="11/08/2022">11/08/2022</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="Agreed">
+                            <strong class="govuk-tag govuk-tag--orange">Recommended to pay</strong>
+                        </td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="#">
+                            <a href="../back-office-authoriser/internal/x-greenfield-approving.html">View details</a>
+                        </td>
+
+                    </tr>
+
+                    <tr class="govuk-table__row">
+
+                        <td class="govuk-table__cell">AHWR-F021-715S</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Type of visit">Endemics</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Dairy cattle">Dairy Cattle</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="01/11/2022">01/11/2022</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="On hold">
+                            <strong class="govuk-tag govuk-tag--orange">Recommended to reject</strong>
+                        </td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="#">
+                            <a href="../back-office-authoriser/internal/x-fearnley-farm-dairy.html">View details</a>
+                        </td>
+
+                    </tr>
+
+                    <!-- <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">AHWR-F022-321G</td>
+
+      <td class="govuk-table__cell" data-sort-value="Pig">Pig</td>
+
+      <td class="govuk-table__cell">Pig Herd M</td>
+
+      <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="01/11/2022">13/02/2023</td>
+
+      <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="In check"><strong class="govuk-tag govuk-tag--purple">On hold</strong></td>
+
+      <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="In check"><a href='../back-office/internal/x-fearnley-farm-pig.html'>View details</a></td>
+
+    </tr>-->
+                    <tr class="govuk-table__row"></tr>
+                    <tr class="govuk-table__row">
+
+                        <td class="govuk-table__cell">AHWR-F001-432L</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Type of visit">Review</td>
+
+                        <td class="govuk-table__cell" data-sort-value="Sheep">Sheep</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="02/01/2023">02/01/2023</td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="Rejected">
+                            <strong class="govuk-tag govuk-tag--red">Rejected</strong>
+                        </td>
+
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-sort-value="#">
+                            <a href="../back-office/internal/x-fearnley-farm-sheep.html">View details</a>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <!--Withdraw process-->
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-heading-m">Further action</h2>
+                    <p class="govuk-body">This customer has successfully submitted an application but, if they ask, they can withdraw from an agreement.</p>
+
+                    <a href="../back-office-authoriser/multiples-withdraw-confirmation.html" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+  Withdraw
+</a>
+
+                </div>
+            </div>
+
+            <div aria-live="polite" role="status" aria-atomic="true" class="govuk-visually-hidden"></div>
+        </main>
+    </div>
+    {%endblock%}
