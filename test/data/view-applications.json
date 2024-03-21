@@ -13,7 +13,7 @@
         "cph": "33/333/3333",
         "sbi": "333333333",
         "name": "My Farm",
-        "email": "test@test.com",
+        "email": "test@test.com", "orgEmail": "test@test.com",
         "isTest": true,
         "farmerName": "Farmer name",
         "address": "Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC"
@@ -38,7 +38,7 @@
         "cph": "33/333/3333",
         "sbi": "333333333",
         "name": "My Farm",
-        "email": "test@test.com",
+        "email": "test@test.com", "orgEmail": "test@test.com",
         "isTest": true,
         "farmerName": "Farmer name",
         "address": "Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC"
@@ -64,7 +64,7 @@
         "cph": "33/333/3333",
         "sbi": "333333333",
         "name": "My Farm",
-        "email": "test@test.com",
+        "email": "test@test.com", "orgEmail": "test@test.com",
         "farmerName": "Farmer name",
         "isTest": true,
         "address": "Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC"
@@ -90,7 +90,7 @@
         "cph": "33/333/3333",
         "sbi": "333333333",
         "name": "My Farm",
-        "email": "test@test.com",
+        "email": "test@test.com", "orgEmail": "test@test.com",
         "farmerName": "Farmer name",
         "isTest": true,
         "address": "Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC"
@@ -123,7 +123,7 @@
         "cph": "33/333/3333",
         "sbi": "333333333",
         "name": "My Farm",
-        "email": "test@test.com",
+        "email": "test@test.com", "orgEmail": "test@test.com",
         "farmerName": "Farmer name",
         "isTest": true,
         "address": "Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC"
@@ -155,7 +155,7 @@
         "cph": "33/333/3333",
         "sbi": "333333333",
         "name": "My Farm",
-        "email": "test@test.com",
+        "email": "test@test.com", "orgEmail": "test@test.com",
         "farmerName": "Farmer name",
         "isTest": true,
         "address": "Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC"
@@ -186,7 +186,7 @@
         "cph": "33/333/3333",
         "sbi": "333333333",
         "name": "My Farm",
-        "email": "test@test.com",
+        "email": "test@test.com", "orgEmail": "test@test.com",
         "farmerName": "Farmer name",
         "isTest": true,
         "address": "Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC"
@@ -230,7 +230,7 @@
         "cph": "33/333/3333",
         "sbi": "333333333",
         "name": "My Farm",
-        "email": "test@test.com",
+        "email": "test@test.com", "orgEmail": "test@test.com",
         "isTest": true,
         "farmerName": "Farmer name",
         "address": "Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC"
@@ -258,7 +258,7 @@
         "cph": "33/333/3333",
         "sbi": "333333333",
         "name": "My Farm",
-        "email": "test@test.com",
+        "email": "test@test.com", "orgEmail": "test@test.com",
         "isTest": true,
         "farmerName": "Farmer name",
         "address": "Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC"
