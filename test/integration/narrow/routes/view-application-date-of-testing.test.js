@@ -80,7 +80,7 @@ describe('View Application test with Date of Testing enabled', () => {
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
       expect($('h2.govuk-heading-l').text()).toContain(status)
       expect($('title').text()).toContain('Administration: User Application')
-      expect($('.govuk-summary-list__row').length).toEqual(4)
+      expect($('.govuk-summary-list__row').length).toEqual(5)
       expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name:')
       expect($('.govuk-summary-list__value').eq(0).text()).toMatch('Farmer name')
 
@@ -92,6 +92,9 @@ describe('View Application test with Date of Testing enabled', () => {
 
       expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address:')
       expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
+
+      expect($('.govuk-summary-list__key').eq(4).text()).toMatch('Org Email address:')
+      expect($('.govuk-summary-list__value').eq(4).text()).toMatch('test@test.com')
 
       expect($('#application').text()).toContain(status)
       expect($('#claim').text()).toContain(status)
@@ -135,7 +138,7 @@ describe('View Application test with Date of Testing enabled', () => {
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
       expect($('h2.govuk-heading-l').text()).toContain(status)
       expect($('title').text()).toContain('Administration: User Application')
-      expect($('.govuk-summary-list__row').length).toEqual(4)
+      expect($('.govuk-summary-list__row').length).toEqual(5)
       expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name:')
       expect($('.govuk-summary-list__value').eq(0).text()).toMatch('Farmer name')
 
@@ -147,6 +150,9 @@ describe('View Application test with Date of Testing enabled', () => {
 
       expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address:')
       expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
+
+      expect($('.govuk-summary-list__key').eq(4).text()).toMatch('Org Email address:')
+      expect($('.govuk-summary-list__value').eq(4).text()).toMatch('test@test.com')
 
       expect($('#application').text()).toContain(status)
       expect($('#claim').text()).toContain(status)
