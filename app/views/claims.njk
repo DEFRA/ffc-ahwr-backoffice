@@ -1,11 +1,49 @@
 {% extends './layouts/layout.njk'%}
-{%block pageTitle %}
-    {{ siteTitle }} - claims
-{%endblock%}
-    {% block content %}
-        <div class="govuk-grid-row">
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-7"> 
-                Claims
-        </h1>
+
+{%block pageTitle %}{{ siteTitle }} - {{ businessName }}{%endblock%}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLink
+  }) }}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-caption-l govuk-!-margin-bottom-3">
+                All business claims
+            </h1>
+            <h2 class="govuk-heading-l">{{ businessName }}</h2>
+            {{ govukSummaryList({
+                rows: applicationSummaryDetails
+            }) }}
         </div>
-        {%endblock%}
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+                <div class="moj-scrollable-pane__wrapper">
+                    {{ govukTable({
+                        attributes: {
+                            'data-module': 'moj-sortable-table'
+                        },
+                        firstCellIsHeader: false,
+                        head: claimTable.header,
+                        rows: claimTable.claims
+                    }) }}
+                </div>
+
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-heading-m">Further action</h2>
+            <p class="govuk-body">This customer has successfully submitted an application but, if they ask, they can withdraw from an agreement.</p>
+            <a href="#" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+                Withdraw
+            </a>
+        </div>
+        </div>
+{%endblock%}

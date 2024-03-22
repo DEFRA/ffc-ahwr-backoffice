@@ -4,5 +4,8 @@ module.exports = {
     searchType: 'searchType',
     filterStatus: 'status',
     sort: 'sort'
+  },
+  claimSort: {
+    sort: 'sort'
   }
 }
