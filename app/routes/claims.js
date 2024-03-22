@@ -23,7 +23,6 @@ module.exports = [{
       })
     },
     handler: async (request, h) => {
-      console.log('asdasdas')
       await crumbCache.generateNewCrumb(request, h)
       const application = await getApplication(request.params.reference)
       const claims = await getClaims(request.params.reference)
