@@ -38,6 +38,8 @@ const status = {
 }
 
 const getStyleClassByStatus = (value) => {
+  if (value === undefined) return 'govuk-tag--orange'
+
   value = value.replace(/\s/g, '')
   const v = Object.keys(status).map(i => i === value)
   if (v.filter(s => s === true).length > 0) {
