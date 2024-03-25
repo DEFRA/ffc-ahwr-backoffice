@@ -1,16 +1,17 @@
 const session = require('../../app/session')
 
 describe('session', () => {
-  const searchText = 'appSearch'
   const value = 'value'
   const objectValue = { key: value }
 
   const getFunctionsToTest = [
-    { func: 'getAppSearch', expectedSectionKey: searchText }
+    { func: 'getAppSearch', expectedSectionKey: 'appSearch' },
+    { func: 'getClaimSort', expectedSectionKey: 'claimSort' }
   ]
 
   const setFunctionsToTest = [
-    { func: 'setAppSearch', expectedSectionKey: searchText }
+    { func: 'setAppSearch', expectedSectionKey: 'appSearch' },
+    { func: 'setClaimSort', expectedSectionKey: 'claimSort' }
   ]
 
   const keysAndValuesToTest = [
