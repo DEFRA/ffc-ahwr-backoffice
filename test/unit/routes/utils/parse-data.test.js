@@ -1,5 +1,5 @@
 
-const { parseData } = require('../../../../../app/routes/utils/parse-data')
+const { parseData } = require('../../../../app/routes/utils/parse-data')
 const applicationEventData = require('../../../../data/application-events.json')
 
 describe('Parse data tests', () => {

@@ -8,10 +8,10 @@ jest.mock('../../../../../app/config', () => ({
   }
 }))
 
-const claimFormHelper = require('../../../../../app/routes/utils/claim-form-helper')
-const stageConfigId = require('../../../../../app/constants/application-stage-configuration-ids')
-const stageExecutionActions = require('../../../../../app/constants/application-stage-execution-actions')
-const stageExecution = require('../../../../../app/api/stage-execution')
+const claimFormHelper = require('../../../../app/routes/utils/claim-form-helper')
+const stageConfigId = require('../../../../app/constants/application-stage-configuration-ids')
+const stageExecutionActions = require('../../../../app/constants/application-stage-execution-actions')
+const stageExecution = require('../../../../app/api/stage-execution')
 jest.mock('../../../../../app/api/stage-execution')
 
 describe('Claim form helper tests', () => {

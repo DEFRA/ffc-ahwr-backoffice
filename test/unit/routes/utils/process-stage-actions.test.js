@@ -1,4 +1,4 @@
-const processStageActions = require('../../../../../app/routes/utils/process-stage-actions')
+const processStageActions = require('../../../../app/routes/utils/process-stage-actions')
 
 const mockRequest = {
   payload: {
@@ -11,11 +11,11 @@ const mockStage = 'Claim Approve/Reject'
 const isClaimToBePaid = false
 
 jest.mock('../../../../../app/auth/get-user')
-const getUser = require('../../../../../app/auth/get-user')
+const getUser = require('../../../../app/auth/get-user')
 getUser.mockReturnValue({ username: 'test-user' })
 
 jest.mock('../../../../../app/api/stage-configuration')
-const { getAllStageConfigurations } = require('../../../../../app/api/stage-configuration')
+const { getAllStageConfigurations } = require('../../../../app/api/stage-configuration')
 getAllStageConfigurations.mockResolvedValue([
   {
     id: mockStepId,
@@ -30,12 +30,12 @@ getAllStageConfigurations.mockResolvedValue([
 ])
 
 jest.mock('../../../../../app/api/stage-execution')
-const { addStageExecution, updateStageExecution } = require('../../../../../app/api/stage-execution')
+const { addStageExecution, updateStageExecution } = require('../../../../app/api/stage-execution')
 addStageExecution.mockResolvedValue('stage-execution-row')
 updateStageExecution.mockResolvedValue('stage-execution-row')
 
 jest.mock('../../../../../app/api/applications')
-const { processApplicationClaim } = require('../../../../../app/api/applications')
+const { processApplicationClaim } = require('../../../../app/api/applications')
 processApplicationClaim.mockResolvedValue('claim-processed')
 
 describe('Process stage action test', () => {
