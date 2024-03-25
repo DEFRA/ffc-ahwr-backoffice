@@ -69,20 +69,20 @@ describe('Claims test', () => {
       expect($('h2.govuk-heading-l').text()).toContain('My Farm')
       expectPhaseBanner.ok($)
 
-      expect($("th[aria-sort]")[0].attribs['aria-sort']).toEqual('none')
-      expect($("th[aria-sort]")[0].attribs['data-url']).toContain('claim number')
-      expect($("th[aria-sort]")[1].attribs['aria-sort']).toEqual('none')
-      expect($("th[aria-sort]")[1].attribs['data-url']).toContain('type of visit')
-      expect($("th[aria-sort]")[2].attribs['aria-sort']).toEqual('none')
-      expect($("th[aria-sort]")[2].attribs['data-url']).toContain('species')
-      expect($("th[aria-sort]")[3].attribs['aria-sort']).toEqual('none')
-      expect($("th[aria-sort]")[3].attribs['data-url']).toContain('claim date')
-      expect($("th[aria-sort]")[4].attribs['aria-sort']).toEqual('none')
-      expect($("th[aria-sort]")[4].attribs['data-url']).toContain('status')
+      expect($('th[aria-sort]')[0].attribs['aria-sort']).toEqual('none')
+      expect($('th[aria-sort]')[0].attribs['data-url']).toContain('claim number')
+      expect($('th[aria-sort]')[1].attribs['aria-sort']).toEqual('none')
+      expect($('th[aria-sort]')[1].attribs['data-url']).toContain('type of visit')
+      expect($('th[aria-sort]')[2].attribs['aria-sort']).toEqual('none')
+      expect($('th[aria-sort]')[2].attribs['data-url']).toContain('species')
+      expect($('th[aria-sort]')[3].attribs['aria-sort']).toEqual('none')
+      expect($('th[aria-sort]')[3].attribs['data-url']).toContain('claim date')
+      expect($('th[aria-sort]')[4].attribs['aria-sort']).toEqual('none')
+      expect($('th[aria-sort]')[4].attribs['data-url']).toContain('status')
     })
 
     test('returns table in correct sort order', async () => {
-      session.getClaimSort.mockReturnValueOnce({ field:'claim number' })
+      session.getClaimSort.mockReturnValueOnce({ field: 'claim number' })
 
       const options = {
         method: 'GET',
@@ -97,16 +97,16 @@ describe('Claims test', () => {
       expect($('h2.govuk-heading-l').text()).toContain('My Farm')
       expectPhaseBanner.ok($)
 
-      expect($("th[aria-sort]")[0].attribs['aria-sort']).toEqual('ascending')
-      expect($("th[aria-sort]")[0].attribs['data-url']).toContain('claim number')
-      expect($("th[aria-sort]")[1].attribs['aria-sort']).toEqual('none')
-      expect($("th[aria-sort]")[1].attribs['data-url']).toContain('type of visit')
-      expect($("th[aria-sort]")[2].attribs['aria-sort']).toEqual('none')
-      expect($("th[aria-sort]")[2].attribs['data-url']).toContain('species')
-      expect($("th[aria-sort]")[3].attribs['aria-sort']).toEqual('none')
-      expect($("th[aria-sort]")[3].attribs['data-url']).toContain('claim date')
-      expect($("th[aria-sort]")[4].attribs['aria-sort']).toEqual('none')
-      expect($("th[aria-sort]")[4].attribs['data-url']).toContain('status')
+      expect($('th[aria-sort]')[0].attribs['aria-sort']).toEqual('ascending')
+      expect($('th[aria-sort]')[0].attribs['data-url']).toContain('claim number')
+      expect($('th[aria-sort]')[1].attribs['aria-sort']).toEqual('none')
+      expect($('th[aria-sort]')[1].attribs['data-url']).toContain('type of visit')
+      expect($('th[aria-sort]')[2].attribs['aria-sort']).toEqual('none')
+      expect($('th[aria-sort]')[2].attribs['data-url']).toContain('species')
+      expect($('th[aria-sort]')[3].attribs['aria-sort']).toEqual('none')
+      expect($('th[aria-sort]')[3].attribs['data-url']).toContain('claim date')
+      expect($('th[aria-sort]')[4].attribs['aria-sort']).toEqual('none')
+      expect($('th[aria-sort]')[4].attribs['data-url']).toContain('status')
     })
 
     test('returns 200 sort endpoint', async () => {
