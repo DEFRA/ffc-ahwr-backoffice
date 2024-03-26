@@ -23,6 +23,141 @@ const speciesEligibleNumber = {
   sheep: '21 or more sheep'
 }
 
+const claimSummaryDetails = (organisation, data, type) => [
+  (organisation?.name && {
+    key: { text: 'Business name' },
+    value: { html: capitalize(organisation?.name) }
+  }),
+  (data?.typeOfLivestock &&
+    {
+      key: { text: 'Livestock' },
+      value: { html: capitalize([livestockTypes.pigs, livestockTypes.sheep].includes(data?.typeOfLivestock) ? data?.typeOfLivestock : `${data?.typeOfLivestock} cattle`) }
+    }
+  ),
+  (type &&
+    {
+      key: { text: 'Type of review' },
+      value: { html: type === claimType.review ? 'Annual health and welfare review' : 'Endemic disease follow-ups' }
+    }
+  ),
+  (data?.dateOfVisit &&
+    {
+      key: { text: 'Date of visit' },
+      value: { html: formatDate(data?.dateOfVisit) }
+    }
+  ),
+  (data?.dateOfTesting &&
+    {
+      key: { text: 'Date of testing' },
+      value: { html: formatDate(data?.dateOfTesting) }
+    }
+  ),
+  (data?.speciesNumbers &&
+    {
+      key: { text: speciesEligibleNumber[data?.typeOfLivestock] },
+      value: { html: capitalize(data?.speciesNumbers) }
+    }
+  ),
+  (data?.vetsName &&
+    {
+      key: { text: "Vet's name" },
+      value: { html: capitalize(data?.vetsName) }
+    }
+  ),
+  (data?.vetRCVSNumber &&
+    {
+      key: { text: "Vet's RCVS number" },
+      value: { html: data?.vetRCVSNumber }
+    }
+  ),
+  (data?.laboratoryURN &&
+    {
+      key: { text: 'Test results URN' },
+      value: { html: data?.laboratoryURN }
+    }
+  ),
+  (data?.numberOfOralFluidSamples &&
+    {
+      key: { text: 'Number of tests' },
+      value: { html: data?.numberOfOralFluidSamples }
+    }
+  ),
+  (data?.numberAnimalsTested &&
+    {
+      key: { text: 'Number of animals tested' },
+      value: { html: data?.numberAnimalsTested }
+    }
+  ),
+  (data?.reviewTestResults &&
+    {
+      key: { text: 'Review test result' },
+      value: { html: capitalize(data?.reviewTestResults) }
+    }
+  ),
+  (data?.testResults && typeof data?.testResults === 'string' &&
+    {
+      key: { text: data?.reviewTestResults ? 'Endemics test result' : 'Test result' },
+      value: { html: capitalize(data?.testResults) }
+    }
+  ),
+  (data?.vetVisitsReviewTestResults &&
+    {
+      key: { text: 'Vet Visits Review Test results' },
+      value: { html: capitalize(data?.vetVisitsReviewTestResults) }
+    }
+  ),
+  (data?.diseaseStatus &&
+    {
+      key: { text: 'Diseases status category' },
+      value: { html: data?.diseaseStatus }
+    }
+  ),
+  (data?.numberOfSamplesTested &&
+    {
+      key: { text: 'Samples tested' },
+      value: { html: data?.numberOfSamplesTested }
+    }
+  ),
+  (data?.herdVaccinationStatus &&
+    {
+      key: { text: 'Herd vaccination status' },
+      value: { html: capitalize(data?.herdVaccinationStatus) }
+    }
+  ),
+  (data?.sheepEndemicsPackage &&
+    {
+      key: { text: 'Endemics package' },
+      value: { html: capitalize(data?.sheepEndemicsPackage) }
+    }
+  ),
+  (type === claimType.endemics && [livestockTypes.pigs, livestockTypes.beef, livestockTypes.dairy].includes(data?.typeOfLivestock) &&
+
+        {
+          key: { text: 'Biosecurity assessment' },
+          value: {
+            html:
+            data?.typeOfLivestock === livestockTypes.pigs
+              ? capitalize(`${data?.biosecurity?.biosecurity}, Assessment percentage: ${data?.biosecurity?.assessmentPercentage}%`)
+              : capitalize(data?.biosecurity)
+          }
+        }
+  ),
+  ...(data?.typeOfLivestock === livestockTypes.sheep && type === claimType.endemics && typeof data?.testResults === 'object' && data?.testResults?.length
+    ? (data?.testResults || []).map((sheepTest, index) => {
+        return {
+          key: { text: index === 0 ? 'Disease test and result' : '' },
+          value: {
+            html: typeof sheepTest.result === 'object'
+              ? sheepTest.result.map((testResult) => `${testResult.diseaseType} (${testResult.testResult})</br>`).join(' ')
+              : `${sheepTestTypes[data?.sheepEndemicsPackage].find((test) => test.value === sheepTest.diseaseType).text} (${
+                    sheepTestResultsType[sheepTest.diseaseType].find((resultType) => resultType.value === sheepTest.result).text
+                  })`
+          }
+        }
+      })
+    : [])
+]
+
 module.exports = {
   method: 'GET',
   path: '/view-claim/{reference}',
@@ -55,145 +190,11 @@ module.exports = {
         { key: { text: 'Email address' }, value: { text: organisation?.email } },
         { key: { text: 'Organisation email address' }, value: { text: organisation?.orgEmail } }
       ]
-      const claimSummaryDetails = [
-        (application?.data?.organisation?.name && {
-          key: { text: 'Business name' },
-          value: { html: capitalize(organisation?.name) }
-        }),
-        (data?.typeOfLivestock &&
-          {
-            key: { text: 'Livestock' },
-            value: { html: capitalize([livestockTypes.pigs, livestockTypes.sheep].includes(data?.typeOfLivestock) ? data?.typeOfLivestock : `${data?.typeOfLivestock} cattle`) }
-          }
-        ),
-        (type &&
-          {
-            key: { text: 'Type of review' },
-            value: { html: type === claimType.review ? 'Annual health and welfare review' : 'Endemic disease follow-ups' }
-          }
-        ),
-        (data?.dateOfVisit &&
-          {
-            key: { text: 'Date of visit' },
-            value: { html: formatDate(data?.dateOfVisit) }
-          }
-        ),
-        (data?.dateOfTesting &&
-          {
-            key: { text: 'Date of testing' },
-            value: { html: formatDate(data?.dateOfTesting) }
-          }
-        ),
-        (data?.speciesNumbers &&
-          {
-            key: { text: speciesEligibleNumber[data?.typeOfLivestock] },
-            value: { html: capitalize(data?.speciesNumbers) }
-          }
-        ),
-        (data?.vetsName &&
-          {
-            key: { text: "Vet's name" },
-            value: { html: capitalize(data?.vetsName) }
-          }
-        ),
-        (data?.vetRCVSNumber &&
-          {
-            key: { text: "Vet's RCVS number" },
-            value: { html: data?.vetRCVSNumber }
-          }
-        ),
-        (data?.laboratoryURN &&
-          {
-            key: { text: 'Test results URN' },
-            value: { html: data?.laboratoryURN }
-          }
-        ),
-        (data?.numberOfOralFluidSamples &&
-          {
-            key: { text: 'Number of tests' },
-            value: { html: data?.numberOfOralFluidSamples }
-          }
-        ),
-        (data?.numberAnimalsTested &&
-          {
-            key: { text: 'Number of animals tested' },
-            value: { html: data?.numberAnimalsTested }
-          }
-        ),
-        (data?.reviewTestResults &&
-          {
-            key: { text: 'Review test result' },
-            value: { html: capitalize(data?.reviewTestResults) }
-          }
-        ),
-        (data?.testResults && typeof data?.testResults === 'string' &&
-          {
-            key: { text: data?.reviewTestResults ? 'Endemics test result' : 'Test result' },
-            value: { html: capitalize(data?.testResults) }
-          }
-        ),
-        (data?.vetVisitsReviewTestResults &&
-          {
-            key: { text: 'Vet Visits Review Test results' },
-            value: { html: capitalize(data?.vetVisitsReviewTestResults) }
-          }
-        ),
-        (data?.diseaseStatus &&
-          {
-            key: { text: 'Diseases status category' },
-            value: { html: data?.diseaseStatus }
-          }
-        ),
-        (data?.numberOfSamplesTested &&
-          {
-            key: { text: 'Samples tested' },
-            value: { html: data?.numberOfSamplesTested }
-          }
-        ),
-        (data?.herdVaccinationStatus &&
-          {
-            key: { text: 'Herd vaccination status' },
-            value: { html: capitalize(data?.herdVaccinationStatus) }
-          }
-        ),
-        (data?.sheepEndemicsPackage &&
-          {
-            key: { text: 'Endemics package' },
-            value: { html: capitalize(data?.sheepEndemicsPackage) }
-          }
-        ),
-        (type === claimType.endemics && [livestockTypes.pigs, livestockTypes.beef, livestockTypes.dairy].includes(data?.typeOfLivestock) &&
-
-              {
-                key: { text: 'Biosecurity assessment' },
-                value: {
-                  html:
-                  data?.typeOfLivestock === livestockTypes.pigs
-                    ? capitalize(`${data?.biosecurity?.biosecurity}, Assessment percentage: ${data?.biosecurity?.assessmentPercentage}%`)
-                    : capitalize(data?.biosecurity)
-                }
-              }
-        ),
-        ...(data?.typeOfLivestock === livestockTypes.sheep && type === claimType.endemics && typeof data?.testResults === 'object' && data?.testResults?.length
-          ? (data?.testResults || []).map((sheepTest, index) => {
-              return {
-                key: { text: index === 0 ? 'Disease test and result' : '' },
-                value: {
-                  html: typeof sheepTest.result === 'object'
-                    ? sheepTest.result.map((testResult) => `${testResult.diseaseType} (${testResult.testResult})</br>`).join(' ')
-                    : `${sheepTestTypes[data?.sheepEndemicsPackage].find((test) => test.value === sheepTest.diseaseType).text} (${
-                          sheepTestResultsType[sheepTest.diseaseType].find((resultType) => resultType.value === sheepTest.result).text
-                        })`
-                }
-              }
-            })
-          : [])
-      ]
 
       return h.view('view-claim', {
         status: { type: formatStatusId(claim.statusId), tagClass: getStyleClassByStatus(formatStatusId(claim.statusId)) },
         applicationSummaryDetails,
-        claimSummaryDetails,
+        claimSummaryDetails: claimSummaryDetails(organisation, data, type),
         reference,
         backLink: backLink(claim?.applicationReference),
         title: capitalize(application?.data?.organisation?.name)
