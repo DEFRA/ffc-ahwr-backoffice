@@ -32,14 +32,16 @@ module.exports = [{
       }
 
       const organisation = application.data?.organisation
-      const applicationSummaryDetails = [
+      const summaryDetails = [
         { key: { text: 'Name' }, value: { text: organisation?.farmerName } },
         { key: { text: 'SBI number' }, value: { text: organisation?.sbi } },
         { key: { text: 'Address' }, value: { text: organisation?.address } },
         { key: { text: 'Email address' }, value: { text: organisation?.email } },
-        { key: { text: 'Organisation email address:' }, value: { text: organisation?.orgEmail } },
+        { key: { text: 'Organisation email address' }, value: { text: organisation?.orgEmail } },
         { key: { text: 'Date of agreement' }, value: { text: formatedDateToUk(application.createdAt) } }
       ]
+
+      const applicationSummaryDetails = summaryDetails.filter((row) => row.value.text)
 
       const sortField = getClaimSort(request, claimSort.sort) ?? undefined
       const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
