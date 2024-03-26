@@ -3,6 +3,8 @@ const { getClaim } = require('../../../../app/api/claims')
 const { administrator } = require('../../../../app/auth/permissions')
 const { getApplication } = require('../../../../app/api/applications')
 
+jest.mock('../../../../app/auth')
+jest.mock('../../../../app/session')
 jest.mock('../../../../app/api/claims')
 jest.mock('../../../../app/api/applications')
 
