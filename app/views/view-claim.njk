@@ -1,11 +1,46 @@
-{% extends './layouts/layout.njk'%}
-{%block pageTitle %}
-    {{ siteTitle }} - View Claim
-{%endblock%}
-    {% block content %}
-        <div class="govuk-grid-row">
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-7"> 
-                view claim
-        </h1>
-        </div>
-        {%endblock%}
+{% extends './layouts/layout.njk' %}
+
+{% block pageTitle %}
+  {{ siteTitle }} - View Claim {% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href:backLink,
+    attributes: {
+      id: "back"
+    }
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-caption-l govuk-!-margin-bottom-3">Claim number: {{reference}}</h1>
+      <h1 class="govuk-heading-l govuk-!-margin-bottom-7">{{title}} <span class="govuk-tag {{ status.tagClass }}">{{ status.type }}</span></h1>
+      {{ govukSummaryList({ rows: applicationSummaryDetails }) }}
+      {% set claimHTML %}
+      {{ govukSummaryList({ rows: claimSummaryDetails }) }}
+      {% endset -%}
+      {{ govukTabs({
+          items: [
+            {
+              label: "Claim",
+              id: "claim",
+              panel: {
+                  html: claimHTML
+              }
+            },
+            {
+              label: "History",
+              id: "history",
+              panel: {
+                  html: historyHTML
+              }
+            }
+          ]
+        }) 
+      }}
+    </div>
+  </div>
+  {%endblock%}
