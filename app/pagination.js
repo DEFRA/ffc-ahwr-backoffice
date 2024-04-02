@@ -7,6 +7,7 @@ const { displayPageSize } = require('./config')
  */
 function getPagination (page = 1, limit = displayPageSize) {
   const offset = page === 1 ? 0 : (page - 1) * limit
+  console.log('pagination ', limit + ' ' + offset)
   return { limit, offset }
 }
 /**

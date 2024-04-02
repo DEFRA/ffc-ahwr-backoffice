@@ -1,25 +1,8 @@
+const { createModel } = require('../../../../../app/routes/models/application-list')
 const { getApplicationTableHeader } = require('../../../../../app/routes/models/application-list')
-const sessionMock = require('../../../../../app/session')
 const applicationData = require('.././../../../data/applications.json')
-
-jest.mock('../../../../../app/session')
-const applications = require('../../../../../app/api/applications')
+const { getApplications } = require('../../../../../app/api/applications')
 jest.mock('../../../../../app/api/applications')
-const pagination = require('../../../../../app/pagination')
-jest.mock('../../../../../app/pagination')
-
-pagination.getPagination = jest.fn().mockReturnValue({
-  limit: 10, offset: 0
-})
-
-pagination.getPagingData = jest.fn().mockReturnValue({
-  page: 1, totalPages: 1, total: 1, limit: 10, url: undefined
-})
-applications.getApplications = jest.fn().mockReturnValue(applicationData)
-sessionMock.getAppSearch = jest.fn()
-  .mockReturnValue([])
-  .mockReturnValueOnce(['PENDING', 'APPLIED', 'DATA INPUTTED', 'CLAIMED'])
-  .mockReturnValueOnce({ field: 'SBI', direction: 'DESC' })
 
 describe('Application-list model test', () => {
   test('getApplicationTableHeader SBI DESC', async () => {
@@ -57,5 +40,25 @@ describe('Application-list model test', () => {
     const res = getApplicationTableHeader(sortField)
     expect(res).not.toBeNull()
     expect(res[4].attributes['aria-sort']).toEqual('ascending')
+  })
+})
+
+describe('Application-list createModel', () => {
+  beforeAll(() => {
+    getApplications.mockImplementation(() => applicationData)
+  })
+
+  afterAll(() => {
+    getApplications.mockClear()
+  })
+
+  test('createModel should return view claims when type EE', async () => {
+    const result = await createModel({ request: 'a request', headers: { path: 'some path' } }, 1)
+    expect(result.applications[0][5].html).toContain('View claims')
+  })
+
+  test('createModel should return view details when type is not EE', async () => {
+    const result = await createModel({ request: 'a request', headers: { path: 'some path' } }, 1)
+    expect(result.applications[1][5].html).toContain('View details')
   })
 })

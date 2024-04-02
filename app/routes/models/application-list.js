@@ -28,7 +28,7 @@ const getApplicationTableHeader = (sortField) => {
     format: 'numeric'
   })
   headerColumns.push({
-    text: 'Apply date',
+    text: 'Agreement date',
     attributes: {
       'aria-sort': sortField && sortField.field === 'Apply date' ? direction : 'none',
       'data-url': '/applications/sort/Apply date'
@@ -87,7 +87,11 @@ async function createModel (request, page) {
             'data-sort-value': `${n.status.status}`
           }
         },
-        { html: `<a href="${serviceUri}/view-application/${n.reference}?page=${page}">View details</a>` }
+        {
+          html: n.data?.type === 'EE'
+            ? `<a href="${serviceUri}/claims/${n.reference}">View claims</a>`
+            : `<a href="${serviceUri}/view-application/${n.reference}?page=${page}">View details</a>`
+        }
       ]
     })
     const pagingData = getPagingData(apps.total ?? 0, limit, page, path)

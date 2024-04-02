@@ -6,6 +6,7 @@
       "reference": "AHWR-555A-FD4C",
       "status": { "status": "AGREED" },
       "data": {
+        "type": "EE",
         "declaration": true,
         "whichReview": "sheep",
         "organisation": {
