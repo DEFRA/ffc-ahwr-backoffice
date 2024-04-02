@@ -6,6 +6,7 @@ const { getApplication } = require('../api/applications')
 const getStyleClassByStatus = require('../constants/status')
 const { formatStatusId } = require('./../lib/display-helper')
 const { livestockTypes, claimType } = require('./../constants/claim')
+const recommendFormContent = require('./models/recommend-claim')
 const { sheepTestTypes, sheepTestResultsType } = require('./../constants/sheep-test-types')
 const { administrator, authoriser, processor, recommender, user } = require('../auth/permissions')
 
@@ -104,12 +105,16 @@ module.exports = {
       ]
 
       return h.view('view-claim', {
-        status: { type: formatStatusId(claim.statusId), tagClass: getStyleClassByStatus(formatStatusId(claim.statusId)) },
-        applicationSummaryDetails,
-        claimSummaryDetails: claimSummaryDetails(organisation, data, type),
         reference,
+        page: request.query.page,
+        applicationSummaryDetails,
+        displayRecommendationButtons: true,
         backLink: backLink(claim?.applicationReference),
-        title: capitalize(application?.data?.organisation?.name)
+        title: capitalize(application?.data?.organisation?.name),
+        claimSummaryDetails: claimSummaryDetails(organisation, data, type),
+        displayRecommendationForm: request.query.recommendToPay || request.query.recommendToReject,
+        recommendFormContent: recommendFormContent({displayRecommendToPayConfirmationForm: request.query.recommendToPay, displayRecommendToRejectConfirmationForm: request.query.recommendToReject}),
+        status: { capitalizedtype: formatStatusId(claim.statusId), normalType: capitalize(formatStatusId(claim.statusId).toLowerCase()), tagClass: getStyleClassByStatus(formatStatusId(claim.statusId)) }
       })
     }
   }

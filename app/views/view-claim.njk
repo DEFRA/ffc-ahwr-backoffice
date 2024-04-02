@@ -1,4 +1,5 @@
 {% extends './layouts/layout.njk' %}
+{% from "./macros/recommend-form.njk" import viewRecommendForm %}
 
 {% block pageTitle %}
   {{ siteTitle }} - View Claim {% endblock %}
@@ -17,10 +18,57 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-caption-l govuk-!-margin-bottom-3">Claim number: {{reference}}</h1>
-      <h1 class="govuk-heading-l govuk-!-margin-bottom-7">{{title}} <span class="govuk-tag {{ status.tagClass }}">{{ status.type }}</span></h1>
-      {{ govukSummaryList({ rows: applicationSummaryDetails }) }}
+      <h1 class="govuk-heading-l govuk-!-margin-bottom-7">{{title}} <span class="govuk-tag {{ status.tagClass }}">{{ status.capitalizedtype }}</span></h1>
+      {% if displayRecommendationForm  %}
+        <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="pnl-recommend-confirmation">
+          <p class="govuk-body govuk-!-text-align-right"><a href="/view-application/{{ applicationId }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p>
+          <form method="POST" autocomplete="off" novalidate="novalidate" action="{{ recommendFormContent.formAction }}" id="recommendConfirmationForm">
+            {{ govukCheckboxes({
+                name: "confirm",
+                fieldset: {
+                  legend: {
+                    text: recommendFormContent.header,
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--l"
+                  }
+                },
+                items: recommendFormContent.checkBoxes,
+                errorMessage: recommendFormContent.errorMessage
+              }) 
+            }}
+            <button class="govuk-button govuk-button govuk-!-margin-bottom-3" data-prevent-double-click="true">Confirm and continue</button>
+            <input type="hidden" name="crumb" value="{{crumb}}"/>
+          </form>
+        </div>
+      {% else %}
+        {{ govukSummaryList({ rows: applicationSummaryDetails }) }}
+      {% endif %}
       {% set claimHTML %}
-      {{ govukSummaryList({ rows: claimSummaryDetails }) }}
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-5">{{status.normalType}}</h1>
+        {{ govukSummaryList({ rows: claimSummaryDetails }) }}
+      {% endset -%}
+      {% set historyHTML %}
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-5">History</h1>
+        {# TODO Actions should be assign to the rows property #}
+        {{ govukTable({
+            firstCellIsHeader: true,
+            head: [
+              {
+                text: "Date"
+              },
+              {
+                text: "Time"
+              },
+              {
+                text: "Action"
+              },
+              {
+                text: "User"
+              }
+            ],
+            rows:[]
+          })
+        }}
       {% endset -%}
       {{ govukTabs({
           items: [
@@ -28,19 +76,25 @@
               label: "Claim",
               id: "claim",
               panel: {
-                  html: claimHTML
+                html: claimHTML
               }
             },
             {
               label: "History",
               id: "history",
               panel: {
-                  html: historyHTML
+                html: historyHTML
               }
             }
           ]
         }) 
       }}
+      {% if displayRecommendationButtons %}
+        <div class="govuk-button-group">
+          <a class="govuk-button" href="/view-claim/{{ reference }}?recommendToPay=true" role="button" id="btn-recommend-to-pay">Recommend to pay</a>
+          <a class="govuk-button" role="button" href="/view-claim/{{ reference }}?recommendToReject=true" id="btn-recommend-to-reject">Recommend to reject</a>
+        </div>
+      {% endif %}
     </div>
   </div>
   {%endblock%}
