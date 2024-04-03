@@ -5,41 +5,23 @@ const { getApplications } = require('../../../../../app/api/applications')
 jest.mock('../../../../../app/api/applications')
 
 describe('Application-list model test', () => {
-  test('getApplicationTableHeader SBI DESC', async () => {
-    const sortField = { field: 'SBI', direction: 'DESC' }
+  test.each([
+    { n: 0, field: 'Reference', direction: 'DESC' },
+    { n: 0, field: 'Reference', direction: 'ASC' },
+    { n: 1, field: 'Organisation', direction: 'DESC' },
+    { n: 1, field: 'Organisation', direction: 'ASC' },
+    { n: 2, field: 'SBI', direction: 'DESC' },
+    { n: 2, field: 'SBI', direction: 'ASC' },
+    { n: 3, field: 'Apply date', direction: 'DESC' },
+    { n: 3, field: 'Apply date', direction: 'ASC' },
+    { n: 4, field: 'Status', direction: 'DESC' },
+    { n: 4, field: 'Status', direction: 'ASC' }
+  ])('getApplicationTableHeader $field $direction', async ({ n, field, direction }) => {
+    const sortField = { field: field, direction: direction }
+    const ariaSort = direction === 'DESC' ? 'descending' : 'ascending'
     const res = getApplicationTableHeader(sortField)
     expect(res).not.toBeNull()
-    expect(res[2].attributes['aria-sort']).toEqual('descending')
-  })
-  test('getApplicationTableHeader SBI ASC', async () => {
-    const sortField = { field: 'SBI', direction: 'ASC' }
-    const res = getApplicationTableHeader(sortField)
-    expect(res).not.toBeNull()
-    expect(res[2].attributes['aria-sort']).toEqual('ascending')
-  })
-  test('getApplicationTableHeader Apply date DESC', async () => {
-    const sortField = { field: 'Apply date', direction: 'DESC' }
-    const res = getApplicationTableHeader(sortField)
-    expect(res).not.toBeNull()
-    expect(res[3].attributes['aria-sort']).toEqual('descending')
-  })
-  test('getApplicationTableHeader Apply date ASC', async () => {
-    const sortField = { field: 'Apply date', direction: 'ASC' }
-    const res = getApplicationTableHeader(sortField)
-    expect(res).not.toBeNull()
-    expect(res[3].attributes['aria-sort']).toEqual('ascending')
-  })
-  test('getApplicationTableHeader Status DESC', async () => {
-    const sortField = { field: 'Status', direction: 'DESC' }
-    const res = getApplicationTableHeader(sortField)
-    expect(res).not.toBeNull()
-    expect(res[4].attributes['aria-sort']).toEqual('descending')
-  })
-  test('getApplicationTableHeader Status ASC', async () => {
-    const sortField = { field: 'Status', direction: 'ASC' }
-    const res = getApplicationTableHeader(sortField)
-    expect(res).not.toBeNull()
-    expect(res[4].attributes['aria-sort']).toEqual('ascending')
+    expect(res[n].attributes['aria-sort']).toEqual(ariaSort)
   })
 })
 

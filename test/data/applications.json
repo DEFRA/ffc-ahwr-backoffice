@@ -6,7 +6,6 @@
       "reference": "AHWR-555A-FD4C",
       "status": { "status": "AGREED" },
       "data": {
-        "type": "EE",
         "declaration": true,
         "whichReview": "sheep",
         "organisation": {
@@ -23,7 +22,8 @@
       "claimed": false,
       "createdAt": "2022-06-06T14:27:51.251Z",
       "updatedAt": "2022-06-06T14:27:51.775Z",
-      "createdBy": "admin"
+      "createdBy": "admin",
+      "type": "EE"
     },
     {
       "id": "555afd4c-b095-4ce4-b492-800466b54493",
