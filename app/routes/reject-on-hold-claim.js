@@ -31,11 +31,13 @@ module.exports = {
         const errors = await failActionTwoCheckboxes(error, 'confirm-move-to-in-check-panel')
         if (request.payload.claimOrApplication === 'claim') {
           return h
-          .redirect(`/view-claim/${request.payload.reference}?moveToInCheck=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
-          .takeover()
-        } else { return h
-          .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&moveToInCheck=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
-          .takeover() }
+            .redirect(`/view-claim/${request.payload.reference}?moveToInCheck=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
+            .takeover()
+        } else {
+          return h
+            .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&moveToInCheck=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
+            .takeover()
+        }
       }
     },
     handler: async (request, h) => {
@@ -49,7 +51,8 @@ module.exports = {
           if (request.payload.claimOrApplication === 'claim') {
             return h.redirect(`/view-claim/${request.payload.reference}`)
           } else {
-            return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`) }
+            return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
+          }
         } catch (error) {
           console.error(`routes:reject-on-hold-claim: Error when processing request: ${error.message}`)
           throw Boom.internal(error.message)
@@ -58,8 +61,8 @@ module.exports = {
         await processRejectOnHoldClaim(request, applicationStatus, h)
         if (request.payload.claimOrApplication === 'claim') {
           return h.redirect(`/view-claim/${request.payload.reference}`)
-         } else {
-         return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
+        } else {
+          return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
         }
       }
     }

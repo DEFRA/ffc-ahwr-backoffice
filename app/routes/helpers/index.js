@@ -17,7 +17,7 @@ function redirectWithError (h, claimOrApplication, reference, page, error, error
 function redirectRejectWithError (h, claimOrApplication, reference, page, error, errorMessage) {
   console.error(errorMessage, error.message) // Centralized error logging
   const encodedErrors = encodeURIComponent(Buffer.from(JSON.stringify(error)).toString('base64'))
-  
+
   if (claimOrApplication === 'claim') {
     return h.redirect(`/view-claim/${reference}?reject=true&errors=${encodedErrors}`).takeover()
   } else {

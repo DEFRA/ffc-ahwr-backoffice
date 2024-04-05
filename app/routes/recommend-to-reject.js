@@ -21,14 +21,13 @@ module.exports = {
 
         if (request.payload.claimOrApplication === 'claim') {
           return h
-          .redirect(`/view-claim/${request.payload.reference}?recommendToReject=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
-          .takeover()
+            .redirect(`/view-claim/${request.payload.reference}?recommendToReject=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
+            .takeover()
         } else {
           return h
-          .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&recommendToReject=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
-          .takeover()
+            .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&recommendToReject=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
+            .takeover()
         }
-        
       }
     },
     handler: async (request, h) => {

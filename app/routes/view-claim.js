@@ -113,7 +113,7 @@ module.exports = {
         title: capitalize(application?.data?.organisation?.name),
         claimSummaryDetails: claimSummaryDetails(organisation, data, type),
         displayRecommendationForm: request.query.recommendToPay || request.query.recommendToReject,
-        recommendFormContent: recommendFormContent({displayRecommendToPayConfirmationForm: request.query.recommendToPay, displayRecommendToRejectConfirmationForm: request.query.recommendToReject}),
+        recommendFormContent: recommendFormContent({ displayRecommendToPayConfirmationForm: request.query.recommendToPay, displayRecommendToRejectConfirmationForm: request.query.recommendToReject }),
         status: { capitalizedtype: formatStatusId(claim.statusId), normalType: capitalize(formatStatusId(claim.statusId).toLowerCase()), tagClass: getStyleClassByStatus(formatStatusId(claim.statusId)) }
       })
     }

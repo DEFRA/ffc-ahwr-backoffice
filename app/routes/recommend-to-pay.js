@@ -20,11 +20,11 @@ module.exports = {
       failAction: async (request, h, error) => {
         failActionConsoleLog(request, error, 'recommend-to-pay')
         const errors = await failActionTwoCheckboxes(error, 'pnl-recommend-confirmation')
-          
+
         if (request.payload.claimOrApplication === 'claim') {
           return h
-          .redirect(`/view-claim/${request.payload.reference}?recommendToPay=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
-          .takeover()
+            .redirect(`/view-claim/${request.payload.reference}?recommendToPay=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
+            .takeover()
         } else {
           return h
             .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&recommendToPay=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
@@ -46,7 +46,7 @@ module.exports = {
           false
         )
         await crumbCache.generateNewCrumb(request, h)
-        
+
         if (request.payload.claimOrApplication === 'claim') {
           return h.redirect(`/view-claim/${request.payload.reference}`)
         } else {
