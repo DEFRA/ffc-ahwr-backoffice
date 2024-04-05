@@ -1,19 +1,21 @@
 const Joi = require('joi')
 
 const onHoldToInCheckSchema = Joi.object({
+  claimOrApplication: Joi.string().valid('claim', 'application').required(),
   confirm: Joi.array().items(
     Joi.string().valid('recommendToMoveOnHoldClaim').required(),
     Joi.string().valid('updateIssuesLog').required()
   ).required(),
   rejectOnHoldClaim: Joi.string().valid('yes').required(),
   reference: Joi.string().valid().required(),
-  page: Joi.number().greater(0).default(1)
+  page: Joi.number().greater(0).default(1).optional()
 })
 
 const onHoldToInCheckRbacDisabledSchema = Joi.object({
+  claimOrApplication: Joi.string().valid('claim', 'application').required(),
   rejectOnHoldClaim: Joi.string().valid('yes'),
   reference: Joi.string().valid(),
-  page: Joi.number().greater(0).default(1)
+  page: Joi.number().greater(0).default(1).optional()
 })
 
 module.exports = { onHoldToInCheckSchema, onHoldToInCheckRbacDisabledSchema }

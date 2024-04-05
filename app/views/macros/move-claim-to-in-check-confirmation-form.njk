@@ -1,9 +1,9 @@
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% macro viewMoveClaimToInCheckConfirmationForm(applicationId, page, crumb, errorMessage) %}
+{% macro viewMoveClaimToInCheckConfirmationForm(claimOrApplication, reference, page, crumb, errorMessage) %}
   <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="confirm-move-to-in-check-panel">
-    <p class="govuk-body govuk-!-text-align-right"><a href="/view-application/{{ applicationId }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p>
+    <p class="govuk-body govuk-!-text-align-right"><a href="/view-application/{{ reference }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p>
     <form method="POST" autocomplete="off" novalidate="novalidate" action="/reject-on-hold-claim" id="rejectClaimOnHoldForm">
       {{ govukCheckboxes({
         name: "confirm",
@@ -32,7 +32,8 @@
         value: "yes",
         preventDoubleClick: true
       }) }}
-      <input type="hidden" name="reference" value="{{ applicationId }}" />
+      <input type="hidden" name="claimOrApplication" value="{{ claimOrApplication }}" />
+      <input type="hidden" name="reference" value="{{ reference }}" />
       <input type="hidden" name="page" value="{{ page }}" />
       <input type="hidden" name="crumb" value="{{crumb}}"/>
     </form>

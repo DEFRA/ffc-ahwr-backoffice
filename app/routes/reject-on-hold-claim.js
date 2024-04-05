@@ -29,10 +29,13 @@ module.exports = {
       failAction: async (request, h, error) => {
         failActionConsoleLog(request, error, 'reject-on-hold-claim')
         const errors = await failActionTwoCheckboxes(error, 'confirm-move-to-in-check-panel')
-
-        return h
-          .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&moveToInCheck=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
+        if (request.payload.claimOrApplication === 'claim') {
+          return h
+          .redirect(`/view-claim/${request.payload.reference}?moveToInCheck=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
           .takeover()
+        } else { return h
+          .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&moveToInCheck=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
+          .takeover() }
       }
     },
     handler: async (request, h) => {
@@ -43,14 +46,21 @@ module.exports = {
             throw Boom.unauthorized('routes:reject-on-hold-claim: User must be an authoriser/recommender or an admin')
           }
           await processRejectOnHoldClaim(request, applicationStatus, h)
-          return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
+          if (request.payload.claimOrApplication === 'claim') {
+            return h.redirect(`/view-claim/${request.payload.reference}`)
+          } else {
+            return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`) }
         } catch (error) {
           console.error(`routes:reject-on-hold-claim: Error when processing request: ${error.message}`)
           throw Boom.internal(error.message)
         }
       } else {
         await processRejectOnHoldClaim(request, applicationStatus, h)
-        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
+        if (request.payload.claimOrApplication === 'claim') {
+          return h.redirect(`/view-claim/${request.payload.reference}`)
+         } else {
+         return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
+        }
       }
     }
   }

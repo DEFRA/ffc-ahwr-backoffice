@@ -83,7 +83,7 @@ module.exports = {
       }
 
       return h.view('view-application', {
-        applicationId: application.reference,
+        reference: application.reference,
         status,
         statusClass,
         organisationName: application?.data?.organisation?.name,

@@ -34,7 +34,7 @@
         }) }}
       {% endif %}
 
-      <h1 class="govuk-caption-l govuk-!-margin-bottom-3">Agreement number: {{ applicationId }}</h1>
+      <h1 class="govuk-caption-l govuk-!-margin-bottom-3">Agreement number: {{ reference }}</h1>
 
       <h2 class="govuk-fieldset__legend--m">{{ organisationName }}
         <span class="govuk-tag {{ statusClass }}">{{ status }}</span></h2>
@@ -42,41 +42,41 @@
         rows: model.listData.rows
       }) }}
       {% if withdrawConfirmationForm %}
-        {{ viewWithdrawConfirmationForm(applicationId, page, crumb) }}
+        {{ viewWithdrawConfirmationForm('application', reference, page, crumb) }}
       {% endif %}
       {% if approveClaimConfirmationForm %}
-        {{ viewApproveClaimConfirmationForm(applicationId, page, crumb) }}
+        {{ viewApproveClaimConfirmationForm('application', reference, page, crumb) }}
       {% endif %}
       {% if rejectClaimConfirmationForm %}
-        {{ viewRejectClaimConfirmationForm(applicationId, page, crumb) }}
+        {{ viewRejectClaimConfirmationForm('application', reference, page, crumb) }}
       {% endif %}
       {% if model.recommendData != false %}
-        {{ viewRecommendConfirmationForm(applicationId, page, crumb, model.recommendData) }}
+        {{ viewRecommendConfirmationForm('application', reference, page, crumb, model.recommendData) }}
       {% endif %}
       {% if recommendToReject.display %}
-        {{ viewRecommendToRejectConfirmationForm(applicationId, page, crumb, recommendToReject.errorMessage) }}
+        {{ viewRecommendToRejectConfirmationForm('application', reference, page, crumb, recommendToReject.errorMessage) }}
       {% endif %}
       {% if authorisePaymentConfirmForm.display %}
-        {{ viewAuthorisePaymentConfirmForm(applicationId, page, crumb, authorisePaymentConfirmForm.errorMessage) }}
+        {{ viewAuthorisePaymentConfirmForm('application', reference, page, crumb, authorisePaymentConfirmForm.errorMessage) }}
       {% endif %}
       {% if rejectClaimConfirmForm.display %}
-        {{ viewRejectClaimConfirmForm(applicationId, page, crumb, rejectClaimConfirmForm.errorMessage) }}
+        {{ viewRejectClaimConfirmForm('application', reference, page, crumb, rejectClaimConfirmForm.errorMessage) }}
       {% endif %}
       {% if onHoldConfirmationForm.display %}
-        {{ viewMoveClaimToInCheckConfirmationForm(applicationId, page, crumb, onHoldConfirmationForm.errorMessage) }}
+        {{ viewMoveClaimToInCheckConfirmationForm('application', reference, page, crumb, onHoldConfirmationForm.errorMessage) }}
       {% endif %}
-      {{ viewApplicationTabs(model, vetVisit, claimed, payment, subStatus, displayMoveToInCheckFromHold, applicationId, page) }}
+      {{ viewApplicationTabs(model, vetVisit, claimed, payment, subStatus, displayMoveToInCheckFromHold, reference, page) }}
       {% if withdrawLink %}
-        <a class="govuk-link govuk-body" href="/view-application/{{ applicationId }}?page={{page}}&withdraw=true">Withdraw</a>
+        <a class="govuk-link govuk-body" href="/view-application/{{ reference }}?page={{page}}&withdraw=true">Withdraw</a>
       {% endif %}
       {% if claimConfirmationForm %}
-        {{ viewClaimConfirmationForm(applicationId, page, crumb) }}
+        {{ viewClaimConfirmationForm('application', reference, page, crumb) }}
       {% endif %}
       {% if recommendForm %}
-        {{ viewRecommendForm(applicationId, page, crumb) }}
+        {{ viewRecommendForm('application', reference, page, crumb) }}
       {% endif %}
       {% if authoriseOrRejectForm.display %}
-        {{ viewAuthoriseOrRejectForm(applicationId, page, crumb, authoriseOrRejectForm.displayAuthorisePaymentButton) }}
+        {{ viewAuthoriseOrRejectForm('application', reference, page, crumb, authoriseOrRejectForm.displayAuthorisePaymentButton) }}
       {% endif %}
     </div>
   </div>

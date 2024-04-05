@@ -19,9 +19,16 @@ module.exports = {
         failActionConsoleLog(request, error, 'recommend-to-reject')
         const errors = await failActionTwoCheckboxes(error, 'pnl-recommend-confirmation')
 
-        return h
+        if (request.payload.claimOrApplication === 'claim') {
+          return h
+          .redirect(`/view-claim/${request.payload.reference}?recommendToReject=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
+          .takeover()
+        } else {
+          return h
           .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&recommendToReject=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
           .takeover()
+        }
+        
       }
     },
     handler: async (request, h) => {
@@ -38,7 +45,11 @@ module.exports = {
           false
         )
         await crumbCache.generateNewCrumb(request, h)
-        return h.redirect(`/view-application/${request.payload.reference}?page=${request.payload.page}`)
+        if (request.payload.claimOrApplication === 'claim') {
+          return h.redirect(`/view-claim/${request.payload.reference}`)
+        } else {
+          return h.redirect(`/view-application/${request.payload.reference}?page=${request.payload.page}`)
+        }
       } catch (error) {
         console.error(`routes:recommend-to-reject: Error when processing request: ${error.message}`)
         throw Boom.internal(error.message)
