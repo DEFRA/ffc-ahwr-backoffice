@@ -12,7 +12,7 @@ const status = {
   RECOMMENDED_TO_REJECT: 13,
   AUTHORISED: 14,
   SENT_TO_FINANCE: 15,
-  PAYMENT_HELD: 16,
+  PAYMENT_HELD: 16
 }
 
 const statusStyle = {

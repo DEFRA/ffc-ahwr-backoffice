@@ -17,7 +17,6 @@ const claimFormHelper = require('./utils/claim-form-helper')
 const rbacEnabled = require('../config').rbac.enabled
 const checkboxErrors = require('./utils/checkbox-errors')
 
-
 const backLink = (applicationReference) => {
   return `/${claims}/${applicationReference}`
 }

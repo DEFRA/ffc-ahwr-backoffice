@@ -14,9 +14,9 @@ const { onHoldToInCheckSchema, onHoldToInCheckRbacDisabledSchema } = require('./
 const processRejectOnHoldClaim = async (request, applicationStatus, h) => {
   if (request.payload.rejectOnHoldClaim === 'yes') {
     const userName = getUser(request).username
-    const result = request.payload.claimOrApplication === 'application' ? 
-            await updateApplicationStatus(request.payload.reference, userName, applicationStatus.inCheck) :
-            await updateClaimStatus(request.payload.reference, userName, applicationStatus.inCheck)
+    const result = request.payload.claimOrApplication === 'application'
+      ? await updateApplicationStatus(request.payload.reference, userName, applicationStatus.inCheck)
+      : await updateClaimStatus(request.payload.reference, userName, applicationStatus.inCheck)
     console.log(`${request.payload.claimOrApplication} ${request.payload.reference}, moved to IN CHECK Status from ON HOLD => ${result}`)
     await crumbCache.generateNewCrumb(request, h)
   }

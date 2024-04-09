@@ -40,9 +40,9 @@ const getRecommendationAndAuthorizationStatus = async (userName, applicationRefe
 
 const determineDisplayForms = (statusId, authStatus, recommendStatus, query) => {
   const isApplicationInCheck = (statusId === status.IN_CHECK)
-  const isApplicationApproveRecommend = (statusId ===  status.RECOMMENDED_TO_PAY)
-  const isApplicationRejectRecommend = (statusId ===  status.RECOMMENDED_TO_REJECT)
-  const isApplicationOnHold = (statusId ===  status.ON_HOLD)
+  const isApplicationApproveRecommend = (statusId === status.RECOMMENDED_TO_PAY)
+  const isApplicationRejectRecommend = (statusId === status.RECOMMENDED_TO_REJECT)
+  const isApplicationOnHold = (statusId === status.ON_HOLD)
 
   return {
     displayRecommendationForm: isApplicationInCheck && authStatus.canUserRecommend && recommendStatus.canClaimBeRecommended && !query.recommendToPay && !query.recommendToReject && rbacEnabled,

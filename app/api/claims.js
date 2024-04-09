@@ -1,6 +1,5 @@
 const Wreck = require('@hapi/wreck')
 const { applicationApiUri } = require('../config')
-const { status } = require('../constants/status')
 
 async function getClaim (reference) {
   const url = `${applicationApiUri}/claim/get-by-reference/${reference}`
