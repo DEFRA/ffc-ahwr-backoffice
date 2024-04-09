@@ -2,6 +2,7 @@ const Boom = require('@hapi/boom')
 const Joi = require('joi')
 const config = require('../config')
 const { processApplicationClaim } = require('../api/applications')
+const { processClaim } = require('../api/claims')
 const mapAuth = require('../auth/map-auth')
 const getUser = require('../auth/get-user')
 const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
@@ -64,7 +65,11 @@ module.exports = {
       } else {
         if (request.payload.rejectClaim === 'yes') {
           const userName = getUser(request).username
-          await processApplicationClaim(request.payload.reference, userName, false)
+          if (request.payload.claimOrApplication === 'application') {
+            await processApplicationClaim(request.payload.reference, userName, false)
+          } else if (request.payload.claimOrApplication === 'claim') {
+            await processClaim(request.payload.reference, userName, false)
+          }
           await crumbCache.generateNewCrumb(request, h)
         }
         return redirectToViewApplication(h, request.payload.claimOrApplication, request.payload.reference, request?.payload?.page || 1)

@@ -2,6 +2,7 @@ const { Buffer } = require('buffer')
 const Boom = require('@hapi/boom')
 const config = require('../config')
 const { updateApplicationStatus } = require('../api/applications')
+const { updateClaimStatus } = require('../api/claims')
 const mapAuth = require('../auth/map-auth')
 const getUser = require('../auth/get-user')
 const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
@@ -13,8 +14,10 @@ const { onHoldToInCheckSchema, onHoldToInCheckRbacDisabledSchema } = require('./
 const processRejectOnHoldClaim = async (request, applicationStatus, h) => {
   if (request.payload.rejectOnHoldClaim === 'yes') {
     const userName = getUser(request).username
-    const result = await updateApplicationStatus(request.payload.reference, userName, applicationStatus.inCheck)
-    console.log(`Application ${request.payload.reference}, moved to IN CHECK Status from ON HOLD => ${result}`)
+    const result = request.payload.claimOrApplication === 'application' ? 
+            await updateApplicationStatus(request.payload.reference, userName, applicationStatus.inCheck) :
+            await updateClaimStatus(request.payload.reference, userName, applicationStatus.inCheck)
+    console.log(`${request.payload.claimOrApplication} ${request.payload.reference}, moved to IN CHECK Status from ON HOLD => ${result}`)
     await crumbCache.generateNewCrumb(request, h)
   }
 }
