@@ -1,7 +1,11 @@
 {% macro viewRecommendConfirmationForm(claimOrApplication, reference, page, crumb, recommend) %}
   {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
   <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="pnl-recommend-confirmation">
-    <p class="govuk-body govuk-!-text-align-right"><a href="/view-application/{{ reference }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p>
+    {% if claimOrApplication == 'application' %}
+      <p class="govuk-body govuk-!-text-align-right"><a href="/view-application/{{ reference }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p>
+    {% elif claimOrApplication == 'claim' %}
+      <p class="govuk-body govuk-!-text-align-right"><a href="/view-claim/{{ reference }}" role="button" draggable="false" class="govuk-link">Back</a></p>
+    {% endif %}
     <form method="POST" autocomplete="off" novalidate="novalidate" action="{{ recommend.formAction }}" id="recommendConfirmationForm">
       {{ govukCheckboxes({
         name: "confirm",

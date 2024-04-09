@@ -8,7 +8,7 @@ const recommendToPayOrRejectSchema =
       Joi.string().valid('sentChecklist').required()
     ).required(),
     reference: Joi.string().valid().required(),
-    page: Joi.number().greater(0).default(1).optional()
+    page: Joi.number().greater(0).default(1)
   })
 
 module.exports = recommendToPayOrRejectSchema

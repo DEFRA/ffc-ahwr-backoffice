@@ -17,7 +17,7 @@ module.exports = {
         claimOrApplication: Joi.string().valid('claim', 'application').required(),
         withdrawConfirmation: Joi.string().valid('yes', 'no'),
         reference: Joi.string().valid(),
-        page: Joi.number().greater(0).default(1).optional()
+        page: Joi.number().greater(0).default(1)
       })
     },
     handler: async (request, h) => {

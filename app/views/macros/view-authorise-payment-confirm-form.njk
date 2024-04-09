@@ -3,7 +3,6 @@
 
 {% macro viewAuthorisePaymentConfirmForm(claimOrApplication, reference, page, crumb, errorMessage) %}
   <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="authorise-payment-panel">
-    {# <p class="govuk-body govuk-!-text-align-right"><a href="/view-application/{{ reference }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p> #}
     <form method="POST" autocomplete="off" novalidate="novalidate" action="/approve-application-claim" id="form-authorise-payment">
       {{ govukCheckboxes({
         name: "confirm",

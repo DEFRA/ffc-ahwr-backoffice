@@ -2,9 +2,10 @@ const mapAuth = require('../../auth/map-auth')
 const getUser = require('../../auth/get-user')
 const { getStageExecutionByApplication } = require('../../api/stage-execution')
 const stageConfigId = require('../../constants/application-stage-configuration-ids')
+const { status } = require('../../constants/status')
 const stageExecutionActions = require('../../constants/application-stage-execution-actions')
 const rbacEnabled = require('../../config').rbac.enabled
-const { upperFirstLetter } = require('../../lib/display-helper')
+const { formatStatusId, upperFirstLetter } = require('../../lib/display-helper')
 
 const getRecommendationAndAuthorizationStatus = async (userName, applicationReference) => {
   const stageExecutions = await getStageExecutionByApplication(applicationReference)
@@ -37,11 +38,11 @@ const getRecommendationAndAuthorizationStatus = async (userName, applicationRefe
   }
 }
 
-const determineDisplayForms = (applicationStatus, authStatus, recommendStatus, query) => {
-  const isApplicationInCheck = (applicationStatus === 'IN CHECK')
-  const isApplicationApproveRecommend = (applicationStatus === 'Recommended to Pay')
-  const isApplicationRejectRecommend = (applicationStatus === 'Recommended to Reject')
-  const isApplicationOnHold = (applicationStatus === 'ON HOLD')
+const determineDisplayForms = (statusId, authStatus, recommendStatus, query) => {
+  const isApplicationInCheck = (statusId === status.IN_CHECK)
+  const isApplicationApproveRecommend = (statusId ===  status.RECOMMENDED_TO_PAY)
+  const isApplicationRejectRecommend = (statusId ===  status.RECOMMENDED_TO_REJECT)
+  const isApplicationOnHold = (statusId ===  status.ON_HOLD)
 
   return {
     displayRecommendationForm: isApplicationInCheck && authStatus.canUserRecommend && recommendStatus.canClaimBeRecommended && !query.recommendToPay && !query.recommendToReject && rbacEnabled,
@@ -54,7 +55,7 @@ const determineDisplayForms = (applicationStatus, authStatus, recommendStatus, q
   }
 }
 
-const claimFormHelper = async (request, applicationReference, applicationStatus) => {
+const claimFormHelper = async (request, applicationReference, statusId) => {
   const userName = getUser(request).username
   const mappedAuth = {
     isAdministrator: mapAuth(request).isAdministrator,
@@ -65,9 +66,9 @@ const claimFormHelper = async (request, applicationReference, applicationStatus)
   }
 
   const recommendStatus = await getRecommendationAndAuthorizationStatus(userName, applicationReference)
-  const displayForms = determineDisplayForms(applicationStatus, mappedAuth, recommendStatus, request.query)
+  const displayForms = determineDisplayForms(statusId, mappedAuth, recommendStatus, request.query)
 
-  const subStatus = upperFirstLetter(applicationStatus.toLowerCase())
+  const subStatus = upperFirstLetter(formatStatusId(statusId).toLowerCase())
 
   return {
     ...displayForms,

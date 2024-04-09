@@ -3,7 +3,12 @@
 
 {% macro viewMoveClaimToInCheckConfirmationForm(claimOrApplication, reference, page, crumb, errorMessage) %}
   <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="confirm-move-to-in-check-panel">
-    <p class="govuk-body govuk-!-text-align-right"><a href="/view-application/{{ reference }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p>
+    {% if claimOrApplication == 'application' %}
+      <p class="govuk-body govuk-!-text-align-right"><a href="/view-application/{{ reference }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p>
+    {% elif claimOrApplication == 'claim' %}
+      <p class="govuk-body govuk-!-text-align-right"><a href="/view-claim/{{ reference }}" role="button" draggable="false" class="govuk-link">Back</a></p>
+    {% endif %}
+    
     <form method="POST" autocomplete="off" novalidate="novalidate" action="/reject-on-hold-claim" id="rejectClaimOnHoldForm">
       {{ govukCheckboxes({
         name: "confirm",

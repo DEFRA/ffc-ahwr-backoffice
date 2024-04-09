@@ -5,17 +5,22 @@
       <div class="govuk-panel govuk-panel--confirmation govuk-panel--align-horizontal govuk-!-text-align-center">
         <h1 class="govuk-panel__title-s govuk-!-font-size-36 govuk-!-margin-top-1">Authoriser only</h1>
         <div class="govuk-panel__body">
-          <div class="govuk-grid-row">
-            <button class="govuk-button govuk-button govuk-!-margin-bottom-3" onclick="location.href='/view-application/{{ reference }}?page={{page}}&approve=true';">Approve claim</button>
-          </div>
-          <div class="govuk-grid-row">
-            <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-3" onclick="location.href='/view-application/{{ reference }}?page={{page}}&reject=true';">Reject claim</button>
-          </div>
+          {% if claimOrApplication == 'application' %}
+            <div class="govuk-grid-row">
+              <button class="govuk-button govuk-button govuk-!-margin-bottom-3" onclick="location.href='/view-application/{{ reference }}?page={{page}}&approve=true';">Approve claim</button>
+            </div>
+            <div class="govuk-grid-row">
+              <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-3" onclick="location.href='/view-application/{{ reference }}?page={{page}}&reject=true';">Reject claim</button>
+            </div>
+          {% elif claimOrApplication == 'claim' %}
+            <div class="govuk-grid-row">
+              <button class="govuk-button govuk-button govuk-!-margin-bottom-3" onclick="location.href='/view-claim/{{ reference }}?approve=true';">Approve claim</button>
+            </div>
+            <div class="govuk-grid-row">
+              <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-3" onclick="location.href='/view-claim/{{ reference }}?reject=true';">Reject claim</button>
+            </div>
+          {% endif %}
         </div>
-        <input type="hidden" name="claimOrApplication" value="{{ claimOrApplication }}" />
-        <input type="hidden" name="reference" value="{{ reference }}" />
-        <input type="hidden" name="page" value="{{ page }}"/>
-        <input type="hidden" name="crumb" value="{{crumb}}"/>
       </div>
     </div>
   </div>

@@ -1,7 +1,7 @@
 const { getApplications } = require('../../api/applications')
 const { getPagination, getPagingData } = require('../../pagination')
 const { getAppSearch } = require('../../session')
-const getStyleClassByStatus = require('../../constants/status')
+const { getStyleClassByStatus } = require('../../constants/status')
 const keys = require('../../session/keys')
 const { serviceUri } = require('../../config')
 

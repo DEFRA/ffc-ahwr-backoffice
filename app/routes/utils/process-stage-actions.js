@@ -25,7 +25,8 @@ const processStageActions = async (request, role, stage, action, isClaimToBePaid
       switch (stageAction) {
         case applicationStageActions.addStageExecutionEntry:
           stageExecutionRow = await addStageExecution({
-            applicationReference: request.payload.reference,
+            claimOrApplication: request.payload.claimOrApplication,
+            reference: request.payload.reference,
             stageConfigurationId: stepId,
             executedAt: new Date(),
             executedBy: userName,

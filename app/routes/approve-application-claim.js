@@ -27,13 +27,13 @@ module.exports = {
               Joi.string().valid('sentChecklist').required()
             ).required(),
             reference: Joi.string().valid().required(),
-            page: Joi.number().greater(0).default(1).optional()
+            page: Joi.number().greater(0).default(1)
           }
         : {
             claimOrApplication: Joi.string().valid('claim', 'application').required(),
             approveClaim: Joi.string().valid('yes', 'no'),
             reference: Joi.string().valid(),
-            page: Joi.number().greater(0).default(1).optional()
+            page: Joi.number().greater(0).default(1)
           }),
       failAction: async (request, h, error) => {
         failActionConsoleLog(request, error, 'approve-application-claim')

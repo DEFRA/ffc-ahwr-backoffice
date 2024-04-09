@@ -65,7 +65,9 @@
       {% if onHoldConfirmationForm.display %}
         {{ viewMoveClaimToInCheckConfirmationForm('application', reference, page, crumb, onHoldConfirmationForm.errorMessage) }}
       {% endif %}
+
       {{ viewApplicationTabs(model, vetVisit, claimed, payment, subStatus, displayMoveToInCheckFromHold, reference, page) }}
+      
       {% if withdrawLink %}
         <a class="govuk-link govuk-body" href="/view-application/{{ reference }}?page={{page}}&withdraw=true">Withdraw</a>
       {% endif %}
