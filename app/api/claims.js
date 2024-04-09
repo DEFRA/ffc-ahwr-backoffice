@@ -1,5 +1,6 @@
 const Wreck = require('@hapi/wreck')
 const { applicationApiUri } = require('../config')
+const { status } = require('../constants/status')
 
 async function getClaim (reference) {
   const url = `${applicationApiUri}/claim/get-by-reference/${reference}`
@@ -29,38 +30,20 @@ async function getClaims (reference) {
   }
 }
 
-async function processClaim (reference, user, approved) {
-  const url = `${applicationApiUri}/application/claim`
+async function updateClaimStatus (reference, user, status) {
+  const url = `${applicationApiUri}/claim/update-by-reference`
   const options = {
     payload: {
       reference,
-      user,
-      approved
-    },
-    json: true
-  }
-  try {
-    await Wreck.post(url, options)
-    return true
-  } catch (err) {
-    console.log(err)
-    return false
-  }
-}
-
-async function updateClaimStatus (reference, user, status) {
-  const url = `${applicationApiUri}/application/${reference}`
-  const options = {
-    payload: {
-      user,
-      status
+      status,
+      user
     },
     json: true
   }
   try {
     const response = await Wreck.put(url, options)
     if (response.res.statusCode !== 200) {
-      return null
+      throw new Error(response.res)
     }
     return true
   } catch (err) {
@@ -72,6 +55,5 @@ async function updateClaimStatus (reference, user, status) {
 module.exports = {
   getClaims,
   getClaim,
-  processClaim,
   updateClaimStatus
 }

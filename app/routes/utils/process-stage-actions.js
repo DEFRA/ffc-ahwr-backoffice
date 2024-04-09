@@ -1,7 +1,8 @@
 const { updateStageExecution, addStageExecution } = require('../../api/stage-execution')
 const { getAllStageConfigurations } = require('../../api/stage-configuration')
 const { processApplicationClaim } = require('../../api/applications')
-const { processClaims } = require('../../api/claims')
+const { updateClaimStatus } = require('../../api/claims')
+const status = require('../../constants/status')
 const getUser = require('../../auth/get-user')
 const applicationStageActions = require('../../constants/application-stage-execution-actions')
 
@@ -41,7 +42,7 @@ const processStageActions = async (request, role, stage, action, isClaimToBePaid
         case applicationStageActions.processApplicationClaim:
           const response = request.payload.claimOrApplication === 'application' ? 
             await processApplicationClaim(request.payload.reference, userName, isClaimToBePaid) : 
-            await processClaims(request.payload.reference, userName, isClaimToBePaid)
+            await updateClaimStatus(request.payload.reference, userName, isClaimToBePaid ? status.READY_TO_PAY : status.REJECTED)
           results.push({ action: 'Processed claim', response})
           console.log(`processStageActions - Processed claim ${JSON.stringify(request.payload.reference, userName, isClaimToBePaid)} for stage action ${stageAction}`)
           break
