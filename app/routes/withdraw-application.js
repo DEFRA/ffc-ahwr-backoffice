@@ -14,7 +14,6 @@ module.exports = {
     auth: { scope: [administrator] },
     validate: {
       payload: Joi.object({
-        claimOrApplication: Joi.string().valid('claim', 'application').required(),
         withdrawConfirmation: Joi.string().valid('yes', 'no'),
         reference: Joi.string().valid(),
         page: Joi.number().greater(0).default(1)
@@ -27,11 +26,7 @@ module.exports = {
         await crumbCache.generateNewCrumb(request, h)
       }
 
-      if (request.payload.claimOrApplication === 'claim') {
-        return h.redirect(`/view-claim/${request.payload.reference}`)
-      } else {
-        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
-      }
+      return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
     }
   }
 }

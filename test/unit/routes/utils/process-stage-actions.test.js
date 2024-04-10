@@ -2,7 +2,8 @@ const processStageActions = require('../../../../app/routes/utils/process-stage-
 
 const mockRequest = {
   payload: {
-    reference: 'AHWR-555A-FD4C'
+    reference: 'AHWR-555A-FD4C',
+    claimOrApplication: 'application'
   }
 }
 const mockStepId = 1
