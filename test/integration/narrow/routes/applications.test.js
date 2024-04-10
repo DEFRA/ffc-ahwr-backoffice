@@ -69,7 +69,7 @@ describe('Applications test', () => {
       expect($('span.govuk-tag--red').text()).toContain('REJECTED')
       expect($('th[aria-sort="none"]').text()).toContain('SBI')
       expect($('th[aria-sort="none"]').text()).toContain('Status')
-      expect($('th[aria-sort="none"]').text()).toContain('Apply date')
+      expect($('th[aria-sort="none"]').text()).toContain('Agreement date')
       expect(sessionMock.getAppSearch).toBeCalled()
       expect(applications.getApplications).toBeCalled()
       expect(pagination.getPagination).toBeCalled()
