@@ -10,10 +10,4 @@ const onHoldToInCheckSchema = Joi.object({
   page: Joi.number().greater(0).default(1)
 })
 
-const onHoldToInCheckRbacDisabledSchema = Joi.object({
-  rejectOnHoldClaim: Joi.string().valid('yes'),
-  reference: Joi.string().valid(),
-  page: Joi.number().greater(0).default(1)
-})
-
-module.exports = { onHoldToInCheckSchema, onHoldToInCheckRbacDisabledSchema }
+module.exports = { onHoldToInCheckSchema }

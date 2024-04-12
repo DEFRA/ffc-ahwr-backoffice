@@ -43,8 +43,7 @@ container:
   redisPort: 6379
   serviceUri:
   applicationApiUri:
-  displayPageSize: 20
-  rbacEnabled:  
+  displayPageSize: 20 
   dateOfTestingEnabled:
   onHoldAppProcessEnabled:
   onHoldAppProcessSchedule:

@@ -94,9 +94,6 @@ describe('View Application test', () => {
       agreementWithdrawl: {
         enabled: true
       },
-      rbac: {
-        enabled: true
-      },
       dateOfTesting: {
         enabled: false
       }
@@ -164,7 +161,7 @@ describe('View Application test', () => {
     test.each([
       true,
       false
-    ])('RBAC feature flag enabled, recommend buttons displayed as expected for when claim helper returns %s', async (areRecommendButtonsVisible) => {
+    ])('Recommend buttons displayed as expected for when claim helper returns %s', async (areRecommendButtonsVisible) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       claimFormHelper.mockReturnValueOnce({
@@ -184,7 +181,7 @@ describe('View Application test', () => {
     test.each([
       [true, 'Recommend to pay'],
       [false, '']
-    ])('Present autorisation for payment panel when RBAC feature flag enabled ', async (authorisePaymentButtonVisible, subStatus) => {
+    ])('Present autorisation for payment panel', async (authorisePaymentButtonVisible, subStatus) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
@@ -210,7 +207,7 @@ describe('View Application test', () => {
     test.each([
       [true, 'Recommend to reject'],
       [false, '']
-    ])('Present autorisation for reject panel when RBAC feature flag enabled ', async (authorisePaymentButtonVisible, subStatus) => {
+    ])('Present autorisation for reject panel', async (authorisePaymentButtonVisible, subStatus) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
@@ -236,7 +233,7 @@ describe('View Application test', () => {
     test.each([
       false,
       true
-    ])('RBAC feature flag enabled, authorisation confirm form displayed as expected for role %s', async (displayAuthoriseToPayConfirmationForm) => {
+    ])('Authorisation confirm form displayed as expected for role %s', async (displayAuthoriseToPayConfirmationForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockResolvedValueOnce({
@@ -270,7 +267,7 @@ describe('View Application test', () => {
     test.each([
       false,
       true
-    ])('RBAC feature flag enabled, recommended to pay confirm form displayed as expected when claim helper returns %s', async (displayRecommendToPayConfirmationForm) => {
+    ])('Recommended to pay confirm form displayed as expected when claim helper returns %s', async (displayRecommendToPayConfirmationForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       claimFormHelper.mockResolvedValueOnce({
@@ -305,7 +302,7 @@ describe('View Application test', () => {
     test.each([
       false,
       true
-    ])('RBAC feature flag enabled, authorisation confirm form displayed as expected for role %s', async (displayAuthoriseToRejectConfirmationForm) => {
+    ])('Authorisation confirm form displayed as expected for role %s', async (displayAuthoriseToRejectConfirmationForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockResolvedValueOnce({
@@ -339,7 +336,7 @@ describe('View Application test', () => {
     test.each([
       false,
       true
-    ])('RBAC feature flag enabled, recommended to reject confirm form displayed as expected when claim helper returns %s', async (displayRecommendToRejectConfirmationForm) => {
+    ])('Recommended to reject confirm form displayed as expected when claim helper returns %s', async (displayRecommendToRejectConfirmationForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       claimFormHelper.mockResolvedValueOnce({
@@ -401,17 +398,13 @@ describe('View Application test', () => {
     test.each([
       [true, false],
       [false, true]
-    ])('Compliance checks feature flag enabled, authorisation panel displayed as expected when RBAC enabled/disabled', async (isrbacEnabled, isComplianceCheckPanelVisible) => {
+    ])('Compliance checks feature flag enabled, authorisation panel displayed as expected', async (isComplianceCheckPanelVisible) => {
       auth = { strategy: 'session-auth', credentials: { scope: ['administrator'] } }
-      const isRbac = isrbacEnabled
       jest.clearAllMocks()
       jest.mock('../../../../app/config', () => ({
         ...jest.requireActual('../../../../app/config'),
         complianceChecks: {
           enabled: true
-        },
-        rbac: {
-          enabled: isRbac
         }
       }))
       applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
@@ -867,21 +860,17 @@ describe('View Application test', () => {
 
     test.each([
       ['Claim confirmation form displayed', 'administrator', false, '', true],
-      ['Claim confirmation form not displayed - rbac enabled', 'administrator', true, '', false],
+      ['Claim confirmation form not displayed', 'administrator', true, '', false],
       ['Claim confirmation form not displayed - invalid scope', 'user', false, '', false],
       ['Claim confirmation form not displayed - approve query string true', 'administrator', false, '?approve=true', false],
       ['Claim confirmation form not displayed - reject query string true', 'administrator', false, '?reject=true', false]
-    ])('%s', async ({ testName, authScope, rbacEnabled, queryParam, exepectedResult }) => {
+    ])('%s', async ({ testName, authScope, queryParam, exepectedResult }) => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
-      const isRbacEnabled = rbacEnabled
       jest.clearAllMocks()
       jest.mock('../../../../app/config', () => ({
         ...jest.requireActual('../../../../app/config'),
         complianceChecks: {
           enabled: true
-        },
-        rbac: {
-          enabled: isRbacEnabled
         }
       }))
       applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
@@ -901,21 +890,17 @@ describe('View Application test', () => {
 
     test.each([
       ['Approve claim confirmation form displayed', 'administrator', false, '?approve=true', true],
-      ['Approve claim confirmation form not displayed - rbac enabled', 'administrator', true, '?approve=true', false],
+      ['Approve claim confirmation form not displayed', 'administrator', true, '?approve=true', false],
       ['Approve claim confirmation form not displayed - invalid scope', 'user', false, '?approve=true', false],
       ['Approve claim confirmation form not displayed - approve query string false', 'administrator', false, '?approve=false', false],
       ['Approve claim confirmation form not displayed - approve query string missing', 'administrator', false, '', false]
-    ])('%s', async ({ testName, authScope, rbacEnabled, queryParam, exepectedResult }) => {
+    ])('%s', async ({ testName, authScope, queryParam, exepectedResult }) => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
-      const isRbacEnabled = rbacEnabled
       jest.clearAllMocks()
       jest.mock('../../../../app/config', () => ({
         ...jest.requireActual('../../../../app/config'),
         complianceChecks: {
           enabled: true
-        },
-        rbac: {
-          enabled: isRbacEnabled
         }
       }))
       applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
@@ -935,21 +920,17 @@ describe('View Application test', () => {
 
     test.each([
       ['Reject claim confirmation form displayed', 'administrator', false, '?reject=true', true],
-      ['Reject claim confirmation form not displayed - rbac enabled', 'administrator', true, '?reject=true', false],
+      ['Reject claim confirmation form not displayed', 'administrator', true, '?reject=true', false],
       ['Reject claim confirmation form not displayed - invalid scope', 'user', false, '?reject=true', false],
       ['Reject claim confirmation form not displayed - reject query string false', 'administrator', false, '?reject=false', false],
       ['Reject claim confirmation form not displayed - reject query string missing', 'administrator', false, '', false]
-    ])('%s', async ({ testName, authScope, rbacEnabled, queryParam, exepectedResult }) => {
+    ])('%s', async ({ testName, authScope, queryParam, exepectedResult }) => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
-      const isRbacEnabled = rbacEnabled
       jest.clearAllMocks()
       jest.mock('../../../../app/config', () => ({
         ...jest.requireActual('../../../../app/config'),
         complianceChecks: {
           enabled: true
-        },
-        rbac: {
-          enabled: isRbacEnabled
         }
       }))
       applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)

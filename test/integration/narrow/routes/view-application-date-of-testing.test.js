@@ -32,9 +32,6 @@ describe('View Application test with Date of Testing enabled', () => {
     agreementWithdrawl: {
       enabled: true
     },
-    rbac: {
-      enabled: true
-    },
     dateOfTesting: {
       enabled: true
     }

@@ -40,9 +40,6 @@ const schema = Joi.object({
   useRedis: Joi.boolean().default(false),
   applicationApiUri: Joi.string().uri(),
   displayPageSize: Joi.number().default(20),
-  rbac: {
-    enabled: Joi.boolean().default(false)
-  },
   dateOfTesting: {
     enabled: Joi.bool().default(false)
   },
@@ -85,9 +82,6 @@ const config = {
   useRedis: process.env.NODE_ENV !== 'test',
   applicationApiUri: process.env.APPLICATION_API_URI,
   displayPageSize: process.env.DISPLAY_PAGE_SIZE,
-  rbac: {
-    enabled: process.env.RBAC_ENABLED
-  },
   dateOfTesting: {
     enabled: process.env.DATE_OF_TESTING_ENABLED
   },
