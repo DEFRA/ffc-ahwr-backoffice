@@ -1,61 +1,46 @@
+const { createModel } = require('../../../../../app/routes/models/application-list')
 const { getApplicationTableHeader } = require('../../../../../app/routes/models/application-list')
-const sessionMock = require('../../../../../app/session')
 const applicationData = require('.././../../../data/applications.json')
-
-jest.mock('../../../../../app/session')
-const applications = require('../../../../../app/api/applications')
+const { getApplications } = require('../../../../../app/api/applications')
 jest.mock('../../../../../app/api/applications')
-const pagination = require('../../../../../app/pagination')
-jest.mock('../../../../../app/pagination')
-
-pagination.getPagination = jest.fn().mockReturnValue({
-  limit: 10, offset: 0
-})
-
-pagination.getPagingData = jest.fn().mockReturnValue({
-  page: 1, totalPages: 1, total: 1, limit: 10, url: undefined
-})
-applications.getApplications = jest.fn().mockReturnValue(applicationData)
-sessionMock.getAppSearch = jest.fn()
-  .mockReturnValue([])
-  .mockReturnValueOnce(['PENDING', 'APPLIED', 'DATA INPUTTED', 'CLAIMED'])
-  .mockReturnValueOnce({ field: 'SBI', direction: 'DESC' })
 
 describe('Application-list model test', () => {
-  test('getApplicationTableHeader SBI DESC', async () => {
-    const sortField = { field: 'SBI', direction: 'DESC' }
+  test.each([
+    { n: 0, field: 'Reference', direction: 'DESC' },
+    { n: 0, field: 'Reference', direction: 'ASC' },
+    { n: 1, field: 'Organisation', direction: 'DESC' },
+    { n: 1, field: 'Organisation', direction: 'ASC' },
+    { n: 2, field: 'SBI', direction: 'DESC' },
+    { n: 2, field: 'SBI', direction: 'ASC' },
+    { n: 3, field: 'Apply date', direction: 'DESC' },
+    { n: 3, field: 'Apply date', direction: 'ASC' },
+    { n: 4, field: 'Status', direction: 'DESC' },
+    { n: 4, field: 'Status', direction: 'ASC' }
+  ])('getApplicationTableHeader $field $direction', async ({ n, field, direction }) => {
+    const sortField = { field: field, direction: direction }
+    const ariaSort = direction === 'DESC' ? 'descending' : 'ascending'
     const res = getApplicationTableHeader(sortField)
     expect(res).not.toBeNull()
-    expect(res[2].attributes['aria-sort']).toEqual('descending')
+    expect(res[n].attributes['aria-sort']).toEqual(ariaSort)
   })
-  test('getApplicationTableHeader SBI ASC', async () => {
-    const sortField = { field: 'SBI', direction: 'ASC' }
-    const res = getApplicationTableHeader(sortField)
-    expect(res).not.toBeNull()
-    expect(res[2].attributes['aria-sort']).toEqual('ascending')
+})
+
+describe('Application-list createModel', () => {
+  beforeAll(() => {
+    getApplications.mockImplementation(() => applicationData)
   })
-  test('getApplicationTableHeader Apply date DESC', async () => {
-    const sortField = { field: 'Apply date', direction: 'DESC' }
-    const res = getApplicationTableHeader(sortField)
-    expect(res).not.toBeNull()
-    expect(res[3].attributes['aria-sort']).toEqual('descending')
+
+  afterAll(() => {
+    getApplications.mockClear()
   })
-  test('getApplicationTableHeader Apply date ASC', async () => {
-    const sortField = { field: 'Apply date', direction: 'ASC' }
-    const res = getApplicationTableHeader(sortField)
-    expect(res).not.toBeNull()
-    expect(res[3].attributes['aria-sort']).toEqual('ascending')
+
+  test('createModel should return view claims when type EE', async () => {
+    const result = await createModel({ request: 'a request', headers: { path: 'some path' } }, 1)
+    expect(result.applications[0][5].html).toContain('View claims')
   })
-  test('getApplicationTableHeader Status DESC', async () => {
-    const sortField = { field: 'Status', direction: 'DESC' }
-    const res = getApplicationTableHeader(sortField)
-    expect(res).not.toBeNull()
-    expect(res[4].attributes['aria-sort']).toEqual('descending')
-  })
-  test('getApplicationTableHeader Status ASC', async () => {
-    const sortField = { field: 'Status', direction: 'ASC' }
-    const res = getApplicationTableHeader(sortField)
-    expect(res).not.toBeNull()
-    expect(res[4].attributes['aria-sort']).toEqual('ascending')
+
+  test('createModel should return view details when type is not EE', async () => {
+    const result = await createModel({ request: 'a request', headers: { path: 'some path' } }, 1)
+    expect(result.applications[1][5].html).toContain('View details')
   })
 })
