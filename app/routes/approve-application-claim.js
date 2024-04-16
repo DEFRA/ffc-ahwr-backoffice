@@ -40,7 +40,7 @@ module.exports = {
       failAction: async (request, h, error) => {
         failActionConsoleLog(request, error, 'approve-application-claim')
         const errors = await failActionTwoCheckboxes(error, 'authorise-payment-panel')
-        return redirectWithError(h, request.payload.claimOrApplication, request.payload.reference, request?.payload?.page, errors, 'failed validation for approve-application-claim')
+        return redirectWithError(h, request.payload.claimOrApplication, request.payload.reference, request?.payload?.page || 1, errors, 'failed validation for approve-application-claim')
       }
     },
     handler: async (request, h) => {
