@@ -187,7 +187,7 @@ describe('View Application test', () => {
     ])('Present autorisation for payment panel when RBAC feature flag enabled ', async (authorisePaymentButtonVisible, subStatus) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+      when(claimFormHelper).mockReturnValue({
         displayAuthoriseToPayConfirmationForm: authorisePaymentButtonVisible,
         subStatus
       })
@@ -213,7 +213,7 @@ describe('View Application test', () => {
     ])('Present autorisation for reject panel when RBAC feature flag enabled ', async (authorisePaymentButtonVisible, subStatus) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+      when(claimFormHelper).mockReturnValue({
         displayAuthoriseToPayConfirmationForm: authorisePaymentButtonVisible,
         subStatus
       })
@@ -239,7 +239,7 @@ describe('View Application test', () => {
     ])('RBAC feature flag enabled, authorisation confirm form displayed as expected for role %s', async (displayAuthoriseToPayConfirmationForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockResolvedValueOnce({
+      when(claimFormHelper).mockResolvedValue({
         displayAuthoriseToPayConfirmationForm
       })
       const ERROR_MESSAGE_TEXT = 'error_message_text'
@@ -308,7 +308,7 @@ describe('View Application test', () => {
     ])('RBAC feature flag enabled, authorisation confirm form displayed as expected for role %s', async (displayAuthoriseToRejectConfirmationForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockResolvedValueOnce({
+      when(claimFormHelper).mockResolvedValue({
         displayAuthoriseToRejectConfirmationForm
       })
       const ERROR_MESSAGE_TEXT = 'error_message_text'
@@ -851,7 +851,7 @@ describe('View Application test', () => {
       applications.getApplication.mockReturnValueOnce(actualState)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       applications.getApplicationEvents.mockReturnValueOnce(applicationEventData)
-      when(claimFormHelper).calledWith(expect.anything(), expect.anything(), expect.anything()).mockReturnValueOnce({
+      when(claimFormHelper).mockReturnValue({
         subStatus: expectedState
       })
       const options = {
@@ -861,6 +861,7 @@ describe('View Application test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       const $ = cheerio.load(res.payload)
+
       expect($('#application').text()).toContain(expectedState)
       expect($('#claim').text()).toContain(expectedState)
     })

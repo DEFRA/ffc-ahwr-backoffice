@@ -9,6 +9,7 @@ jest.mock('../../../../app/config', () => ({
 }))
 
 const claimFormHelper = require('../../../../app/routes/utils/claim-form-helper')
+const { formatStatusId } = require('../../../../app/lib/display-helper')
 const stageConfigId = require('../../../../app/constants/application-stage-configuration-ids')
 const stageExecutionActions = require('../../../../app/constants/application-stage-execution-actions')
 const stageExecution = require('../../../../app/api/stage-execution')
@@ -45,7 +46,7 @@ describe('Claim form helper tests', () => {
       }
     }
     const applicationReference = 'testAppRef'
-    const applicationStatus = 'IN CHECK'
+    const applicationStatus = 5
 
     stageExecution.getStageExecutionByApplication.mockResolvedValue([])
 
@@ -86,7 +87,7 @@ describe('Claim form helper tests', () => {
       }
     }
     const applicationReference = 'testAppRef'
-    const applicationStatus = 'IN CHECK'
+    const applicationStatus = 5
 
     stageExecution.getStageExecutionByApplication.mockResolvedValue([])
 
@@ -127,7 +128,7 @@ describe('Claim form helper tests', () => {
       }
     }
     const applicationReference = 'testAppRef'
-    const applicationStatus = 'IN CHECK'
+    const applicationStatus = 5
 
     stageExecution.getStageExecutionByApplication.mockResolvedValue([])
 
@@ -168,7 +169,7 @@ describe('Claim form helper tests', () => {
       }
     }
     const applicationReference = 'testAppRef'
-    const applicationStatus = 'IN CHECK'
+    const applicationStatus = 5
 
     stageExecution.getStageExecutionByApplication.mockResolvedValue([{
       stageConfigurationId: stageConfigId.claimApproveRejectRecommender,
@@ -186,7 +187,7 @@ describe('Claim form helper tests', () => {
     expect(claimFormHelperResult.displayAuthoriseToPayConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayAuthoriseToRejectConfirmationForm).toBeFalsy()
     expect(claimFormHelperResult.displayMoveToInCheckFromHold).toBeFalsy()
-    expect(claimFormHelperResult.subStatus.toUpperCase()).toBe(applicationStatus)
+    expect(claimFormHelperResult.subStatus.toUpperCase()).toBe('IN CHECK')
   })
 
   test.each([
@@ -216,7 +217,7 @@ describe('Claim form helper tests', () => {
       }
     }
     const applicationReference = 'testAppRef'
-    const applicationStatus = 'Recommended to Pay'
+    const applicationStatus = 12
 
     stageExecution.getStageExecutionByApplication.mockResolvedValue([{
       stageConfigurationId: stageConfigId.claimApproveRejectRecommender,
@@ -264,7 +265,7 @@ describe('Claim form helper tests', () => {
       }
     }
     const applicationReference = 'testAppRef'
-    const applicationStatus = 'Recommended to Reject'
+    const applicationStatus = 13
 
     stageExecution.getStageExecutionByApplication.mockResolvedValue([{
       stageConfigurationId: stageConfigId.claimApproveRejectRecommender,
@@ -311,7 +312,7 @@ describe('Claim form helper tests', () => {
       }
     }
     const applicationReference = 'testAppRef'
-    const applicationStatus = 'IN CHECK'
+    const applicationStatus = 5
 
     stageExecution.getStageExecutionByApplication.mockResolvedValue([{
       stageConfigurationId: stageConfigId.claimApproveRejectRecommender,
@@ -366,7 +367,7 @@ describe('Claim form helper tests', () => {
       }
     }
     const applicationReference = 'testAppRef'
-    const applicationStatus = 'IN CHECK'
+    const applicationStatus = 5
 
     stageExecution.getStageExecutionByApplication.mockResolvedValue([{
       stageConfigurationId: stageConfigId.claimApproveRejectRecommender,
@@ -396,14 +397,14 @@ describe('Claim form helper tests', () => {
   })
 
   test.each([
-    ['recommender', 'IN CHECK', 'In check'],
-    ['recommender', 'IN CHECK', 'Recommended to pay'],
-    ['recommender', 'IN CHECK', 'Recommended to reject'],
-    ['authoriser', 'IN CHECK', 'In check'],
-    ['authoriser', 'IN CHECK', 'Recommended to pay'],
-    ['authoriser', 'IN CHECK', 'Recommended to reject'],
-    ['authoriser', 'READY TO PAY', 'Ready to pay'],
-    ['authoriser', 'REJECTED', 'Rejected']
+    ['recommender', 5, 'In check'],
+    ['recommender', 5, 'Recommended to pay'],
+    ['recommender', 5, 'Recommended to reject'],
+    ['authoriser', 5, 'In check'],
+    ['authoriser', 5, 'Recommended to pay'],
+    ['authoriser', 5, 'Recommended to reject'],
+    ['authoriser', 9, 'Ready to pay'],
+    ['authoriser', 10, 'Rejected']
   ])('For role %s - %s valid sub status %s displayed', async (roles, applicationStatus, expectedSubStatus) => {
     const request = {
       query: {
@@ -454,18 +455,18 @@ describe('Claim form helper tests', () => {
     }
 
     const claimFormHelperResult = await claimFormHelper(request, applicationReference, applicationStatus)
-    expect(claimFormHelperResult.subStatus.toUpperCase()).toBe(applicationStatus)
+    expect(claimFormHelperResult.subStatus.toUpperCase()).toBe(formatStatusId(applicationStatus))
   })
 
   test.each([
-    ['recommender', 'ON HOLD'],
-    ['recommender', 'ON HOLD'],
-    ['recommender', 'ON HOLD'],
-    ['authoriser', 'ON HOLD'],
-    ['authoriser', 'ON HOLD'],
-    ['authoriser', 'ON HOLD'],
-    ['authoriser', 'ON HOLD'],
-    ['authoriser', 'ON HOLD']
+    ['recommender', 11],
+    ['recommender', 11],
+    ['recommender', 11],
+    ['authoriser', 11],
+    ['authoriser', 11],
+    ['authoriser', 11],
+    ['authoriser', 11],
+    ['authoriser', 11]
   ])('Move to IN CHECK from ON HOLD For role %s - a valid status displayed', async (roles, applicationStatus) => {
     const request = {
       query: {

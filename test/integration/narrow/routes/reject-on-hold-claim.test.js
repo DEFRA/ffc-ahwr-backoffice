@@ -51,7 +51,8 @@ describe('Reject On Hold (move to In Check) Application test', () => {
           url,
           auth,
           payload: {
-            reference
+            reference,
+            claimOrApplication: 'application'
           }
         }
         const res = await global.__SERVER__.inject(options)
@@ -70,6 +71,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
           url,
           payload: {
             reference,
+            claimOrApplication: 'application',
             rejectOnHoldClaim: 'yes',
             confirm: ['recommendToMoveOnHoldClaim', 'updateIssuesLog'],
             page: 1,
@@ -99,6 +101,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference,
+            claimOrApplication: 'application',
             rejectOnHoldClaim: 'yes',
             confirm: ['recommendToMoveOnHoldClaim', 'updateIssuesLog'],
             page: 1,
@@ -112,6 +115,31 @@ describe('Reject On Hold (move to In Check) Application test', () => {
         expect(res.statusCode).toBe(302)
         expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
       })
+      test.each([
+        [authoriser, 'authoriser'],
+        [administrator, 'authoriser'],
+        [recommender, 'authoriser']
+      ])('Reject claim processed', async (scope, role) => {
+        auth = { strategy: 'session-auth', credentials: { scope: [scope], account: { homeAccountId: 'testId', name: 'admin' } } }
+        const options = {
+          method: 'POST',
+          url,
+          auth,
+          headers: { cookie: `crumb=${crumb}` },
+          payload: {
+            reference,
+            claimOrApplication: 'claim',
+            rejectOnHoldClaim: 'yes',
+            confirm: ['recommendToMoveOnHoldClaim', 'updateIssuesLog'],
+            page: 1,
+            crumb
+          }
+        }
+
+        const res = await global.__SERVER__.inject(options)
+        expect(res.statusCode).toBe(302)
+        expect(res.headers.location).toEqual(`/view-claim/${reference}`)
+      })
 
       test('Reject application invalid reference', async () => {
         auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
@@ -122,6 +150,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference: 123,
+            claimOrApplication: 'application',
             rejectOnHoldClaim: 'yes',
             confirm: ['recommendToMoveOnHoldClaim', 'updateIssuesLog'],
             crumb
@@ -143,6 +172,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference: 123,
+            claimOrApplication: 'application',
             rejectOnHoldClaim: '',
             confirm: ['recommendToMoveOnHoldClaim', 'updateIssuesLog'],
             crumb
@@ -164,6 +194,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference,
+            claimOrApplication: 'application',
             rejectOnHoldClaim: 'yes',
             confirm: ['recommendToMoveOnHoldClaim'],
             crumb
@@ -185,6 +216,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference,
+            claimOrApplication: 'application',
             rejectOnHoldClaim: 'yes',
             confirm: ['recommendToMoveOnHoldClaim', 'updateIssuesLog'],
             crumb
@@ -204,6 +236,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference,
+            claimOrApplication: 'application',
             page: 1,
             crumb
           }
@@ -222,6 +255,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
+          claimOrApplication: 'application',
           page: 1,
           crumb
         }
@@ -229,6 +263,25 @@ describe('Reject On Hold (move to In Check) Application test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
       expect(applications.updateApplicationStatus).not.toHaveBeenCalled()
+    })
+    test('Redirect to view claim with 302 status', async () => {
+      const encodedErrors = 'W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI2NvbmZpcm0tbW92ZS10by1pbi1jaGVjay1wYW5lbCJ9XQ%3D%3D'
+      const options = {
+        method: 'POST',
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
+          claimOrApplication: 'claim',
+          page: 1,
+          crumb
+        }
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(302)
+      expect(applications.updateApplicationStatus).not.toHaveBeenCalled()
+      expect(res.headers.location).toEqual(`/view-claim/${reference}?moveToInCheck=true&errors=${encodedErrors}`)
     })
   })
 
@@ -276,7 +329,8 @@ describe('Reject On Hold (move to In Check) Application test', () => {
           url,
           auth,
           payload: {
-            reference
+            reference,
+            claimOrApplication: 'application'
           }
         }
         const res = await global.__SERVER__.inject(options)
@@ -295,6 +349,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
           url,
           payload: {
             reference,
+            claimOrApplication: 'application',
             rejectOnHoldClaim: 'yes',
             page: 1,
             crumb
@@ -323,6 +378,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference,
+            claimOrApplication: 'application',
             rejectOnHoldClaim: 'yes',
             page: 1,
             crumb
@@ -345,6 +401,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference: 123,
+            claimOrApplication: 'application',
             rejectOnHoldClaim: 'yes',
             crumb
           }
@@ -365,6 +422,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference: 123,
+            claimOrApplication: 'application',
             rejectOnHoldClaim: '',
             crumb
           }
@@ -385,6 +443,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference,
+            claimOrApplication: 'application',
             page: 1,
             crumb
           }
@@ -395,7 +454,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
       })
     })
 
-    test('returns 400 Bad Request', async () => {
+    test('returns 302 Bad Request for application claim', async () => {
       const options = {
         method: 'POST',
         url,
@@ -403,6 +462,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
+          claimOrApplication: 'application',
           page: 1,
           crumb
         }
@@ -410,6 +470,24 @@ describe('Reject On Hold (move to In Check) Application test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
       expect(applications.updateApplicationStatus).not.toHaveBeenCalled()
+    })
+    test('Redirect to view claim with 302 status', async () => {
+      const options = {
+        method: 'POST',
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
+          claimOrApplication: 'claim',
+          page: 1,
+          crumb
+        }
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(302)
+      expect(applications.updateApplicationStatus).not.toHaveBeenCalled()
+      expect(res.headers.location).toEqual(`/view-claim/${reference}`)
     })
   })
 })

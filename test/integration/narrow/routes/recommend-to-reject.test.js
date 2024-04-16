@@ -44,7 +44,7 @@ describe('Recommended To Reject test', () => {
       expect(res.statusCode).toBe(302)
     })
 
-    test('returns 302 when validation fails - no page given', async () => {
+    test('returns 302 when validation fails - no page given for application', async () => {
       const options = {
         method: 'POST',
         url,
@@ -52,6 +52,7 @@ describe('Recommended To Reject test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
+          claimOrApplication: 'application',
           page: 1,
           confirm: 'checkedAgainstChecklist',
           crumb
@@ -63,11 +64,39 @@ describe('Recommended To Reject test', () => {
         errorMessage: '"confirm" must be an array',
         payload: {
           reference: 'AHWR-555A-FD4C',
+          claimOrApplication: 'application',
           page: 1,
           confirm: 'checkedAgainstChecklist'
         }
       })}`)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}`)
+    })
+    test('returns 302 when validation fails - no page given for claim', async () => {
+      const options = {
+        method: 'POST',
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
+          claimOrApplication: 'claim',
+          page: 1,
+          confirm: 'checkedAgainstChecklist',
+          crumb
+        }
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(302)
+      expect(logSpy).toHaveBeenCalledWith(`routes:recommend-to-reject: Error when validating payload: ${JSON.stringify({
+        errorMessage: '"confirm" must be an array',
+        payload: {
+          reference: 'AHWR-555A-FD4C',
+          claimOrApplication: 'claim',
+          page: 1,
+          confirm: 'checkedAgainstChecklist'
+        }
+      })}`)
+      expect(res.headers.location).toEqual(`/view-claim/${reference}?recommendToReject=true&errors=${encodedErrors}`)
     })
 
     test('returns 302 when validation fails - no page given', async () => {
@@ -78,6 +107,7 @@ describe('Recommended To Reject test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
+          claimOrApplication: 'application',
           confirm: 'checkedAgainstChecklist',
           crumb
         }
@@ -88,6 +118,7 @@ describe('Recommended To Reject test', () => {
         errorMessage: '"confirm" must be an array',
         payload: {
           reference: 'AHWR-555A-FD4C',
+          claimOrApplication: 'application',
           confirm: 'checkedAgainstChecklist'
         }
       })}`)
@@ -97,13 +128,13 @@ describe('Recommended To Reject test', () => {
     test.each([
       [recommender, 'recommender'],
       [administrator, 'recommender']
-    ])('Redirects correctly on successful validation', async (scope, role) => {
+    ])('Redirects correctly on successful validation for application', async (scope, role) => {
       auth = { strategy: 'session-auth', credentials: { scope: [scope], account: { homeAccountId: 'testId', name: 'admin' } } }
       const response = [
         { action: 'addStageExecution', data: { applicationReference: reference } },
         { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
       ]
-      processStageActions.mockResolvedValueOnce(response)
+      processStageActions.mockResolvedValue(response)
       const options = {
         method: 'POST',
         url,
@@ -111,6 +142,7 @@ describe('Recommended To Reject test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
+          claimOrApplication: 'application',
           page: 1,
           confirm: ['checkedAgainstChecklist', 'sentChecklist'],
           crumb
@@ -122,6 +154,62 @@ describe('Recommended To Reject test', () => {
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
+    test.each([
+      [recommender, 'recommender'],
+      [administrator, 'recommender']
+    ])('Redirects correctly on successful validation for claim', async (scope, role) => {
+      auth = { strategy: 'session-auth', credentials: { scope: [scope], account: { homeAccountId: 'testId', name: 'admin' } } }
+      const response = [
+        { action: 'addStageExecution', data: { applicationReference: reference } },
+        { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
+      ]
+      processStageActions.mockResolvedValue(response)
+      const options = {
+        method: 'POST',
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
+          claimOrApplication: 'claim',
+          page: 1,
+          confirm: ['checkedAgainstChecklist', 'sentChecklist'],
+          crumb
+        }
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(302)
+      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommend to reject', false)
+      expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
+      expect(res.headers.location).toEqual(`/view-claim/${reference}`)
+    })
+    test.each([
+      [recommender, 'recommender'],
+      [administrator, 'recommender']
+    ])('Redirects correctly on successful validation for claim', async (scope, role) => {
+      auth = { strategy: 'session-auth', credentials: { scope: [], account: { homeAccountId: 'testId', name: 'admin' } } }
+      const response = [
+        { action: 'addStageExecution', data: { applicationReference: reference } },
+        { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
+      ]
+      processStageActions.mockResolvedValue(response)
+      const options = {
+        method: 'POST',
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
+          claimOrApplication: 'claim',
+          page: 1,
+          confirm: ['checkedAgainstChecklist', 'sentChecklist'],
+          crumb
+        }
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(500)
+      expect(Boom.internal).toHaveBeenCalledWith('User must be a recommender or an admin')
+    })
 
     test.each([
       [recommender, 'recommender'],
@@ -132,7 +220,7 @@ describe('Recommended To Reject test', () => {
         { action: 'addStageExecution', data: { applicationReference: reference } },
         { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
       ]
-      processStageActions.mockResolvedValueOnce(response)
+      processStageActions.mockResolvedValue(response)
       const options = {
         method: 'POST',
         url,
@@ -140,6 +228,7 @@ describe('Recommended To Reject test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
+          claimOrApplication: 'application',
           confirm: ['checkedAgainstChecklist', 'sentChecklist'],
           crumb
         }
@@ -160,6 +249,7 @@ describe('Recommended To Reject test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
+          claimOrApplication: 'application',
           page: 1,
           confirm: ['sentChecklist'],
           crumb
@@ -179,6 +269,7 @@ describe('Recommended To Reject test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference: 123,
+          claimOrApplication: 'application',
           confirm: ['recommendToReject', 'sentChecklist'],
           crumb
         }
@@ -192,7 +283,7 @@ describe('Recommended To Reject test', () => {
 
     test('Returns 500 on error when processing stage actions', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
-      processStageActions.mockRejectedValueOnce(new Error('Error when processing stage actions'))
+      processStageActions.mockRejectedValue(new Error('Error when processing stage actions'))
       const options = {
         method: 'POST',
         url,
@@ -200,6 +291,7 @@ describe('Recommended To Reject test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
+          claimOrApplication: 'application',
           page: 1,
           confirm: ['checkedAgainstChecklist', 'sentChecklist'],
           crumb

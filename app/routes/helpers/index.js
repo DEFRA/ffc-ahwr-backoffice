@@ -27,7 +27,7 @@ function redirectRejectWithError (h, claimOrApplication, reference, page, error,
 
 function redirectToViewApplication (h, claimOrApplication, reference, page) {
   if (claimOrApplication === 'claim') {
-    return h.redirect(`/view-claim/${reference}}`)
+    return h.redirect(`/view-claim/${reference}`)
   } else {
     return h.redirect(`/view-application/${reference}?page=${page}`)
   }
