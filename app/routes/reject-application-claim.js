@@ -40,7 +40,7 @@ module.exports = {
       failAction: async (request, h, error) => {
         failActionConsoleLog(request, error, 'reject-application-claim')
         const errors = await failActionTwoCheckboxes(error, 'reject-claim-panel')
-        return redirectRejectWithError(h, request.payload.claimOrApplication, request.payload.reference, request?.payload?.page || 1, errors, 'failed validation for approve-application-claim')
+        return redirectRejectWithError(h, request.payload.claimOrApplication, request.payload.reference, request?.payload?.page, errors, 'failed validation for approve-application-claim')
       }
     },
     handler: async (request, h) => {
@@ -58,7 +58,7 @@ module.exports = {
             false
           )
           await crumbCache.generateNewCrumb(request, h)
-          return redirectToViewApplication(h, request.payload.claimOrApplication, request.payload.reference, request?.payload?.page || 1)
+          return redirectToViewApplication(h, request.payload.claimOrApplication, request.payload.reference, request?.payload?.page)
         } catch (error) {
           console.error(`routes:reject-application-claim: Error when processing request: ${error.message}`)
           throw Boom.internal(error.message)
@@ -73,7 +73,7 @@ module.exports = {
           }
           await crumbCache.generateNewCrumb(request, h)
         }
-        return redirectToViewApplication(h, request.payload.claimOrApplication, request.payload.reference, request?.payload?.page || 1)
+        return redirectToViewApplication(h, request.payload.claimOrApplication, request.payload.reference, request?.payload?.page)
       }
     }
   }

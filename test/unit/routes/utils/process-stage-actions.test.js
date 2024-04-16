@@ -68,6 +68,19 @@ describe('Process stage action test', () => {
       { action: 'Updated stage execution', response: 'stage-execution-row' }
     ])
   })
+  test('Process all actions for claim', async () => {
+    const response = await processStageActions({
+      payload: {
+        reference: 'AHWR-555A-FD4C',
+        claimOrApplication: 'claim'
+      }
+    }, mockRole, mockStage, 'Recommended to pay', true)
+    expect(response).toEqual([
+      { action: 'Added stage execution', stageExecutionRow: 'stage-execution-row' },
+      { action: 'Processed claim', response: false },
+      { action: 'Updated stage execution', response: 'stage-execution-row' }
+    ])
+  })
 
   test('Role not found should log error and re-throw it', async () => {
     await expect(

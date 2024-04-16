@@ -174,6 +174,13 @@ describe('View claim test', () => {
     }
   ]
 
+  jest.mock('../../../../app/config', () => ({
+    ...jest.requireActual('../../../../app/config'),
+    rbac: {
+      enabled: false
+    }
+  }))
+
   afterEach(async () => {
     jest.clearAllMocks()
   })
@@ -335,6 +342,24 @@ describe('View claim test', () => {
 
       // Summary list rows expect to show only application data or if type is provided show application data and type of review
       expect($('.govuk-summary-list__row').length).toEqual(rows)
+    })
+    test('returns 200 whitout claim data', async () => {
+      const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: 'test user' } }
+      const options = {
+        method: 'GET',
+        url: `${url}/AHWR-0000-4444?errors=error`,
+        auth
+      }
+
+      getClaim.mockReturnValue({ ...claims[0], statusId: 5, data: undefined, type: 'R' })
+      getApplication.mockReturnValue({ ...application, data: { ...application.data, organisation: undefined } })
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      expect(res.statusCode).toBe(200)
+
+      expect($('.govuk-summary-list__row').length).toEqual(6)
     })
     test('returns 200 with endemics claim and pigs species', async () => {
       const options = {
