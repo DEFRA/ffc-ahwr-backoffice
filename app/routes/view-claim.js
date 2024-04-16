@@ -8,6 +8,7 @@ const { formatStatusId } = require('./../lib/display-helper')
 const { livestockTypes, claimType } = require('./../constants/claim')
 const { sheepTestTypes, sheepTestResultsType } = require('./../constants/sheep-test-types')
 const { administrator, authoriser, processor, recommender, user } = require('../auth/permissions')
+const setAllClaimToInCheck = require('./utils/all-claims-in-check')
 
 const backLink = (applicationReference) => {
   return `/${claims}/${applicationReference}`
@@ -104,7 +105,7 @@ module.exports = {
       ]
 
       return h.view('view-claim', {
-        status: { type: formatStatusId(claim.statusId), tagClass: getStyleClassByStatus(formatStatusId(claim.statusId)) },
+        status: { type: formatStatusId(setAllClaimToInCheck(claim.statusId)), tagClass: getStyleClassByStatus(formatStatusId(setAllClaimToInCheck(claim.statusId))) },
         applicationSummaryDetails,
         claimSummaryDetails: claimSummaryDetails(organisation, data, type),
         reference,

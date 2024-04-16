@@ -9,6 +9,7 @@ const { getClaimSort, setClaimSort } = require('../session')
 const { claimSort } = require('../session/keys')
 const getStyleClassByStatus = require('../constants/status')
 const { serviceUri } = require('../config')
+const setAllClaimToInCheck = require('./utils/all-claims-in-check')
 
 const pageUrl = '/claims/{reference}'
 
@@ -113,7 +114,7 @@ module.exports = [{
             }
           },
           {
-            html: `<span class="govuk-tag ${getStyleClassByStatus(formatStatusId(claim.statusId))}">${formatStatusId(claim.statusId)}</span>`,
+            html: `<span class="govuk-tag ${getStyleClassByStatus(formatStatusId(setAllClaimToInCheck(claim.statusId)))}">${formatStatusId(setAllClaimToInCheck(claim.statusId))}</span>`,
             attributes: {
               'data-sort-value': `${claim.statusId}`
             }
