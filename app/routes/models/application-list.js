@@ -14,10 +14,18 @@ const viewModel = (request, page) => {
 const getApplicationTableHeader = (sortField) => {
   const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
   const headerColumns = [{
-    text: 'Agreement number'
+    text: 'Agreement number',
+    attributes: {
+      'aria-sort': sortField && sortField.field === 'Reference' ? direction : 'none',
+      'data-url': '/applications/sort/Reference'
+    }
   },
   {
-    text: 'Organisation'
+    text: 'Organisation',
+    attributes: {
+      'aria-sort': sortField && sortField.field === 'Organisation' ? direction : 'none',
+      'data-url': '/applications/sort/Organisation'
+    }
   }]
   headerColumns.push({
     text: 'SBI number',
@@ -28,7 +36,7 @@ const getApplicationTableHeader = (sortField) => {
     format: 'numeric'
   })
   headerColumns.push({
-    text: 'Apply date',
+    text: 'Agreement date',
     attributes: {
       'aria-sort': sortField && sortField.field === 'Apply date' ? direction : 'none',
       'data-url': '/applications/sort/Apply date'
@@ -65,8 +73,18 @@ async function createModel (request, page) {
     const applications = apps.applications.map(n => {
       statusClass = getStyleClassByStatus(n.status.status)
       return [
-        { text: n.reference },
-        { text: n.data?.organisation?.name },
+        {
+          text: n.reference,
+          attributes: {
+            'data-sort-value': n.reference
+          }
+        },
+        {
+          text: n.data?.organisation?.name,
+          attributes: {
+            'data-sort-value': `${n.data?.organisation?.name}`
+          }
+        },
         {
           text: n.data?.organisation?.sbi,
           format: 'numeric',
@@ -87,7 +105,11 @@ async function createModel (request, page) {
             'data-sort-value': `${n.status.status}`
           }
         },
-        { html: `<a href="${serviceUri}/view-application/${n.reference}?page=${page}">View details</a>` }
+        {
+          html: n.type === 'EE'
+            ? `<a href="${serviceUri}/claims/${n.reference}">View claims</a>`
+            : `<a href="${serviceUri}/view-application/${n.reference}?page=${page}">View details</a>`
+        }
       ]
     })
     const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
