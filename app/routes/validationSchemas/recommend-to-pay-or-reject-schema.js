@@ -2,6 +2,7 @@ const Joi = require('joi')
 
 const recommendToPayOrRejectSchema =
   Joi.object({
+    claimOrApplication: Joi.string().valid('claim', 'application').required(),
     confirm: Joi.array().items(
       Joi.string().valid('checkedAgainstChecklist').required(),
       Joi.string().valid('sentChecklist').required()

@@ -1,12 +1,15 @@
 const { updateStageExecution, addStageExecution } = require('../../api/stage-execution')
 const { getAllStageConfigurations } = require('../../api/stage-configuration')
 const { processApplicationClaim } = require('../../api/applications')
+const { updateClaimStatus } = require('../../api/claims')
+const { status } = require('../../constants/status')
 const getUser = require('../../auth/get-user')
 const applicationStageActions = require('../../constants/application-stage-execution-actions')
 
 const processStageActions = async (request, role, stage, action, isClaimToBePaid) => {
   try {
     console.log(`processStageActions - Processing stage actions for ${JSON.stringify({ payload: request.payload, role, stage, action, isClaimToBePaid })}`)
+    const newStatus = isClaimToBePaid ? status.READY_TO_PAY : status.REJECTED
     const userName = getUser(request).username
     const stageConfigurations = await getAllStageConfigurations()
     role = role.charAt(0).toUpperCase() + role.slice(1)
@@ -25,6 +28,7 @@ const processStageActions = async (request, role, stage, action, isClaimToBePaid
       switch (stageAction) {
         case applicationStageActions.addStageExecutionEntry:
           stageExecutionRow = await addStageExecution({
+            claimOrApplication: request.payload.claimOrApplication,
             applicationReference: request.payload.reference,
             stageConfigurationId: stepId,
             executedAt: new Date(),
@@ -36,10 +40,14 @@ const processStageActions = async (request, role, stage, action, isClaimToBePaid
           console.log(`processStageActions - Added stage execution ${JSON.stringify(stageExecutionRow)} for stage action ${stageAction}`)
           results.push({ action: 'Added stage execution', stageExecutionRow })
           break
-        case applicationStageActions.processApplicationClaim:
-          results.push({ action: 'Processed claim', response: await processApplicationClaim(request.payload.reference, userName, isClaimToBePaid) })
+        case applicationStageActions.processApplicationClaim: {
+          const response = request.payload.claimOrApplication === 'application'
+            ? await processApplicationClaim(request.payload.reference, userName, isClaimToBePaid)
+            : await updateClaimStatus(request.payload.reference, userName, newStatus)
+          results.push({ action: 'Processed claim', response })
           console.log(`processStageActions - Processed claim ${JSON.stringify(request.payload.reference, userName, isClaimToBePaid)} for stage action ${stageAction}`)
           break
+        }
         case applicationStageActions.updateStageExecutionEntry:
           results.push({ action: 'Updated stage execution', response: await updateStageExecution(stageExecutionRow.id) })
           console.log(`processStageActions - Updated stage execution ${stageExecutionRow.id} for stage action ${stageAction}`)

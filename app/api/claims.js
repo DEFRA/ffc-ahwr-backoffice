@@ -29,7 +29,30 @@ async function getClaims (reference) {
   }
 }
 
+async function updateClaimStatus (reference, user, status) {
+  const url = `${applicationApiUri}/claim/update-by-reference`
+  const options = {
+    payload: {
+      reference,
+      status,
+      user
+    },
+    json: true
+  }
+  try {
+    const response = await Wreck.put(url, options)
+    if (response.res.statusCode !== 200) {
+      throw new Error(response.res)
+    }
+    return true
+  } catch (err) {
+    console.log(err)
+    return false
+  }
+}
+
 module.exports = {
   getClaims,
-  getClaim
+  getClaim,
+  updateClaimStatus
 }

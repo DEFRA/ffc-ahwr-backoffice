@@ -7,7 +7,7 @@ const { getClaims } = require('../api/claims')
 const { formatedDateToUk, formatTypeOfVisit, formatSpecies, formatStatusId } = require('../lib/display-helper')
 const { getClaimSort, setClaimSort } = require('../session')
 const { claimSort } = require('../session/keys')
-const getStyleClassByStatus = require('../constants/status')
+const { getStyleClassByStatus } = require('../constants/status')
 const { serviceUri } = require('../config')
 
 const pageUrl = '/claims/{reference}'

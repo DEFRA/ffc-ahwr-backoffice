@@ -2,7 +2,8 @@ const processStageActions = require('../../../../app/routes/utils/process-stage-
 
 const mockRequest = {
   payload: {
-    reference: 'AHWR-555A-FD4C'
+    reference: 'AHWR-555A-FD4C',
+    claimOrApplication: 'application'
   }
 }
 const mockStepId = 1
@@ -51,6 +52,32 @@ describe('Process stage action test', () => {
     expect(response).toEqual([
       { action: 'Added stage execution', stageExecutionRow: 'stage-execution-row' },
       { action: 'Processed claim', response: 'claim-processed' },
+      { action: 'Updated stage execution', response: 'stage-execution-row' }
+    ])
+  })
+  test('Process all actions for claim', async () => {
+    const response = await processStageActions({
+      payload: {
+        reference: 'AHWR-555A-FD4C',
+        claimOrApplication: 'claim'
+      }
+    }, mockRole, mockStage, 'Recommended to pay', isClaimToBePaid)
+    expect(response).toEqual([
+      { action: 'Added stage execution', stageExecutionRow: 'stage-execution-row' },
+      { action: 'Processed claim', response: false },
+      { action: 'Updated stage execution', response: 'stage-execution-row' }
+    ])
+  })
+  test('Process all actions for claim', async () => {
+    const response = await processStageActions({
+      payload: {
+        reference: 'AHWR-555A-FD4C',
+        claimOrApplication: 'claim'
+      }
+    }, mockRole, mockStage, 'Recommended to pay', true)
+    expect(response).toEqual([
+      { action: 'Added stage execution', stageExecutionRow: 'stage-execution-row' },
+      { action: 'Processed claim', response: false },
       { action: 'Updated stage execution', response: 'stage-execution-row' }
     ])
   })

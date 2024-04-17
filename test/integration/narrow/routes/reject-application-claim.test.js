@@ -52,7 +52,8 @@ describe('Reject Application test', () => {
           url,
           auth,
           payload: {
-            reference
+            reference,
+            claimOrApplication: 'application'
           }
         }
         const res = await global.__SERVER__.inject(options)
@@ -71,6 +72,7 @@ describe('Reject Application test', () => {
           url,
           payload: {
             reference,
+            claimOrApplication: 'application',
             confirm: ['rejectClaim', 'sentChecklist'],
             page: 1,
             crumb
@@ -104,6 +106,7 @@ describe('Reject Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference,
+            claimOrApplication: 'application',
             confirm: ['rejectClaim', 'sentChecklist'],
             page: 1,
             crumb
@@ -127,7 +130,26 @@ describe('Reject Application test', () => {
         expect(res.statusCode).toBe(302)
         expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
       })
+      test('Reject claim processed', async () => {
+        auth = { strategy: 'session-auth', credentials: { scope: [], account: { homeAccountId: 'testId', name: 'admin' } } }
+        const options = {
+          method: 'POST',
+          url,
+          auth,
+          headers: { cookie: `crumb=${crumb}` },
+          payload: {
+            reference,
+            claimOrApplication: 'claim',
+            confirm: ['rejectClaim', 'sentChecklist'],
+            page: 1,
+            crumb
+          }
+        }
 
+        const res = await global.__SERVER__.inject(options)
+
+        expect(res.statusCode).toBe(500)
+      })
       test('Reject application invalid reference', async () => {
         auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
         const options = {
@@ -137,6 +159,7 @@ describe('Reject Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference: 123,
+            claimOrApplication: 'application',
             confirm: ['rejectClaim', 'sentChecklist'],
             crumb
           }
@@ -156,6 +179,7 @@ describe('Reject Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference,
+            claimOrApplication: 'application',
             confirm: ['sentChecklist'],
             page: 1,
             crumb
@@ -176,6 +200,7 @@ describe('Reject Application test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
+          claimOrApplication: 'application',
           page: 1,
           crumb
         }
@@ -184,6 +209,24 @@ describe('Reject Application test', () => {
       expect(processStageActions).not.toHaveBeenCalled()
       expect(res.statusCode).toBe(302)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&reject=true&errors=${encodedErrors}`)
+    })
+    test('retuns 400 Bad Request for claim', async () => {
+      const options = {
+        method: 'POST',
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
+          claimOrApplication: 'claim',
+          page: 1,
+          crumb
+        }
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(processStageActions).not.toHaveBeenCalled()
+      expect(res.statusCode).toBe(302)
+      expect(res.headers.location).toEqual(`/view-claim/${reference}?reject=true&errors=${encodedErrors}`)
     })
   })
 
@@ -233,7 +276,8 @@ describe('Reject Application test', () => {
           url,
           auth,
           payload: {
-            reference
+            reference,
+            claimOrApplication: 'application'
           }
         }
         const res = await global.__SERVER__.inject(options)
@@ -252,6 +296,7 @@ describe('Reject Application test', () => {
           url,
           payload: {
             reference,
+            claimOrApplication: 'application',
             rejectClaim: 'yes',
             page: 1,
             crumb
@@ -277,6 +322,7 @@ describe('Reject Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference,
+            claimOrApplication: 'application',
             rejectClaim: 'yes',
             page: 1,
             crumb
@@ -288,6 +334,25 @@ describe('Reject Application test', () => {
         expect(res.statusCode).toBe(302)
         expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
       })
+      test('Reject claim processed', async () => {
+        auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+        const options = {
+          method: 'POST',
+          url,
+          auth,
+          headers: { cookie: `crumb=${crumb}` },
+          payload: {
+            reference,
+            claimOrApplication: 'claim',
+            rejectClaim: 'yes',
+            page: 1,
+            crumb
+          }
+        }
+        const res = await global.__SERVER__.inject(options)
+        expect(res.statusCode).toBe(302)
+        expect(res.headers.location).toEqual(`/view-claim/${reference}`)
+      })
 
       test('Reject application claim not processed', async () => {
         const options = {
@@ -297,6 +362,7 @@ describe('Reject Application test', () => {
           headers: { cookie: `crumb=${crumb}` },
           payload: {
             reference,
+            claimOrApplication: 'application',
             rejectClaim: 'no',
             page: 1,
             crumb

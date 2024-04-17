@@ -174,6 +174,13 @@ describe('View claim test', () => {
     }
   ]
 
+  jest.mock('../../../../app/config', () => ({
+    ...jest.requireActual('../../../../app/config'),
+    rbac: {
+      enabled: false
+    }
+  }))
+
   afterEach(async () => {
     jest.clearAllMocks()
   })
@@ -249,9 +256,9 @@ describe('View claim test', () => {
       expect($('.govuk-summary-list__key').eq(7).text()).toMatch('Type of review')
       expect($('.govuk-summary-list__value').eq(7).text()).toMatch('Annual health and welfare review')
       expect($('.govuk-summary-list__key').eq(8).text()).toMatch('Date of visit')
-      expect($('.govuk-summary-list__value').eq(8).text()).toMatch('22 March 2024')
+      expect($('.govuk-summary-list__value').eq(8).text()).toMatch('22/03/2024')
       expect($('.govuk-summary-list__key').eq(9).text()).toMatch('Date of testing')
-      expect($('.govuk-summary-list__value').eq(9).text()).toMatch('22 March 2024')
+      expect($('.govuk-summary-list__value').eq(9).text()).toMatch('22/03/2024')
       expect($('.govuk-summary-list__key').eq(10).text()).toMatch('51 or more pigs')
       expect($('.govuk-summary-list__value').eq(10).text()).toMatch('Yes')
       expect($('.govuk-summary-list__key').eq(11).text()).toMatch("Vet's name")
@@ -291,9 +298,9 @@ describe('View claim test', () => {
       expect($('.govuk-summary-list__key').eq(7).text()).toMatch('Type of review')
       expect($('.govuk-summary-list__value').eq(7).text()).toMatch('Endemic disease follow-ups')
       expect($('.govuk-summary-list__key').eq(8).text()).toMatch('Date of visit')
-      expect($('.govuk-summary-list__value').eq(8).text()).toMatch('22 March 2024')
+      expect($('.govuk-summary-list__value').eq(8).text()).toMatch('22/03/2024')
       expect($('.govuk-summary-list__key').eq(9).text()).toMatch('Date of testing')
-      expect($('.govuk-summary-list__value').eq(9).text()).toMatch('22 March 2024')
+      expect($('.govuk-summary-list__value').eq(9).text()).toMatch('22/03/2024')
       expect($('.govuk-summary-list__key').eq(10).text()).toMatch('21 or more sheep')
       expect($('.govuk-summary-list__value').eq(10).text()).toMatch('Yes')
       expect($('.govuk-summary-list__key').eq(11).text()).toMatch("Vet's name")
@@ -335,6 +342,25 @@ describe('View claim test', () => {
 
       // Summary list rows expect to show only application data or if type is provided show application data and type of review
       expect($('.govuk-summary-list__row').length).toEqual(rows)
+    })
+    test('returns 200 whitout claim data', async () => {
+      const encodedErrors = 'W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI3JlamVjdC1jbGFpbS1wYW5lbCJ9XQ%3D%3D'
+      const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: 'test user' } }
+      const options = {
+        method: 'GET',
+        url: `${url}/AHWR-0000-4444?errors=${encodedErrors}`,
+        auth
+      }
+
+      getClaim.mockReturnValue({ ...claims[0], statusId: 5, data: undefined, type: 'R' })
+      getApplication.mockReturnValue({ ...application, data: { ...application.data, organisation: undefined } })
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      expect(res.statusCode).toBe(200)
+
+      expect($('.govuk-summary-list__row').length).toEqual(6)
     })
     test('returns 200 with endemics claim and pigs species', async () => {
       const options = {

@@ -1,4 +1,4 @@
-{% macro viewApproveClaimConfirmationForm(applicationId, page, crumb) %}
+{% macro viewApproveClaimConfirmationForm(claimOrApplication, reference, page, crumb) %}
   <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left">
     <h1 class="govuk-panel__title-s govuk-!-font-size-36 govuk-!-margin-top-1">Are you sure you want to approve this claim?</h1>
     <form method="POST" autocomplete="off" novalidate="novalidate" action="/approve-application-claim" id="approveClaimForm">
@@ -11,7 +11,8 @@
             If the claim is approved it will be ready to pay.
         </strong>
         </div>
-      <input type="hidden" name="reference" value="{{ applicationId }}" />
+      <input type="hidden" name="claimOrApplication" value="{{ claimOrApplication }}" />
+      <input type="hidden" name="reference" value="{{ reference }}" />
       <input type="hidden" name="page" value="{{ page }}" />
       <input type="hidden" name="crumb" value="{{crumb}}"/>
     </form>

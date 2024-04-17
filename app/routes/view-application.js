@@ -3,11 +3,11 @@ const Joi = require('joi')
 const boom = require('@hapi/boom')
 const { getApplication, getApplicationHistory, getApplicationEvents } = require('../api/applications')
 const { administrator, processor, user, recommender, authoriser } = require('../auth/permissions')
-const getStyleClassByStatus = require('../constants/status')
+const { getStyleClassByStatus } = require('../constants/status')
 const ViewModel = require('./models/view-application')
 const { upperFirstLetter } = require('../lib/display-helper')
 const mapAuth = require('../auth/map-auth')
-const claimHelper = require('./utils/claim-form-helper')
+const claimFormHelper = require('./utils/claim-form-helper')
 const rbacEnabled = require('../config').rbac.enabled
 const applicationStatus = require('../constants/application-status')
 const checkboxErrors = require('./utils/checkbox-errors')
@@ -70,7 +70,7 @@ module.exports = {
         subStatus,
         displayMoveToInCheckFromHold,
         displayOnHoldConfirmationForm
-      } = await claimHelper(request, request.params.reference, application.status.status)
+      } = await claimFormHelper(request, request.params.reference, application.statusId)
 
       const errors = request.query.errors
         ? JSON.parse(Buffer.from(request.query.errors, 'base64').toString('utf8'))
@@ -83,7 +83,7 @@ module.exports = {
       }
 
       return h.view('view-application', {
-        applicationId: application.reference,
+        reference: application.reference,
         status,
         statusClass,
         organisationName: application?.data?.organisation?.name,

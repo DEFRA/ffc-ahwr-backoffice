@@ -25,6 +25,7 @@ module.exports = {
         await updateApplicationStatus(request.payload.reference, userName, applicationStatus.withdrawn)
         await crumbCache.generateNewCrumb(request, h)
       }
+
       return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
     }
   }

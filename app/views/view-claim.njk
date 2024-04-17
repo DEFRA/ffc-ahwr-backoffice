@@ -1,4 +1,14 @@
 {% extends './layouts/layout.njk' %}
+{% from "./macros/claim-confirmation-form.njk" import viewClaimConfirmationForm %}
+{% from "./macros/approve-claim-confirmation-form.njk" import viewApproveClaimConfirmationForm %}
+{% from "./macros/reject-claim-confirmation-form.njk" import viewRejectClaimConfirmationForm %}
+{% from "./macros/recommend-form.njk" import viewRecommendForm %}
+{% from "./macros/recommend-confirmation-form.njk" import viewRecommendConfirmationForm %}
+{% from "./macros/view-authorise-or-reject-form.njk" import viewAuthoriseOrRejectForm %}
+{% from "./macros/view-authorise-payment-confirm-form.njk" import viewAuthorisePaymentConfirmForm %}
+{% from "./macros/view-reject-claim-confirm-form.njk" import viewRejectClaimConfirmForm %}
+{% from "./macros/move-claim-to-in-check-confirmation-form.njk" import viewMoveClaimToInCheckConfirmationForm %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% block pageTitle %}
   {{ siteTitle }} - View Claim {% endblock %}
@@ -16,11 +26,75 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      {% if errors.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors
+        }) }}
+      {% endif %}
+
       <h1 class="govuk-caption-l govuk-!-margin-bottom-3">Claim number: {{reference}}</h1>
-      <h1 class="govuk-heading-l govuk-!-margin-bottom-7">{{title}} <span class="govuk-tag {{ status.tagClass }}">{{ status.type }}</span></h1>
+      <h1 class="govuk-heading-l govuk-!-margin-bottom-7">{{ title }} <span class="govuk-tag {{ status.tagClass }}">{{ status.capitalisedtype }}</span></h1>
+      
       {{ govukSummaryList({ rows: applicationSummaryDetails }) }}
+
+      {% if approveClaimConfirmationForm %}
+        {{ viewApproveClaimConfirmationForm('claim', reference, page, crumb) }}
+      {% endif %}
+      {% if rejectClaimConfirmationForm %}
+        {{ viewRejectClaimConfirmationForm('claim', reference, page, crumb) }}
+      {% endif %}
+      {% if recommendData != false %}
+        {{ viewRecommendConfirmationForm('claim', reference, page, crumb, recommendData) }}
+      {% endif %}
+      {% if recommendToReject.display %}
+        {{ viewRecommendToRejectConfirmationForm('claim', reference, page, crumb, recommendToReject.errorMessage) }}
+      {% endif %}
+      {% if authorisePaymentConfirmForm.display %}
+        {{ viewAuthorisePaymentConfirmForm('claim', reference, page, crumb, authorisePaymentConfirmForm.errorMessage) }}
+      {% endif %}
+      {% if rejectClaimConfirmForm.display %}
+        {{ viewRejectClaimConfirmForm('claim', reference, page, crumb, rejectClaimConfirmForm.errorMessage) }}
+      {% endif %}
+      {% if onHoldConfirmationForm.display %}
+        {{ viewMoveClaimToInCheckConfirmationForm('claim', reference, page, crumb, onHoldConfirmationForm.errorMessage) }}
+      {% endif %}
+
       {% set claimHTML %}
-      {{ govukSummaryList({ rows: claimSummaryDetails }) }}
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-5">{{ status.normalType }}</h1>
+        {{ govukSummaryList({ rows: claimSummaryDetails }) }}
+        {% if displayMoveToInCheckFromHold %}
+          <div class="govuk-body govuk-!-text-align-left" id="move-to-in-check">
+            <p class="govuk-body">If you recommend this claim for a full verification check, move it to ‘in check’.</p>
+            <a class="govuk-button govuk-!-margin-bottom-4" role="button" href="/view-claim/{{ reference }}?moveToInCheck=true" draggable="false" data-module="govuk-button">
+              Move claim to 'in check'
+            </a>
+            <p class="govuk-body">If no further checks are required, you do not need to do anything. The claim will automatically move to ‘ready to pay’.</p>
+          </div>
+        {% endif %}
+      {% endset -%}
+      {% set historyHTML %}
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-5">History</h1>
+        {# TODO Actions should be assign to the rows property #}
+        {{ govukTable({
+            firstCellIsHeader: true,
+            head: [
+              {
+                text: "Date"
+              },
+              {
+                text: "Time"
+              },
+              {
+                text: "Action"
+              },
+              {
+                text: "User"
+              }
+            ],
+            rows:[]
+          })
+        }}
       {% endset -%}
       {{ govukTabs({
           items: [
@@ -28,19 +102,30 @@
               label: "Claim",
               id: "claim",
               panel: {
-                  html: claimHTML
+                html: claimHTML
               }
             },
             {
               label: "History",
               id: "history",
               panel: {
-                  html: historyHTML
+                html: historyHTML
               }
             }
           ]
         }) 
       }}
+      
+      {% if claimConfirmationForm %}
+        {{ viewClaimConfirmationForm('claim', reference, page, crumb) }}
+      {% endif %}
+      {% if recommendForm %}
+        {{ viewRecommendForm('claim', reference, page, crumb) }}
+      {% endif %}
+      {% if authoriseOrRejectForm.display %}
+        {{ viewAuthoriseOrRejectForm('claim', reference, page, crumb, authoriseOrRejectForm.displayAuthorisePaymentButton) }}
+      {% endif %}
+
     </div>
   </div>
   {%endblock%}

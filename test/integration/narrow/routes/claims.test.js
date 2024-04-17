@@ -109,6 +109,34 @@ describe('Claims test', () => {
       expect($('th[aria-sort]')[4].attribs['data-url']).toContain('status')
     })
 
+    test.each([
+      { field: 'claim number', direction: 'ASC' },
+      { field: 'type of visit', direction: 'ASC' },
+      { field: 'species', direction: 'ASC' },
+      { field: 'claim date', direction: 'ASC' },
+      { field: 'status', direction: 'ASC' },
+      { field: 'claim number', direction: 'DESC' },
+      { field: 'type of visit', direction: 'DESC' },
+      { field: 'species', direction: 'DESC' },
+      { field: 'claim date', direction: 'DESC' },
+      { field: 'status', direction: 'DESC' }
+    ])('returns table in correct $direction sort order on field $field', async ({ field, direction }) => {
+      session.getClaimSort.mockReturnValueOnce({ field, direction })
+
+      const options = {
+        method: 'GET',
+        url,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      const $ = cheerio.load(res.payload)
+      expect($('title').text()).toContain('Administration - My Farm')
+      expect($('h2.govuk-heading-l').text()).toContain('My Farm')
+      expectPhaseBanner.ok($)
+    })
+
     test('returns 200 sort endpoint', async () => {
       const options = {
         method: 'GET',
