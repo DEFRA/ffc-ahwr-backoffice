@@ -149,6 +149,43 @@ describe('/approve-application-claim', () => {
         expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
       })
 
+      test.each([
+        [authoriser, 'authoriser'],
+        [administrator, 'authoriser']
+      ])('Approve application claim processed', async (scope, role) => {
+        auth = { strategy: 'session-auth', credentials: { scope: [scope], account: { homeAccountId: 'testId', name: 'admin' } } }
+        const options = {
+          method: 'POST',
+          url,
+          auth,
+          headers: { cookie: `crumb=${crumb}` },
+          payload: {
+            reference,
+            claimOrApplication: 'claim',
+            confirm: ['approveClaim', 'sentChecklist'],
+            page: 1,
+            crumb
+          }
+        }
+        const response = [
+          { action: 'addStageExecution', data: { applicationReference: reference } },
+          { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
+        ]
+        processStageActions.mockResolvedValueOnce(response)
+
+        const res = await global.__SERVER__.inject(options)
+
+        expect(processStageActions).toHaveBeenCalledWith(
+          expect.anything(),
+          role,
+          'Claim Approve/Reject',
+          'Paid',
+          true
+        )
+        expect(res.statusCode).toBe(302)
+        expect(res.headers.location).toEqual(`/view-claim/${reference}`)
+      })
+
       test('Approve application claim not processed', async () => {
         const options = {
           method: 'POST',
@@ -205,6 +242,24 @@ describe('/approve-application-claim', () => {
         expect(processStageActions).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
         expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&approve=true&errors=${encodedErrors}`)
+      })
+      test('retuns 400 Bad Request for claim', async () => {
+        const options = {
+          method: 'POST',
+          url,
+          auth,
+          headers: { cookie: `crumb=${crumb}` },
+          payload: {
+            reference,
+            claimOrApplication: 'claim',
+            page: 1,
+            crumb
+          }
+        }
+        const res = await global.__SERVER__.inject(options)
+        expect(processStageActions).not.toHaveBeenCalled()
+        expect(res.statusCode).toBe(302)
+        expect(res.headers.location).toEqual(`/view-claim/${reference}?approve=true&errors=${encodedErrors}`)
       })
     })
   })

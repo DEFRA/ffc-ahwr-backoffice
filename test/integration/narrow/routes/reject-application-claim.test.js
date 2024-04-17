@@ -210,6 +210,24 @@ describe('Reject Application test', () => {
       expect(res.statusCode).toBe(302)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&reject=true&errors=${encodedErrors}`)
     })
+    test('retuns 400 Bad Request for claim', async () => {
+      const options = {
+        method: 'POST',
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
+          claimOrApplication: 'claim',
+          page: 1,
+          crumb
+        }
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(processStageActions).not.toHaveBeenCalled()
+      expect(res.statusCode).toBe(302)
+      expect(res.headers.location).toEqual(`/view-claim/${reference}?reject=true&errors=${encodedErrors}`)
+    })
   })
 
   describe('RBAC disabled', () => {
