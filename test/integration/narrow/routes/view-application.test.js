@@ -181,7 +181,7 @@ describe('View Application test', () => {
     test.each([
       [true, 'Recommend to pay'],
       [false, '']
-    ])('Present autorisation for payment panel', async (authorisePaymentButtonVisible, subStatus) => {
+    ])('Present authorisation for payment panel', async (authorisePaymentButtonVisible, subStatus) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       when(claimFormHelper).mockReturnValue({
@@ -207,7 +207,7 @@ describe('View Application test', () => {
     test.each([
       [true, 'Recommend to reject'],
       [false, '']
-    ])('Present autorisation for reject panel', async (authorisePaymentButtonVisible, subStatus) => {
+    ])('Present authorisation for reject panel', async (authorisePaymentButtonVisible, subStatus) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       when(claimFormHelper).mockReturnValue({
