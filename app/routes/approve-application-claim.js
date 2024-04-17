@@ -1,5 +1,4 @@
 const Boom = require('@hapi/boom')
-const Joi = require('joi')
 const config = require('../config')
 const { processApplicationClaim } = require('../api/applications')
 const { updateClaimStatus } = require('../api/claims')
@@ -14,6 +13,7 @@ const stages = require('../constants/application-stages')
 const stageExecutionActions = require('../constants/application-stage-execution-actions')
 const { failActionConsoleLog, failActionTwoCheckboxes } = require('../routes/utils/fail-action-two-checkboxes')
 const { redirectWithError, redirectToViewApplication } = require('../routes/helpers')
+const { approveClaimDisabledRBAC, approveClaimEnabledRBAC } = require('./validationSchemas/approve-or-reject-claim-schema')
 
 module.exports = {
   method: 'POST',
@@ -21,22 +21,7 @@ module.exports = {
   options: {
     pre: [{ method: preDoubleSubmitHandler }],
     validate: {
-      payload: Joi.object(config.rbac.enabled
-        ? {
-            claimOrApplication: Joi.string().valid('claim', 'application').required(),
-            confirm: Joi.array().items(
-              Joi.string().valid('approveClaim').required(),
-              Joi.string().valid('sentChecklist').required()
-            ).required(),
-            reference: Joi.string().valid().required(),
-            page: Joi.number().greater(0).default(1)
-          }
-        : {
-            claimOrApplication: Joi.string().valid('claim', 'application').required(),
-            approveClaim: Joi.string().valid('yes', 'no'),
-            reference: Joi.string().valid(),
-            page: Joi.number().greater(0).default(1)
-          }),
+      payload: config.rbac.enabled ? approveClaimEnabledRBAC : approveClaimDisabledRBAC,
       failAction: async (request, h, error) => {
         failActionConsoleLog(request, error, 'approve-application-claim')
         const errors = await failActionTwoCheckboxes(error, 'authorise-payment-panel')
