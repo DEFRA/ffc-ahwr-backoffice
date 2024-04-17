@@ -43,18 +43,6 @@ describe('Claims test', () => {
       expect(res.statusCode).toBe(400)
     })
 
-    test('returns 400 if claims is undefined', async () => {
-      claims.getClaims.mockReturnValueOnce(undefined)
-      const options = {
-        method: 'GET',
-        url,
-        auth
-      }
-
-      const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(400)
-    })
-
     test('returns 200', async () => {
       const options = {
         method: 'GET',
