@@ -344,10 +344,11 @@ describe('View claim test', () => {
       expect($('.govuk-summary-list__row').length).toEqual(rows)
     })
     test('returns 200 whitout claim data', async () => {
+      const encodedErrors = 'W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI3JlamVjdC1jbGFpbS1wYW5lbCJ9XQ%3D%3D'
       const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: 'test user' } }
       const options = {
         method: 'GET',
-        url: `${url}/AHWR-0000-4444?errors=error`,
+        url: `${url}/AHWR-0000-4444?errors=${encodedErrors}`,
         auth
       }
 
