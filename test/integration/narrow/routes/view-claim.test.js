@@ -174,10 +174,6 @@ describe('View claim test', () => {
     }
   ]
 
-  jest.mock('../../../../app/config', () => ({
-    ...jest.requireActual('../../../../app/config')
-  }))
-
   afterEach(async () => {
     jest.clearAllMocks()
   })

@@ -1,7 +1,3 @@
-jest.mock('../../../../app/config', () => ({
-  ...jest.requireActual('../../../../app/config')
-}))
-
 const claimFormHelper = require('../../../../app/routes/utils/claim-form-helper')
 const { formatStatusId } = require('../../../../app/lib/display-helper')
 const stageConfigId = require('../../../../app/constants/application-stage-configuration-ids')

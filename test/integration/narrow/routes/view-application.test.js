@@ -374,9 +374,7 @@ describe('View Application test', () => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       jest.clearAllMocks()
-      jest.mock('../../../../app/config', () => ({
-        ...jest.requireActual('../../../../app/config')
-      }))
+
       const options = {
         method: 'GET',
         url,

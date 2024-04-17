@@ -13,9 +13,6 @@ describe('Reject On Hold (move to In Check) Application test', () => {
   let auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
 
   beforeAll(() => {
-    jest.mock('../../../../app/config', () => ({
-      ...jest.requireActual('../../../../app/config')
-    }))
     jest.mock('../../../../app/api/applications')
     applications = require('../../../../app/api/applications')
 
