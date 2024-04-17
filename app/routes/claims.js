@@ -27,7 +27,7 @@ module.exports = [{
       const application = await getApplication(request.params.reference)
       const claims = await getClaims(request.params.reference)
 
-      if (!claims || !application) {
+      if (!application) {
         throw boom.badRequest()
       }
 
@@ -85,7 +85,7 @@ module.exports = [{
         text: 'Details'
       }]
 
-      const claimTableClaims = claims.map(claim => {
+      const claimTableClaims = claims?.map(claim => {
         return [
           {
             text: claim.reference,
@@ -126,10 +126,12 @@ module.exports = [{
         backLink: '/applications',
         businessName: application.data?.organisation?.name,
         applicationSummaryDetails,
-        claimTable: {
-          header: claimTableHeader,
-          claims: claimTableClaims
-        }
+        claimTable: claimTableClaims
+          ? {
+              header: claimTableHeader,
+              claims: claimTableClaims
+            }
+          : undefined
       })
     }
   }
