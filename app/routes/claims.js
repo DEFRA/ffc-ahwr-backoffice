@@ -126,10 +126,12 @@ module.exports = [{
         backLink: '/applications',
         businessName: application.data?.organisation?.name,
         applicationSummaryDetails,
-        claimTable: claimTableClaims ? {
-          header: claimTableHeader,
-          claims: claimTableClaims
-        } : undefined
+        claimTable: claimTableClaims
+          ? {
+              header: claimTableHeader,
+              claims: claimTableClaims
+            }
+          : undefined
       })
     }
   }
