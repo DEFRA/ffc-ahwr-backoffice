@@ -91,9 +91,6 @@ describe('View Application test', () => {
 
     jest.mock('../../../../app/config', () => ({
       ...jest.requireActual('../../../../app/config'),
-      agreementWithdrawl: {
-        enabled: true
-      },
       dateOfTesting: {
         enabled: false
       }
@@ -378,10 +375,7 @@ describe('View Application test', () => {
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       jest.clearAllMocks()
       jest.mock('../../../../app/config', () => ({
-        ...jest.requireActual('../../../../app/config'),
-        agreementWithdrawl: {
-          enabled: false
-        }
+        ...jest.requireActual('../../../../app/config')
       }))
       const options = {
         method: 'GET',

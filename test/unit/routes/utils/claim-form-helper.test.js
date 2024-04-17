@@ -1,8 +1,5 @@
 jest.mock('../../../../app/config', () => ({
-  ...jest.requireActual('../../../../app/config'),
-  agreementWithdrawl: {
-    enabled: true
-  }
+  ...jest.requireActual('../../../../app/config')
 }))
 
 const claimFormHelper = require('../../../../app/routes/utils/claim-form-helper')

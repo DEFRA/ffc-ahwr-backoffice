@@ -29,9 +29,6 @@ describe('View Application test with Date of Testing enabled', () => {
 
   jest.mock('../../../../app/config', () => ({
     ...jest.requireActual('../../../../app/config'),
-    agreementWithdrawl: {
-      enabled: true
-    },
     dateOfTesting: {
       enabled: true
     }
