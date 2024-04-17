@@ -2,9 +2,6 @@ jest.mock('../../../../app/config', () => ({
   ...jest.requireActual('../../../../app/config'),
   agreementWithdrawl: {
     enabled: true
-  },
-  rbac: {
-    enabled: true
   }
 }))
 

@@ -44,7 +44,6 @@ container:
   serviceUri:
   applicationApiUri:
   displayPageSize: 20
-  rbacEnabled:  
   dateOfTestingEnabled:
   onHoldAppProcessEnabled:
   onHoldAppProcessSchedule:

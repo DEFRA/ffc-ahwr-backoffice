@@ -175,10 +175,7 @@ describe('View claim test', () => {
   ]
 
   jest.mock('../../../../app/config', () => ({
-    ...jest.requireActual('../../../../app/config'),
-    rbac: {
-      enabled: false
-    }
+    ...jest.requireActual('../../../../app/config')
   }))
 
   afterEach(async () => {

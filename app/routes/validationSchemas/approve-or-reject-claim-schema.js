@@ -1,18 +1,6 @@
 const Joi = require('joi')
 
-const rejectClaimDisabledRBAC = Joi.object({
-  claimOrApplication: Joi.string().valid('claim', 'application').required(),
-  rejectClaim: Joi.string().valid('yes', 'no'),
-  reference: Joi.string().valid(),
-  page: Joi.number().greater(0).default(1)
-})
-const approveClaimDisabledRBAC = Joi.object({
-  claimOrApplication: Joi.string().valid('claim', 'application').required(),
-  approveClaim: Joi.string().valid('yes', 'no'),
-  reference: Joi.string().valid(),
-  page: Joi.number().greater(0).default(1)
-})
-const rejectClaimEnabledRBAC = Joi.object({
+const rejectClaim = Joi.object({
   claimOrApplication: Joi.string().valid('claim', 'application').required(),
   confirm: Joi.array().items(
     Joi.string().valid('rejectClaim').required(),
@@ -21,7 +9,7 @@ const rejectClaimEnabledRBAC = Joi.object({
   reference: Joi.string().valid().required(),
   page: Joi.number().greater(0).default(1)
 })
-const approveClaimEnabledRBAC = Joi.object({
+const approveClaim = Joi.object({
   claimOrApplication: Joi.string().valid('claim', 'application').required(),
   confirm: Joi.array().items(
     Joi.string().valid('approveClaim').required(),
@@ -32,8 +20,6 @@ const approveClaimEnabledRBAC = Joi.object({
 })
 
 module.exports = {
-  rejectClaimDisabledRBAC,
-  approveClaimDisabledRBAC,
-  rejectClaimEnabledRBAC,
-  approveClaimEnabledRBAC
+  rejectClaim,
+  approveClaim
 }
