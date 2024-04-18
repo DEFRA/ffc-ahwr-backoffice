@@ -1,5 +1,4 @@
 const getUser = require('../../auth/get-user')
-const config = require('../../config')
 const { upperFirstLetter } = require('../../lib/display-helper')
 
 const getRows = (request) => {
@@ -15,8 +14,7 @@ const getRows = (request) => {
 
 function ViewModel (request) {
   this.model = {
-    userScopes: { rows: getRows(request) },
-    rbac: config.rbac
+    userScopes: { rows: getRows(request) }
   }
 }
 

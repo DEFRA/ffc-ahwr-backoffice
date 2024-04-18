@@ -14,7 +14,6 @@ const { administrator, authoriser, processor, recommender, user } = require('../
 const { upperFirstLetter, formatedDateToUk } = require('../lib/display-helper')
 const mapAuth = require('../auth/map-auth')
 const claimFormHelper = require('./utils/claim-form-helper')
-const rbacEnabled = require('../config').rbac.enabled
 const checkboxErrors = require('./utils/checkbox-errors')
 
 const backLink = (applicationReference) => {
@@ -119,9 +118,9 @@ module.exports = {
       const mappedAuth = mapAuth(request)
 
       const isApplicationInCheckAndUserIsAdmin = claim.statusId === status.IN_CHECK && mappedAuth.isAdministrator
-      const claimConfirmationForm = !rbacEnabled && isApplicationInCheckAndUserIsAdmin && !request.query.approve && !request.query.reject
-      const approveClaimConfirmationForm = !rbacEnabled && isApplicationInCheckAndUserIsAdmin && request.query.approve
-      const rejectClaimConfirmationForm = !rbacEnabled && isApplicationInCheckAndUserIsAdmin && request.query.reject
+      const claimConfirmationForm = isApplicationInCheckAndUserIsAdmin && !request.query.approve && !request.query.reject
+      const approveClaimConfirmationForm = isApplicationInCheckAndUserIsAdmin && request.query.approve
+      const rejectClaimConfirmationForm = isApplicationInCheckAndUserIsAdmin && request.query.reject
 
       const {
         displayRecommendationForm,

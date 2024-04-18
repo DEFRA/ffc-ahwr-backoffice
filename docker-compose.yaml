@@ -21,8 +21,7 @@ services:
       REDIS_PASSWORD: ""
       SERVICE_URI: http://localhost:3002
       APPLICATION_API_URI: http://host.docker.internal:3001/api
-      DISPLAY_PAGE_SIZE: 20      
-      RBAC_ENABLED: ${RBAC_ENABLED:-false}
+      DISPLAY_PAGE_SIZE: 20
       DATE_OF_TESTING_ENABLED: ${DATE_OF_TESTING_ENABLED:-false}
       ON_HOLD_APP_PROCESS_ENABLED: "true"
       ON_HOLD_APP_PROCESS_SCHEDULE: "0 0 * * 2-5"
