@@ -44,12 +44,6 @@
       {% if withdrawConfirmationForm %}
         {{ viewWithdrawConfirmationForm('application', reference, page, crumb) }}
       {% endif %}
-      {% if approveClaimConfirmationForm %}
-        {{ viewApproveClaimConfirmationForm('application', reference, page, crumb) }}
-      {% endif %}
-      {% if rejectClaimConfirmationForm %}
-        {{ viewRejectClaimConfirmationForm('application', reference, page, crumb) }}
-      {% endif %}
       {% if model.recommendData != false %}
         {{ viewRecommendConfirmationForm('application', reference, page, crumb, model.recommendData) }}
       {% endif %}
@@ -70,9 +64,6 @@
       
       {% if withdrawLink %}
         <a class="govuk-link govuk-body" href="/view-application/{{ reference }}?page={{page}}&withdraw=true">Withdraw</a>
-      {% endif %}
-      {% if claimConfirmationForm %}
-        {{ viewClaimConfirmationForm('application', reference, page, crumb) }}
       {% endif %}
       {% if recommendForm %}
         {{ viewRecommendForm('application', reference, page, crumb) }}

@@ -55,11 +55,6 @@ module.exports = {
       const withdrawLink = isAgreementAgreedAndUserIsAdmin && !request.query.withdraw
       const withdrawConfirmationForm = isAgreementAgreedAndUserIsAdmin && application.status.status !== 'WITHDRAWN' && request.query.withdraw
 
-      const isApplicationInCheckAndUserIsAdmin = application.status.status === 'IN CHECK' && mappedAuth.isAdministrator
-      const claimConfirmationForm = isApplicationInCheckAndUserIsAdmin && !request.query.approve && !request.query.reject
-      const approveClaimConfirmationForm = isApplicationInCheckAndUserIsAdmin && request.query.approve
-      const rejectClaimConfirmationForm = isApplicationInCheckAndUserIsAdmin && request.query.reject
-
       const {
         displayRecommendationForm,
         displayRecommendToPayConfirmationForm,
@@ -90,9 +85,6 @@ module.exports = {
         claimed: application?.claimed,
         withdrawLink,
         withdrawConfirmationForm,
-        claimConfirmationForm,
-        approveClaimConfirmationForm,
-        rejectClaimConfirmationForm,
         payment: application?.payment,
         ...new ViewModel(application, applicationHistory, recommend, applicationEvents),
         page: request.query.page,
