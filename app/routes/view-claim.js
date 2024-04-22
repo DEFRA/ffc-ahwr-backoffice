@@ -4,7 +4,7 @@ const boom = require('@hapi/boom')
 const { getClaim } = require('../api/claims')
 const { claims } = require('./../config/routes')
 const { getApplication } = require('../api/applications')
-const { status, getStyleClassByStatus } = require('../constants/status')
+const { getStyleClassByStatus } = require('../constants/status')
 const { formatStatusId } = require('./../lib/display-helper')
 const { livestockTypes, claimType } = require('./../constants/claim')
 const getRecommendData = require('./models/recommend-claim')
@@ -12,7 +12,6 @@ const { sheepTestTypes, sheepTestResultsType } = require('./../constants/sheep-t
 const { administrator, authoriser, processor, recommender, user } = require('../auth/permissions')
 
 const { upperFirstLetter, formatedDateToUk } = require('../lib/display-helper')
-const mapAuth = require('../auth/map-auth')
 const claimFormHelper = require('./utils/claim-form-helper')
 const checkboxErrors = require('./utils/checkbox-errors')
 
@@ -115,13 +114,6 @@ module.exports = {
         { key: { text: 'Organisation email address' }, value: { text: organisation?.orgEmail } }
       ]
 
-      const mappedAuth = mapAuth(request)
-
-      const isApplicationInCheckAndUserIsAdmin = claim.statusId === status.IN_CHECK && mappedAuth.isAdministrator
-      const claimConfirmationForm = isApplicationInCheckAndUserIsAdmin && !request.query.approve && !request.query.reject
-      const approveClaimConfirmationForm = isApplicationInCheckAndUserIsAdmin && request.query.approve
-      const rejectClaimConfirmationForm = isApplicationInCheckAndUserIsAdmin && request.query.reject
-
       const {
         displayRecommendationForm,
         displayRecommendToPayConfirmationForm,
@@ -150,9 +142,6 @@ module.exports = {
         claimSummaryDetails: claimSummaryDetails(organisation, data, type),
         status: { capitalisedtype: formatStatusId(claim.statusId), normalType: upperFirstLetter(formatStatusId(claim.statusId).toLowerCase()), tagClass: getStyleClassByStatus(formatStatusId(claim.statusId)) },
         applicationSummaryDetails,
-        claimConfirmationForm,
-        approveClaimConfirmationForm,
-        rejectClaimConfirmationForm,
         recommendData: Object.entries(getRecommendData(recommend)).length === 0 ? false : getRecommendData(recommend),
         recommendForm: displayRecommendationForm,
         authorisePaymentConfirmForm: {

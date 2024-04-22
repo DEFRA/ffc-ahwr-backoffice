@@ -38,12 +38,6 @@
       
       {{ govukSummaryList({ rows: applicationSummaryDetails }) }}
 
-      {% if approveClaimConfirmationForm %}
-        {{ viewApproveClaimConfirmationForm('claim', reference, page, crumb) }}
-      {% endif %}
-      {% if rejectClaimConfirmationForm %}
-        {{ viewRejectClaimConfirmationForm('claim', reference, page, crumb) }}
-      {% endif %}
       {% if recommendData != false %}
         {{ viewRecommendConfirmationForm('claim', reference, page, crumb, recommendData) }}
       {% endif %}
@@ -115,10 +109,7 @@
           ]
         }) 
       }}
-      
-      {% if claimConfirmationForm %}
-        {{ viewClaimConfirmationForm('claim', reference, page, crumb) }}
-      {% endif %}
+
       {% if recommendForm %}
         {{ viewRecommendForm('claim', reference, page, crumb) }}
       {% endif %}
