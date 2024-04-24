@@ -78,6 +78,7 @@ describe('Withdraw Application test', () => {
         payload: {
           reference,
           withdrawConfirmation: 'yes',
+          confirm: ['SentCopyOfRequest', 'attachedCopyOfCustomersRecord', 'receivedCopyOfCustomersRequest'],
           page: 1,
           crumb
         },
@@ -103,6 +104,7 @@ describe('Withdraw Application test', () => {
         payload: {
           reference,
           withdrawConfirmation: 'yes',
+          confirm: ['SentCopyOfRequest', 'attachedCopyOfCustomersRecord', 'receivedCopyOfCustomersRequest'],
           page: 1,
           crumb
         }
@@ -112,9 +114,8 @@ describe('Withdraw Application test', () => {
       expect(res.statusCode).toBe(302)
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
-
-    test('Cancel withdraw application', async () => {
-      const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
+    test('Return error, when any of the check boxes are not checked', async () => {
+      const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {
         method: 'POST',
         url,
@@ -122,15 +123,14 @@ describe('Withdraw Application test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
-          withdrawConfirmation: 'no',
-          page: 1,
+          withdrawConfirmation: 'yes',
+          confirm: ['SentCopyOfRequest', 'attachedCopyOfCustomersRecord'],
           crumb
         }
       }
       const res = await global.__SERVER__.inject(options)
-      expect(applications.updateApplicationStatus).toHaveBeenCalledTimes(0)
-      expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&withdraw=true&errors=W3sidGV4dCI6IlNlbGVjdCBhbGwgY2hlY2tib3hlcyIsImhyZWYiOiIjcG5sLXdpdGhkcmF3LWNvbmZpcm1hdGlvbiJ9XQ%3D%3D`)
     })
   })
 })

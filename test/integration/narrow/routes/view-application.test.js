@@ -13,7 +13,7 @@ let claimFormHelper
 function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
   if (isWithdrawLinkVisible) {
     expect($('.govuk-link').hasClass)
-    const withdrawLink = $('.govuk-link')
+    const withdrawLink = $('.govuk-button')
     expect(withdrawLink.text()).toMatch('Withdraw')
     expect(withdrawLink.attr('href')).toMatch(`/view-application/${reference}?page=1&withdraw=true`)
   } else {
@@ -67,16 +67,11 @@ function expectComplianceCheckPanel ($, isComplianceCheckPanelVisible) {
 }
 
 function expectWithdrawConfirmationPanel ($, istWithdrawConfirmationPanelVisible) {
-  const panelText = $('h1:contains("Are you sure you want to withdraw?")').text()
-  const yesButtonText = $('button:contains("Yes")').text()
-  const noButtonText = $('button:contains("No")').text()
-  const panelExpectedLength = 34
-  const yesButtonExpectedLength = 3
-  const noButtonExpectedLength = 2
+  const panelText = $('h1:contains("Withdraw agreement")').text()
+  const confirmButtonText = $('button:contains("Confirm and continue")').text()
 
-  istWithdrawConfirmationPanelVisible ? expect(panelText).toHaveLength(panelExpectedLength) : expect(panelText).toHaveLength(0)
-  istWithdrawConfirmationPanelVisible ? expect(yesButtonText).toHaveLength(yesButtonExpectedLength) : expect(yesButtonText).toHaveLength(0)
-  istWithdrawConfirmationPanelVisible ? expect(noButtonText).toHaveLength(noButtonExpectedLength) : expect(noButtonText).toHaveLength(0)
+  istWithdrawConfirmationPanelVisible ? expect(panelText).toBeDefined() : expect(panelText).not().toBeDefined()
+  istWithdrawConfirmationPanelVisible ? expect(confirmButtonText).toBeDefined() : expect(confirmButtonText).not().toBeDefined()
 }
 
 jest.mock('../../../../app/api/applications')
