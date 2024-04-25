@@ -173,7 +173,7 @@ describe('View claim test', () => {
       status: { status: 'PAID' }
     }
   ]
-  getApplicationHistory.mockReturnValue({ head: [], rows: []})
+  getApplicationHistory.mockReturnValue({ head: [], rows: [] })
   afterEach(async () => {
     jest.clearAllMocks()
   })
