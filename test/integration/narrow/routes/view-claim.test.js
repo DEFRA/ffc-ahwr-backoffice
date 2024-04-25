@@ -1,7 +1,7 @@
 const cheerio = require('cheerio')
 const { getClaim } = require('../../../../app/api/claims')
 const { administrator } = require('../../../../app/auth/permissions')
-const { getApplication } = require('../../../../app/api/applications')
+const { getApplication, getApplicationHistory } = require('../../../../app/api/applications')
 
 jest.mock('../../../../app/auth')
 jest.mock('../../../../app/session')
@@ -173,7 +173,7 @@ describe('View claim test', () => {
       status: { status: 'PAID' }
     }
   ]
-
+  getApplicationHistory.mockReturnValue({ head: [], rows: []})
   afterEach(async () => {
     jest.clearAllMocks()
   })
