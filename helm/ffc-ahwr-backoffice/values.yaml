@@ -47,7 +47,8 @@ container:
   dateOfTestingEnabled:
   onHoldAppProcessEnabled:
   onHoldAppProcessSchedule:
-  
+  endemicsEnabled:
+
 deployment:
   cpuThreshold: 40
   memoryThreshold: 80
