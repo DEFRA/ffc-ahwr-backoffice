@@ -3,7 +3,8 @@ const Joi = require('joi')
 const boom = require('@hapi/boom')
 const { getClaim } = require('../api/claims')
 const { claims } = require('./../config/routes')
-const { getApplication } = require('../api/applications')
+const { getApplication, getApplicationHistory } = require('../api/applications')
+const getApplicationHistoryModel = require('./models/application-history')
 const { getStyleClassByStatus } = require('../constants/status')
 const { formatStatusId } = require('./../lib/display-helper')
 const { livestockTypes, claimType } = require('./../constants/claim')
@@ -134,6 +135,9 @@ module.exports = {
         errorMessage: checkboxErrors(errors, 'pnl-recommend-confirmation')
       }
 
+      const applicationHistory = await getApplicationHistory(reference)
+      const historyData = getApplicationHistoryModel(applicationHistory)
+
       return h.view('view-claim', {
         page: 1,
         backLink: backLink(claim?.applicationReference),
@@ -142,6 +146,7 @@ module.exports = {
         claimSummaryDetails: claimSummaryDetails(organisation, data, type),
         status: { capitalisedtype: formatStatusId(claim.statusId), normalType: upperFirstLetter(formatStatusId(claim.statusId).toLowerCase()), tagClass: getStyleClassByStatus(formatStatusId(claim.statusId)) },
         applicationSummaryDetails,
+        historyData,
         recommendData: Object.entries(getRecommendData(recommend)).length === 0 ? false : getRecommendData(recommend),
         recommendForm: displayRecommendationForm,
         authorisePaymentConfirmForm: {
