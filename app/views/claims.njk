@@ -2,29 +2,46 @@
 
 {%block pageTitle %}{{ siteTitle }} - {{ businessName }}{%endblock%}
 
-{% block beforeContent %}
-  {{ govukBackLink({
+    {% block beforeContent %}
+        {{ govukBackLink({
     text: "Back",
     href: backLink
   }) }}
-{% endblock %}
+    {% endblock %}
 
-{% block content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-caption-l govuk-!-margin-bottom-3">
+    {% block content %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-caption-l govuk-!-margin-bottom-3">
                 All business claims
             </h1>
-            <h2 class="govuk-heading-l">{{ businessName }}</h2>
-            {{ govukSummaryList({
-                rows: applicationSummaryDetails
-            }) }}
-        </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <div class="moj-scrollable-pane__wrapper">
-                {{ govukTable({
+                <h2 class="govuk-heading-l">{{ businessName }}</h2>
+                <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                    {% for item in applicationSummaryDetails %}
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">{{item.field}}</dt>
+                            <dd class="govuk-summary-list__value">
+                                <p>{{item.newValue}}</p>
+                                {% if item.oldValue %}
+                                    <details class="govuk-details">
+                                        <summary class="govuk-details__summary">
+                                            <span class="govuk-details__summary-text">View change</span>
+                                        </summary>
+                                        <div class="govuk-details__text">
+                                   {{ item.oldValue }}
+                                   </div>
+                                    </details>
+                                    {% endif %}
+                                </dd>
+                            </div>
+                        {% endfor %}
+                    </dl>
+                </div>
+            </div>
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <div class="moj-scrollable-pane__wrapper">
+                        {{ govukTable({
                     attributes: {
                         'data-module': 'moj-sortable-table'
                     },
@@ -32,16 +49,16 @@
                     head: claimTable.header,
                     rows: claimTable.claims
                 }) }}
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h2 class="govuk-heading-m">Further action</h2>
-            <p class="govuk-body">This customer has successfully submitted an application but, if they ask, they can withdraw from an agreement.</p>
-            <a href="#" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <h2 class="govuk-heading-m">Further action</h2>
+                    <p class="govuk-body">This customer has successfully submitted an application but, if they ask, they can withdraw from an agreement.</p>
+                    <a href="#" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
                 Withdraw
             </a>
-        </div>
-    </div>
-{%endblock%}
+                </div>
+            </div>
+            {%endblock%}

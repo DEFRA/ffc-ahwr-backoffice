@@ -12,6 +12,19 @@ const claims = require('../../../../app/api/claims')
 jest.mock('../../../../app/api/claims')
 claims.getClaims = jest.fn().mockReturnValue(claimData)
 
+const contactHistoryData = require('.././../../data/contact-history.json')
+const contactHistory = require('../../../../app/api/contact-history')
+jest.mock('../../../../app/api/contact-history.js')
+contactHistory.getContactHistory = jest.fn().mockReturnValue(contactHistoryData)
+
+jest.mock('../../../../app/api/contact-history.js')
+contactHistory.displayContactHistory = jest.fn().mockReturnValue({
+  orgEmail: 'Na',
+  email: 'test12@testvest.com',
+  farmerName: 'NA',
+  address: 'NA'
+})
+
 jest.mock('../../../../app/auth')
 const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: 'test user' } }
 
