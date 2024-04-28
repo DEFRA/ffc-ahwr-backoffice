@@ -2,67 +2,65 @@
 
 {% macro viewAuthoriseOrRejectForm(claimOrApplication, reference, page, crumb, displayAuthorisePaymentButton) %}
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-third">
-      <div id="authorise-or-reject-form-panel" class="govuk-panel govuk-panel--confirmation govuk-panel--align-horizontal govuk-!-text-align-center">
-        <div class="govuk-panel__body">
+    <div class="govuk-grid-column-two-thirds">
+      <div id="authorise-or-reject-form-panel">
+        <div class="govuk-cookie-banner__content">
+          <h2 class="govuk-cookie-banner__heading govuk-heading-m">Authoriser action required</h2>
           {% if displayAuthorisePaymentButton %}
             {% if claimOrApplication == 'application' %}
-              <div class="govuk-grid-row">
-                {{
-                  govukButton({
-                    text: "Authorise payment",
-                    attributes: {
-                      id: "authorise-payment-button"
-                    },
-                    href: "/view-application/" + reference + "?page=" + page + "&approve=true",
-                    preventDoubleClick: true
-                  })
-                }}
-              </div>
+              {{
+                govukButton({
+                  text: "Authorise payment",
+                  attributes: {
+                    id: "authorise-payment-button"
+                  },
+                  href: "/view-application/" + reference + "?page=" + page + "&approve=true",
+                  preventDoubleClick: true
+                })
+              }}
             {% elif claimOrApplication == 'claim' %}
-              <div class="govuk-grid-row">
-                {{
-                  govukButton({
-                    text: "Authorise payment",
-                    attributes: {
-                      id: "authorise-payment-button"
-                    },
-                    href: "/view-claim/" + reference + "?approve=true",
-                    preventDoubleClick: true
-                  })
-                }}
-              </div>
+              <p class="govuk-body">This customer has been recommended for payment.</p>
+              <p class="govuk-body">If you do not agree with this action, contact the person who recommended it and discuss it with them.</p>
+              {{
+                govukButton({
+                  text: "Pay",
+                  attributes: {
+                    id: "authorise-payment-button"
+                  },
+                  href: "/view-claim/" + reference + "?approve=true",
+                  preventDoubleClick: true
+                })
+              }}
             {% endif %}
           {% else %}
             {% if claimOrApplication == 'application' %}
               <div class="govuk-grid-row">
-                {{
-                  govukButton({
-                    text: "Reject claim",
-                    attributes: {
-                      id: "reject-claim-button"
-                    },
-                    href: "/view-application/" + reference + "?page=" + page + "&reject=true",
-                    preventDoubleClick: true
-                  })
-                }}
+              {{
+                govukButton({
+                  text: "Reject claim",
+                  attributes: {
+                    id: "reject-claim-button"
+                  },
+                  href: "/view-application/" + reference + "?page=" + page + "&reject=true",
+                  preventDoubleClick: true
+                })
+              }}
               </div>
             {% elif claimOrApplication == 'claim' %}
-              <div class="govuk-grid-row">
-                {{
-                  govukButton({
-                    text: "Reject claim",
-                    attributes: {
-                      id: "reject-claim-button"
-                    },
-                    href: "/view-claim/" + reference + "?reject=true",
-                    preventDoubleClick: true
-                  })
-                }}
-              </div>
+              <p class="govuk-body">This claim has been recommended for rejection.</p>
+              <p class="govuk-body">If you do not agree with this action, contact the person who recommended it and discuss it with them.</p>
+              {{
+                govukButton({
+                  text: "Reject",
+                  attributes: {
+                    id: "reject-claim-button"
+                  },
+                  href: "/view-claim/" + reference + "?reject=true",
+                  preventDoubleClick: true
+                })
+              }}
             {% endif %}
           {% endif %}
-          <p class="govuk-body">If you do not agree with this action, contact the person who recommended it and discuss it with them.</p>
         </div>
       </div>
     </div>
