@@ -38,9 +38,27 @@
 
       <h2 class="govuk-fieldset__legend--m">{{ organisationName }}
         <span class="govuk-tag {{ statusClass }}">{{ status }}</span></h2>
-      {{ govukSummaryList({
-        rows: model.listData.rows
-      }) }}
+      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        {% for item in model.listData %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">{{item.field}}</dt>
+            <dd class="govuk-summary-list__value">
+              <p>{{item.newValue}}</p>
+              {% if item.oldValue %}
+                <details class="govuk-details">
+                  <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">View change</span>
+                  </summary>
+                  <div class="govuk-details__text">
+                    {{ item.oldValue }}
+                  </div>
+                </details>
+              {% endif %}
+            </dd>
+          </div>
+        {% endfor %}
+      </dl>
+
       {% if withdrawConfirmationForm %}
         {{ viewWithdrawConfirmationForm('application', reference, page, crumb) }}
       {% endif %}
@@ -61,7 +79,7 @@
       {% endif %}
 
       {{ viewApplicationTabs(model, vetVisit, claimed, payment, subStatus, displayMoveToInCheckFromHold, reference, page) }}
-      
+
       {% if withdrawLink %}
         <a class="govuk-link govuk-body" href="/view-application/{{ reference }}?page={{page}}&withdraw=true">Withdraw</a>
       {% endif %}

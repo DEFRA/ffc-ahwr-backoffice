@@ -10,6 +10,7 @@ const mapAuth = require('../auth/map-auth')
 const claimFormHelper = require('./utils/claim-form-helper')
 const applicationStatus = require('../constants/application-status')
 const checkboxErrors = require('./utils/checkbox-errors')
+const { getContactHistory, displayContactHistory } = require('../api/contact-history')
 
 module.exports = {
   method: 'GET',
@@ -75,7 +76,18 @@ module.exports = {
         displayRecommendToRejectConfirmationForm,
         errorMessage: checkboxErrors(errors, 'pnl-recommend-confirmation')
       }
-
+      const contactHistory = await getContactHistory(request.params.reference)
+      const contactHistoryDetails = displayContactHistory(contactHistory)
+      const organisation = application.data?.organisation
+      const listData = [
+        { field: 'Name', newValue: organisation?.farmerName, oldValue: contactHistoryDetails.farmerName },
+        { field: 'SBI number', newValue: organisation?.sbi, oldValue: null },
+        { field: 'Address', newValue: organisation?.address, oldValue: contactHistoryDetails.address },
+        { field: 'Email address', newValue: organisation?.email, oldValue: contactHistoryDetails.email },
+        { field: 'Organisation email address', newValue: organisation?.orgEmail, oldValue: contactHistoryDetails.orgEmail }
+      ]
+      const viewModel = new ViewModel(application, applicationHistory, recommend, applicationEvents)
+      viewModel.model.listData = listData
       return h.view('view-application', {
         reference: application.reference,
         status,
@@ -86,7 +98,8 @@ module.exports = {
         withdrawLink,
         withdrawConfirmationForm,
         payment: application?.payment,
-        ...new ViewModel(application, applicationHistory, recommend, applicationEvents),
+        ...viewModel,
+        listData: {},
         page: request.query.page,
         recommendForm: displayRecommendationForm,
         authorisePaymentConfirmForm: {
