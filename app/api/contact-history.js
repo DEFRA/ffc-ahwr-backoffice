@@ -3,7 +3,7 @@ const _ = require('lodash')
 const { applicationApiUri } = require('../config')
 const { fieldsNames, notAvailable } = require('./../constants/contact-history')
 
-async function getContactHistory(reference) {
+async function getContactHistory (reference) {
   const url = `${applicationApiUri}/application/contact-history/${reference}`
   try {
     const response = await Wreck.get(url, { json: true })
