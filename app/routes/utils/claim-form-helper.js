@@ -37,21 +37,26 @@ const getRecommendationAndAuthorizationStatus = async (userName, applicationRefe
   }
 }
 
-const determineDisplayForms = (statusId, authStatus, recommendStatus, applicationOrClaim = 'application', query) => {
+const determineDisplayForms = (statusId, authStatus, recommendStatus, applicationOrClaim, query) => {
   const isApplicationInCheck = (statusId === status.IN_CHECK)
   const isApplicationApproveRecommend = (statusId === status.RECOMMENDED_TO_PAY)
   const isApplicationRejectRecommend = (statusId === status.RECOMMENDED_TO_REJECT)
   const isApplicationOnHold = (statusId === status.ON_HOLD)
 
-  const canClaimBeRecommended = isApplicationInCheck && authStatus.canUserRecommend && recommendStatus.canClaimBeRecommended
-  const canClaimBeMovedFromOnHold = isApplicationOnHold && (authStatus.canUserAuthorise || authStatus.canUserRecommend)
-  const authoriseOrRejectForm = (isApplicationApproveRecommend || isApplicationRejectRecommend) && authStatus.canUserAuthorise && recommendStatus.claimCanBeAuthorised && !(query.approve || query.reject)
-  const authoriseToPayConfirmation = isApplicationApproveRecommend && authStatus.canUserAuthorise && recommendStatus.claimCanBeAuthorised
-  const authoriseToRejectConfirmation = isApplicationRejectRecommend && authStatus.canUserAuthorise && recommendStatus.claimCanBeAuthorised
+  const { canUserRecommend, canUserAuthorise, canUserRecommendOrAuthorise } = authStatus
+  const { canClaimBeRecommended, claimCanBeAuthorised } = recommendStatus
 
-  const displayRecommendationForm = canClaimBeRecommended && !query.recommendToPay && !query.recommendToReject
-  const displayRecommendToPayConfirmationForm = canClaimBeRecommended && query.recommendToPay
-  const displayRecommendToRejectConfirmationForm = canClaimBeRecommended && query.recommendToReject
+  const canClaimBeRecommendedByUser = isApplicationInCheck && canUserRecommend && canClaimBeRecommended
+  const canClaimBeAuthorisedByUser = canUserAuthorise && claimCanBeAuthorised
+  const canClaimBeMovedFromOnHold = isApplicationOnHold && canUserRecommendOrAuthorise
+
+  const authoriseOrRejectForm = (isApplicationApproveRecommend || isApplicationRejectRecommend) && canClaimBeAuthorisedByUser && !(query.approve || query.reject)
+  const authoriseToPayConfirmation = isApplicationApproveRecommend && canClaimBeAuthorisedByUser
+  const authoriseToRejectConfirmation = isApplicationRejectRecommend && canClaimBeAuthorisedByUser
+
+  const displayRecommendationForm = canClaimBeRecommendedByUser && !query.recommendToPay && !query.recommendToReject
+  const displayRecommendToPayConfirmationForm = canClaimBeRecommendedByUser && query.recommendToPay
+  const displayRecommendToRejectConfirmationForm = canClaimBeRecommendedByUser && query.recommendToReject
   const displayMoveToInCheckFromHold = canClaimBeMovedFromOnHold && !query.moveToInCheck
   const displayOnHoldConfirmationForm = canClaimBeMovedFromOnHold && query.moveToInCheck
 
@@ -81,14 +86,15 @@ const determineDisplayForms = (statusId, authStatus, recommendStatus, applicatio
   }
 }
 
-const claimFormHelper = async (request, applicationReference, statusId, applicationOrClaim) => {
+const claimFormHelper = async (request, applicationReference, statusId, applicationOrClaim = 'application') => {
   const userName = getUser(request).username
   const mappedAuth = {
     isAdministrator: mapAuth(request).isAdministrator,
     isRecommender: mapAuth(request).isRecommender,
     isAuthoriser: mapAuth(request).isAuthoriser,
     canUserRecommend: mapAuth(request).isAdministrator || mapAuth(request).isRecommender,
-    canUserAuthorise: mapAuth(request).isAdministrator || mapAuth(request).isAuthoriser
+    canUserAuthorise: mapAuth(request).isAdministrator || mapAuth(request).isAuthoriser,
+    canUserRecommendOrAuthorise: mapAuth(request).isAdministrator || mapAuth(request).isRecommender || mapAuth(request).isAuthoriser
   }
 
   const recommendStatus = await getRecommendationAndAuthorizationStatus(userName, applicationReference)
