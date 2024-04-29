@@ -46,6 +46,9 @@ const schema = Joi.object({
   onHoldAppScheduler: {
     enabled: Joi.bool().default(true),
     schedule: Joi.string().default('0 18 * * 1-5')
+  },
+  endemics: {
+    enabled: Joi.bool().default(false)
   }
 })
 
@@ -88,6 +91,9 @@ const config = {
   onHoldAppScheduler: {
     enabled: process.env.ON_HOLD_APP_PROCESS_ENABLED,
     schedule: process.env.ON_HOLD_APP_PROCESS_SCHEDULE
+  },
+  endemics: {
+    enabled: process.env.ENDEMICS_ENABLED
   }
 }
 

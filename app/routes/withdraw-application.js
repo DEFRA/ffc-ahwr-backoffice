@@ -1,4 +1,5 @@
 const Joi = require('joi')
+const { Buffer } = require('buffer')
 const { updateApplicationStatus } = require('../api/applications')
 const { administrator } = require('../auth/permissions')
 const getUser = require('../auth/get-user')
@@ -14,19 +15,25 @@ module.exports = {
     auth: { scope: [administrator] },
     validate: {
       payload: Joi.object({
-        withdrawConfirmation: Joi.string().valid('yes', 'no'),
-        reference: Joi.string().valid(),
+        withdrawConfirmation: Joi.string().valid('yes').required(),
+        confirm: Joi.array().items(
+          Joi.string().valid('SentCopyOfRequest').required(),
+          Joi.string().valid('attachedCopyOfCustomersRecord').required(),
+          Joi.string().valid('receivedCopyOfCustomersRequest').required()
+        ).required(),
+        reference: Joi.string().required(),
         page: Joi.number().greater(0).default(1)
-      })
+      }),
+      failAction: async (request, h) => {
+        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&withdraw=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify([{ text: 'Select all checkboxes', href: '#pnl-withdraw-confirmation' }])).toString('base64'))}`).takeover()
+      }
     },
     handler: async (request, h) => {
-      if (request.payload.withdrawConfirmation === 'yes') {
-        const userName = getUser(request).username
-        await updateApplicationStatus(request.payload.reference, userName, applicationStatus.withdrawn)
-        await crumbCache.generateNewCrumb(request, h)
-      }
+      const userName = getUser(request).username
+      await updateApplicationStatus(request.payload.reference, userName, applicationStatus.withdrawn)
+      await crumbCache.generateNewCrumb(request, h)
 
-      return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
+      return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page}`)
     }
   }
 }

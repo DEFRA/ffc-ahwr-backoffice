@@ -21,4 +21,5 @@ data:
   DATE_OF_TESTING_ENABLED: {{ quote .Values.container.dateOfTestingEnabled }}
   ON_HOLD_APP_PROCESS_ENABLED: {{ quote .Values.container.onHoldAppProcessEnabled }}
   ON_HOLD_APP_PROCESS_SCHEDULE: {{ quote .Values.container.onHoldAppProcessSchedule }}
+  ENDEMICS_ENABLED: {{ quote .Values.container.endemicsEnabled }}
 {{- end -}}
