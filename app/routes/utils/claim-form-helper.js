@@ -43,20 +43,23 @@ const determineDisplayForms = (statusId, authStatus, recommendStatus, applicatio
   const isApplicationRejectRecommend = (statusId === status.RECOMMENDED_TO_REJECT)
   const isApplicationOnHold = (statusId === status.ON_HOLD)
 
-  const displayRecommendationForm = isApplicationInCheck && authStatus.canUserRecommend && recommendStatus.canClaimBeRecommended && !query.recommendToPay && !query.recommendToReject
-  const displayRecommendToPayConfirmationForm = isApplicationInCheck && authStatus.canUserRecommend && recommendStatus.canClaimBeRecommended && query.recommendToPay
-  const displayRecommendToRejectConfirmationForm = isApplicationInCheck && authStatus.canUserRecommend && recommendStatus.canClaimBeRecommended && query.recommendToReject
-  const displayMoveToInCheckFromHold = isApplicationOnHold && (authStatus.canUserAuthorise || authStatus.canUserRecommend) && !query.moveToInCheck
-  const displayOnHoldConfirmationForm = isApplicationOnHold && (authStatus.canUserAuthorise || authStatus.canUserRecommend) && query.moveToInCheck
-
+  const canClaimBeRecommended = isApplicationInCheck && authStatus.canUserRecommend && recommendStatus.canClaimBeRecommended
+  const canClaimBeMovedFromOnHold = isApplicationOnHold && (authStatus.canUserAuthorise || authStatus.canUserRecommend)
+  const authoriseOrRejectForm = (isApplicationApproveRecommend || isApplicationRejectRecommend) && authStatus.canUserAuthorise && recommendStatus.claimCanBeAuthorised && !(query.approve || query.reject)
   const authoriseToPayConfirmation = isApplicationApproveRecommend && authStatus.canUserAuthorise && recommendStatus.claimCanBeAuthorised
   const authoriseToRejectConfirmation = isApplicationRejectRecommend && authStatus.canUserAuthorise && recommendStatus.claimCanBeAuthorised
+
+  const displayRecommendationForm = canClaimBeRecommended && !query.recommendToPay && !query.recommendToReject
+  const displayRecommendToPayConfirmationForm = canClaimBeRecommended && query.recommendToPay
+  const displayRecommendToRejectConfirmationForm = canClaimBeRecommended && query.recommendToReject
+  const displayMoveToInCheckFromHold = canClaimBeMovedFromOnHold && !query.moveToInCheck
+  const displayOnHoldConfirmationForm = canClaimBeMovedFromOnHold && query.moveToInCheck
 
   let displayAuthoriseOrRejectForm
   let displayAuthoriseToPayConfirmationForm
   let displayAuthoriseToRejectConfirmationForm
   if (applicationOrClaim === 'claim') {
-    displayAuthoriseOrRejectForm = (isApplicationApproveRecommend || isApplicationRejectRecommend) && authStatus.canUserAuthorise && recommendStatus.claimCanBeAuthorised && !(query.approve || query.reject)
+    displayAuthoriseOrRejectForm = authoriseOrRejectForm
     displayAuthoriseToPayConfirmationForm = authoriseToPayConfirmation && query.approve
     displayAuthoriseToRejectConfirmationForm = authoriseToRejectConfirmation && query.reject
   } else {
