@@ -1,11 +1,12 @@
 const Joi = require('joi')
 const { Buffer } = require('buffer')
-const { updateApplicationStatus } = require('../api/applications')
-const { administrator } = require('../auth/permissions')
 const getUser = require('../auth/get-user')
+const crumbCache = require('./utils/crumb-cache')
+const { administrator } = require('../auth/permissions')
+const { updateApplicationStatus } = require('../api/applications')
 const applicationStatus = require('../constants/application-status')
 const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
-const crumbCache = require('./utils/crumb-cache')
+const { endemics } = require('../config')
 
 module.exports = {
   method: 'POST',
@@ -13,27 +14,46 @@ module.exports = {
   options: {
     pre: [{ method: preDoubleSubmitHandler }],
     auth: { scope: [administrator] },
-    validate: {
-      payload: Joi.object({
-        withdrawConfirmation: Joi.string().valid('yes').required(),
-        confirm: Joi.array().items(
-          Joi.string().valid('SentCopyOfRequest').required(),
-          Joi.string().valid('attachedCopyOfCustomersRecord').required(),
-          Joi.string().valid('receivedCopyOfCustomersRequest').required()
-        ).required(),
-        reference: Joi.string().required(),
-        page: Joi.number().greater(0).default(1)
-      }),
-      failAction: async (request, h) => {
-        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&withdraw=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify([{ text: 'Select all checkboxes', href: '#pnl-withdraw-confirmation' }])).toString('base64'))}`).takeover()
-      }
-    },
     handler: async (request, h) => {
-      const userName = getUser(request).username
-      await updateApplicationStatus(request.payload.reference, userName, applicationStatus.withdrawn)
       await crumbCache.generateNewCrumb(request, h)
 
-      return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page}`)
+      const endemicsOffValidation = Joi.object({
+        withdrawConfirmation: Joi.string().valid('yes', 'no').required(),
+        reference: Joi.string().required(),
+        page: Joi.number().greater(0).default(1)
+      })
+      const endemicsOnValidation = Joi.object({
+        withdrawConfirmation: Joi.string().valid('yes', 'no').required(),
+        ...(endemics.enabled && {
+          confirm: Joi.array().items(
+            Joi.string().valid('SentCopyOfRequest').required(),
+            Joi.string().valid('attachedCopyOfCustomersRecord').required(),
+            Joi.string().valid('receivedCopyOfCustomersRequest').required()
+          ).required()
+        }),
+        reference: Joi.string().required(),
+        page: Joi.number().greater(0).default(1)
+      })
+
+      const { error } = endemics.enabled ? endemicsOnValidation.validate(request.payload) : endemicsOffValidation.validate(request.payload)
+
+      if (error) {
+        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&withdraw=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify([{ text: 'Select all checkboxes', href: '#pnl-withdraw-confirmation' }])).toString('base64'))}`).takeover()
+      }
+
+      if (endemics.enabled) {
+        const userName = getUser(request).username
+        await updateApplicationStatus(request.payload.reference, userName, applicationStatus.withdrawn)
+
+        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page}`)
+      } else {
+        if (request.payload.withdrawConfirmation === 'yes') {
+          const userName = getUser(request).username
+          await updateApplicationStatus(request.payload.reference, userName, applicationStatus.withdrawn)
+        }
+
+        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page}`)
+      }
     }
   }
 }

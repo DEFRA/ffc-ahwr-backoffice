@@ -1,6 +1,7 @@
 const { Buffer } = require('buffer')
 const Joi = require('joi')
 const boom = require('@hapi/boom')
+const { endemics } = require('../config')
 const { getApplication, getApplicationHistory, getApplicationEvents } = require('../api/applications')
 const { administrator, processor, user, recommender, authoriser } = require('../auth/permissions')
 const { getStyleClassByStatus } = require('../constants/status')
@@ -77,6 +78,7 @@ module.exports = {
       }
 
       return h.view('view-application', {
+        endemics: endemics.enabled,
         reference: application.reference,
         status,
         statusClass,
