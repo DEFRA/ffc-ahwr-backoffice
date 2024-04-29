@@ -1,8 +1,9 @@
 const Wreck = require('@hapi/wreck')
 const _ = require('lodash')
 const { applicationApiUri } = require('../config')
+const { fieldsNames, notAvailable } = require('./../constants/contact-history')
 
-async function getContactHistory (reference) {
+async function getContactHistory(reference) {
   const url = `${applicationApiUri}/application/contact-history/${reference}`
   try {
     const response = await Wreck.get(url, { json: true })
@@ -27,10 +28,10 @@ const getContactFieldData = (contactHistoryData, field) => {
 
 const displayContactHistory = (contactHistory) => {
   if (contactHistory) {
-    const orgEmail = getContactFieldData(contactHistory, 'orgEmail')
-    const email = getContactFieldData(contactHistory, 'email')
-    const farmerName = getContactFieldData(contactHistory, 'farmerName')
-    const address = getContactFieldData(contactHistory, 'address')
+    const orgEmail = getContactFieldData(contactHistory, fieldsNames.orgEmail)
+    const email = getContactFieldData(contactHistory, fieldsNames.email)
+    const farmerName = getContactFieldData(contactHistory, fieldsNames.farmerName)
+    const address = getContactFieldData(contactHistory, fieldsNames.address)
     return {
       orgEmail,
       email,
@@ -39,10 +40,10 @@ const displayContactHistory = (contactHistory) => {
     }
   } else {
     return {
-      orgEmail: 'NA',
-      email: 'NA',
-      farmerName: 'NA',
-      address: 'NA'
+      orgEmail: notAvailable,
+      email: notAvailable,
+      farmerName: notAvailable,
+      address: notAvailable
     }
   }
 }
