@@ -2,6 +2,7 @@ const cheerio = require('cheerio')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const { administrator, processor, user, recommender, authoriser } = require('../../../../app/auth/permissions')
 const getCrumbs = require('../../../utils/get-crumbs')
+const { setEndemicsEnabled } = require('../../../mocks/config')
 
 const applications = require('../../../../app/api/applications')
 jest.mock('../../../../app/api/applications')
@@ -10,7 +11,7 @@ const reference = 'AHWR-555A-FD4C'
 
 applications.updateApplicationStatus = jest.fn().mockResolvedValue(true)
 
-describe('Withdraw Application test', () => {
+describe('Withdraw Application tests when ecndemis flag is On', () => {
   let crumb
   const url = '/withdraw-application/'
   jest.mock('../../../../app/auth')
@@ -22,6 +23,7 @@ describe('Withdraw Application test', () => {
 
   describe(`POST ${url} route`, () => {
     test('returns 302 no auth', async () => {
+      setEndemicsEnabled(true)
       const options = {
         method: 'POST',
         url
@@ -31,6 +33,7 @@ describe('Withdraw Application test', () => {
     })
 
     test('returns 403 when scope is not administrator', async () => {
+      setEndemicsEnabled(true)
       const auth = { strategy: 'session-auth', credentials: { scope: [processor, user, recommender, authoriser] } }
       const options = {
         method: 'POST',
@@ -52,6 +55,7 @@ describe('Withdraw Application test', () => {
     })
 
     test('returns 403', async () => {
+      setEndemicsEnabled(true)
       const auth = { strategy: 'session-auth', credentials: { scope: [processor, user, recommender, authoriser] } }
       const options = {
         method: 'POST',
@@ -69,6 +73,7 @@ describe('Withdraw Application test', () => {
     })
 
     test('returns 403 when duplicate submission - $crumb', async () => {
+      setEndemicsEnabled(true)
       const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const crumb = await getCrumbs(global.__SERVER__)
       const options = {
@@ -95,6 +100,7 @@ describe('Withdraw Application test', () => {
     })
 
     test('Approve withdraw application', async () => {
+      setEndemicsEnabled(true)
       const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {
         method: 'POST',
@@ -115,6 +121,7 @@ describe('Withdraw Application test', () => {
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
     test('Return error, when any of the check boxes are not checked', async () => {
+      setEndemicsEnabled(true)
       const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {
         method: 'POST',
@@ -131,6 +138,45 @@ describe('Withdraw Application test', () => {
       const res = await global.__SERVER__.inject(options)
 
       expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&withdraw=true&errors=W3sidGV4dCI6IlNlbGVjdCBhbGwgY2hlY2tib3hlcyIsImhyZWYiOiIjcG5sLXdpdGhkcmF3LWNvbmZpcm1hdGlvbiJ9XQ%3D%3D`)
+    })
+    test('Approve withdraw application when endemics flag is Off', async () => {
+      setEndemicsEnabled(false)
+      const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+      const options = {
+        method: 'POST',
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
+          withdrawConfirmation: 'yes',
+          page: 1,
+          crumb
+        }
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(applications.updateApplicationStatus).toHaveBeenCalledTimes(1)
+      expect(res.statusCode).toBe(302)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+    })
+    test('Go back when user clicked on No button when endemics flag is Off', async () => {
+      setEndemicsEnabled(false)
+      const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+      const options = {
+        method: 'POST',
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
+          withdrawConfirmation: 'no',
+          page: 1,
+          crumb
+        }
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(302)
+      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
     })
   })
 })

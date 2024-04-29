@@ -88,6 +88,9 @@ describe('View Application test', () => {
       ...jest.requireActual('../../../../app/config'),
       dateOfTesting: {
         enabled: false
+      },
+      endemics: {
+        enabled: true
       }
     }))
     jest.mock('../../../../app/routes/utils/claim-form-helper')
