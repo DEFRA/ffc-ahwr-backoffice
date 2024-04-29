@@ -38,9 +38,9 @@
 
       <h2 class="govuk-fieldset__legend--m">{{ organisationName }}
         <span class="govuk-tag {{ statusClass }}">{{ status }}</span></h2>
-        {% if withdrawConfirmationForm %}
-        {{ viewWithdrawConfirmationForm(reference, page, crumb, errors[0]) }}
-        {% endif %}
+      {% if withdrawConfirmationForm %}
+        {{ viewWithdrawConfirmationForm(endemics, reference, page, crumb, errors[0]) }}
+      {% endif %}
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         {% for item in model.listData %}
           <div class="govuk-summary-list__row">
@@ -61,9 +61,6 @@
           </div>
         {% endfor %}
       </dl>
-      {% if withdrawConfirmationForm %}
-        {{ viewWithdrawConfirmationForm('application', reference, page, crumb) }}
-      {% endif %}
       {% if model.recommendData != false %}
         {{ viewRecommendConfirmationForm('application', reference, page, crumb, model.recommendData) }}
       {% endif %}
@@ -81,13 +78,17 @@
       {% endif %}
       {{ viewApplicationTabs(model, vetVisit, claimed, payment, subStatus, displayMoveToInCheckFromHold, reference, page) }}
       {% if withdrawLink %}
-        <div class="govuk-grid-row">
-          <div class="govuk-grid-column-full">
-            <h2 class="govuk-heading-m">Further action</h2>
-            <p class="govuk-body">This customer has successfully submitted an application but, if they ask, they can withdraw from an agreement.</p>
-            <a class="govuk-button" href="/view-application/{{ reference }}?page={{page}}&withdraw=true" role="button" draggable="false" data-module="govuk-button">Withdraw</a>
+        {% if endemics %}
+          <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+              <h2 class="govuk-heading-m">Further action</h2>
+              <p class="govuk-body">This customer has successfully submitted an application but, if they ask, they can withdraw from an agreement.</p>
+              <a class="govuk-button" href="/view-application/{{ reference }}?page={{page}}&withdraw=true" role="button" draggable="false" data-module="govuk-button">Withdraw</a>
+            </div>
           </div>
-        </div>
+        {% else %}
+          <a class="govuk-link govuk-body" href="/view-application/{{ reference }}?page={{page}}&withdraw=true">Withdraw</a>
+        {% endif %}
       {% endif %}
       {% if recommendForm %}
         {{ viewRecommendForm('application', reference, page, crumb) }}

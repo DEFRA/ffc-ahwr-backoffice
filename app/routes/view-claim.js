@@ -28,6 +28,7 @@ const speciesEligibleNumber = {
 }
 
 const returnClaimDetailIfExist = (property, value) => property && value
+
 const claimSummaryDetails = (organisation, data, type) => [
   (returnClaimDetailIfExist(organisation?.name, { key: { text: 'Business name' }, value: { html: upperFirstLetter(organisation?.name) } })),
   (returnClaimDetailIfExist(data?.typeOfLivestock, { key: { text: 'Livestock' }, value: { html: upperFirstLetter([livestockTypes.pigs, livestockTypes.sheep].includes(data?.typeOfLivestock) ? data?.typeOfLivestock : `${data?.typeOfLivestock} cattle`) } })),
@@ -119,11 +120,13 @@ module.exports = {
         displayRecommendationForm,
         displayRecommendToPayConfirmationForm,
         displayRecommendToRejectConfirmationForm,
+        displayAuthoriseOrRejectForm,
+        displayAuthorisePaymentButton,
         displayAuthoriseToPayConfirmationForm,
         displayAuthoriseToRejectConfirmationForm,
         displayMoveToInCheckFromHold,
         displayOnHoldConfirmationForm
-      } = await claimFormHelper(request, request.params.reference, claim.statusId)
+      } = await claimFormHelper(request, request.params.reference, claim.statusId, 'claim')
 
       const errors = request.query.errors
         ? JSON.parse(Buffer.from(request.query.errors, 'base64').toString('utf8'))
@@ -149,6 +152,10 @@ module.exports = {
         historyData,
         recommendData: Object.entries(getRecommendData(recommend)).length === 0 ? false : getRecommendData(recommend),
         recommendForm: displayRecommendationForm,
+        authoriseOrRejectForm: {
+          display: displayAuthoriseOrRejectForm,
+          displayAuthorisePaymentButton
+        },
         authorisePaymentConfirmForm: {
           display: displayAuthoriseToPayConfirmationForm,
           errorMessage: checkboxErrors(errors, 'authorise-payment-panel')
