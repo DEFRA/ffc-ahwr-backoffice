@@ -11,6 +11,9 @@ jest.mock('../../../../app/api/applications')
 const pagination = require('../../../../app/pagination')
 jest.mock('../../../../app/pagination')
 
+const { setEndemicsEnabled } = require('../../../mocks/config')
+const { endemicsOriginal } = require('../../../../app/config').endemics.enabled
+
 pagination.getPagination = jest.fn().mockReturnValue({
   limit: 10, offset: 0
 })
@@ -69,7 +72,6 @@ describe('Applications test', () => {
       expect($('span.govuk-tag--red').text()).toContain('REJECTED')
       expect($('th[aria-sort="none"]').text()).toContain('SBI')
       expect($('th[aria-sort="none"]').text()).toContain('Status')
-      expect($('th[aria-sort="none"]').text()).toContain('Agreement date')
       expect(sessionMock.getAppSearch).toBeCalled()
       expect(applications.getApplications).toBeCalled()
       expect(pagination.getPagination).toBeCalled()
@@ -78,7 +80,33 @@ describe('Applications test', () => {
       expect(pagination.getPagingData).toHaveBeenCalledWith(9, 10, 1, '')
       expectPhaseBanner.ok($)
     })
-    test('returns 200 with query parameter page 2 with sort', async () => {
+    test('should head column agreement date when endemics enable  true', async () => {
+      setEndemicsEnabled(true)
+      const options = {
+        method: 'GET',
+        url: `${url}?page=1`,
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      const $ = cheerio.load(res.payload)
+      expect($('th[aria-sort="none"]').text()).toContain('Agreement date')
+      setEndemicsEnabled(endemicsOriginal)
+    })
+    test('should head column agreement date when endemics enable  true', async () => {
+      setEndemicsEnabled(false)
+      const options = {
+        method: 'GET',
+        url: `${url}?page=1`,
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      const $ = cheerio.load(res.payload)
+      expect($('th[aria-sort="none"]').text()).toContain('Apply date')
+      setEndemicsEnabled(endemicsOriginal)
+    })
+    test('', async () => {
       let options = {
         method: 'GET',
         url: '/applications/sort/SBI/descending',

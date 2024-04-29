@@ -3,7 +3,7 @@ const { getPagination, getPagingData } = require('../../pagination')
 const { getAppSearch } = require('../../session')
 const { getStyleClassByStatus } = require('../../constants/status')
 const keys = require('../../session/keys')
-const { serviceUri } = require('../../config')
+const { serviceUri, endemics } = require('../../config')
 
 const viewModel = (request, page) => {
   return (async () => {
@@ -13,20 +13,32 @@ const viewModel = (request, page) => {
 
 const getApplicationTableHeader = (sortField) => {
   const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
-  const headerColumns = [{
-    text: 'Agreement number',
-    attributes: {
-      'aria-sort': sortField && sortField.field === 'Reference' ? direction : 'none',
-      'data-url': '/applications/sort/Reference'
-    }
+  let agreementDateTitle = 'Apply date'
+  let headerColumns = [{
+    text: 'Agreement number'
   },
   {
-    text: 'Organisation',
-    attributes: {
-      'aria-sort': sortField && sortField.field === 'Organisation' ? direction : 'none',
-      'data-url': '/applications/sort/Organisation'
-    }
+    text: 'Organisation'
   }]
+
+  if (endemics.enabled) {
+    agreementDateTitle = 'Agreement date'
+    headerColumns = [{
+      text: 'Agreement number',
+      attributes: {
+        'aria-sort': sortField && sortField.field === 'Reference' ? direction : 'none',
+        'data-url': '/applications/sort/Reference'
+      }
+    },
+    {
+      text: 'Organisation',
+      attributes: {
+        'aria-sort': sortField && sortField.field === 'Organisation' ? direction : 'none',
+        'data-url': '/applications/sort/Organisation'
+      }
+    }]
+  }
+
   headerColumns.push({
     text: 'SBI number',
     attributes: {
@@ -36,7 +48,7 @@ const getApplicationTableHeader = (sortField) => {
     format: 'numeric'
   })
   headerColumns.push({
-    text: 'Agreement date',
+    text: agreementDateTitle,
     attributes: {
       'aria-sort': sortField && sortField.field === 'Apply date' ? direction : 'none',
       'data-url': '/applications/sort/Apply date'
@@ -72,18 +84,12 @@ async function createModel (request, page) {
     let statusClass
     const applications = apps.applications.map(n => {
       statusClass = getStyleClassByStatus(n.status.status)
-      return [
+      const output = [
         {
-          text: n.reference,
-          attributes: {
-            'data-sort-value': n.reference
-          }
+          text: n.reference
         },
         {
-          text: n.data?.organisation?.name,
-          attributes: {
-            'data-sort-value': `${n.data?.organisation?.name}`
-          }
+          text: n.data?.organisation?.name
         },
         {
           text: n.data?.organisation?.sbi,
@@ -105,12 +111,20 @@ async function createModel (request, page) {
             'data-sort-value': `${n.status.status}`
           }
         },
-        {
+        { html: `<a href="${serviceUri}/view-application/${n.reference}?page=${page}">View details</a>` }
+      ]
+
+      if (endemics.enabled) {
+        output[0].attributes = { 'data-sort-value': `${n.data?.organisation?.name}` }
+        output[1].attributes = { 'data-sort-value': `${n.data?.organisation?.name}` }
+        output[5] = {
           html: n.type === 'EE'
             ? `<a href="${serviceUri}/claims/${n.reference}">View claims</a>`
             : `<a href="${serviceUri}/view-application/${n.reference}?page=${page}">View details</a>`
         }
-      ]
+      }
+
+      return output
     })
     const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
     const groupByStatus = apps.applicationStatus.map(s => {
