@@ -37,14 +37,30 @@
       <h1 class="govuk-caption-l govuk-!-margin-bottom-3">Agreement number: {{ reference }}</h1>
 
       <h2 class="govuk-fieldset__legend--m">{{ organisationName }}
-        <span class="govuk-tag {{ statusClass }}">{{ status }}</span>
-      </h2>
+        <span class="govuk-tag {{ statusClass }}">{{ status }}</span></h2>
       {% if withdrawConfirmationForm %}
         {{ viewWithdrawConfirmationForm(endemics, reference, page, crumb, errors[0]) }}
       {% endif %}
-      {{ govukSummaryList({
-        rows: model.listData.rows
-      }) }}
+      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        {% for item in model.listData %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">{{item.field}}</dt>
+            <dd class="govuk-summary-list__value">
+              <p>{{item.newValue}}</p>
+              {% if item.oldValue %}
+                <details class="govuk-details">
+                  <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">View change</span>
+                  </summary>
+                  <div class="govuk-details__text">
+                    {{ item.oldValue }}
+                  </div>
+                </details>
+              {% endif %}
+            </dd>
+          </div>
+        {% endfor %}
+      </dl>
       {% if model.recommendData != false %}
         {{ viewRecommendConfirmationForm('application', reference, page, crumb, model.recommendData) }}
       {% endif %}

@@ -23,19 +23,19 @@ function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
 function expectApplicationDetails ($) {
   expect($('.govuk-summary-list__row').length).toEqual(5)
 
-  expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name:')
+  expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name')
   expect($('.govuk-summary-list__value').eq(0).text()).toMatch('Farmer name')
 
-  expect($('.govuk-summary-list__key').eq(1).text()).toMatch('SBI number:')
+  expect($('.govuk-summary-list__key').eq(1).text()).toMatch('SBI number')
   expect($('.govuk-summary-list__value').eq(1).text()).toMatch('333333333')
 
-  expect($('.govuk-summary-list__key').eq(2).text()).toMatch('Address:')
+  expect($('.govuk-summary-list__key').eq(2).text()).toMatch('Address')
   expect($('.govuk-summary-list__value').eq(2).text()).toMatch('Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC')
 
-  expect($('.govuk-summary-list__key').eq(3).text()).toMatch('User Email address:')
+  expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address')
   expect($('.govuk-summary-list__value').eq(3).text()).toMatch('test@test.com')
 
-  expect($('.govuk-summary-list__key').eq(4).text()).toMatch('Org Email address:')
+  expect($('.govuk-summary-list__key').eq(4).text()).toMatch('Organisation email address')
   expect($('.govuk-summary-list__value').eq(4).text()).toMatch('test@test.com')
 }
 function expectRecommendButtons ($, areRecommendButtonsVisible) {

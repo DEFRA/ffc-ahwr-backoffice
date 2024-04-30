@@ -9,6 +9,7 @@ const { getClaimSort, setClaimSort } = require('../session')
 const { claimSort } = require('../session/keys')
 const { getStyleClassByStatus } = require('../constants/status')
 const { serviceUri } = require('../config')
+const { getContactHistory, displayContactHistory } = require('../api/contact-history')
 
 const pageUrl = '/claims/{reference}'
 
@@ -26,22 +27,23 @@ module.exports = [{
       await crumbCache.generateNewCrumb(request, h)
       const application = await getApplication(request.params.reference)
       const claims = await getClaims(request.params.reference)
-
+      const contactHistory = await getContactHistory(request.params.reference)
+      const contactHistoryDetails = displayContactHistory(contactHistory)
       if (!application) {
         throw boom.badRequest()
       }
 
       const organisation = application.data?.organisation
       const summaryDetails = [
-        { key: { text: 'Name' }, value: { text: organisation?.farmerName } },
-        { key: { text: 'SBI number' }, value: { text: organisation?.sbi } },
-        { key: { text: 'Address' }, value: { text: organisation?.address } },
-        { key: { text: 'Email address' }, value: { text: organisation?.email } },
-        { key: { text: 'Organisation email address' }, value: { text: organisation?.orgEmail } },
-        { key: { text: 'Date of agreement' }, value: { text: formatedDateToUk(application.createdAt) } }
+        { field: 'Name', newValue: organisation?.farmerName, oldValue: contactHistoryDetails.farmerName },
+        { field: 'SBI number', newValue: organisation?.sbi, oldValue: null },
+        { field: 'Address', newValue: organisation?.address, oldValue: contactHistoryDetails.address },
+        { field: 'Email address', newValue: organisation?.email, oldValue: contactHistoryDetails.email },
+        { field: 'Organisation email address', newValue: organisation?.orgEmail, oldValue: contactHistoryDetails.orgEmail },
+        { field: 'Date of agreement', newValue: formatedDateToUk(application.createdAt), oldValue: null }
       ]
 
-      const applicationSummaryDetails = summaryDetails.filter((row) => row.value.text)
+      const applicationSummaryDetails = summaryDetails.filter((row) => row.newValue)
 
       const sortField = getClaimSort(request, claimSort.sort) ?? undefined
       const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
