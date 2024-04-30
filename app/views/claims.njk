@@ -22,26 +22,26 @@
                             <dt class="govuk-summary-list__key">{{item.field}}</dt>
                             <dd class="govuk-summary-list__value">
                                 <p>{{item.newValue}}</p>
-                                {% if item.oldValue %}
+                                {% if (item.oldValue) and (item.oldValue != "NA") %}
                                     <details class="govuk-details">
                                         <summary class="govuk-details__summary">
                                             <span class="govuk-details__summary-text">View change</span>
                                         </summary>
                                         <div class="govuk-details__text">
-                                   {{ item.oldValue }}
-                                   </div>
+                                            {{ item.oldValue }}
+                                        </div>
                                     </details>
-                                    {% endif %}
-                                </dd>
-                            </div>
-                        {% endfor %}
-                    </dl>
-                </div>
+                                {% endif %}
+                            </dd>
+                        </div>
+                    {% endfor %}
+                </dl>
             </div>
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-full">
-                    <div class="moj-scrollable-pane__wrapper">
-                        {{ govukTable({
+        </div>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <div class="moj-scrollable-pane__wrapper">
+                    {{ govukTable({
                     attributes: {
                         'data-module': 'moj-sortable-table'
                     },
@@ -49,9 +49,9 @@
                     head: claimTable.header,
                     rows: claimTable.claims
                 }) }}
-                    </div>
                 </div>
-            </div>           
+            </div>
         </div>
     </div>
+</div>
 {%endblock%}

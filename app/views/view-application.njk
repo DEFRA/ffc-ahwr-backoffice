@@ -47,7 +47,7 @@
             <dt class="govuk-summary-list__key">{{item.field}}</dt>
             <dd class="govuk-summary-list__value">
               <p>{{item.newValue}}</p>
-              {% if item.oldValue %}
+              {% if (item.oldValue) and (item.oldValue != "NA") %}
                 <details class="govuk-details">
                   <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">View change</span>
