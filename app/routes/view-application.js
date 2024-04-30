@@ -101,7 +101,6 @@ module.exports = {
         withdrawConfirmationForm,
         payment: application?.payment,
         ...viewModel,
-        listData: {},
         page: request.query.page,
         recommendForm: displayRecommendationForm,
         authorisePaymentConfirmForm: {
