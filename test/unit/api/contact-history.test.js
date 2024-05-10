@@ -65,8 +65,8 @@ describe('contact-history', () => {
       const result = displayContactHistory(contactHistory)
 
       expect(result).toEqual({
-        orgEmail: 'org@example.com',
-        email: 'test@example.com',
+        orgEmail: 'Organisation email at start of agreement: org@example.com',
+        email: 'User email at start of agreement: test@example.com',
         farmerName: 'NA',
         address: 'NA'
       })
