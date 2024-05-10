@@ -1,7 +1,7 @@
 const Wreck = require('@hapi/wreck')
 const _ = require('lodash')
 const { applicationApiUri } = require('../config')
-const { fieldsNames, notAvailable } = require('./../constants/contact-history')
+const { fieldsNames, labels, notAvailable } = require('./../constants/contact-history')
 
 async function getContactHistory (reference) {
   const url = `${applicationApiUri}/application/contact-history/${reference}`
@@ -20,7 +20,8 @@ async function getContactHistory (reference) {
 const getContactFieldData = (contactHistoryData, field) => {
   const filteredData = contactHistoryData.filter(contact => contact?.data?.field === field)
   if (filteredData.length) {
-    return _.sortBy(filteredData, [function (x) { return new Date(x.createdAt) }])[filteredData.length - 1].data.oldValue
+    const oldValue = _.sortBy(filteredData, [function (data) { return new Date(data.createdAt) }])[0].data.oldValue
+    return `${labels[field]} ${oldValue}`
   } else {
     return 'NA'
   }
