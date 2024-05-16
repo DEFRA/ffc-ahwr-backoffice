@@ -1,5 +1,5 @@
 {% from "moj/components/header/macro.njk" import mojHeader %}
-{% macro ahwrHeader(user) %}
+{% macro ahwrHeader(user, endemicsEnabled) %}
     {% if user %}
         {{ mojHeader({
         organisationLabel: {
@@ -7,7 +7,7 @@
             href: 'https://www.gov.uk/'
         },
         serviceLabel: {
-            text: 'Get funding to improve animal health and welfare',
+            text: 'Get funding to improve animal health and welfare' if endemicsEnabled else 'Annual health and welfare review agreements',
             href: '/'
         },
         navigation: {
@@ -29,7 +29,7 @@
         href: '/'
     },
     serviceLabel: {
-        text: 'Get funding to improve animal health and welfare',
+        text: 'Get funding to improve animal health and welfare' if endemicsEnabled else 'Annual health and welfare review agreements',
         href: '/'
     },
     navigation: {

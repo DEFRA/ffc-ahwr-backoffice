@@ -27,6 +27,15 @@ describe('Applications test', () => {
   const url = '/applications'
   jest.mock('../../../../app/auth')
   const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: 'test user' } }
+
+  beforeAll(() => {
+    setEndemicsEnabled(true)
+  })
+
+  afterAll(() => {
+    setEndemicsEnabled(endemicsOriginal)
+  })
+
   describe(`GET ${url} route`, () => {
     test('returns 302 no auth', async () => {
       const options = {
@@ -131,6 +140,35 @@ describe('Applications test', () => {
       expectPhaseBanner.ok($)
     })
     test('returns 200 without query parameter', async () => {
+      setEndemicsEnabled(false)
+      const options = {
+        method: 'GET',
+        url: `${url}`,
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      const $ = cheerio.load(res.payload)
+      expect($('h1.govuk-heading-l').text()).toEqual('Annual health and welfare review agreements')
+      expect($('title').text()).toContain('AHWR Applications')
+      expect($('span.govuk-tag--green').text()).toContain('AGREED')
+      expect($('span.govuk-tag--yellow').text()).toContain('DATA INPUTTED')
+      expect($('span.govuk-tag--orange').text()).toContain('CHECK')
+      expect($('span.govuk-tag--blue').text()).toContain('PAID')
+      expect($('span.govuk-tag--purple').text()).toContain('ACCEPTED')
+      expect($('span.govuk-tag--blue').text()).toContain('CLAIMED')
+      expect($('span.govuk-tag--grey').text()).toContain('WITHDRAWN')
+      expect($('span.govuk-tag--red').text()).toContain('REJECTED')
+      expect(sessionMock.getAppSearch).toBeCalled()
+      expect(applications.getApplications).toBeCalled()
+      expect(pagination.getPagination).toBeCalled()
+      expect(pagination.getPagingData).toBeCalled()
+      expectPhaseBanner.ok($)
+      setEndemicsEnabled(endemicsOriginal)
+    })
+
+    test('returns correct content for endemics enabled', async () => {
+      setEndemicsEnabled(true)
       const options = {
         method: 'GET',
         url: `${url}`,
@@ -154,6 +192,7 @@ describe('Applications test', () => {
       expect(pagination.getPagination).toBeCalled()
       expect(pagination.getPagingData).toBeCalled()
       expectPhaseBanner.ok($)
+      setEndemicsEnabled(endemicsOriginal)
     })
   })
   describe(`POST ${url} route`, () => {
