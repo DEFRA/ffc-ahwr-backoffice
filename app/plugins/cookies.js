@@ -1,3 +1,5 @@
+const { endemics } = require('../config')
+
 module.exports = {
   plugin: {
     name: 'cookies',
@@ -6,6 +8,7 @@ module.exports = {
         const statusCode = request.response.statusCode
         if (request.response.variety === 'view' && statusCode !== 404 && statusCode !== 500 && request.response.source.manager._context) {
           request.response.source.manager._context.user = request.auth?.credentials?.account
+          request.response.source.manager._context.endemicsEnabled = endemics.enabled
         }
         return h.continue
       })
