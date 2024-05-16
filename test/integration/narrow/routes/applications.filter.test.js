@@ -10,6 +10,9 @@ jest.mock('../../../../app/api/applications')
 const pagination = require('../../../../app/pagination')
 jest.mock('../../../../app/pagination')
 
+const { setEndemicsEnabled } = require('../../../mocks/config')
+const { endemicsOriginal } = require('../../../../app/config').endemics.enabled
+
 pagination.getPagination = jest.fn().mockReturnValue({
   limit: 10, offset: 0
 })
@@ -27,9 +30,19 @@ describe('Applications Filter test', () => {
   jest.mock('../../../../app/auth')
   const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
   const method = 'GET'
+
+  beforeAll(() => {
+    setEndemicsEnabled(true)
+  })
+
+  afterAll(() => {
+    setEndemicsEnabled(endemicsOriginal)
+  })
+
   beforeEach(() => {
     jest.clearAllMocks()
   })
+
   describe(`GET ${url} route remove`, () => {
     test('returns 302 no auth', async () => {
       const options = {

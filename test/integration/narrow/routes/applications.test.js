@@ -27,6 +27,15 @@ describe('Applications test', () => {
   const url = '/applications'
   jest.mock('../../../../app/auth')
   const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: 'test user' } }
+
+  beforeAll(() => {
+    setEndemicsEnabled(true)
+  })
+
+  afterAll(() => {
+    setEndemicsEnabled(endemicsOriginal)
+  })
+
   describe(`GET ${url} route`, () => {
     test('returns 302 no auth', async () => {
       const options = {
