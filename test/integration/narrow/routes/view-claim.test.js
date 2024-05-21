@@ -94,11 +94,11 @@ describe('View claim test', () => {
           {
             result: [
               {
-                testResult: '123',
+                result: '123',
                 diseaseType: 'yyyyy'
               },
               {
-                testResult: 'ccc',
+                result: 'ccc',
                 diseaseType: 'bbbb'
               }
             ],
@@ -306,7 +306,7 @@ describe('View claim test', () => {
       expect($('.govuk-summary-list__value').eq(14).text()).toMatch('40')
       expect($('.govuk-summary-list__key').eq(15).text()).toMatch('Endemics package')
       expect($('.govuk-summary-list__value').eq(15).text()).toMatch('ReducedLameness')
-      expect($('.govuk-summary-list__key').eq(16).text()).toMatch('Disease test and result')
+      expect($('.govuk-summary-list__key').eq(16).text()).toMatch('Disease or condition test result')
       expect($('.govuk-summary-list__value').eq(16).text()).toMatch('Heel or toe abscess (Clinical symptoms present)')
       expect($('.govuk-summary-list__key').eq(17).text()).toMatch('')
       expect($('.govuk-summary-list__value').eq(17).text()).toMatch('Shelly hoof (Clinical symptoms not present)')
