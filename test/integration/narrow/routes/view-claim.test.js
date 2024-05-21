@@ -94,11 +94,11 @@ describe('View claim test', () => {
           {
             result: [
               {
-                testResult: '123',
+                result: '123',
                 diseaseType: 'yyyyy'
               },
               {
-                testResult: 'ccc',
+                result: 'ccc',
                 diseaseType: 'bbbb'
               }
             ],
