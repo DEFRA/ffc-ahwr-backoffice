@@ -38,6 +38,7 @@ const claimSummaryDetails = (organisation, data, type) => [
   (returnClaimDetailIfExist(data?.speciesNumbers, { key: { text: speciesEligibleNumber[data?.typeOfLivestock] }, value: { html: upperFirstLetter(data?.speciesNumbers) } })),
   (returnClaimDetailIfExist(data?.vetsName, { key: { text: "Vet's name" }, value: { html: upperFirstLetter(data?.vetsName) } })),
   (returnClaimDetailIfExist(data?.vetRCVSNumber, { key: { text: "Vet's RCVS number" }, value: { html: data?.vetRCVSNumber } })),
+  (returnClaimDetailIfExist(data?.piHunt, { key: { text: "PI hunt" }, value: { html: upperFirstLetter(data?.piHunt) } })),
   (returnClaimDetailIfExist(data?.laboratoryURN, { key: { text: 'Test results URN' }, value: { html: data?.laboratoryURN } })),
   (returnClaimDetailIfExist(data?.numberOfOralFluidSamples, { key: { text: 'Number of tests' }, value: { html: data?.numberOfOralFluidSamples } })),
   (returnClaimDetailIfExist(data?.numberAnimalsTested, { key: { text: 'Number of animals tested' }, value: { html: data?.numberAnimalsTested } })),
@@ -62,13 +63,11 @@ const claimSummaryDetails = (organisation, data, type) => [
   ...(data?.typeOfLivestock === livestockTypes.sheep && type === claimType.endemics && typeof data?.testResults === 'object' && data?.testResults?.length
     ? (data?.testResults || []).map((sheepTest, index) => {
         return {
-          key: { text: index === 0 ? 'Disease test and result' : '' },
+          key: { text: index === 0 ? 'Disease or condition test result' : '' },
           value: {
             html: typeof sheepTest.result === 'object'
-              ? sheepTest.result.map((testResult) => `${testResult.diseaseType} (${testResult.testResult})</br>`).join(' ')
-              : `${sheepTestTypes[data?.sheepEndemicsPackage].find((test) => test.value === sheepTest.diseaseType).text} (${
-                    sheepTestResultsType[sheepTest.diseaseType].find((resultType) => resultType.value === sheepTest.result).text
-                  })`
+              ? sheepTest.result.map((testResult) => `${testResult.diseaseType} (${testResult.result})</br>`).join(' ')
+              : `${sheepTestTypes[data?.sheepEndemicsPackage].find((test) => test.value === sheepTest.diseaseType).text} (${sheepTestResultsType[sheepTest.diseaseType].find(resultType => resultType.value === sheepTest.result).text})`
           }
         }
       })
