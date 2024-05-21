@@ -38,7 +38,7 @@ const claimSummaryDetails = (organisation, data, type) => [
   (returnClaimDetailIfExist(data?.speciesNumbers, { key: { text: speciesEligibleNumber[data?.typeOfLivestock] }, value: { html: upperFirstLetter(data?.speciesNumbers) } })),
   (returnClaimDetailIfExist(data?.vetsName, { key: { text: "Vet's name" }, value: { html: upperFirstLetter(data?.vetsName) } })),
   (returnClaimDetailIfExist(data?.vetRCVSNumber, { key: { text: "Vet's RCVS number" }, value: { html: data?.vetRCVSNumber } })),
-  (returnClaimDetailIfExist(data?.piHunt, { key: { text: "PI hunt" }, value: { html: upperFirstLetter(data?.piHunt) } })),
+  (returnClaimDetailIfExist(data?.piHunt, { key: { text: 'PI hunt' }, value: { html: upperFirstLetter(data?.piHunt) } })),
   (returnClaimDetailIfExist(data?.laboratoryURN, { key: { text: 'Test results URN' }, value: { html: data?.laboratoryURN } })),
   (returnClaimDetailIfExist(data?.numberOfOralFluidSamples, { key: { text: 'Number of tests' }, value: { html: data?.numberOfOralFluidSamples } })),
   (returnClaimDetailIfExist(data?.numberAnimalsTested, { key: { text: 'Number of animals tested' }, value: { html: data?.numberAnimalsTested } })),
