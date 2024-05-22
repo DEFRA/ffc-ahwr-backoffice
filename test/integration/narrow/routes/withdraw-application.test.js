@@ -32,9 +32,9 @@ describe('Withdraw Application tests when ecndemis flag is On', () => {
       expect(res.statusCode).toBe(302)
     })
 
-    test('returns 403 when scope is not administrator', async () => {
+    test('returns 403 when scope is not administrator, recommender or authoriser', async () => {
       setEndemicsEnabled(true)
-      const auth = { strategy: 'session-auth', credentials: { scope: [processor, user, recommender, authoriser] } }
+      const auth = { strategy: 'session-auth', credentials: { scope: [processor, user] } }
       const options = {
         method: 'POST',
         url,
