@@ -11,7 +11,7 @@ const reference = 'AHWR-555A-FD4C'
 
 applications.updateApplicationStatus = jest.fn().mockResolvedValue(true)
 
-describe('Withdraw Application tests when ecndemis flag is On', () => {
+describe('Withdraw Application tests when endemics flag is On', () => {
   let crumb
   const url = '/withdraw-application/'
   jest.mock('../../../../app/auth')
