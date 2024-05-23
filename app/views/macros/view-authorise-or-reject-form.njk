@@ -1,6 +1,6 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% macro viewAuthoriseOrRejectForm(claimOrApplication, reference, page, crumb, displayAuthorisePaymentButton) %}
+{% macro viewAuthoriseOrRejectForm(claimOrApplication, reference, page, crumb, contactPerson, displayAuthorisePaymentButton) %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <div id="authorise-or-reject-form-panel">
@@ -20,7 +20,7 @@
               }}
             {% elif claimOrApplication == 'claim' %}
               <p class="govuk-body">This customer has been recommended for payment.</p>
-              <p class="govuk-body">If you do not agree with this action, contact the person who recommended it and discuss it with them.</p>
+              <p class="govuk-body">If you do not agree with this action, contact {{ contactPerson }} who recommended it and discuss it with them.</p>
               {{
                 govukButton({
                   text: "Pay",
@@ -35,7 +35,7 @@
           {% else %}
             {% if claimOrApplication == 'application' %}
               <div class="govuk-grid-row">
-              {{
+                {{
                 govukButton({
                   text: "Reject claim",
                   attributes: {
@@ -48,7 +48,7 @@
               </div>
             {% elif claimOrApplication == 'claim' %}
               <p class="govuk-body">This claim has been recommended for rejection.</p>
-              <p class="govuk-body">If you do not agree with this action, contact the person who recommended it and discuss it with them.</p>
+              <p class="govuk-body">If you do not agree with this action, contact {{ contactPerson }} who recommended it and discuss it with them.</p>
               {{
                 govukButton({
                   text: "Reject",
