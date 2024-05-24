@@ -142,10 +142,7 @@ module.exports = {
       const historyData = getApplicationHistoryModel(applicationHistory)
 
       const stageExecutionData = await getStageExecutionByApplication(request.params.reference)
-      if (!stageExecutionData) {
-        throw boom.badRequest()
-      }
-      const contactPerson = stageExecutionData[0]?.executedBy
+      const contactPerson = stageExecutionData?.[0]?.executedBy
 
       return h.view('view-claim', {
         page: 1,
