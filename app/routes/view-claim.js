@@ -11,6 +11,7 @@ const { livestockTypes, claimType } = require('./../constants/claim')
 const getRecommendData = require('./models/recommend-claim')
 const { sheepTestTypes, sheepTestResultsType } = require('./../constants/sheep-test-types')
 const { administrator, authoriser, processor, recommender, user } = require('../auth/permissions')
+const { getStageExecutionByApplication } = require('../api/stage-execution')
 
 const { upperFirstLetter, formatedDateToUk } = require('../lib/display-helper')
 const claimFormHelper = require('./utils/claim-form-helper')
@@ -140,12 +141,16 @@ module.exports = {
       const applicationHistory = await getApplicationHistory(reference)
       const historyData = getApplicationHistoryModel(applicationHistory)
 
+      const stageExecutionData = await getStageExecutionByApplication(request.params.reference)
+      const contactPerson = stageExecutionData?.[0]?.executedBy
+
       return h.view('view-claim', {
         page: 1,
         backLink: backLink(claim?.applicationReference),
         reference,
         title: upperFirstLetter(application?.data?.organisation?.name),
         claimSummaryDetails: claimSummaryDetails(organisation, data, type),
+        contactPerson,
         status: { capitalisedtype: formatStatusId(claim.statusId), normalType: upperFirstLetter(formatStatusId(claim.statusId).toLowerCase()), tagClass: getStyleClassByStatus(formatStatusId(claim.statusId)) },
         applicationSummaryDetails,
         historyData,

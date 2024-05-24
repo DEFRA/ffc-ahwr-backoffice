@@ -101,7 +101,7 @@
         {{ viewRecommendForm('claim', reference, page, crumb) }}
       {% endif %}
       {% if authoriseOrRejectForm.display %}
-        {{ viewAuthoriseOrRejectForm('claim', reference, page, crumb, authoriseOrRejectForm.displayAuthorisePaymentButton) }}
+        {{ viewAuthoriseOrRejectForm('claim', reference, page, crumb, contactPerson, authoriseOrRejectForm.displayAuthorisePaymentButton) }}
       {% endif %}
 
     </div>
