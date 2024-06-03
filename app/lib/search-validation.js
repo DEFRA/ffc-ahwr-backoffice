@@ -30,7 +30,7 @@ const sbiRegEx = /^[\0-9]{9}$/i
 module.exports = (searchText) => {
   let searchType
   searchText = (searchText ?? '').trim()
- 
+
   switch (true) {
     case regexChecker(appRefRegEx, searchText) || regexChecker(newAppRefRegEx, searchText):
       searchType = 'ref'
