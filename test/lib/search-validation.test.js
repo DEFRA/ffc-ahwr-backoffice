@@ -3,6 +3,11 @@ const setSearchParams = require('../../app/lib/search-validation')
 describe('Set sesrch params test', () => {
   test.each([
     { type: 'ref', text: 'AHWR-5446-5EF4' },
+    { type: 'ref', text: 'IAHW-1234-5678' },
+    { type: 'ref', text: 'iahw-ABCD-1234' },
+    { type: 'ref', text: 'IAHW-ABCD-1234' },
+    { type: 'organisation', text: 'IAHW-1234' },
+    { type: 'organisation', text: 'IAHW-ABCD-1234-EFGH' },
     { type: 'sbi', text: '107279003' },
     { type: 'organisation', text: 'a string' },
     { type: 'reset', text: '' }
