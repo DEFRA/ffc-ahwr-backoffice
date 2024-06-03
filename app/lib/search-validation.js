@@ -1,4 +1,7 @@
-const appRefRegEx = /^AHWR-[\da-f]{4}-[\da-f]{4}$/i
+const regexChecker = require('../../app/routes/utils/regex-checker')
+
+const appRefRegEx = /^AHWR-[A-Z0-9]{4}-[A-Z0-9]{4}$/i
+const newAppRefRegEx = /^IAHW-[A-Z0-9]{4}-[A-Z0-9]{4}$/i
 const validStatus = [
   'agreed',
   'applied',
@@ -27,8 +30,9 @@ const sbiRegEx = /^[\0-9]{9}$/i
 module.exports = (searchText) => {
   let searchType
   searchText = (searchText ?? '').trim()
+
   switch (true) {
-    case appRefRegEx.test(searchText):
+    case regexChecker(appRefRegEx, searchText) || regexChecker(newAppRefRegEx, searchText):
       searchType = 'ref'
       break
     case validStatus.indexOf(searchText.toLowerCase()) !== -1:
