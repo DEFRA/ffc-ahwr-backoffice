@@ -46,7 +46,7 @@ const claimSummaryDetails = (organisation, data, type) => [
   (returnClaimDetailIfExist(data?.reviewTestResults, { key: { text: 'Review test result' }, value: { html: upperFirstLetter(data?.reviewTestResults) } })),
   (returnClaimDetailIfExist(data?.testResults && typeof data?.testResults === 'string', { key: { text: data?.reviewTestResults ? 'Endemics test result' : 'Test result' }, value: { html: typeof data?.testResults === 'string' ? upperFirstLetter(data?.testResults) : '' } })),
   (returnClaimDetailIfExist(data?.vetVisitsReviewTestResults, { key: { text: 'Vet Visits Review Test results' }, value: { html: upperFirstLetter(data?.vetVisitsReviewTestResults) } })),
-  (returnClaimDetailIfExist(data?.diseaseStatus, { key: { text: 'Diseases status category' }, value: { html: data?.diseaseStatus } })),
+  (returnClaimDetailIfExist(data?.diseaseStatus, { key: { text: 'Disease status category' }, value: { html: data?.diseaseStatus } })),
   (returnClaimDetailIfExist(data?.numberOfSamplesTested, { key: { text: 'Samples tested' }, value: { html: data?.numberOfSamplesTested } })),
   (returnClaimDetailIfExist(data?.herdVaccinationStatus, { key: { text: 'Herd vaccination status' }, value: { html: upperFirstLetter(data?.herdVaccinationStatus) } })),
   (returnClaimDetailIfExist(data?.sheepEndemicsPackage, { key: { text: 'Endemics package' }, value: { html: upperFirstLetter(data?.sheepEndemicsPackage) } })),

@@ -376,7 +376,7 @@ describe('View claim test', () => {
       expect($('.govuk-summary-list__value').eq(15).text()).toMatch('Positive')
       expect($('.govuk-summary-list__key').eq(16).text()).toMatch('Vet Visits Review Test results')
       expect($('.govuk-summary-list__value').eq(16).text()).toMatch('Positive')
-      expect($('.govuk-summary-list__key').eq(17).text()).toMatch('Diseases status category')
+      expect($('.govuk-summary-list__key').eq(17).text()).toMatch('Disease status category')
       expect($('.govuk-summary-list__value').eq(17).text()).toMatch('4')
       expect($('.govuk-summary-list__key').eq(18).text()).toMatch('Samples tested')
       expect($('.govuk-summary-list__value').eq(18).text()).toMatch('6')
