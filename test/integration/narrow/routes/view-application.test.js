@@ -135,6 +135,7 @@ describe('View Application test', () => {
     })
     test.each([
       ['administrator', true],
+      ['authoriser', true],
       ['processor', false],
       ['user', false]
     ])('Withdrawl link feature flag enabled, link displayed as expected for role %s', async (authScope, isWithdrawLinkVisible) => {

@@ -13,7 +13,7 @@ module.exports = {
   path: '/withdraw-application',
   options: {
     pre: [{ method: preDoubleSubmitHandler }],
-    auth: { scope: endemics ? [administrator, authoriser, recommender] : [administrator] },
+    auth: { scope: endemics.enabled ? [administrator, authoriser, recommender] : [administrator, authoriser] },
     handler: async (request, h) => {
       await crumbCache.generateNewCrumb(request, h)
 

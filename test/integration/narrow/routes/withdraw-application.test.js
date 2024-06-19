@@ -141,7 +141,7 @@ describe('Withdraw Application tests when endemics flag is On', () => {
     })
     test('Approve withdraw application when endemics flag is Off', async () => {
       setEndemicsEnabled(false)
-      const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+      const auth = { strategy: 'session-auth', credentials: { scope: [administrator, authoriser], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {
         method: 'POST',
         url,
@@ -161,7 +161,7 @@ describe('Withdraw Application tests when endemics flag is On', () => {
     })
     test('Go back when user clicked on No button when endemics flag is Off', async () => {
       setEndemicsEnabled(false)
-      const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
+      const auth = { strategy: 'session-auth', credentials: { scope: [administrator, authoriser], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {
         method: 'POST',
         url,
