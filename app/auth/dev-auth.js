@@ -1,4 +1,4 @@
-const { administrator, processor, user, recommender, authoriser } = require('./permissions')
+const {  processor, user, recommender } = require('./permissions')
 const { v4: uuidv4 } = require('uuid')
 const devAccount = { homeAccountId: uuidv4(), name: 'Developer' }
 
@@ -8,18 +8,18 @@ const getAuthenticationUrl = () => {
 
 const authenticate = async (_, cookieAuth) => {
   cookieAuth.set({
-    scope: [administrator, processor, user, recommender, authoriser],
+    scope: [ processor, user, recommender],
     account: devAccount
   })
 }
 
 const refresh = async (_account, cookieAuth, _forceRefresh = true) => {
   cookieAuth.set({
-    scope: [administrator, processor, user, recommender, authoriser],
+    scope: [ processor, user, recommender],
     account: devAccount
   })
 
-  return [administrator, processor, user, recommender, authoriser]
+  return [ processor, user, recommender]
 }
 
 const logout = async (_account) => {

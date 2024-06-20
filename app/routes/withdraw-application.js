@@ -2,7 +2,7 @@ const Joi = require('joi')
 const { Buffer } = require('buffer')
 const getUser = require('../auth/get-user')
 const crumbCache = require('./utils/crumb-cache')
-const { administrator, authoriser, recommender } = require('../auth/permissions')
+const { administrator, authoriser } = require('../auth/permissions')
 const { updateApplicationStatus } = require('../api/applications')
 const applicationStatus = require('../constants/application-status')
 const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
@@ -13,7 +13,7 @@ module.exports = {
   path: '/withdraw-application',
   options: {
     pre: [{ method: preDoubleSubmitHandler }],
-    auth: { scope: endemics.enabled ? [administrator, authoriser, recommender] : [administrator, authoriser] },
+    auth: { scope: [administrator, authoriser] },
     handler: async (request, h) => {
       await crumbCache.generateNewCrumb(request, h)
 
