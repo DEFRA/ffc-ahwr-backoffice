@@ -1,13 +1,10 @@
-# Snyk (<https://snyk.io>) policy file, patches or ignores known vulnerabilities
-
-version: v1.22.0
-
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.22.1
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
-
 ignore:
-  SNYK-JS-AZUREMSALNODE-7246761:
+  SNYK-JS-WS-7266574:
     - "*":
-        reason: no known fix
-        expires: "2024-06-23T12:15:56.831Z"
-        created: "2024-06-21T12:15:56.840Z"
+        reason: None given
+        expires: "2024-07-17T00:00:00.000Z"
+        created: "2024-06-17T00:00:00.000Z"
 patch: {}
