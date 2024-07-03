@@ -134,7 +134,7 @@ describe('/approve-application-claim', () => {
         expect.anything(),
         role,
         'Claim Approve/Reject',
-        'Paid',
+        'Ready to pay',
         true
       )
       expect(res.statusCode).toBe(302)
@@ -171,7 +171,7 @@ describe('/approve-application-claim', () => {
         expect.anything(),
         role,
         'Claim Approve/Reject',
-        'Paid',
+        'Ready to pay',
         true
       )
       expect(res.statusCode).toBe(302)
