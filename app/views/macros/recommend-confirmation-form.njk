@@ -2,7 +2,7 @@
   {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
   <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="pnl-recommend-confirmation">
     {% if claimOrApplication == 'application' %}
-      <p class="govuk-body govuk-!-text-align-right"><a href="/view-application/{{ reference }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p>
+      <p class="govuk-body govuk-!-text-align-right"><a href="/view-agreement/{{ reference }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p>
     {% elif claimOrApplication == 'claim' %}
       <p class="govuk-body govuk-!-text-align-right"><a href="/view-claim/{{ reference }}" role="button" draggable="false" class="govuk-link">Back</a></p>
     {% endif %}

@@ -120,7 +120,7 @@ describe('Reject Application test', () => {
         false
       )
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
     })
     test('Reject claim processed', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [], account: { homeAccountId: 'testId', name: 'admin' } } }
@@ -160,7 +160,7 @@ describe('Reject Application test', () => {
       const res = await global.__SERVER__.inject(options)
 
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/123?page=1&reject=true&errors=${encodedEmptyArray}`)
+      expect(res.headers.location).toEqual(`/view-agreement/123?page=1&reject=true&errors=${encodedEmptyArray}`)
     })
 
     test('Reject application claim not processed', async () => {
@@ -180,7 +180,7 @@ describe('Reject Application test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(processStageActions).not.toHaveBeenCalled()
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&reject=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&reject=true&errors=${encodedErrors}`)
     })
   })
 
@@ -200,7 +200,7 @@ describe('Reject Application test', () => {
     const res = await global.__SERVER__.inject(options)
     expect(processStageActions).not.toHaveBeenCalled()
     expect(res.statusCode).toBe(302)
-    expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&reject=true&errors=${encodedErrors}`)
+    expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&reject=true&errors=${encodedErrors}`)
   })
   test('retuns 400 Bad Request for claim', async () => {
     const options = {

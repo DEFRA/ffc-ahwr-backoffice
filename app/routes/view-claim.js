@@ -2,7 +2,6 @@ const { Buffer } = require('buffer')
 const Joi = require('joi')
 const boom = require('@hapi/boom')
 const { getClaim } = require('../api/claims')
-const { claims } = require('./../config/routes')
 const { getApplication, getApplicationHistory } = require('../api/applications')
 const getApplicationHistoryModel = require('./models/application-history')
 const { getStyleClassByStatus } = require('../constants/status')
@@ -18,7 +17,7 @@ const claimFormHelper = require('./utils/claim-form-helper')
 const checkboxErrors = require('./utils/checkbox-errors')
 
 const backLink = (applicationReference) => {
-  return `/${claims}/${applicationReference}`
+  return `/agreement/${applicationReference}/claims`
 }
 
 const speciesEligibleNumber = {

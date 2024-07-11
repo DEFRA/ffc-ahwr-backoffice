@@ -7,10 +7,10 @@
         <div class="govuk-panel__body">
           {% if claimOrApplication == 'application' %}
             <div class="govuk-grid-row">
-              <button class="govuk-button govuk-button govuk-!-margin-bottom-3" onclick="location.href='/view-application/{{ reference }}?page={{page}}&approve=true';">Approve claim</button>
+              <button class="govuk-button govuk-button govuk-!-margin-bottom-3" onclick="location.href='/view-agreement/{{ reference }}?page={{page}}&approve=true';">Approve claim</button>
             </div>
             <div class="govuk-grid-row">
-              <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-3" onclick="location.href='/view-application/{{ reference }}?page={{page}}&reject=true';">Reject claim</button>
+              <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-3" onclick="location.href='/view-agreement/{{ reference }}?page={{page}}&reject=true';">Reject claim</button>
             </div>
           {% elif claimOrApplication == 'claim' %}
             <div class="govuk-grid-row">

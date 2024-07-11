@@ -3,7 +3,7 @@ const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const getCrumbs = require('../../../utils/get-crumbs')
 const { administrator } = require('../../../../app/auth/permissions')
 const sessionMock = require('../../../../app/session')
-const applicationData = require('.././../../data/applications.json')
+const applicationData = require('../../../data/applications.json')
 
 jest.mock('../../../../app/session')
 const applications = require('../../../../app/api/applications')
@@ -24,7 +24,7 @@ pagination.getPagingData = jest.fn().mockReturnValue({
 applications.getApplications = jest.fn().mockReturnValue(applicationData)
 
 describe('Applications test', () => {
-  const url = '/applications'
+  const url = '/agreements'
   jest.mock('../../../../app/auth')
   const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: 'test user' } }
 
@@ -54,8 +54,8 @@ describe('Applications test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
-      expect($('h1.govuk-heading-l').text()).toEqual('Agreements and claims')
-      expect($('title').text()).toContain('AHWR Applications')
+      expect($('h1.govuk-heading-l').text()).toEqual('Agreements')
+      expect($('title').text()).toContain('AHWR Agreements')
       expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(5)
       expectPhaseBanner.ok($)
     })
@@ -69,8 +69,8 @@ describe('Applications test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
-      expect($('h1.govuk-heading-l').text()).toEqual('Agreements and claims')
-      expect($('title').text()).toContain('AHWR Applications')
+      expect($('h1.govuk-heading-l').text()).toEqual('Agreements')
+      expect($('title').text()).toContain('AHWR Agreements')
       expect($('span.govuk-tag--green').text()).toContain('AGREED')
       expect($('span.govuk-tag--yellow').text()).toContain('DATA INPUTTED')
       expect($('span.govuk-tag--orange').text()).toContain('CHECK')
@@ -118,7 +118,7 @@ describe('Applications test', () => {
     test('', async () => {
       let options = {
         method: 'GET',
-        url: '/applications/sort/SBI/descending',
+        url: '/agreements/sort/SBI/descending',
         auth
       }
       let res = await global.__SERVER__.inject(options)
@@ -149,8 +149,8 @@ describe('Applications test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
-      expect($('h1.govuk-heading-l').text()).toEqual('Annual health and welfare review agreements')
-      expect($('title').text()).toContain('AHWR Applications')
+      expect($('h1.govuk-heading-l').text()).toEqual('Agreements')
+      expect($('title').text()).toContain('AHWR Agreements')
       expect($('span.govuk-tag--green').text()).toContain('AGREED')
       expect($('span.govuk-tag--yellow').text()).toContain('DATA INPUTTED')
       expect($('span.govuk-tag--orange').text()).toContain('CHECK')
@@ -177,8 +177,8 @@ describe('Applications test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
-      expect($('h1.govuk-heading-l').text()).toEqual('Agreements and claims')
-      expect($('title').text()).toContain('AHWR Applications')
+      expect($('h1.govuk-heading-l').text()).toEqual('Agreements')
+      expect($('title').text()).toContain('AHWR Agreements')
       expect($('span.govuk-tag--green').text()).toContain('AGREED')
       expect($('span.govuk-tag--yellow').text()).toContain('DATA INPUTTED')
       expect($('span.govuk-tag--orange').text()).toContain('CHECK')
@@ -274,7 +274,7 @@ describe('Applications test', () => {
       expect(applications.getApplications).toBeCalled()
       expect(pagination.getPagination).toBeCalled()
       const $ = cheerio.load(res.payload)
-      expect($('p.govuk-error-message').text()).toMatch('No Applications found.')
+      expect($('p.govuk-error-message').text()).toMatch('No agreements found.')
     })
   })
 })

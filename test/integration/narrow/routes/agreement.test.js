@@ -2,17 +2,17 @@ const cheerio = require('cheerio')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const { administrator } = require('../../../../app/auth/permissions')
 
-const applicationData = require('.././../../data/applications.json')
+const applicationData = require('../../../data/applications.json')
 const applications = require('../../../../app/api/applications')
 jest.mock('../../../../app/api/applications')
 applications.getApplication = jest.fn().mockReturnValue(applicationData.applications[0])
 
-const claimData = require('.././../../data/claims.json')
+const claimData = require('../../../data/claims.json')
 const claims = require('../../../../app/api/claims')
 jest.mock('../../../../app/api/claims')
-claims.getClaims = jest.fn().mockReturnValue(claimData)
+claims.getClaimsByApplicationReference = jest.fn().mockReturnValue(claimData)
 
-const contactHistoryData = require('.././../../data/contact-history.json')
+const contactHistoryData = require('../../../data/contact-history.json')
 const contactHistory = require('../../../../app/api/contact-history')
 jest.mock('../../../../app/api/contact-history.js')
 contactHistory.getContactHistory = jest.fn().mockReturnValue(contactHistoryData)
@@ -32,7 +32,7 @@ jest.mock('../../../../app/session')
 const session = require('../../../../app/session')
 
 describe('Claims test', () => {
-  const url = '/claims/123'
+  const url = '/agreement/123/claims'
 
   describe(`GET ${url} route`, () => {
     test('returns 302 no auth', async () => {
@@ -67,7 +67,6 @@ describe('Claims test', () => {
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
       expect($('title').text()).toContain('Administration - My Farm')
-      expect($('h2.govuk-heading-l').text()).toContain('My Farm')
       expectPhaseBanner.ok($)
 
       expect($('th[aria-sort]')[0].attribs['aria-sort']).toEqual('none')
@@ -83,7 +82,7 @@ describe('Claims test', () => {
     })
 
     test('returns table in correct sort order', async () => {
-      session.getClaimSort.mockReturnValueOnce({ field: 'claim number' })
+      session.getClaimSort.mockReturnValueOnce({ field: 'claim number', direction: 'ASC' })
 
       const options = {
         method: 'GET',
@@ -95,7 +94,6 @@ describe('Claims test', () => {
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
       expect($('title').text()).toContain('Administration - My Farm')
-      expect($('h2.govuk-heading-l').text()).toContain('My Farm')
       expectPhaseBanner.ok($)
 
       expect($('th[aria-sort]')[0].attribs['aria-sort']).toEqual('ascending')
@@ -134,14 +132,13 @@ describe('Claims test', () => {
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
       expect($('title').text()).toContain('Administration - My Farm')
-      expect($('h2.govuk-heading-l').text()).toContain('My Farm')
       expectPhaseBanner.ok($)
     })
 
     test('returns 200 sort endpoint', async () => {
       const options = {
         method: 'GET',
-        url: '/claims/123/sort/claim number/DESC',
+        url: '/agreement/123/claims/sort/claim number/DESC',
         auth
       }
 

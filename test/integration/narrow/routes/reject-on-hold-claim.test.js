@@ -106,7 +106,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
       expect(applications.updateApplicationStatus).toHaveBeenCalledWith(reference, 'admin', 5)
       expect(applications.updateApplicationStatus).toHaveBeenCalledTimes(1)
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
     })
     test.each([
       [authoriser, 'authoriser'],
@@ -153,7 +153,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
       const encodedErrors = 'W10%3D'
-      expect(res.headers.location).toEqual(`/view-application/123?page=1&moveToInCheck=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-agreement/123?page=1&moveToInCheck=true&errors=${encodedErrors}`)
     })
 
     test('Reject application button press invalid', async () => {
@@ -175,7 +175,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
       const encodedErrors = 'W10%3D'
-      expect(res.headers.location).toEqual(`/view-application/123?page=1&moveToInCheck=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-agreement/123?page=1&moveToInCheck=true&errors=${encodedErrors}`)
     })
 
     test('Reject application with one unchecked checkbox', async () => {
@@ -197,7 +197,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
       const encodedErrors = 'W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI2NvbmZpcm0tbW92ZS10by1pbi1jaGVjay1wYW5lbCJ9XQ%3D%3D'
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&moveToInCheck=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&moveToInCheck=true&errors=${encodedErrors}`)
     })
 
     test('Reject application invalid permission', async () => {

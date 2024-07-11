@@ -26,7 +26,7 @@ sessionMock.getAppSearch = jest.fn()
   .mockReturnValueOnce(['PENDING', 'APPLIED', 'DATA INPUTTED', 'CLAIMED'])
   .mockReturnValueOnce({ field: 'SBI', direction: 'DESC' })
 describe('Applications Filter test', () => {
-  const url = '/applications/remove'
+  const url = '/agreements/remove'
   jest.mock('../../../../app/auth')
   const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
   const method = 'GET'
@@ -61,8 +61,8 @@ describe('Applications Filter test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
-      expect($('h1.govuk-heading-l').text()).toEqual('Agreements and claims')
-      expect($('title').text()).toContain('AHWR Applications')
+      expect($('h1.govuk-heading-l').text()).toEqual('Agreements')
+      expect($('title').text()).toContain('AHWR Agreements')
       expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(6)
       expect(sessionMock.setAppSearch).toHaveBeenCalledTimes(1)
       expectPhaseBanner.ok($)
@@ -83,11 +83,11 @@ describe('Applications Filter test', () => {
     })
   })
 
-  describe('GET /applications/clear route', () => {
+  describe('GET /agreements/clear route', () => {
     test('returns 302 no auth', async () => {
       const options = {
         method,
-        url: '/applications/clear'
+        url: '/agreements/clear'
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
@@ -95,25 +95,25 @@ describe('Applications Filter test', () => {
     test('returns 200', async () => {
       const options = {
         method,
-        url: '/applications/clear',
+        url: '/agreements/clear',
         auth
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(200)
       const $ = cheerio.load(res.payload)
-      expect($('h1.govuk-heading-l').text()).toEqual('Agreements and claims')
-      expect($('title').text()).toContain('AHWR Applications')
+      expect($('h1.govuk-heading-l').text()).toEqual('Agreements')
+      expect($('title').text()).toContain('AHWR Agreements')
       expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(5)
       expect(sessionMock.setAppSearch).toHaveBeenCalledTimes(1)
       expectPhaseBanner.ok($)
     })
   })
 
-  describe('GET /applications/sort route', () => {
+  describe('GET /agreements/sort route', () => {
     test('returns 302 no auth', async () => {
       const options = {
         method,
-        url: '/applications/sort/sbi/ascending'
+        url: '/agreements/sort/sbi/ascending'
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
@@ -121,7 +121,7 @@ describe('Applications Filter test', () => {
     test('returns 200 ascending', async () => {
       const options = {
         method,
-        url: '/applications/sort/sbi/ascending',
+        url: '/agreements/sort/sbi/ascending',
         auth
       }
       const res = await global.__SERVER__.inject(options)
@@ -133,7 +133,7 @@ describe('Applications Filter test', () => {
     test('returns 200 descending', async () => {
       const options = {
         method,
-        url: '/applications/sort/sbi/descending',
+        url: '/agreements/sort/sbi/descending',
         auth
       }
       const res = await global.__SERVER__.inject(options)

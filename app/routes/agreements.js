@@ -1,4 +1,4 @@
-const viewTemplate = 'applications'
+const viewTemplate = 'agreements'
 const currentPath = `/${viewTemplate}`
 const { displayPageSize } = require('../pagination')
 const Joi = require('joi')

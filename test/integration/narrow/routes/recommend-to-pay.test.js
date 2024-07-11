@@ -69,7 +69,7 @@ describe('Recommended To Pay test', () => {
           confirm: 'checkedAgainstChecklist'
         }
       })}`)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&recommendToPay=true&errors=${encodedErrors}`)
     })
     test('returns 302 when validation fails for claim', async () => {
       const options = {
@@ -122,7 +122,7 @@ describe('Recommended To Pay test', () => {
           confirm: 'checkedAgainstChecklist'
         }
       })}`)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&recommendToPay=true&errors=${encodedErrors}`)
     })
 
     test.each([
@@ -152,7 +152,7 @@ describe('Recommended To Pay test', () => {
       expect(res.statusCode).toBe(302)
       expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommend to pay', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
     })
     test.each([
       [recommender, 'recommender'],
@@ -210,7 +210,7 @@ describe('Recommended To Pay test', () => {
       expect(res.statusCode).toBe(302)
       expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommend to pay', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
     })
 
     test('Returns 500 on on error when processing stage actions', async () => {
@@ -272,7 +272,7 @@ describe('Recommended To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToPay=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&recommendToPay=true&errors=${encodedErrors}`)
     })
 
     test('Recommended to pay invalid reference', async () => {
@@ -293,7 +293,7 @@ describe('Recommended To Pay test', () => {
       const res = await global.__SERVER__.inject(options)
 
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/123?page=1&recommendToPay=true&errors=${encodedEmptyArray}`)
+      expect(res.headers.location).toEqual(`/view-agreement/123?page=1&recommendToPay=true&errors=${encodedEmptyArray}`)
     })
   })
 })

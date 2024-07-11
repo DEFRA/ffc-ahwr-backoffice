@@ -1,44 +1,44 @@
-{% from "moj/components/header/macro.njk" import mojHeader %}
+{% from "govuk/components/header/macro.njk" import govukHeader %}
+
 {% macro ahwrHeader(user, endemicsEnabled) %}
     {% if user %}
-        {{ mojHeader({
-        organisationLabel: {
-            text: 'GOV.UK',
-            href: 'https://www.gov.uk/'
-        },
-        serviceLabel: {
-            text: 'Get funding to improve animal health and welfare' if endemicsEnabled else 'Annual health and welfare review agreements',
-            href: '/'
-        },
-        navigation: {
-            label: 'Account navigation',
-            items: [{
-                text: user.name,
-                href: '/account',
-                active: true
-            }, {
-                text: 'Sign out',
-                href: '/logout'
-            }]
-        }
-}) }}
+      {{ govukHeader({
+        homepageUrl: "https://www.gov.uk/",
+        containerClasses: "govuk-width-container",
+        serviceName: "Annual health and welfare review agreements",
+        navigation:[{
+            text: 'Claims',
+            href: '/claims',
+            active: true
+          },{
+            text: 'Agreements',
+            href: '/agreements',
+            active: false
+          },{
+            html: '<span>|</span>'
+          },{
+            text: user.name,
+            href: '/account',
+            active: false
+          }, {
+            text: 'Sign out',
+            href: '/logout',
+            active: false
+          }]
+        }) 
+      }}
     {% else %}
-        {{ mojHeader({
-        organisationLabel: {
-        text: 'GOV.UK',
-        href: '/'
-    },
-    serviceLabel: {
-        text: 'Get funding to improve animal health and welfare' if endemicsEnabled else 'Annual health and welfare review agreements',
-        href: '/'
-    },
-    navigation: {
-        label: 'Account navigation',
-        items: [ {
+      {{ govukHeader({
+        homepageUrl: "https://www.gov.uk/",
+        containerClasses: "govuk-width-container",
+        serviceName: "Annual health and welfare review agreements",
+        serviceUrl: "#",
+        navigation:[{
             text: 'Sign In',
-            href: '/login'
-        }]
-    }
-}) }}
+            href: '/login',
+            active: false
+          }]
+        }) 
+      }}
     {% endif %}
 {% endmacro %}

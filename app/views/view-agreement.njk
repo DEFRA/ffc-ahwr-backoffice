@@ -13,10 +13,10 @@
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% block pageTitle %}
-  {{ siteTitle }}: User Application
+  {{ siteTitle }}: User Agreements
 {% endblock %}
 {% set backLink %}
- /applications?page={{page}}
+ /agreements?page={{page}}
 {% endset -%}
 {% block beforeContent %}
   {{ govukBackLink({
@@ -83,11 +83,11 @@
             <div class="govuk-grid-column-full">
               <h2 class="govuk-heading-m">Further action</h2>
               <p class="govuk-body">This customer has successfully submitted an application but, if they ask, they can withdraw from an agreement.</p>
-              <a class="govuk-button" href="/view-application/{{ reference }}?page={{page}}&withdraw=true" role="button" draggable="false" data-module="govuk-button">Withdraw</a>
+              <a class="govuk-button" href="/view-agreement/{{ reference }}?page={{page}}&withdraw=true" role="button" draggable="false" data-module="govuk-button">Withdraw</a>
             </div>
           </div>
         {% else %}
-          <a class="govuk-link govuk-body" href="/view-application/{{ reference }}?page={{page}}&withdraw=true">Withdraw</a>
+          <a class="govuk-link govuk-body" href="/view-agreement/{{ reference }}?page={{page}}&withdraw=true">Withdraw</a>
         {% endif %}
       {% endif %}
       {% if recommendForm %}

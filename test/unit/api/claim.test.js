@@ -1,7 +1,7 @@
 const Wreck = require('@hapi/wreck')
 const claims = require('../../data/claims.json')
 const { status } = require('../../../app/constants/status')
-const { getClaim, getClaims, updateClaimStatus } = require('../../../app/api/claims')
+const { getClaim, getClaimsByApplicationReference, updateClaimStatus } = require('../../../app/api/claims')
 
 jest.mock('@hapi/wreck')
 jest.mock('../../../app/config')
@@ -48,7 +48,7 @@ describe('Claims API', () => {
       return statusCode === 500 ? null : wreckResponse
     })
 
-    const response = await getClaims(applicationReference)
+    const response = await getClaimsByApplicationReference(applicationReference)
 
     expect(response).toEqual(payload)
   })

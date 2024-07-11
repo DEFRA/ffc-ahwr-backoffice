@@ -37,7 +37,7 @@ module.exports = {
             .takeover()
         } else {
           return h
-            .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&moveToInCheck=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
+            .redirect(`/view-agreement/${request.payload.reference}?page=${request?.payload?.page || 1}&moveToInCheck=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
             .takeover()
         }
       }
@@ -52,7 +52,7 @@ module.exports = {
         if (request.payload.claimOrApplication === 'claim') {
           return h.redirect(`/view-claim/${request.payload.reference}`)
         } else {
-          return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}`)
+          return h.redirect(`/view-agreement/${request.payload.reference}?page=${request?.payload?.page || 1}`)
         }
       } catch (error) {
         console.error(`routes:reject-on-hold-claim: Error when processing request: ${error.message}`)

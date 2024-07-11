@@ -14,7 +14,7 @@ function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
     expect($('.govuk-link').hasClass)
     const withdrawLink = $('.govuk-link')
     expect(withdrawLink.text()).toMatch('Withdraw')
-    expect(withdrawLink.attr('href')).toMatch(`/view-application/${reference}?page=1&withdraw=true`)
+    expect(withdrawLink.attr('href')).toMatch(`/view-agreement/${reference}?page=1&withdraw=true`)
   } else {
     expect($('.govuk-link').not.hasClass)
   }
@@ -23,7 +23,7 @@ function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
 jest.mock('../../../../app/api/applications')
 
 describe('View Application test with Date of Testing enabled', () => {
-  const url = `/view-application/${reference}`
+  const url = `/view-agreement/${reference}`
   jest.mock('../../../../app/auth')
   const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
 
@@ -73,7 +73,7 @@ describe('View Application test with Date of Testing enabled', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
       expect($('h2.govuk-heading-l').text()).toContain(status)
-      expect($('title').text()).toContain('Administration: User Application')
+      expect($('title').text()).toContain('Administration: User Agreement')
       expect($('.govuk-summary-list__row').length).toEqual(5)
       expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name')
       expect($('.govuk-summary-list__value').eq(0).text()).toMatch('Farmer name')
@@ -131,7 +131,7 @@ describe('View Application test with Date of Testing enabled', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
       expect($('h2.govuk-heading-l').text()).toContain(status)
-      expect($('title').text()).toContain('Administration: User Application')
+      expect($('title').text()).toContain('Administration: User Agreement')
       expect($('.govuk-summary-list__row').length).toEqual(5)
       expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name')
       expect($('.govuk-summary-list__value').eq(0).text()).toMatch('Farmer name')

@@ -6,7 +6,7 @@
       <input type="hidden" name="page" value="{{ page }}" />
       <input type="hidden" name="reference" value="{{ reference }}" />
       {% if endemics %}
-        <p class="govuk-body govuk-!-text-align-right"><a href="/view-application/{{ reference }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p>    
+        <p class="govuk-body govuk-!-text-align-right"><a href="/view-agreement/{{ reference }}?page={{page}}" role="button" draggable="false" class="govuk-link">Back</a></p>    
         {{ govukCheckboxes({
           name: "confirm",
           fieldset: {

@@ -5,7 +5,7 @@ module.exports = {
   options: {
     auth: { scope: [administrator, processor, user, recommender, authoriser] },
     handler: async (_, h) => {
-      return h.view('home')
+      return h.redirect('/claims')
     }
   }
 }

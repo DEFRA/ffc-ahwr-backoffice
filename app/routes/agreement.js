@@ -1,50 +1,78 @@
+const Joi = require('joi')
+const boom = require('@hapi/boom')
 const crumbCache = require('./utils/crumb-cache')
 const { administrator, authoriser, processor, recommender, user } = require('../auth/permissions')
-const { getClaims } = require('../api/claims')
+const { getApplication } = require('../api/applications')
+const { getClaimsByApplicationReference } = require('../api/claims')
 const { formatedDateToUk, formatTypeOfVisit, formatSpecies, formatStatusId } = require('../lib/display-helper')
-const { getClaimSort } = require('../session')
+const { getClaimSort, setClaimSort } = require('../session')
 const { claimSort } = require('../session/keys')
 const { getStyleClassByStatus } = require('../constants/status')
 const { serviceUri } = require('../config')
+const { getContactHistory, displayContactHistory } = require('../api/contact-history')
 
-const pageUrl = '/claims'
+const pageUrl = '/agreement/{reference}/claims'
 
 module.exports = [{
   method: 'GET',
   path: pageUrl,
   options: {
     auth: { scope: [administrator, authoriser, processor, recommender, user] },
+    validate: {
+      params: Joi.object({
+        reference: Joi.string()
+      })
+    },
     handler: async (request, h) => {
       await crumbCache.generateNewCrumb(request, h)
-      const { claims } = await getClaims()
+      const application = await getApplication(request.params.reference)
+      const claims = await getClaimsByApplicationReference(request.params.reference)
+      const contactHistory = await getContactHistory(request.params.reference)
+      const contactHistoryDetails = displayContactHistory(contactHistory)
+      if (!application) {
+        throw boom.badRequest()
+      }
+
+      const organisation = application.data?.organisation
+      const summaryDetails = [
+        { field: 'Name', newValue: organisation?.farmerName, oldValue: contactHistoryDetails.farmerName },
+        { field: 'SBI number', newValue: organisation?.sbi, oldValue: null },
+        { field: 'Address', newValue: organisation?.address, oldValue: contactHistoryDetails.address },
+        { field: 'Email address', newValue: organisation?.email, oldValue: contactHistoryDetails.email },
+        { field: 'Organisation email address', newValue: organisation?.orgEmail, oldValue: contactHistoryDetails.orgEmail },
+        { field: 'Date of agreement', newValue: formatedDateToUk(application.createdAt), oldValue: null }
+      ]
+
+      const applicationSummaryDetails = summaryDetails.filter((row) => row.newValue)
+
       const sortField = getClaimSort(request, claimSort.sort) ?? undefined
       const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
       const claimTableHeader = [{
         text: 'Claim number',
         attributes: {
           'aria-sort': sortField && sortField.field === 'claim number' ? direction : 'none',
-          'data-url': `/application/${request.params.reference}/claims/sort/claim number`
+          'data-url': `/agreement/${request.params.reference}/claims/sort/claim number`
         }
       },
       {
         text: 'Type of visit',
         attributes: {
           'aria-sort': sortField && sortField.field === 'type of visit' ? direction : 'none',
-          'data-url': `/application/${request.params.reference}/claims/sort/type of visit`
+          'data-url': `/agreement/${request.params.reference}/claims/sort/type of visit`
         }
       },
       {
         text: 'Species',
         attributes: {
           'aria-sort': sortField && sortField.field === 'species' ? direction : 'none',
-          'data-url': `/application/${request.params.reference}/claims/sort/species`
+          'data-url': `/agreement/${request.params.reference}/claims/sort/species`
         }
       },
       {
         text: 'Claim date',
         attributes: {
           'aria-sort': sortField && sortField.field === 'claim date' ? direction : 'none',
-          'data-url': `/application/${request.params.reference}/claims/sort/claim date`
+          'data-url': `/agreement/${request.params.reference}/claims/sort/claim date`
         },
         format: 'date'
       },
@@ -52,7 +80,7 @@ module.exports = [{
         text: 'Status',
         attributes: {
           'aria-sort': sortField && sortField.field === 'status' ? direction : 'none',
-          'data-url': `/application/${request.params.reference}/claims/sort/status`
+          'data-url': `/agreement/${request.params.reference}/claims/sort/status`
         }
       },
       {
@@ -96,7 +124,10 @@ module.exports = [{
         ]
       })
 
-      return h.view('claims', {
+      return h.view('agreement', {
+        backLink: `/agreements${request?.query?.page ? `?page=${request.query.page}` : ''}`,
+        businessName: application.data?.organisation?.name,
+        applicationSummaryDetails,
         claimTable: claimTableClaims
           ? {
               header: claimTableHeader,
@@ -104,6 +135,25 @@ module.exports = [{
             }
           : undefined
       })
+    }
+  }
+},
+{
+  method: 'GET',
+  path: `${pageUrl}/sort/{field}/{direction}`,
+  options: {
+    auth: { scope: [administrator, processor, user, recommender, authoriser] },
+    validate: {
+      params: Joi.object({
+        reference: Joi.string(),
+        field: Joi.string(),
+        direction: Joi.string()
+      })
+    },
+    handler: async (request, h) => {
+      request.params.direction = request.params.direction !== 'descending' ? 'DESC' : 'ASC'
+      setClaimSort(request, claimSort.sort, request.params)
+      return 1 // NOSONAR
     }
   }
 }]

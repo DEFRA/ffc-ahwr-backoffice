@@ -9,7 +9,7 @@ function redirectWithError (h, claimOrApplication, reference, page, error, error
   if (claimOrApplication === 'claim') {
     return h.redirect(`/view-claim/${reference}?approve=true&errors=${encodedErrors}`).takeover()
   } else {
-    return h.redirect(`/view-application/${reference}?page=${page}&approve=true&errors=${encodedErrors}`).takeover()
+    return h.redirect(`/view-agreement/${reference}?page=${page}&approve=true&errors=${encodedErrors}`).takeover()
   }
 }
 
@@ -21,7 +21,7 @@ function redirectRejectWithError (h, claimOrApplication, reference, page, error,
   if (claimOrApplication === 'claim') {
     return h.redirect(`/view-claim/${reference}?reject=true&errors=${encodedErrors}`).takeover()
   } else {
-    return h.redirect(`/view-application/${reference}?page=${page}&reject=true&errors=${encodedErrors}`).takeover()
+    return h.redirect(`/view-agreement/${reference}?page=${page}&reject=true&errors=${encodedErrors}`).takeover()
   }
 }
 
@@ -29,7 +29,7 @@ function redirectToViewApplication (h, claimOrApplication, reference, page) {
   if (claimOrApplication === 'claim') {
     return h.redirect(`/view-claim/${reference}`)
   } else {
-    return h.redirect(`/view-application/${reference}?page=${page}`)
+    return h.redirect(`/view-agreement/${reference}?page=${page}`)
   }
 }
 
