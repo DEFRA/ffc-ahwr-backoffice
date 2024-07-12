@@ -18,7 +18,7 @@ module.exports = {
         prepare: (options, next) => {
           const nunjucksAppEnv = nunjucks.configure([
             path.join(options.relativeTo || process.cwd(), options.path),
-            'node_modules/govuk-frontend/',
+            'node_modules/govuk-frontend/dist',
             'node_modules/@ministryofjustice/frontend/'
           ], {
             autoescape: true,
