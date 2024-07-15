@@ -92,7 +92,7 @@ module.exports = [{
               'data-sort-value': `${claim.statusId}`
             }
           },
-          { html: `<a href="${serviceUri}/view-claim/${claim.reference}">View details</a>` }
+          { html: `<a href="${serviceUri}/view-claim/${claim.reference}?returnPage=claims">View details</a>` }
         ]
       })
 

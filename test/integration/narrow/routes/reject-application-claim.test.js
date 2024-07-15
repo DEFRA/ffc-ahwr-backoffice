@@ -212,12 +212,13 @@ describe('Reject Application test', () => {
         reference,
         claimOrApplication: 'claim',
         page: 1,
+        returnPage: 'claims',
         crumb
       }
     }
     const res = await global.__SERVER__.inject(options)
     expect(processStageActions).not.toHaveBeenCalled()
     expect(res.statusCode).toBe(302)
-    expect(res.headers.location).toEqual(`/view-claim/${reference}?reject=true&errors=${encodedErrors}`)
+    expect(res.headers.location).toEqual(`/view-claim/${reference}?reject=true&returnPage=claims&errors=${encodedErrors}`)
   })
 })

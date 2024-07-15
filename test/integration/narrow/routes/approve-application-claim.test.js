@@ -156,6 +156,7 @@ describe('/approve-application-claim', () => {
           claimOrApplication: 'claim',
           confirm: ['approveClaim', 'sentChecklist'],
           page: 1,
+          returnPage: 'claims',
           crumb
         }
       }
@@ -175,7 +176,7 @@ describe('/approve-application-claim', () => {
         true
       )
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-claim/${reference}`)
+      expect(res.headers.location).toEqual(`/view-claim/${reference}?returnPage=claims`)
     })
 
     test('Approve application claim not processed', async () => {
@@ -245,13 +246,14 @@ describe('/approve-application-claim', () => {
           reference,
           claimOrApplication: 'claim',
           page: 1,
+          returnPage: 'claims',
           crumb
         }
       }
       const res = await global.__SERVER__.inject(options)
       expect(processStageActions).not.toHaveBeenCalled()
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-claim/${reference}?approve=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-claim/${reference}?approve=true&returnPage=claims&errors=${encodedErrors}`)
     })
   })
 })

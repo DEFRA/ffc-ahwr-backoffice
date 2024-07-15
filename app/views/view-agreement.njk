@@ -62,19 +62,19 @@
         {% endfor %}
       </dl>
       {% if model.recommendData != false %}
-        {{ viewRecommendConfirmationForm('application', reference, page, crumb, model.recommendData) }}
+        {{ viewRecommendConfirmationForm('application', reference, page, 'agreements', crumb, model.recommendData) }}
       {% endif %}
       {% if recommendToReject.display %}
         {{ viewRecommendToRejectConfirmationForm('application', reference, page, crumb, recommendToReject.errorMessage) }}
       {% endif %}
       {% if authorisePaymentConfirmForm.display %}
-        {{ viewAuthorisePaymentConfirmForm('application', reference, page, crumb, authorisePaymentConfirmForm.errorMessage) }}
+        {{ viewAuthorisePaymentConfirmForm('application', reference, page, 'agreements', crumb, authorisePaymentConfirmForm.errorMessage) }}
       {% endif %}
       {% if rejectClaimConfirmForm.display %}
-        {{ viewRejectClaimConfirmForm('application', reference, page, crumb, rejectClaimConfirmForm.errorMessage) }}
+        {{ viewRejectClaimConfirmForm('application', reference, page, 'agreements', crumb, rejectClaimConfirmForm.errorMessage) }}
       {% endif %}
       {% if onHoldConfirmationForm.display %}
-        {{ viewMoveClaimToInCheckConfirmationForm('application', reference, page, crumb, onHoldConfirmationForm.errorMessage) }}
+        {{ viewMoveClaimToInCheckConfirmationForm('application', reference, page, 'agreements', crumb, onHoldConfirmationForm.errorMessage) }}
       {% endif %}
       {{ viewApplicationTabs(model, vetVisit, claimed, payment, subStatus, displayMoveToInCheckFromHold, reference, page) }}
       {% if withdrawLink %}
@@ -91,10 +91,10 @@
         {% endif %}
       {% endif %}
       {% if recommendForm %}
-        {{ viewRecommendForm('application', reference, page, crumb) }}
+        {{ viewRecommendForm('application', reference, page, 'agreements', crumb) }}
       {% endif %}
       {% if authoriseOrRejectForm.display %}
-        {{ viewAuthoriseOrRejectForm('application', reference, page, crumb, authoriseOrRejectForm.displayAuthorisePaymentButton) }}
+        {{ viewAuthoriseOrRejectForm('application', reference, page, 'agreements', crumb, authoriseOrRejectForm.displayAuthorisePaymentButton) }}
       {% endif %}
     </div>
   </div>

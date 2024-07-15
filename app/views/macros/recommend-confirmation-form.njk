@@ -1,4 +1,4 @@
-{% macro viewRecommendConfirmationForm(claimOrApplication, reference, page, crumb, recommend) %}
+{% macro viewRecommendConfirmationForm(claimOrApplication, reference, page, returnPage, crumb, recommend) %}
   {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
   <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="pnl-recommend-confirmation">
     {% if claimOrApplication == 'application' %}
@@ -23,6 +23,7 @@
       <input type="hidden" name="claimOrApplication" value="{{ claimOrApplication }}" />
       <input type="hidden" name="reference" value="{{ reference }}" />
       <input type="hidden" name="page" value="{{ page }}" />
+      <input type="hidden" name="returnPage" value="{{ returnPage }}" />
       <input type="hidden" name="crumb" value="{{crumb}}"/>
     </form>
   </div>

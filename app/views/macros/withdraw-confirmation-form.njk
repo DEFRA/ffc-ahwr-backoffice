@@ -1,7 +1,7 @@
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% macro viewWithdrawConfirmationForm(endemics, reference, page, crumb, errorMessage) %}
   <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="pnl-withdraw-confirmation">
-    <form method="POST" autocomplete="off" novalidate="novalidate" action="/withdraw-application" id="withdrawForm">
+    <form method="POST" autocomplete="off" novalidate="novalidate" action="/withdraw-agreement" id="withdrawForm">
       <input type="hidden" name="crumb" value="{{crumb}}"/>
       <input type="hidden" name="page" value="{{ page }}" />
       <input type="hidden" name="reference" value="{{ reference }}" />

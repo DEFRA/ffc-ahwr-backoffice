@@ -8,7 +8,8 @@ const onHoldToInCheckSchema = Joi.object({
   ).required(),
   rejectOnHoldClaim: Joi.string().valid('yes').required(),
   reference: Joi.string().valid().required(),
-  page: Joi.number().greater(0).default(1)
+  page: Joi.number().greater(0).default(1),
+  returnPage: Joi.string().allow('').optional()
 })
 
 module.exports = { onHoldToInCheckSchema }

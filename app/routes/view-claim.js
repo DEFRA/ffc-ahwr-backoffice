@@ -16,8 +16,8 @@ const { upperFirstLetter, formatedDateToUk } = require('../lib/display-helper')
 const claimFormHelper = require('./utils/claim-form-helper')
 const checkboxErrors = require('./utils/checkbox-errors')
 
-const backLink = (applicationReference) => {
-  return `/agreement/${applicationReference}/claims`
+const backLink = (applicationReference, returnPage) => {
+  return returnPage && returnPage === 'claims' ? '/claims' : `/agreement/${applicationReference}/claims`
 }
 
 const speciesEligibleNumber = {
@@ -89,7 +89,8 @@ module.exports = {
         reject: Joi.bool().default(false),
         recommendToPay: Joi.bool().default(false),
         recommendToReject: Joi.bool().default(false),
-        moveToInCheck: Joi.bool().default(false)
+        moveToInCheck: Joi.bool().default(false),
+        returnPage: Joi.string().allow(null)
       })
     },
     handler: async (request, h) => {
@@ -145,7 +146,8 @@ module.exports = {
 
       return h.view('view-claim', {
         page: 1,
-        backLink: backLink(claim?.applicationReference),
+        backLink: backLink(claim?.applicationReference, request.query.returnPage),
+        returnPage: request.query.returnPage,
         reference,
         title: upperFirstLetter(application?.data?.organisation?.name),
         claimSummaryDetails: claimSummaryDetails(organisation, data, type),

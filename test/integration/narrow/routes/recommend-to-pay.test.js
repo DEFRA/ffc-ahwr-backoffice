@@ -81,6 +81,7 @@ describe('Recommended To Pay test', () => {
           reference,
           claimOrApplication: 'claim',
           page: 1,
+          returnPage: 'claims',
           confirm: 'checkedAgainstChecklist',
           crumb
         }
@@ -93,10 +94,11 @@ describe('Recommended To Pay test', () => {
           reference: 'AHWR-555A-FD4C',
           claimOrApplication: 'claim',
           page: 1,
+          returnPage: 'claims',
           confirm: 'checkedAgainstChecklist'
         }
       })}`)
-      expect(res.headers.location).toEqual(`/view-claim/${reference}?recommendToPay=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-claim/${reference}?recommendToPay=true&returnPage=claims&errors=${encodedErrors}`)
     })
 
     test('returns 302 when validation fails - no page given', async () => {
@@ -173,6 +175,7 @@ describe('Recommended To Pay test', () => {
           reference,
           claimOrApplication: 'claim',
           page: 1,
+          returnPage: 'claims',
           confirm: ['checkedAgainstChecklist', 'sentChecklist'],
           crumb
         }
@@ -181,7 +184,7 @@ describe('Recommended To Pay test', () => {
       expect(res.statusCode).toBe(302)
       expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommend to pay', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
-      expect(res.headers.location).toEqual(`/view-claim/${reference}`)
+      expect(res.headers.location).toEqual(`/view-claim/${reference}?returnPage=claims`)
     })
 
     test.each([
