@@ -2,6 +2,7 @@ const regexChecker = require('../../app/routes/utils/regex-checker')
 
 const appRefRegEx = /^AHWR-[A-Z0-9]{4}-[A-Z0-9]{4}$/i
 const newAppRefRegEx = /^IAHW-[A-Z0-9]{4}-[A-Z0-9]{4}$/i
+const agreementDateRegEx = /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/ // DD/MM/YYYY
 const validStatus = [
   'agreed',
   'applied',
@@ -40,6 +41,9 @@ module.exports = (searchText) => {
       break
     case sbiRegEx.test(searchText):
       searchType = 'sbi'
+      break
+    case regexChecker(agreementDateRegEx, searchText):
+      searchType = 'date'
       break
     default:
       searchType = 'organisation'

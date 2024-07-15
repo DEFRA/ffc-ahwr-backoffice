@@ -9,6 +9,7 @@ describe('Set sesrch params test', () => {
     { type: 'organisation', text: 'IAHW-1234' },
     { type: 'organisation', text: 'IAHW-ABCD-1234-EFGH' },
     { type: 'sbi', text: '107279003' },
+    { type: 'date', text: '01/12/2024' },
     { type: 'organisation', text: 'a string' },
     { type: 'reset', text: '' }
   ])('A valid $searchType ($text) should return $text and $type as type', ({ type, text }) => {
