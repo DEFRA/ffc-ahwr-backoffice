@@ -112,7 +112,8 @@ module.exports = {
         { key: { text: 'SBI number' }, value: { text: organisation?.sbi } },
         { key: { text: 'Address' }, value: { text: organisation?.address } },
         { key: { text: 'Email address' }, value: { text: organisation?.email } },
-        { key: { text: 'Organisation email address' }, value: { text: organisation?.orgEmail } }
+        { key: { text: 'Organisation email address' }, value: { text: organisation?.orgEmail } },
+        { key: { text: 'Agreement Number' }, value: { text: applicationReference } }
       ]
 
       const {
