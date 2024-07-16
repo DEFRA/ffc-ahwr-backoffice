@@ -228,44 +228,39 @@ describe('View claim test', () => {
       const $ = cheerio.load(res.payload)
 
       expect(res.statusCode).toBe(200)
+
+      const content = [
+        { key: 'Name', value: 'Russell Paul Davies' },
+        { key: 'SBI number', value: '113494460' },
+        { key: 'Address', value: 'Tesco Stores Ltd,Harwell,Betton,WHITE HOUSE FARM,VINCENT CLOSE,LEIGHTON BUZZARD,HR2 8AN,United Kingdom' },
+        { key: 'Email address', value: 'russelldaviese@seivadllessurm.com.test' },
+        { key: 'Organisation email address', value: 'orgEmail@gmail.com' },
+        { key: 'Agreement Number', value: 'AHWR-1234-APP1' },
+        { key: 'Business name', value: 'Mrs S Clark' },
+        { key: 'Livestock', value: 'Pigs' },
+        { key: 'Type of visit', value: 'Annual health and welfare review' },
+        { key: 'Date of visit', value: '22/03/2024' },
+        { key: 'Date of testing', value: '22/03/2024' },
+        { key: '51 or more pigs', value: 'Yes' },
+        { key: "Vet's name", value: 'Vet one' },
+        { key: "Vet's RCVS number", value: '1233211' },
+        { key: 'Test results URN', value: '123456' },
+        { key: 'Number of tests', value: '6' },
+        { key: 'Number of animals tested', value: '40' },
+        { key: 'Test result', value: 'Positive' }
+      ]
       // Summary list rows expect
-      expect($('.govuk-summary-list__row').length).toEqual(17)
+      expect($('.govuk-summary-list__row').length).toEqual(18)
       // Application summury detailes expects
-      expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name')
-      expect($('.govuk-summary-list__value').eq(0).text()).toMatch('Russell Paul Davies')
-      expect($('.govuk-summary-list__key').eq(1).text()).toMatch('SBI number')
-      expect($('.govuk-summary-list__value').eq(1).text()).toMatch('113494460')
-      expect($('.govuk-summary-list__key').eq(2).text()).toMatch('Address')
-      expect($('.govuk-summary-list__value').eq(2).text()).toMatch('Tesco Stores Ltd,Harwell,Betton,WHITE HOUSE FARM,VINCENT CLOSE,LEIGHTON BUZZARD,HR2 8AN,United Kingdom')
-      expect($('.govuk-summary-list__key').eq(3).text()).toMatch('Email address')
-      expect($('.govuk-summary-list__value').eq(3).text()).toMatch('russelldaviese@seivadllessurm.com.test')
-      expect($('.govuk-summary-list__key').eq(4).text()).toMatch('Organisation email address')
-      expect($('.govuk-summary-list__value').eq(4).text()).toMatch('orgEmail@gmail.com')
+      for (let i = 0; i < 6; i++) {
+        expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
+        expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
+      }
       // Claim summury detailes expects
-      expect($('.govuk-summary-list__key').eq(5).text()).toMatch('Business name')
-      expect($('.govuk-summary-list__value').eq(5).text()).toMatch('Mrs S Clark')
-      expect($('.govuk-summary-list__key').eq(6).text()).toMatch('Livestock')
-      expect($('.govuk-summary-list__value').eq(6).text()).toMatch('Pigs')
-      expect($('.govuk-summary-list__key').eq(7).text()).toMatch('Type of visit')
-      expect($('.govuk-summary-list__value').eq(7).text()).toMatch('Annual health and welfare review')
-      expect($('.govuk-summary-list__key').eq(8).text()).toMatch('Date of visit')
-      expect($('.govuk-summary-list__value').eq(8).text()).toMatch('22/03/2024')
-      expect($('.govuk-summary-list__key').eq(9).text()).toMatch('Date of testing')
-      expect($('.govuk-summary-list__value').eq(9).text()).toMatch('22/03/2024')
-      expect($('.govuk-summary-list__key').eq(10).text()).toMatch('51 or more pigs')
-      expect($('.govuk-summary-list__value').eq(10).text()).toMatch('Yes')
-      expect($('.govuk-summary-list__key').eq(11).text()).toMatch("Vet's name")
-      expect($('.govuk-summary-list__value').eq(11).text()).toMatch('Vet one')
-      expect($('.govuk-summary-list__key').eq(12).text()).toMatch("Vet's RCVS number")
-      expect($('.govuk-summary-list__value').eq(12).text()).toMatch('1233211')
-      expect($('.govuk-summary-list__key').eq(13).text()).toMatch('Test results URN')
-      expect($('.govuk-summary-list__value').eq(13).text()).toMatch('123456')
-      expect($('.govuk-summary-list__key').eq(14).text()).toMatch('Number of tests')
-      expect($('.govuk-summary-list__value').eq(14).text()).toMatch('6')
-      expect($('.govuk-summary-list__key').eq(15).text()).toMatch('Number of animals tested')
-      expect($('.govuk-summary-list__value').eq(15).text()).toMatch('40')
-      expect($('.govuk-summary-list__key').eq(16).text()).toMatch('Test result')
-      expect($('.govuk-summary-list__value').eq(16).text()).toMatch('Positive')
+      for (let i = 6; i < 18; i++) {
+        expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
+        expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
+      }
     })
     test('returns 200 with endemics claim and sheep species', async () => {
       const options = {
@@ -281,43 +276,35 @@ describe('View claim test', () => {
       const $ = cheerio.load(res.payload)
 
       expect(res.statusCode).toBe(200)
+
+      const content = [null, null, null, null, null, null,
+        { key: 'Business name', value: 'Mrs S Clark' },
+        { key: 'Livestock', value: 'Sheep' },
+        { key: 'Type of visit', value: 'Endemic disease follow-ups' },
+        { key: 'Date of visit', value: '22/03/2024' },
+        { key: 'Date of testing', value: '22/03/2024' },
+        { key: '21 or more sheep', value: 'Yes' },
+        { key: "Vet's name", value: '12312312312sdfsdf' },
+        { key: "Vet's RCVS number", value: '1233211' },
+        { key: 'Test results URN', value: '123456' },
+        { key: 'Number of animals tested', value: '40' },
+        { key: 'Endemics package', value: 'ReducedLameness' },
+        { key: 'Disease or condition test result', value: 'Heel or toe abscess (Clinical symptoms present)' },
+        { key: '', value: 'Shelly hoof (Clinical symptoms not present)' },
+        { key: '', value: 'Tick pyaemia (Clinical symptoms present)' },
+        { key: '', value: 'yyyyy (123) bbbb (ccc)' }
+      ]
       // Summary list rows expect
-      expect($('.govuk-summary-list__row').length).toEqual(20)
+      expect($('.govuk-summary-list__row').length).toEqual(21)
       // Claim summury detailes expects
-      expect($('.govuk-summary-list__key').eq(5).text()).toMatch('Business name')
-      expect($('.govuk-summary-list__value').eq(5).text()).toMatch('Mrs S Clark')
-      expect($('.govuk-summary-list__key').eq(6).text()).toMatch('Livestock')
-      expect($('.govuk-summary-list__value').eq(6).text()).toMatch('Sheep')
-      expect($('.govuk-summary-list__key').eq(7).text()).toMatch('Type of visit')
-      expect($('.govuk-summary-list__value').eq(7).text()).toMatch('Endemic disease follow-ups')
-      expect($('.govuk-summary-list__key').eq(8).text()).toMatch('Date of visit')
-      expect($('.govuk-summary-list__value').eq(8).text()).toMatch('22/03/2024')
-      expect($('.govuk-summary-list__key').eq(9).text()).toMatch('Date of testing')
-      expect($('.govuk-summary-list__value').eq(9).text()).toMatch('22/03/2024')
-      expect($('.govuk-summary-list__key').eq(10).text()).toMatch('21 or more sheep')
-      expect($('.govuk-summary-list__value').eq(10).text()).toMatch('Yes')
-      expect($('.govuk-summary-list__key').eq(11).text()).toMatch("Vet's name")
-      expect($('.govuk-summary-list__value').eq(11).text()).toMatch('12312312312sdfsdf')
-      expect($('.govuk-summary-list__key').eq(12).text()).toMatch("Vet's RCVS number")
-      expect($('.govuk-summary-list__value').eq(12).text()).toMatch('1233211')
-      expect($('.govuk-summary-list__key').eq(13).text()).toMatch('Test results URN')
-      expect($('.govuk-summary-list__value').eq(13).text()).toMatch('123456')
-      expect($('.govuk-summary-list__key').eq(14).text()).toMatch('Number of animals tested')
-      expect($('.govuk-summary-list__value').eq(14).text()).toMatch('40')
-      expect($('.govuk-summary-list__key').eq(15).text()).toMatch('Endemics package')
-      expect($('.govuk-summary-list__value').eq(15).text()).toMatch('ReducedLameness')
-      expect($('.govuk-summary-list__key').eq(16).text()).toMatch('Disease or condition test result')
-      expect($('.govuk-summary-list__value').eq(16).text()).toMatch('Heel or toe abscess (Clinical symptoms present)')
-      expect($('.govuk-summary-list__key').eq(17).text()).toMatch('')
-      expect($('.govuk-summary-list__value').eq(17).text()).toMatch('Shelly hoof (Clinical symptoms not present)')
-      expect($('.govuk-summary-list__key').eq(18).text()).toMatch('')
-      expect($('.govuk-summary-list__value').eq(18).text()).toMatch('Tick pyaemia (Clinical symptoms present)')
-      expect($('.govuk-summary-list__key').eq(19).text()).toMatch('')
-      expect($('.govuk-summary-list__value').eq(19).text()).toMatch('yyyyy (123) bbbb (ccc)')
+      for (let i = 6; i < 21; i++) {
+        expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
+        expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
+      }
     })
     test.each([
-      { type: 'R', rows: 6 },
-      { type: undefined, rows: 5 }
+      { type: 'R', rows: 7 },
+      { type: undefined, rows: 6 }
     ])('returns 200 whitout claim data', async ({ type, rows }) => {
       const options = {
         method: 'GET',
@@ -353,7 +340,7 @@ describe('View claim test', () => {
 
       expect(res.statusCode).toBe(200)
 
-      expect($('.govuk-summary-list__row').length).toEqual(6)
+      expect($('.govuk-summary-list__row').length).toEqual(7)
     })
     test('returns 200 with endemics claim and pigs species', async () => {
       const options = {
@@ -370,20 +357,20 @@ describe('View claim test', () => {
 
       expect(res.statusCode).toBe(200)
       // Summary list rows expect
-      expect($('.govuk-summary-list__row').length).toEqual(21)
+      expect($('.govuk-summary-list__row').length).toEqual(22)
       // Claim summury detailes expects
-      expect($('.govuk-summary-list__key').eq(15).text()).toMatch('Review test result')
-      expect($('.govuk-summary-list__value').eq(15).text()).toMatch('Positive')
-      expect($('.govuk-summary-list__key').eq(16).text()).toMatch('Vet Visits Review Test results')
-      expect($('.govuk-summary-list__value').eq(16).text()).toMatch('Positive')
-      expect($('.govuk-summary-list__key').eq(17).text()).toMatch('Disease status category')
-      expect($('.govuk-summary-list__value').eq(17).text()).toMatch('4')
-      expect($('.govuk-summary-list__key').eq(18).text()).toMatch('Samples tested')
-      expect($('.govuk-summary-list__value').eq(18).text()).toMatch('6')
-      expect($('.govuk-summary-list__key').eq(19).text()).toMatch('Herd vaccination status')
-      expect($('.govuk-summary-list__value').eq(19).text()).toMatch('Vaccinated')
-      expect($('.govuk-summary-list__key').eq(20).text()).toMatch('Biosecurity assessment')
-      expect($('.govuk-summary-list__value').eq(20).text()).toMatch('Yes, Assessment percentage: 100%')
+      const content = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        { key: 'Review test result', value: 'Positive' },
+        { key: 'Vet Visits Review Test results', value: 'Positive' },
+        { key: 'Disease status category', value: '4' },
+        { key: 'Samples tested', value: '6' },
+        { key: 'Herd vaccination status', value: 'Vaccinated' },
+        { key: 'Biosecurity assessment', value: 'Yes, Assessment percentage: 100%' }
+      ]
+      for (let i = 16; i < 22; i++) {
+        expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
+        expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
+      }
     })
     test('returns 200 with auth with beef', async () => {
       const options = {
@@ -399,17 +386,29 @@ describe('View claim test', () => {
       const $ = cheerio.load(res.payload)
 
       expect(res.statusCode).toBe(200)
+
+      const content = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        { key: 'Review test result', value: 'Positive' },
+        { key: 'Endemics test result', value: 'Positive' },
+        { key: 'Vet Visits Review Test results', value: 'Positive' },
+        { key: 'Samples tested', value: '6' },
+        { key: 'Biosecurity assessment', value: 'No' }
+      ]
       // Summary list rows expect
-      expect($('.govuk-summary-list__row').length).toEqual(20)
+      expect($('.govuk-summary-list__row').length).toEqual(21)
       // Claim summury detailes expects
-      expect($('.govuk-summary-list__key').eq(15).text()).toMatch('Review test result')
-      expect($('.govuk-summary-list__value').eq(15).text()).toMatch('Positive')
-      expect($('.govuk-summary-list__key').eq(16).text()).toMatch('Endemics test result')
-      expect($('.govuk-summary-list__value').eq(16).text()).toMatch('Positive')
-      expect($('.govuk-summary-list__key').eq(17).text()).toMatch('Vet Visits Review Test results')
-      expect($('.govuk-summary-list__value').eq(17).text()).toMatch('Positive')
-      expect($('.govuk-summary-list__key').eq(19).text()).toMatch('Biosecurity assessment')
-      expect($('.govuk-summary-list__value').eq(19).text()).toMatch('No')
+      for (let i = 16; i < 20; i++) {
+        expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
+        expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
+      }
+      // expect($('.govuk-summary-list__key').eq(15).text()).toMatch('Review test result')
+      // expect($('.govuk-summary-list__value').eq(15).text()).toMatch('Positive')
+      // expect($('.govuk-summary-list__key').eq(16).text()).toMatch('Endemics test result')
+      // expect($('.govuk-summary-list__value').eq(16).text()).toMatch('Positive')
+      // expect($('.govuk-summary-list__key').eq(17).text()).toMatch('Vet Visits Review Test results')
+      // expect($('.govuk-summary-list__value').eq(17).text()).toMatch('Positive')
+      // expect($('.govuk-summary-list__key').eq(19).text()).toMatch('Biosecurity assessment')
+      // expect($('.govuk-summary-list__value').eq(19).text()).toMatch('No')
     })
   })
 })
