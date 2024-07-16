@@ -40,7 +40,8 @@ module.exports = [{
         { field: 'Address', newValue: organisation?.address, oldValue: contactHistoryDetails.address },
         { field: 'Email address', newValue: organisation?.email, oldValue: contactHistoryDetails.email },
         { field: 'Organisation email address', newValue: organisation?.orgEmail, oldValue: contactHistoryDetails.orgEmail },
-        { field: 'Date of agreement', newValue: formatedDateToUk(application.createdAt), oldValue: null }
+        { field: 'Date of agreement', newValue: formatedDateToUk(application.createdAt), oldValue: null },
+        { field: 'Agreement number', newValue: request.params.reference, oldValue: null }
       ]
 
       const applicationSummaryDetails = summaryDetails.filter((row) => row.newValue)
