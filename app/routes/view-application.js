@@ -49,7 +49,7 @@ module.exports = {
         applicationEvents = await getApplicationEvents(application?.data?.organisation.sbi)
       }
 
-      const status = upperFirstLetter(application.status.status.toLowerCase())
+      const status = application.status.status.toUpperCase()
       const statusClass = getStyleClassByStatus(application.status.status)
       const mappedAuth = mapAuth(request)
       const withdrawLinkStatus = ['AGREED']
