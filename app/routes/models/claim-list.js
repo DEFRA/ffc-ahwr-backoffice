@@ -1,10 +1,10 @@
-const { getClaims } = require('../../api/claims')
-const { getPagination, getPagingData } = require('../../pagination')
-const { getClaimSearch } = require('../../session')
-const { getStyleClassByStatus } = require('../../constants/status')
-const { claimSearch } = require('../../session/keys')
 const { serviceUri } = require('../../config')
+const { getClaims } = require('../../api/claims')
+const { getClaimSort } = require('../../session')
+const { claimSort } = require('../../session/keys')
 const checkValidSearch = require('../../lib/search-validation')
+const { getStyleClassByStatus } = require('../../constants/status')
+const { getPagination, getPagingData } = require('../../pagination')
 const { formatTypeOfVisit, formatSpecies, formatedDateToUk } = require('../../lib/display-helper')
 
 const viewModel = (request, page) => {
@@ -66,15 +66,12 @@ const getClaimTableHeader = (sortField) => {
 }
 
 async function createModel (request, page) {
-  const viewTemplate = 'claims'
-  const currentPath = `/${viewTemplate}`
   page = page ?? request.query.page ?? 1
-  const { limit, offset } = getPagination(page)
   const path = request.headers.path ?? ''
+  const { limit, offset } = getPagination(page)
   const { searchText, searchType } = checkValidSearch(request.payload?.searchText)
-  const filterStatus = getClaimSearch(request, claimSearch.filterStatus) ?? []
-  const sortField = getClaimSearch(request, claimSearch.sort) ?? undefined
-  const apps = await getClaims(searchType, searchText, limit, offset, filterStatus, sortField)
+  const sortField = getClaimSort(request, claimSort.sort) ?? undefined
+  const apps = await getClaims(searchType, searchText, limit, offset, sortField)
   if (apps.total > 0) {
     let statusClass
     const claims = apps.claims.map(n => {
@@ -125,44 +122,17 @@ async function createModel (request, page) {
       return output
     })
     const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
-    const groupByStatus = apps.claimStatus.map(s => {
-      return {
-        status: s.status,
-        total: s.total,
-        styleClass: getStyleClassByStatus(s.status),
-        selected: filterStatus.filter(f => f === s.status).length > 0
-      }
-    })
     return {
       claims,
-      header: getClaimTableHeader(getClaimSearch(request, claimSearch.sort)),
+      header: getClaimTableHeader(getClaimSort(request, claimSort.sort)),
       ...pagingData,
-      searchText: request.payload?.searchText,
-      availableStatus: groupByStatus,
-      selectedStatus: groupByStatus.filter(s => s.selected === true).map(s => {
-        return {
-          href: `${currentPath}/remove/${s.status}`,
-          classes: s.styleClass,
-          text: s.status
-        }
-      }),
-      filterStatus: groupByStatus.map(s => {
-        return {
-          value: s.status,
-          html: `<div class="govuk-tag ${s.styleClass}"  style="color:#104189;" >${s.status} (${s.total}) </div>`,
-          checked: s.selected,
-          styleClass: s.styleClass
-        }
-      })
+      searchText: request.payload?.searchText
     }
   } else {
     return {
       claims: [],
       error: 'No claims found.',
-      searchText,
-      availableStatus: [],
-      selectedStatus: [],
-      filterStatus: []
+      searchText
     }
   }
 }

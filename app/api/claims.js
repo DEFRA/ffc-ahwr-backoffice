@@ -29,14 +29,13 @@ async function getClaimsByApplicationReference (reference) {
   }
 }
 
-async function getClaims (searchType, searchText, limit, offset, filterStatus, sort) {
+async function getClaims (searchType, searchText, limit, offset, sort) {
   const url = `${applicationApiUri}/claim/search`
   const options = {
     payload: {
       search: { text: searchText, type: searchType },
       limit,
       offset,
-      filter: filterStatus,
       sort
     },
     json: true
