@@ -27,10 +27,30 @@ const validStatus = [
   'on hold'
 ]
 const sbiRegEx = /^[\0-9]{9}$/i
+const validTypes = ['review', 'endemics']
+const validSpecies = (searchText) => {
+  const species = {
+    'Beef cattle': 'beef',
+    'Dairy cattle': 'dairy',
+    Sheep: 'sheep',
+    Pigs: 'pigs'
+  }
+
+  if (searchText.length <= 0) return { isValidSpecies: false, theSpecies: '' }
+  let theSpecies
+  Object.keys(species).forEach(key => {
+    if (key.toLowerCase() === searchText.toLowerCase()) {
+      theSpecies = species[key]
+    }
+  })
+
+  return { isValidSpecies: !!theSpecies, theSpecies: theSpecies ?? '' }
+}
 
 module.exports = (searchText) => {
   let searchType
   searchText = (searchText ?? '').trim()
+  const { isValidSpecies, theSpecies } = validSpecies(searchText)
 
   switch (true) {
     case regexChecker(appRefRegEx, searchText) || regexChecker(newAppRefRegEx, searchText):
@@ -45,11 +65,18 @@ module.exports = (searchText) => {
     case regexChecker(agreementDateRegEx, searchText):
       searchType = 'date'
       break
+    case validTypes.indexOf(searchText.toLowerCase()) !== -1:
+      searchType = 'type'
+      searchText = validTypes[validTypes.indexOf(searchText.toLowerCase())] === 'review' ? 'R' : 'E'
+      break
+    case isValidSpecies:
+      searchType = 'species'
+      searchText = theSpecies
+      break
     default:
       searchType = 'organisation'
       break
   }
-
   if (searchText.length <= 0) {
     searchType = 'reset'
   }

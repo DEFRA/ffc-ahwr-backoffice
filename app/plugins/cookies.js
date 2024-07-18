@@ -9,6 +9,7 @@ module.exports = {
         if (request.response.variety === 'view' && statusCode !== 404 && statusCode !== 500 && request.response.source.manager._context) {
           request.response.source.manager._context.user = request.auth?.credentials?.account
           request.response.source.manager._context.endemicsEnabled = endemics.enabled
+          request.response.source.manager._context.currentPath = request.path
         }
         return h.continue
       })

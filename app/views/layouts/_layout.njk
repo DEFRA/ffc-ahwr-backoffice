@@ -41,7 +41,7 @@
 
     {% block header %}
       {{
-        ahwrHeader(user, endemicsEnabled)
+        ahwrHeader(user, endemicsEnabled, currentPath)
       }}
       <div class="govuk-grid-row govuk-width-container">
         {{ govukPhaseBanner({

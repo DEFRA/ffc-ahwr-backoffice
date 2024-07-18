@@ -1,5 +1,6 @@
 const entries = {
   appSearch: 'appSearch',
+  claimSearch: 'claimSearch',
   claimSort: 'claimSort'
 }
 
@@ -21,6 +22,14 @@ function getAppSearch (request, key) {
   return get(request, entries.appSearch, key)
 }
 
+function setClaimSearch (request, key, value) {
+  set(request, entries.claimSearch, key, value)
+}
+
+function getClaimSearch (request, key) {
+  return get(request, entries.claimSearch, key)
+}
+
 function setClaimSort (request, key, value) {
   set(request, entries.claimSort, key, value)
 }
@@ -33,5 +42,7 @@ module.exports = {
   setAppSearch,
   getAppSearch,
   setClaimSort,
-  getClaimSort
+  getClaimSort,
+  setClaimSearch,
+  getClaimSearch
 }
