@@ -43,12 +43,12 @@ async function getClaims (searchType, searchText, limit, offset, sort) {
   try {
     const response = await Wreck.post(url, options)
     if (response.res.statusCode !== 200) {
-      return { claims: [], total: 0, claimStatus: [] }
+      return { claims: [], total: 0 }
     }
     return response.payload
   } catch (err) {
     console.log(err)
-    return { claims: [], total: 0, claimStatus: [] }
+    return { claims: [], total: 0 }
   }
 }
 

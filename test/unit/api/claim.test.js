@@ -1,7 +1,7 @@
 const Wreck = require('@hapi/wreck')
 const claims = require('../../data/claims.json')
 const { status } = require('../../../app/constants/status')
-const { getClaim, getClaimsByApplicationReference, updateClaimStatus } = require('../../../app/api/claims')
+const { getClaim, getClaims, getClaimsByApplicationReference, updateClaimStatus } = require('../../../app/api/claims')
 
 jest.mock('@hapi/wreck')
 jest.mock('../../../app/config')
@@ -49,6 +49,25 @@ describe('Claims API', () => {
     })
 
     const response = await getClaimsByApplicationReference(applicationReference)
+
+    expect(response).toEqual(payload)
+  })
+  test.each([
+    { payload: claims, searchText: '12345', searchType: 'sbi', statusCode: 200 },
+    { payload: { claims: [], total: 0 }, statusCode: 400 },
+    { payload: { claims: [], total: 0 }, statusCode: 500 }
+  ])('search with $searchType and $searchText', async ({ payload, statusCode, searchText, searchType }) => {
+    const wreckResponse = {
+      payload,
+      res: {
+        statusCode
+      },
+      json: true
+    }
+
+    Wreck.post = jest.fn(async function (_url, _options) { return statusCode === 500 ? null : wreckResponse })
+
+    const response = await getClaims(searchType, searchText)
 
     expect(response).toEqual(payload)
   })

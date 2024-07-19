@@ -59,7 +59,7 @@ describe('Claims test', () => {
     test('returns 200', async () => {
       const options = {
         method: 'GET',
-        url,
+        url: `${url}?page=1`,
         auth
       }
 
@@ -82,7 +82,7 @@ describe('Claims test', () => {
     })
 
     test('returns table in correct sort order', async () => {
-      session.getClaimSort.mockReturnValueOnce({ field: 'claim number', direction: 'ASC' })
+      session.getClaimSearch.mockReturnValueOnce({ field: 'claim number', direction: 'ASC' })
 
       const options = {
         method: 'GET',
@@ -120,7 +120,7 @@ describe('Claims test', () => {
       { field: 'claim date', direction: 'DESC' },
       { field: 'status', direction: 'DESC' }
     ])('returns table in correct $direction sort order on field $field', async ({ field, direction }) => {
-      session.getClaimSort.mockReturnValueOnce({ field, direction })
+      session.getClaimSearch.mockReturnValueOnce({ field, direction })
 
       const options = {
         method: 'GET',

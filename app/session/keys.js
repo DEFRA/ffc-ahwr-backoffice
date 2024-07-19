@@ -5,7 +5,8 @@ module.exports = {
     filterStatus: 'status',
     sort: 'sort'
   },
-  claimSort: {
+  claimSearch: {
+    searchText: 'searchText',
     sort: 'sort'
   }
 }

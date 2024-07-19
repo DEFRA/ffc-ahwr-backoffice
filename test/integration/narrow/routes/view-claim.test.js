@@ -375,7 +375,7 @@ describe('View claim test', () => {
     test('returns 200 with auth with beef', async () => {
       const options = {
         method: 'GET',
-        url: `${url}/AHWR-0000-4444`,
+        url: `${url}/AHWR-0000-4444?returnPage=claims`,
         auth
       }
 

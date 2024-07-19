@@ -5,8 +5,8 @@ const { administrator, authoriser, processor, recommender, user } = require('../
 const { getApplication } = require('../api/applications')
 const { getClaimsByApplicationReference } = require('../api/claims')
 const { formatedDateToUk, formatTypeOfVisit, formatSpecies, formatStatusId } = require('../lib/display-helper')
-const { getClaimSort, setClaimSort } = require('../session')
-const { claimSort } = require('../session/keys')
+const { getClaimSearch, setClaimSearch } = require('../session')
+const { claimSearch } = require('../session/keys')
 const { getStyleClassByStatus } = require('../constants/status')
 const { serviceUri } = require('../config')
 const { getContactHistory, displayContactHistory } = require('../api/contact-history')
@@ -46,7 +46,7 @@ module.exports = [{
 
       const applicationSummaryDetails = summaryDetails.filter((row) => row.newValue)
 
-      const sortField = getClaimSort(request, claimSort.sort) ?? undefined
+      const sortField = getClaimSearch(request, claimSearch.sort) ?? undefined
       const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
       const claimTableHeader = [{
         text: 'Claim number',
@@ -88,7 +88,7 @@ module.exports = [{
         text: 'Details'
       }]
 
-      const claimTableClaims = claims?.map(claim => {
+      const claimTableClaims = claims?.map((claim) => {
         return [
           {
             text: claim.reference,
@@ -126,7 +126,7 @@ module.exports = [{
       })
 
       return h.view('agreement', {
-        backLink: `/agreements${request?.query?.page ? `?page=${request.query.page}` : ''}`,
+        backLink: `/agreements${request?.query?.page ? '?page=' + request.query.page : ''}`,
         businessName: application.data?.organisation?.name,
         applicationSummaryDetails,
         claimTable: claimTableClaims
@@ -153,7 +153,7 @@ module.exports = [{
     },
     handler: async (request, h) => {
       request.params.direction = request.params.direction !== 'descending' ? 'DESC' : 'ASC'
-      setClaimSort(request, claimSort.sort, request.params)
+      setClaimSearch(request, claimSearch.sort, request.params)
       return 1 // NOSONAR
     }
   }

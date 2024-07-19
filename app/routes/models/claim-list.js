@@ -1,7 +1,7 @@
 const { serviceUri } = require('../../config')
 const { getClaims } = require('../../api/claims')
-const { getClaimSort } = require('../../session')
-const { claimSort } = require('../../session/keys')
+const { getClaimSearch } = require('../../session')
+const { claimSearch } = require('../../session/keys')
 const checkValidSearch = require('../../lib/search-validation')
 const { getStyleClassByStatus } = require('../../constants/status')
 const { getPagination, getPagingData } = require('../../pagination')
@@ -66,67 +66,61 @@ const getClaimTableHeader = (sortField) => {
 }
 
 async function createModel (request, page) {
-  page = page ?? request.query.page ?? 1
+  page = page ?? request.query?.page ?? 1
   const path = request.headers.path ?? ''
   const { limit, offset } = getPagination(page)
-  const { searchText, searchType } = checkValidSearch(request.payload?.searchText)
-  const sortField = getClaimSort(request, claimSort.sort) ?? undefined
-  const apps = await getClaims(searchType, searchText, limit, offset, sortField)
-  if (apps.total > 0) {
-    let statusClass
-    const claims = apps.claims.map(n => {
-      statusClass = getStyleClassByStatus(n.status.status)
-
-      const output = [
-        {
-          text: n.reference,
-          attributes: {
-            'data-sort-value': n.reference
-          }
-        },
-        {
-          text: formatTypeOfVisit(n.type),
-          attributes: {
-            'data-sort-value': n.type
-          }
-        },
-        {
-          text: n.application.data?.organisation?.sbi,
-          format: 'numeric',
-          attributes: {
-            'data-sort-value': n.application.data?.organisation?.sbi
-          }
-        },
-        {
-          text: formatSpecies(n.data?.typeOfLivestock),
-          attributes: {
-            'data-sort-value': n.data?.typeOfLivestock
-          }
-        },
-        {
-          text: formatedDateToUk(n.createdAt),
-          format: 'date',
-          attributes: {
-            'data-sort-value': n.createdAt
-          }
-        },
-        {
-          html: `<span class="govuk-tag ${statusClass}">${n.status.status}</span>`,
-          attributes: {
-            'data-sort-value': `${n.status.status}`
-          }
-        },
-        { html: `<a href="${serviceUri}/view-claim/${n.reference}?returnPage=claims">View claim</a>` }
-      ]
-
-      return output
-    })
-    const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
+  const { searchText, searchType } = checkValidSearch(getClaimSearch(request, claimSearch.searchText))
+  const sortField = getClaimSearch(request, claimSearch.sort) ?? undefined
+  const claimsData = await getClaims(searchType, searchText, limit, offset, sortField)
+  let claims = []
+  if (claimsData.total > 0) {
+    claims = claimsData.claims.map((claim) => [
+      {
+        text: claim.reference,
+        attributes: {
+          'data-sort-value': claim.reference
+        }
+      },
+      {
+        text: formatTypeOfVisit(claim.type),
+        attributes: {
+          'data-sort-value': claim.type
+        }
+      },
+      {
+        text: claim.application.data?.organisation?.sbi,
+        format: 'numeric',
+        attributes: {
+          'data-sort-value': claim.application.data?.organisation?.sbi
+        }
+      },
+      {
+        text: formatSpecies(claim.data?.typeOfLivestock),
+        attributes: {
+          'data-sort-value': claim.data?.typeOfLivestock
+        }
+      },
+      {
+        text: formatedDateToUk(claim.createdAt),
+        format: 'date',
+        attributes: {
+          'data-sort-value': claim.createdAt
+        }
+      },
+      {
+        html: `<span class="govuk-tag ${getStyleClassByStatus(claim.status.status)}">${claim.status.status}</span>`,
+        attributes: {
+          'data-sort-value': `${claim.status.status}`
+        }
+      },
+      { html: `<a href="${serviceUri}/view-claim/${claim.reference}?returnPage=claims">View claim</a>` }
+    ])
+    const pagingData = getPagingData(claimsData.total ?? 0, limit, page, path)
     return {
       claims,
-      header: getClaimTableHeader(getClaimSort(request, claimSort.sort)),
+      header: getClaimTableHeader(getClaimSearch(request, claimSearch.sort)),
       ...pagingData,
-      searchText: request.payload?.searchText
+      searchText: getClaimSearch(request, claimSearch.searchText)
     }
   } else {
     return {

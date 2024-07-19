@@ -194,6 +194,27 @@ describe('Applications test', () => {
       expectPhaseBanner.ok($)
       setEndemicsEnabled(endemicsOriginal)
     })
+    test('returns 200 clear', async () => {
+      setEndemicsEnabled(true)
+      const options = {
+        method: 'GET',
+        url: `${url}/clear`,
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+    })
+    test('returns 200 remove status', async () => {
+      setEndemicsEnabled(true)
+      sessionMock.getAppSearch.mockReturnValueOnce(['AGREED'])
+      const options = {
+        method: 'GET',
+        url: `${url}/remove/AGREED`,
+        auth
+      }
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+    })
   })
   describe(`POST ${url} route`, () => {
     let crumb
@@ -249,6 +270,7 @@ describe('Applications test', () => {
       { searchDetails: { searchText: '333333333' } },
       { searchDetails: { searchText: '444444443' } },
       { searchDetails: { searchText: 'AHWR-555A-F5D5' } },
+      { searchDetails: { searchText: '', submit: false } },
       { searchDetails: { searchText: '' } },
       { searchDetails: { searchText: null } },
       { searchDetails: { searchText: undefined } }
@@ -256,7 +278,7 @@ describe('Applications test', () => {
       const options = {
         method,
         url,
-        payload: { crumb, searchText: searchDetails.searchText, status: [], submit: 'search' },
+        payload: { crumb, searchText: searchDetails.searchText, status: [], submit: searchDetails.submit ?? 'search' },
         headers: { cookie: `crumb=${crumb}` },
         auth
       }

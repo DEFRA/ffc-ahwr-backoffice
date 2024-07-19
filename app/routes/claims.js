@@ -1,6 +1,6 @@
 const Joi = require('joi')
-const { setClaimSort } = require('../session')
-const { claimSort } = require('../session/keys')
+const { setClaimSearch } = require('../session')
+const { claimSearch } = require('../session/keys')
 const crumbCache = require('./utils/crumb-cache')
 const { displayPageSize } = require('../pagination')
 const { viewModel } = require('./models/claim-list')
@@ -33,7 +33,7 @@ module.exports = [{
     },
     handler: async (request, h) => {
       request.params.direction = request.params.direction !== 'descending' ? 'DESC' : 'ASC'
-      setClaimSort(request, claimSort.sort, request.params)
+      setClaimSearch(request, claimSearch.sort, request.params)
       return 1 // NOSONAR
     }
   }
@@ -50,11 +50,11 @@ module.exports = [{
     },
     handler: async (request, h) => {
       try {
+        setClaimSearch(request, claimSearch.searchText, request.payload?.searchText)
         return h.view(viewTemplate, await viewModel(request, 1)) // NOSONAR
       } catch (err) {
         return h.view(viewTemplate, { ...request.payload, error: err }).code(400).takeover()
       }
     }
   }
-}
-]
+}]
