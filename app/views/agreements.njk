@@ -1,24 +1,17 @@
 {% extends './layouts/layout.njk' %}
 
 {% block pageTitle %}
-  {{ siteTitle }}: AHWR Applications
+  {{ siteTitle }}: AHWR Agreements
 {% endblock %}
-
-{% block beforeContent %}
-  {{ govukBackLink({
-        text: "Back",
-        href: "/"
-      }) }}
-{% endblock %}
-
 {% block content %}
 
-  <form method="POST" action="/applications">
-    <div class="govuk-grid-row govuk-!-padding-bottom-9">
-      <h1 class="govuk-heading-l">{{"Agreements and claims" if endemicsEnabled else "Annual health and welfare review agreements"}}</h1>
-      <div class="user-search-box govuk-!-width-two-thirds">
+  <form method="POST" action="/agreements">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds govuk-!-padding-bottom-9">
+      <h1 class="govuk-heading-l">Agreements</h1>
+      <div class="user-search-box">
         <label class="govuk-label govuk-label--s" for="searchText">
-          Search by agreement number, organisation or single business identifier (SBI) number
+          Search agreements
         </label>
         <input type="hidden" name="crumb" value="{{crumb}}"/>
         <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{model.searchText}}" spellcheck="false">
@@ -29,11 +22,11 @@
     </div>
 
     {% if model.error or error %}
-      <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
         <p class="govuk-error-message">{{model.error}}{{error}}</p>
       </div>
     {% else %}
-      <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
         <div class="moj-scrollable-pane">
 
           <div class="moj-scrollable-pane__wrapper">
@@ -55,5 +48,6 @@
         </div>
       </div>
     {% endif %}
+      </div>
   </form>
 {% endblock %}

@@ -1,11 +1,11 @@
 const entries = {
   appSearch: 'appSearch',
-  claimSort: 'claimSort'
+  claimSearch: 'claimSearch'
 }
 
 function set (request, entryKey, key, value) {
   const entryValue = request.yar?.get(entryKey) || {}
-  entryValue[key] = typeof (value) === 'string' ? value.trim() : value
+  entryValue[key] = typeof value === 'string' ? value.trim() : value
   request.yar.set(entryKey, entryValue)
 }
 
@@ -21,17 +21,17 @@ function getAppSearch (request, key) {
   return get(request, entries.appSearch, key)
 }
 
-function setClaimSort (request, key, value) {
-  set(request, entries.claimSort, key, value)
+function setClaimSearch (request, key, value) {
+  set(request, entries.claimSearch, key, value)
 }
 
-function getClaimSort (request, key) {
-  return get(request, entries.claimSort, key)
+function getClaimSearch (request, key) {
+  return get(request, entries.claimSearch, key)
 }
 
 module.exports = {
   setAppSearch,
   getAppSearch,
-  setClaimSort,
-  getClaimSort
+  setClaimSearch,
+  getClaimSearch
 }

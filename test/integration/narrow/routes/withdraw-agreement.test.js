@@ -13,7 +13,7 @@ applications.updateApplicationStatus = jest.fn().mockResolvedValue(true)
 
 describe('Withdraw Application tests when endemics flag is On', () => {
   let crumb
-  const url = '/withdraw-application/'
+  const url = '/withdraw-agreement/'
   jest.mock('../../../../app/auth')
 
   beforeEach(async () => {
@@ -118,7 +118,7 @@ describe('Withdraw Application tests when endemics flag is On', () => {
       const res = await global.__SERVER__.inject(options)
       expect(applications.updateApplicationStatus).toHaveBeenCalledTimes(1)
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
     })
     test('Return error, when any of the check boxes are not checked', async () => {
       setEndemicsEnabled(true)
@@ -137,7 +137,7 @@ describe('Withdraw Application tests when endemics flag is On', () => {
       }
       const res = await global.__SERVER__.inject(options)
 
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&withdraw=true&errors=W3sidGV4dCI6IlNlbGVjdCBhbGwgY2hlY2tib3hlcyIsImhyZWYiOiIjcG5sLXdpdGhkcmF3LWNvbmZpcm1hdGlvbiJ9XQ%3D%3D`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&withdraw=true&errors=W3sidGV4dCI6IlNlbGVjdCBhbGwgY2hlY2tib3hlcyIsImhyZWYiOiIjcG5sLXdpdGhkcmF3LWNvbmZpcm1hdGlvbiJ9XQ%3D%3D`)
     })
     test('Approve withdraw application when endemics flag is Off', async () => {
       setEndemicsEnabled(false)
@@ -157,7 +157,7 @@ describe('Withdraw Application tests when endemics flag is On', () => {
       const res = await global.__SERVER__.inject(options)
       expect(applications.updateApplicationStatus).toHaveBeenCalledTimes(1)
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
     })
     test('Go back when user clicked on No button when endemics flag is Off', async () => {
       setEndemicsEnabled(false)
@@ -176,7 +176,7 @@ describe('Withdraw Application tests when endemics flag is On', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
     })
   })
 })

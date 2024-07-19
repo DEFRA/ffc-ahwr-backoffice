@@ -40,19 +40,19 @@
       {{ govukSummaryList({ rows: applicationSummaryDetails }) }}
 
       {% if recommendData != false %}
-        {{ viewRecommendConfirmationForm('claim', reference, page, crumb, recommendData) }}
+        {{ viewRecommendConfirmationForm('claim', reference, page, returnPage, crumb, recommendData) }}
       {% endif %}
       {% if recommendToReject.display %}
         {{ viewRecommendToRejectConfirmationForm('claim', reference, page, crumb, recommendToReject.errorMessage) }}
       {% endif %}
       {% if authorisePaymentConfirmForm.display %}
-        {{ viewAuthorisePaymentConfirmForm('claim', reference, page, crumb, authorisePaymentConfirmForm.errorMessage) }}
+        {{ viewAuthorisePaymentConfirmForm('claim', reference, page, returnPage, crumb, authorisePaymentConfirmForm.errorMessage) }}
       {% endif %}
       {% if rejectClaimConfirmForm.display %}
-        {{ viewRejectClaimConfirmForm('claim', reference, page, crumb, rejectClaimConfirmForm.errorMessage) }}
+        {{ viewRejectClaimConfirmForm('claim', reference, page, returnPage, crumb, rejectClaimConfirmForm.errorMessage) }}
       {% endif %}
       {% if onHoldConfirmationForm.display %}
-        {{ viewMoveClaimToInCheckConfirmationForm('claim', reference, page, crumb, onHoldConfirmationForm.errorMessage) }}
+        {{ viewMoveClaimToInCheckConfirmationForm('claim', reference, page, returnPage, crumb, onHoldConfirmationForm.errorMessage) }}
       {% endif %}
 
       {% set claimHTML %}
@@ -61,7 +61,7 @@
         {% if displayMoveToInCheckFromHold %}
           <div class="govuk-body govuk-!-text-align-left" id="move-to-in-check">
             <p class="govuk-body">If you recommend this claim for a full verification check, move it to ‘in check’.</p>
-            <a class="govuk-button govuk-!-margin-bottom-4" role="button" href="/view-claim/{{ reference }}?moveToInCheck=true" draggable="false" data-module="govuk-button">
+            <a class="govuk-button govuk-!-margin-bottom-4" role="button" href="/view-claim/{{ reference }}?moveToInCheck=true{{"&returnPage="+returnPage if returnPage}}" draggable="false" data-module="govuk-button">
               Move claim to 'in check'
             </a>
             <p class="govuk-body">If no further checks are required, you do not need to do anything. The claim will automatically move to ‘ready to pay’.</p>
@@ -98,10 +98,10 @@
       }}
 
       {% if recommendForm %}
-        {{ viewRecommendForm('claim', reference, page, crumb) }}
+        {{ viewRecommendForm('claim', reference, page, returnPage, crumb) }}
       {% endif %}
       {% if authoriseOrRejectForm.display %}
-        {{ viewAuthoriseOrRejectForm('claim', reference, page, crumb, contactPerson, authoriseOrRejectForm.displayAuthorisePaymentButton) }}
+        {{ viewAuthoriseOrRejectForm('claim', reference, page, returnPage, crumb, contactPerson, authoriseOrRejectForm.displayAuthorisePaymentButton) }}
       {% endif %}
 
     </div>

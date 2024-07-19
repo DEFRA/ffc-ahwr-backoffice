@@ -23,11 +23,11 @@ module.exports = {
 
         if (request.payload.claimOrApplication === 'claim') {
           return h
-            .redirect(`/view-claim/${request.payload.reference}?recommendToPay=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
+            .redirect(`/view-claim/${request.payload.reference}?recommendToPay=true${request.payload?.returnPage && '&returnPage=' + request.payload?.returnPage}&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
             .takeover()
         } else {
           return h
-            .redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&recommendToPay=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
+            .redirect(`/view-agreement/${request.payload.reference}?page=${request?.payload?.page || 1}&recommendToPay=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
             .takeover()
         }
       }
@@ -48,9 +48,9 @@ module.exports = {
         await crumbCache.generateNewCrumb(request, h)
 
         if (request.payload.claimOrApplication === 'claim') {
-          return h.redirect(`/view-claim/${request.payload.reference}`)
+          return h.redirect(`/view-claim/${request.payload.reference}${request.payload?.returnPage && '?returnPage=' + request.payload?.returnPage}`)
         } else {
-          return h.redirect(`/view-application/${request.payload.reference}?page=${request.payload.page}`)
+          return h.redirect(`/view-agreement/${request.payload.reference}?page=${request.payload.page}`)
         }
       } catch (error) {
         console.error(`routes:recommend-to-pay: Error when processing request: ${error.message}`)

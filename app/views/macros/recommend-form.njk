@@ -1,11 +1,11 @@
-{% macro viewRecommendForm(claimOrApplication, reference, page, crumb) %}
+{% macro viewRecommendForm(claimOrApplication, reference, page, returnPage, crumb) %}
   <div class="govuk-button-group">
     {% if claimOrApplication == 'application' %}
-      <a class="govuk-button" href="/view-application/{{ reference }}?page={{page}}&recommendToPay=true" role="button" id="btn-recommend-to-pay">Recommend to pay</a>
-      <a class="govuk-button" role="button" href="/view-application/{{ reference }}?page={{page}}&recommendToReject=true" id="btn-recommend-to-reject">Recommend to reject</a>
+      <a class="govuk-button" href="/view-agreement/{{ reference }}?page={{page}}&recommendToPay=true" role="button" id="btn-recommend-to-pay">Recommend to pay</a>
+      <a class="govuk-button" role="button" href="/view-agreement/{{ reference }}?page={{page}}&recommendToReject=true" id="btn-recommend-to-reject">Recommend to reject</a>
     {% elif claimOrApplication == 'claim' %}
-      <a class="govuk-button" href="/view-claim/{{ reference }}?recommendToPay=true" role="button" id="btn-recommend-to-pay">Recommend to pay</a>
-      <a class="govuk-button" role="button" href="/view-claim/{{ reference }}?recommendToReject=true" id="btn-recommend-to-reject">Recommend to reject</a>
+      <a class="govuk-button" href="/view-claim/{{ reference }}?recommendToPay=true{{"&returnPage="+returnPage if returnPage}}" role="button" id="btn-recommend-to-pay">Recommend to pay</a>
+      <a class="govuk-button" role="button" href="/view-claim/{{ reference }}?recommendToReject=true{{"&returnPage="+returnPage if returnPage}}" id="btn-recommend-to-reject">Recommend to reject</a>
     {% endif %}
   </div>
 {% endmacro %}

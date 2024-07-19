@@ -13,10 +13,10 @@
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% block pageTitle %}
-  {{ siteTitle }}: User Application
+  {{ siteTitle }}: User Agreements
 {% endblock %}
 {% set backLink %}
- /applications?page={{page}}
+ /agreements?page={{page}}
 {% endset -%}
 {% block beforeContent %}
   {{ govukBackLink({
@@ -62,19 +62,19 @@
         {% endfor %}
       </dl>
       {% if model.recommendData != false %}
-        {{ viewRecommendConfirmationForm('application', reference, page, crumb, model.recommendData) }}
+        {{ viewRecommendConfirmationForm('application', reference, page, 'agreements', crumb, model.recommendData) }}
       {% endif %}
       {% if recommendToReject.display %}
         {{ viewRecommendToRejectConfirmationForm('application', reference, page, crumb, recommendToReject.errorMessage) }}
       {% endif %}
       {% if authorisePaymentConfirmForm.display %}
-        {{ viewAuthorisePaymentConfirmForm('application', reference, page, crumb, authorisePaymentConfirmForm.errorMessage) }}
+        {{ viewAuthorisePaymentConfirmForm('application', reference, page, 'agreements', crumb, authorisePaymentConfirmForm.errorMessage) }}
       {% endif %}
       {% if rejectClaimConfirmForm.display %}
-        {{ viewRejectClaimConfirmForm('application', reference, page, crumb, rejectClaimConfirmForm.errorMessage) }}
+        {{ viewRejectClaimConfirmForm('application', reference, page, 'agreements', crumb, rejectClaimConfirmForm.errorMessage) }}
       {% endif %}
       {% if onHoldConfirmationForm.display %}
-        {{ viewMoveClaimToInCheckConfirmationForm('application', reference, page, crumb, onHoldConfirmationForm.errorMessage) }}
+        {{ viewMoveClaimToInCheckConfirmationForm('application', reference, page, 'agreements', crumb, onHoldConfirmationForm.errorMessage) }}
       {% endif %}
       {{ viewApplicationTabs(model, vetVisit, claimed, payment, subStatus, displayMoveToInCheckFromHold, reference, page) }}
       {% if withdrawLink %}
@@ -83,18 +83,18 @@
             <div class="govuk-grid-column-full">
               <h2 class="govuk-heading-m">Further action</h2>
               <p class="govuk-body">This customer has successfully submitted an application but, if they ask, they can withdraw from an agreement.</p>
-              <a class="govuk-button" href="/view-application/{{ reference }}?page={{page}}&withdraw=true" role="button" draggable="false" data-module="govuk-button">Withdraw</a>
+              <a class="govuk-button" href="/view-agreement/{{ reference }}?page={{page}}&withdraw=true" role="button" draggable="false" data-module="govuk-button">Withdraw</a>
             </div>
           </div>
         {% else %}
-          <a class="govuk-link govuk-body" href="/view-application/{{ reference }}?page={{page}}&withdraw=true">Withdraw</a>
+          <a class="govuk-link govuk-body" href="/view-agreement/{{ reference }}?page={{page}}&withdraw=true">Withdraw</a>
         {% endif %}
       {% endif %}
       {% if recommendForm %}
-        {{ viewRecommendForm('application', reference, page, crumb) }}
+        {{ viewRecommendForm('application', reference, page, 'agreements', crumb) }}
       {% endif %}
       {% if authoriseOrRejectForm.display %}
-        {{ viewAuthoriseOrRejectForm('application', reference, page, crumb, authoriseOrRejectForm.displayAuthorisePaymentButton) }}
+        {{ viewAuthoriseOrRejectForm('application', reference, page, 'agreements', crumb, authoriseOrRejectForm.displayAuthorisePaymentButton) }}
       {% endif %}
     </div>
   </div>

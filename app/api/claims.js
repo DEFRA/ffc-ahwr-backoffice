@@ -15,7 +15,7 @@ async function getClaim (reference) {
   }
 }
 
-async function getClaims (reference) {
+async function getClaimsByApplicationReference (reference) {
   const url = `${applicationApiUri}/claim/get-by-application-reference/${reference}`
   try {
     const response = await Wreck.get(url, { json: true })
@@ -26,6 +26,29 @@ async function getClaims (reference) {
   } catch (err) {
     console.log(err)
     return null
+  }
+}
+
+async function getClaims (searchType, searchText, limit, offset, sort) {
+  const url = `${applicationApiUri}/claim/search`
+  const options = {
+    payload: {
+      search: { text: searchText, type: searchType },
+      limit,
+      offset,
+      sort
+    },
+    json: true
+  }
+  try {
+    const response = await Wreck.post(url, options)
+    if (response.res.statusCode !== 200) {
+      return { claims: [], total: 0 }
+    }
+    return response.payload
+  } catch (err) {
+    console.log(err)
+    return { claims: [], total: 0 }
   }
 }
 
@@ -52,7 +75,8 @@ async function updateClaimStatus (reference, user, status) {
 }
 
 module.exports = {
-  getClaims,
   getClaim,
-  updateClaimStatus
+  getClaims,
+  updateClaimStatus,
+  getClaimsByApplicationReference
 }

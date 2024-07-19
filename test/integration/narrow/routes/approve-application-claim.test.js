@@ -101,7 +101,7 @@ describe('/approve-application-claim', () => {
       const res = await global.__SERVER__.inject(options)
 
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual('/view-application/123?page=1&approve=true&errors=W10%3D')
+      expect(res.headers.location).toEqual('/view-agreement/123?page=1&approve=true&errors=W10%3D')
     })
 
     test.each([
@@ -138,7 +138,7 @@ describe('/approve-application-claim', () => {
         true
       )
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
     })
 
     test.each([
@@ -156,6 +156,7 @@ describe('/approve-application-claim', () => {
           claimOrApplication: 'claim',
           confirm: ['approveClaim', 'sentChecklist'],
           page: 1,
+          returnPage: 'claims',
           crumb
         }
       }
@@ -175,7 +176,7 @@ describe('/approve-application-claim', () => {
         true
       )
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-claim/${reference}`)
+      expect(res.headers.location).toEqual(`/view-claim/${reference}?returnPage=claims`)
     })
 
     test('Approve application claim not processed', async () => {
@@ -195,7 +196,7 @@ describe('/approve-application-claim', () => {
       const res = await global.__SERVER__.inject(options)
       expect(processStageActions).not.toHaveBeenCalled()
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&approve=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&approve=true&errors=${encodedErrors}`)
     })
 
     test('If user is not administrator or authoriser', async () => {
@@ -233,7 +234,7 @@ describe('/approve-application-claim', () => {
       const res = await global.__SERVER__.inject(options)
       expect(processStageActions).not.toHaveBeenCalled()
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&approve=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&approve=true&errors=${encodedErrors}`)
     })
     test('retuns 400 Bad Request for claim', async () => {
       const options = {
@@ -245,13 +246,14 @@ describe('/approve-application-claim', () => {
           reference,
           claimOrApplication: 'claim',
           page: 1,
+          returnPage: 'claims',
           crumb
         }
       }
       const res = await global.__SERVER__.inject(options)
       expect(processStageActions).not.toHaveBeenCalled()
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-claim/${reference}?approve=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-claim/${reference}?approve=true&returnPage=claims&errors=${encodedErrors}`)
     })
   })
 })

@@ -49,8 +49,20 @@ const statusStyle = {
   INCHECK: {
     styleClass: 'govuk-tag--orange'
   },
+  RECOMMENDEDTOPAY: {
+    styleClass: 'govuk-tag--orange'
+  },
+  RECOMMENDEDTOREJECT: {
+    styleClass: 'govuk-tag--orange'
+  },
   READYTOPAY: {
     styleClass: 'govuk-tag'
+  },
+  ONHOLD: {
+    styleClass: 'govuk-tag--purple'
+  },
+  SENTTOFINANCE: {
+    styleClass: 'govuk-tag--pink'
   }
 }
 
