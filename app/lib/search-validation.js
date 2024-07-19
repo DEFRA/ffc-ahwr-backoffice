@@ -1,8 +1,7 @@
 const regexChecker = require('../../app/routes/utils/regex-checker')
 
-const appRefRegEx = /^AHWR-[A-Z0-9]{4}-[A-Z0-9]{4}$/i
-const newAppRefRegEx = /^IAHW-[A-Z0-9]{4}-[A-Z0-9]{4}$/i
-const agreementDateRegEx = /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/ // DD/MM/YYYY
+const refRegEx = /^(IAHW|AHWR|REPI|RESH|REBC|REDC|FUPI|FUSH|FUBC|FUDC)-[A-Z0-9]{4}-[A-Z0-9]{4}$/i
+const dateRegEx = /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/ // DD/MM/YYYY
 const validStatus = [
   'agreed',
   'applied',
@@ -53,7 +52,7 @@ module.exports = (searchText) => {
   const { isValidSpecies, theSpecies } = validSpecies(searchText)
 
   switch (true) {
-    case regexChecker(appRefRegEx, searchText) || regexChecker(newAppRefRegEx, searchText):
+    case regexChecker(refRegEx, searchText):
       searchType = 'ref'
       break
     case validStatus.indexOf(searchText.toLowerCase()) !== -1:
@@ -62,7 +61,7 @@ module.exports = (searchText) => {
     case sbiRegEx.test(searchText):
       searchType = 'sbi'
       break
-    case regexChecker(agreementDateRegEx, searchText):
+    case regexChecker(dateRegEx, searchText):
       searchType = 'date'
       break
     case validTypes.indexOf(searchText.toLowerCase()) !== -1:
