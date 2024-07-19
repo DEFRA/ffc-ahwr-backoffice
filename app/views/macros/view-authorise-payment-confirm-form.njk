@@ -1,7 +1,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 
-{% macro viewAuthorisePaymentConfirmForm(claimOrApplication, reference, page, crumb, errorMessage) %}
+{% macro viewAuthorisePaymentConfirmForm(claimOrApplication, reference, page, returnPage, crumb, errorMessage) %}
   <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="authorise-payment-panel">
     {% if claimOrApplication == 'claim' %}
       <p class="govuk-body govuk-!-text-align-right"><a href="/view-claim/{{ reference }}" role="button" draggable="false" class="govuk-link">Back</a></p>
@@ -34,6 +34,7 @@
       <input type="hidden" name="claimOrApplication" value="{{ claimOrApplication }}" />
       <input type="hidden" name="reference" value="{{ reference }}" />
       <input type="hidden" name="page" value="{{ page }}" />
+      <input type="hidden" name="returnPage" value="{{ returnPage }}" />
       <input type="hidden" name="crumb" value="{{crumb}}"/>
     </form>
   </div>

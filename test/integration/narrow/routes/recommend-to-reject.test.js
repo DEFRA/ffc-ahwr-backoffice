@@ -69,7 +69,7 @@ describe('Recommended To Reject test', () => {
           confirm: 'checkedAgainstChecklist'
         }
       })}`)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}`)
     })
     test('returns 302 when validation fails - no page given for claim', async () => {
       const options = {
@@ -81,6 +81,7 @@ describe('Recommended To Reject test', () => {
           reference,
           claimOrApplication: 'claim',
           page: 1,
+          returnPage: 'claims',
           confirm: 'checkedAgainstChecklist',
           crumb
         }
@@ -93,10 +94,11 @@ describe('Recommended To Reject test', () => {
           reference: 'AHWR-555A-FD4C',
           claimOrApplication: 'claim',
           page: 1,
+          returnPage: 'claims',
           confirm: 'checkedAgainstChecklist'
         }
       })}`)
-      expect(res.headers.location).toEqual(`/view-claim/${reference}?recommendToReject=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-claim/${reference}?recommendToReject=true&returnPage=claims&errors=${encodedErrors}`)
     })
 
     test('returns 302 when validation fails - no page given', async () => {
@@ -122,7 +124,7 @@ describe('Recommended To Reject test', () => {
           confirm: 'checkedAgainstChecklist'
         }
       })}`)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}`)
     })
 
     test.each([
@@ -152,7 +154,7 @@ describe('Recommended To Reject test', () => {
       expect(res.statusCode).toBe(302)
       expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommend to reject', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
     })
     test.each([
       [recommender, 'recommender'],
@@ -173,6 +175,7 @@ describe('Recommended To Reject test', () => {
           reference,
           claimOrApplication: 'claim',
           page: 1,
+          returnPage: 'claims',
           confirm: ['checkedAgainstChecklist', 'sentChecklist'],
           crumb
         }
@@ -181,7 +184,7 @@ describe('Recommended To Reject test', () => {
       expect(res.statusCode).toBe(302)
       expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommend to reject', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
-      expect(res.headers.location).toEqual(`/view-claim/${reference}`)
+      expect(res.headers.location).toEqual(`/view-claim/${reference}?returnPage=claims`)
     })
     test.each([
       [recommender, 'recommender'],
@@ -237,7 +240,7 @@ describe('Recommended To Reject test', () => {
       expect(res.statusCode).toBe(302)
       expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommend to reject', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
     })
 
     test('Returns 302 on wrong payload', async () => {
@@ -257,7 +260,7 @@ describe('Recommended To Reject test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}`)
     })
 
     test('Recommended to reject invalid reference', async () => {
@@ -278,7 +281,7 @@ describe('Recommended To Reject test', () => {
       const res = await global.__SERVER__.inject(options)
 
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-application/123?page=1&recommendToReject=true&errors=${encodedEmptyArray}`)
+      expect(res.headers.location).toEqual(`/view-agreement/123?page=1&recommendToReject=true&errors=${encodedEmptyArray}`)
     })
 
     test('Returns 500 on error when processing stage actions', async () => {

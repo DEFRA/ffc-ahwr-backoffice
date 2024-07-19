@@ -3,7 +3,7 @@ const { Buffer } = require('buffer')
 const expectPhaseBanner = require('../../../utils/phase-banner-expect')
 const applications = require('../../../../app/api/applications')
 const { administrator } = require('../../../../app/auth/permissions')
-const viewApplicationData = require('.././../../data/view-applications.json')
+const viewApplicationData = require('../../../data/view-applications.json')
 const applicationHistoryData = require('../../../data/application-history.json')
 const applicationEventData = require('../../../data/application-events.json')
 const { when, resetAllWhenMocks } = require('jest-when')
@@ -15,7 +15,7 @@ function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
     expect($('.govuk-link').hasClass)
     const withdrawLink = $('.govuk-button')
     expect(withdrawLink.text()).toMatch('Withdraw')
-    expect(withdrawLink.attr('href')).toMatch(`/view-application/${reference}?page=1&withdraw=true`)
+    expect(withdrawLink.attr('href')).toMatch(`/view-agreement/${reference}?page=1&withdraw=true`)
   } else {
     expect($('.govuk-link').not.hasClass)
   }
@@ -45,7 +45,7 @@ function expectRecommendButtons ($, areRecommendButtonsVisible) {
 
     expect(recommendToPayButton.hasClass('govuk-button'))
     expect(recommendToPayButton.text()).toMatch('Recommend to pay')
-    expect(recommendToPayButton.attr('href')).toMatch('/view-application/AHWR-555A-FD4C?page=1&recommendToPay=true')
+    expect(recommendToPayButton.attr('href')).toMatch('/view-agreement/AHWR-555A-FD4C?page=1&recommendToPay=true')
 
     expect(recommendToRejectButton.hasClass('govuk-button'))
     expect(recommendToRejectButton.text()).toMatch('Recommend to reject')
@@ -77,7 +77,7 @@ function expectWithdrawConfirmationPanel ($, istWithdrawConfirmationPanelVisible
 jest.mock('../../../../app/api/applications')
 
 describe('View Application test', () => {
-  const url = `/view-application/${reference}`
+  const url = `/view-agreement/${reference}`
   jest.mock('../../../../app/auth')
   let auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
 
@@ -486,7 +486,7 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
       expect($('h2.govuk-heading-l').text()).toContain(status)
-      expect($('title').text()).toContain('Administration: User Application')
+      expect($('title').text()).toContain('Administration: User Agreement')
 
       expectApplicationDetails($)
 
@@ -524,7 +524,7 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
       expect($('h2.govuk-heading-l').text()).toContain(status)
-      expect($('title').text()).toContain('Administration: User Application')
+      expect($('title').text()).toContain('Administration: User Agreement')
 
       expectApplicationDetails($)
 
@@ -562,7 +562,7 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
       expect($('h2.govuk-heading-l').text()).toContain(status)
-      expect($('title').text()).toContain('Administration: User Application')
+      expect($('title').text()).toContain('Administration: User Agreement')
 
       expectApplicationDetails($)
 
@@ -591,7 +591,7 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
       expect($('h2.govuk-heading-l').text()).toContain(status)
-      expect($('title').text()).toContain('Administration: User Application')
+      expect($('title').text()).toContain('Administration: User Agreement')
 
       expectApplicationDetails($)
 
@@ -634,7 +634,7 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
       expect($('h2.govuk-heading-l').text()).toContain(status)
-      expect($('title').text()).toContain('Administration: User Application')
+      expect($('title').text()).toContain('Administration: User Agreement')
 
       expectApplicationDetails($)
 
@@ -676,7 +676,7 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
       expect($('h2.govuk-heading-l').text()).toContain(status)
-      expect($('title').text()).toContain('Administration: User Application')
+      expect($('title').text()).toContain('Administration: User Agreement')
 
       expectApplicationDetails($)
 
@@ -709,7 +709,7 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
       expect($('h2.govuk-heading-l').text()).toContain(status)
-      expect($('title').text()).toContain('Administration: User Application')
+      expect($('title').text()).toContain('Administration: User Agreement')
 
       expectApplicationDetails($)
 
@@ -750,7 +750,7 @@ describe('View Application test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
       expect($('h2.govuk-heading-l').text()).toContain(status)
-      expect($('title').text()).toContain('Administration: User Application')
+      expect($('title').text()).toContain('Administration: User Agreement')
 
       expectApplicationDetails($)
 
@@ -773,7 +773,7 @@ describe('View Application test', () => {
       auth = { strategy: 'session-auth', credentials: { scope: ['administrator'] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      const url = `/view-application/${reference}?page=1&withdraw=${true}`
+      const url = `/view-agreement/${reference}?page=1&withdraw=${true}`
       const options = {
         method: 'GET',
         url,
@@ -869,7 +869,7 @@ describe('View Application test', () => {
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const options = {
         method: 'GET',
-        url: `/view-application/${reference}/${queryParam}`,
+        url: `/view-agreement/${reference}/${queryParam}`,
         auth
       }
 
@@ -899,7 +899,7 @@ describe('View Application test', () => {
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const options = {
         method: 'GET',
-        url: `/view-application/${reference}/${queryParam}`,
+        url: `/view-agreement/${reference}/${queryParam}`,
         auth
       }
 
@@ -929,7 +929,7 @@ describe('View Application test', () => {
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const options = {
         method: 'GET',
-        url: `/view-application/${reference}/${queryParam}`,
+        url: `/view-agreement/${reference}/${queryParam}`,
         auth
       }
 

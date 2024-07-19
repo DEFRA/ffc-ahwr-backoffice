@@ -5,7 +5,7 @@ const { endemics } = require('../config')
 const { getApplication, getApplicationHistory, getApplicationEvents } = require('../api/applications')
 const { administrator, processor, user, recommender, authoriser } = require('../auth/permissions')
 const { getStyleClassByStatus } = require('../constants/status')
-const ViewModel = require('./models/view-application')
+const ViewModel = require('./models/view-agreement')
 const { upperFirstLetter } = require('../lib/display-helper')
 const mapAuth = require('../auth/map-auth')
 const claimFormHelper = require('./utils/claim-form-helper')
@@ -15,7 +15,7 @@ const { getContactHistory, displayContactHistory } = require('../api/contact-his
 
 module.exports = {
   method: 'GET',
-  path: '/view-application/{reference}',
+  path: '/view-agreement/{reference}',
   options: {
     auth: { scope: [administrator, processor, user, recommender, authoriser] },
     validate: {
@@ -89,7 +89,7 @@ module.exports = {
       ]
       const viewModel = new ViewModel(application, applicationHistory, recommend, applicationEvents)
       viewModel.model.listData = listData
-      return h.view('view-application', {
+      return h.view('view-agreement', {
         endemics: endemics.enabled,
         reference: application.reference,
         status,

@@ -2,7 +2,6 @@ const { Buffer } = require('buffer')
 const Joi = require('joi')
 const boom = require('@hapi/boom')
 const { getClaim } = require('../api/claims')
-const { claims } = require('./../config/routes')
 const { getApplication, getApplicationHistory } = require('../api/applications')
 const getApplicationHistoryModel = require('./models/application-history')
 const { getStyleClassByStatus } = require('../constants/status')
@@ -17,8 +16,8 @@ const { upperFirstLetter, formatedDateToUk } = require('../lib/display-helper')
 const claimFormHelper = require('./utils/claim-form-helper')
 const checkboxErrors = require('./utils/checkbox-errors')
 
-const backLink = (applicationReference) => {
-  return `/${claims}/${applicationReference}`
+const backLink = (applicationReference, returnPage) => {
+  return returnPage && returnPage === 'claims' ? '/claims' : `/agreement/${applicationReference}/claims`
 }
 
 const speciesEligibleNumber = {
@@ -90,7 +89,8 @@ module.exports = {
         reject: Joi.bool().default(false),
         recommendToPay: Joi.bool().default(false),
         recommendToReject: Joi.bool().default(false),
-        moveToInCheck: Joi.bool().default(false)
+        moveToInCheck: Joi.bool().default(false),
+        returnPage: Joi.string().allow(null)
       })
     },
     handler: async (request, h) => {
@@ -113,7 +113,8 @@ module.exports = {
         { key: { text: 'SBI number' }, value: { text: organisation?.sbi } },
         { key: { text: 'Address' }, value: { text: organisation?.address } },
         { key: { text: 'Email address' }, value: { text: organisation?.email } },
-        { key: { text: 'Organisation email address' }, value: { text: organisation?.orgEmail } }
+        { key: { text: 'Organisation email address' }, value: { text: organisation?.orgEmail } },
+        { key: { text: 'Agreement Number' }, value: { text: applicationReference } }
       ]
 
       const {
@@ -146,7 +147,8 @@ module.exports = {
 
       return h.view('view-claim', {
         page: 1,
-        backLink: backLink(claim?.applicationReference),
+        backLink: backLink(claim?.applicationReference, request.query.returnPage),
+        returnPage: request.query.returnPage,
         reference,
         title: upperFirstLetter(application?.data?.organisation?.name),
         claimSummaryDetails: claimSummaryDetails(organisation, data, type),

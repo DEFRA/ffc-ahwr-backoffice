@@ -27,14 +27,14 @@ const getApplicationTableHeader = (sortField) => {
       text: 'Agreement number',
       attributes: {
         'aria-sort': sortField && sortField.field === 'Reference' ? direction : 'none',
-        'data-url': '/applications/sort/Reference'
+        'data-url': '/agreements/sort/Reference'
       }
     },
     {
       text: 'Organisation',
       attributes: {
         'aria-sort': sortField && sortField.field === 'Organisation' ? direction : 'none',
-        'data-url': '/applications/sort/Organisation'
+        'data-url': '/agreements/sort/Organisation'
       }
     }]
   }
@@ -43,7 +43,7 @@ const getApplicationTableHeader = (sortField) => {
     text: 'SBI number',
     attributes: {
       'aria-sort': sortField && sortField.field === 'SBI' ? direction : 'none',
-      'data-url': '/applications/sort/SBI'
+      'data-url': '/agreements/sort/SBI'
     },
     format: 'numeric'
   })
@@ -51,7 +51,7 @@ const getApplicationTableHeader = (sortField) => {
     text: agreementDateTitle,
     attributes: {
       'aria-sort': sortField && sortField.field === 'Apply date' ? direction : 'none',
-      'data-url': '/applications/sort/Apply date'
+      'data-url': '/agreements/sort/Apply date'
     },
     format: 'date'
   })
@@ -59,7 +59,7 @@ const getApplicationTableHeader = (sortField) => {
     text: 'Status',
     attributes: {
       'aria-sort': sortField && sortField.field === 'Status' ? direction : 'none',
-      'data-url': '/applications/sort/Status'
+      'data-url': '/agreements/sort/Status'
     }
   })
   headerColumns.push({
@@ -70,7 +70,7 @@ const getApplicationTableHeader = (sortField) => {
 }
 
 async function createModel (request, page) {
-  const viewTemplate = 'applications'
+  const viewTemplate = 'agreements'
   const currentPath = `/${viewTemplate}`
   page = page ?? request.query.page ?? 1
   const { limit, offset } = getPagination(page)
@@ -111,7 +111,7 @@ async function createModel (request, page) {
             'data-sort-value': `${n.status.status}`
           }
         },
-        { html: `<a href="${serviceUri}/view-application/${n.reference}?page=${page}">View details</a>` }
+        { html: `<a href="${serviceUri}/view-agreements/${n.reference}?page=${page}">View details</a>` }
       ]
 
       if (endemics.enabled) {
@@ -119,8 +119,8 @@ async function createModel (request, page) {
         output[1].attributes = { 'data-sort-value': `${n.data?.organisation?.name}` }
         output[5] = {
           html: n.type === 'EE'
-            ? `<a href="${serviceUri}/claims/${n.reference}">View claims</a>`
-            : `<a href="${serviceUri}/view-application/${n.reference}?page=${page}">View details</a>`
+            ? `<a href="${serviceUri}/agreement/${n.reference}/claims?page=${page}">View claims</a>`
+            : `<a href="${serviceUri}/view-agreement/${n.reference}?page=${page}">View details</a>`
         }
       }
 
@@ -160,7 +160,7 @@ async function createModel (request, page) {
   } else {
     return {
       applications: [],
-      error: 'No Applications found.',
+      error: 'No agreements found.',
       searchText,
       availableStatus: [],
       selectedStatus: [],

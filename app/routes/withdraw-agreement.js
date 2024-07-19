@@ -10,7 +10,7 @@ const { endemics } = require('../config')
 
 module.exports = {
   method: 'POST',
-  path: '/withdraw-application',
+  path: '/withdraw-agreement',
   options: {
     pre: [{ method: preDoubleSubmitHandler }],
     auth: { scope: [administrator, authoriser] },
@@ -38,21 +38,21 @@ module.exports = {
       const { error } = endemics.enabled ? endemicsOnValidation.validate(request.payload) : endemicsOffValidation.validate(request.payload)
 
       if (error) {
-        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page || 1}&withdraw=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify([{ text: 'Select all checkboxes', href: '#pnl-withdraw-confirmation' }])).toString('base64'))}`).takeover()
+        return h.redirect(`/view-agreement/${request.payload.reference}?page=${request?.payload?.page || 1}&withdraw=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify([{ text: 'Select all checkboxes', href: '#pnl-withdraw-confirmation' }])).toString('base64'))}`).takeover()
       }
 
       if (endemics.enabled) {
         const userName = getUser(request).username
         await updateApplicationStatus(request.payload.reference, userName, applicationStatus.withdrawn)
 
-        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page}`)
+        return h.redirect(`/view-agreement/${request.payload.reference}?page=${request?.payload?.page}`)
       } else {
         if (request.payload.withdrawConfirmation === 'yes') {
           const userName = getUser(request).username
           await updateApplicationStatus(request.payload.reference, userName, applicationStatus.withdrawn)
         }
 
-        return h.redirect(`/view-application/${request.payload.reference}?page=${request?.payload?.page}`)
+        return h.redirect(`/view-agreement/${request.payload.reference}?page=${request?.payload?.page}`)
       }
     }
   }
