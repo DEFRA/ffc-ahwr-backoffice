@@ -6,7 +6,6 @@ const { getApplication, getApplicationHistory, getApplicationEvents } = require(
 const { administrator, processor, user, recommender, authoriser } = require('../auth/permissions')
 const { getStyleClassByStatus } = require('../constants/status')
 const ViewModel = require('./models/view-agreement')
-const { upperFirstLetter } = require('../lib/display-helper')
 const mapAuth = require('../auth/map-auth')
 const claimFormHelper = require('./utils/claim-form-helper')
 const applicationStatus = require('../constants/application-status')
@@ -49,7 +48,7 @@ module.exports = {
         applicationEvents = await getApplicationEvents(application?.data?.organisation.sbi)
       }
 
-      const status = upperFirstLetter(application.status.status.toLowerCase())
+      const status = application.status.status.toUpperCase()
       const statusClass = getStyleClassByStatus(application.status.status)
       const mappedAuth = mapAuth(request)
       const withdrawLinkStatus = ['AGREED']
