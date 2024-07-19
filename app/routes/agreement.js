@@ -12,6 +12,7 @@ const { serviceUri } = require('../config')
 const { getContactHistory, displayContactHistory } = require('../api/contact-history')
 
 const pageUrl = '/agreement/{reference}/claims'
+const getAriaSort = (sortField, direction, field) => sortField && sortField.field === field ? direction : 'none'
 
 module.exports = [{
   method: 'GET',
@@ -51,28 +52,28 @@ module.exports = [{
       const claimTableHeader = [{
         text: 'Claim number',
         attributes: {
-          'aria-sort': sortField && sortField.field === 'claim number' ? direction : 'none',
+          'aria-sort': getAriaSort(sortField, direction, 'claim number'),
           'data-url': `/agreement/${request.params.reference}/claims/sort/claim number`
         }
       },
       {
         text: 'Type of visit',
         attributes: {
-          'aria-sort': sortField && sortField.field === 'type of visit' ? direction : 'none',
+          'aria-sort': getAriaSort(sortField, direction, 'type of visit'),
           'data-url': `/agreement/${request.params.reference}/claims/sort/type of visit`
         }
       },
       {
         text: 'Species',
         attributes: {
-          'aria-sort': sortField && sortField.field === 'species' ? direction : 'none',
+          'aria-sort': getAriaSort(sortField, direction, 'species'),
           'data-url': `/agreement/${request.params.reference}/claims/sort/species`
         }
       },
       {
         text: 'Claim date',
         attributes: {
-          'aria-sort': sortField && sortField.field === 'claim date' ? direction : 'none',
+          'aria-sort': getAriaSort(sortField, direction, 'claim date'),
           'data-url': `/agreement/${request.params.reference}/claims/sort/claim date`
         },
         format: 'date'
@@ -80,7 +81,7 @@ module.exports = [{
       {
         text: 'Status',
         attributes: {
-          'aria-sort': sortField && sortField.field === 'status' ? direction : 'none',
+          'aria-sort': getAriaSort(sortField, direction, 'status'),
           'data-url': `/agreement/${request.params.reference}/claims/sort/status`
         }
       },
