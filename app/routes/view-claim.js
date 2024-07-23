@@ -32,7 +32,7 @@ const returnClaimDetailIfExist = (property, value) => property && value
 const claimSummaryDetails = (organisation, data, type) => [
   (returnClaimDetailIfExist(organisation?.name, { key: { text: 'Business name' }, value: { html: upperFirstLetter(organisation?.name) } })),
   (returnClaimDetailIfExist(data?.typeOfLivestock, { key: { text: 'Livestock' }, value: { html: upperFirstLetter([livestockTypes.pigs, livestockTypes.sheep].includes(data?.typeOfLivestock) ? data?.typeOfLivestock : `${data?.typeOfLivestock} cattle`) } })),
-  (returnClaimDetailIfExist(type, { key: { text: 'Type of visit' }, value: { html: type === claimType.review ? 'Annual health and welfare review' : 'Endemic disease follow-ups' } })),
+  (returnClaimDetailIfExist(type, { key: { text: 'Type of visit' }, value: { html: type === claimType.review ? 'Animal health and welfare review' : 'Endemic disease follow-ups' } })),
   (returnClaimDetailIfExist(data?.dateOfVisit, { key: { text: 'Date of visit' }, value: { html: formatedDateToUk(data?.dateOfVisit) } })),
   (returnClaimDetailIfExist(data?.dateOfTesting, { key: { text: 'Date of testing' }, value: { html: formatedDateToUk(data?.dateOfTesting) } })),
   (returnClaimDetailIfExist(data?.speciesNumbers, { key: { text: speciesEligibleNumber[data?.typeOfLivestock] }, value: { html: upperFirstLetter(data?.speciesNumbers) } })),
