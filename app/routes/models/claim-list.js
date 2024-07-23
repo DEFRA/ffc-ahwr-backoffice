@@ -108,7 +108,7 @@ async function createModel (request, page) {
         }
       },
       {
-        html: `<span class="govuk-tag ${getStyleClassByStatus(claim.status.status)}">${claim.status.status}</span>`,
+        html: `<span class="govuk-tag ${getStyleClassByStatus(claim.status.status)}">${claim.status.status.toUpperCase()}</span>`,
         attributes: {
           'data-sort-value': `${claim.status.status}`
         }
