@@ -238,7 +238,7 @@ describe('View claim test', () => {
         { key: 'Agreement Number', value: 'AHWR-1234-APP1' },
         { key: 'Business name', value: 'Mrs S Clark' },
         { key: 'Livestock', value: 'Pigs' },
-        { key: 'Type of visit', value: 'Annual health and welfare review' },
+        { key: 'Type of visit', value: 'Animal health and welfare review' },
         { key: 'Date of visit', value: '22/03/2024' },
         { key: 'Date of testing', value: '22/03/2024' },
         { key: '51 or more pigs', value: 'Yes' },
