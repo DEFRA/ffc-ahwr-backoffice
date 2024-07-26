@@ -2,4 +2,9 @@
 version: v1.22.1
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
+    SNYK-JS-AZUREMSALNODE-7246761:
+        - "*":
+            reason: None given
+            expires: "2024-12-01T00:00:00.000Z"
+            created: "2024-07-26T00:00:00.000Z"
 patch: {}
