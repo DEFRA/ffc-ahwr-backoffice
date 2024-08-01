@@ -42,31 +42,33 @@
     "constants": "^0.0.2",
     "cross-env": "^5.2.0",
     "dotenv": "^16.0.3",
-    "mssql": "^10.0.1",
+    "mssql": "^11.0.0",
     "pg-promise": "^11.5.4",
     "selenium": "^2.20.0",
     "selenium-server": "^3.141.59",
     "selenium-standalone": "^6.24.0"
   },
   "overrides": {
-    "notifications-node-client": {
-      "jsonwebtoken": "9.0.0"
+    "puppeteer-core": {
+      "ws": "^8.17.1"
     },
-    "@azure/identity": {
-      "jsonwebtoken": "9.0.0"
+    "node-fetch": {
+      "ws": "^8.17.1"
     },
     "semver": "7.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",
-    "@wdio/allure-reporter": "^8.8.6",
+    "@wdio/allure-reporter": "^8.39.0",
     "@wdio/browser-runner": "^8.20.5",
-    "@wdio/browserstack-service": "^8.21.0",
+    "@wdio/browserstack-service": "^8.23.0",
     "@wdio/cli": "^8.20.5",
     "@wdio/cucumber-framework": "^8.20.3",
     "@wdio/selenium-standalone-service": "^8.8.6",
-    "babel-jest": "^24.8.0",
-    "chromedriver": "^119.0.0",
+    "@wdio/spec-reporter": "^8.39.0",
+    "allure-commandline": "^2.26.0",
+    "babel-jest": "^29.7.0",
+    "chromedriver": "^126.0.0",
     "cucumber-html-reporter": "6.0.0",
     "wdio-chromedriver-service": "^8.1.1",
     "webdriverio": "7.33.0"

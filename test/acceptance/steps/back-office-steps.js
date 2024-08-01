@@ -6,9 +6,17 @@ Given(/^the user is on the backoffice URL$/, async function () {
     await backOfficePage.getHomePage()
   })
 When(/^clicks on application link$/, async function () {
-
   await backOfficePage.clickOnApplicationButton()
 })
+
+When(/^clicked on Claims tab$/, async function () {
+  await backOfficePage.clickOnClaimTab()
+})
+
+When(/^clicked on Agreements tab$/, async function () {
+  await backOfficePage.clickOnAgreementsTab()
+})
+
 When(/^user enters the (.*)$/, async function (crnNumber) {
   await backOfficePage.enterCRN(crnNumber)
 })
@@ -17,8 +25,11 @@ When(/^search button is clicked$/, async function () {
   await backOfficePage.clickOnSearchButton()
 })
 
-Then(/^click on view application$/,async function(){
+Then(/^click on view claim$/,async function(){
   await backOfficePage.clickOnViewDetails()
+}) 
+Then(/^click on view claims$/,async function(){
+  await backOfficePage.clickOnViewClaims()
 }) 
 
 When(/^select the checkboxes$/,async function(){
@@ -45,8 +56,11 @@ Then(/^confirm not to withdraw$/,async function(){
   await backOfficePage.clickOnConfirmNotToWithdraw() 
 })
 
-Then(/^verify error message$/,async function(){
-  await backOfficePage.applicationNotFound() 
+Then(/^verify error message in claims tab$/,async function(){
+  await backOfficePage.claimNotFound() 
+})
+Then(/^verify error message in agreements tab$/,async function(){
+  await backOfficePage.agreementNotFound() 
 })
 
 Then(/^Recomment to Pay$/,async function(){
@@ -69,3 +83,9 @@ Then(/^enter email credentials$/,async function(){
 Then(/^Click Back$/,async function(){
   await backOfficePage.clickonBack()
 }) 
+When(/^check if History is present$/, async function () {
+  await backOfficePage.historyTab()
+})
+When(/^click om Agreements View Details Tab$/, async function () {
+  await backOfficePage.clickAgreementsViewDetailsTab()
+})

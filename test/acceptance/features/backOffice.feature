@@ -4,137 +4,103 @@
    Scenario Outline:  Enter Back office URl Then Recommend to Pay
    Given the user is on the backoffice URL
    Then enter email credentials
-    When clicks on application link
-    When user enters the <CRN number>
+    Then clicked on Claims tab
+    When user enters the <claim number>
     Then search button is clicked
-    Then click on view application 
+    Then click on view claim 
+    Then check if History is present
     Then Recomment to Pay
     Then select the checkboxes
    # Then confirm payment
     Then Click Back
   Examples:
-  |CRN number|  
-  |AHWR-1EA0-57B2|
+  |Claim number|  
+  |FUDC-7E7A-12B4|
 
    Scenario Outline:  Enter Back office URl Then Recommend to Reject
  
    
-    When user enters the <CRN number>
+    When user enters the <Claim number>
     Then search button is clicked
-    Then click on view application 
+    Then click on view claim 
     Then Recomment to Reject
     Then select the checkboxes
-     Then Click Back
-    # Then confirm payment
+    Then Click Back
+  # Then confirm payment
+    #Then Click Back
 
   Examples:
-  |CRN number|  
-  |AHWR-1EA0-57B2|
+  |Claim numberr|  
+  |FUDC-7E7A-12B4|
 
    Scenario Outline:  Enter invalid application number Then verify 
 
     
-    When user enters the <CRN number>
+    When user enters the <Invalid number>
     Then search button is clicked
-    Then verify error message
-     Then Click Back
+    Then verify error message in claims tab
+     #Then Click Back
 
   Examples:
-  |CRN number|  
+  |Invalid number|  
   |AHWR-62A1-5A0A11|
 
-Scenario Outline:   Enter Back office URl Then doesn't withdraw the claim
-    
-    When clicks on application link
-    When user enters the <CRN number>
-    When search button is clicked
-    Then click on view application 
-    When click withdraw
-   Then confirm not to withdraw
-    Then Click Back
-  
-   Examples:
-  |CRN number|  
-  |AHWR-B00E-B781|
 
-
-Scenario Outline:  Enter Back office URl Then withdraw the claim
-      
-    When user enters the <CRN number>
-    When search button is clicked
-    Then click on view application 
-    When click withdraw
-  # Then confirm withdraw
-    Then Click Back
-  
-
-   Examples:
-  |CRN number|  
-  |AHWR-B00E-B781|
-
-   Scenario Outline:  Enter Back office URl Then Recommend to Pay
+  Scenario Outline:  Enter Back office URl Then Recommend to Pay
    
-    
-    When user enters the <CRN number>
+    Then clicked on Agreements tab
+    When user enters the <Agreement number>
     Then search button is clicked
-    Then click on view application 
+    Then click on view claims 
+    Then click om Agreements View Details Tab
     Then Recomment to Pay
     Then select the checkboxes
     Then Click Back
-   #Then confirm payment
+#   Then confirm payment
 
   Examples:
-  |CRN number|  
-  |106518248|
+  |Agreement number|  
+  |IAHW-F94E-8EBF|
 
    Scenario Outline:  Enter Back office URl Then Recommend to Reject
-       
-    When user enters the <CRN number>
+
+    Then clicked on Agreements tab
+    When user enters the <Agreement number>
     Then search button is clicked
-    Then click on view application 
+    Then click on view claims 
+    Then click om Agreements View Details Tab
     Then Recomment to Reject
     Then select the checkboxes
     Then Click Back
-   # Then confirm payment
+#    # Then confirm payment
 
   Examples:
-  |CRN number|  
-  |106518248|
+  |Agreement number|  
+  |IAHW-F94E-8EBF|
 
-  Scenario Outline:  Enter invalid application number Then verify 
+ Scenario Outline:  Enter invalid application number Then verify 
 
-    
-    When user enters the <CRN number>
+    Then clicked on Agreements tab
+    When user enters the <Agreement number>
     Then search button is clicked
-    Then verify error message
+    Then verify error message in agreements tab
+     #Then Click Back
 
   Examples:
-  |CRN number|  
-  |106609259233|
-
-  Scenario Outline:   Enter Back office URl Then doesn't withdraw the claim
-   
-    When user enters the <CRN number>
-    When search button is clicked
-    Then click on view application 
-    When click withdraw
-  # Then confirm not to withdraw
-  
-   Examples:
-  |CRN number|  
-  |106609259|
+  |Agreement number|  
+  |AHWR-62A1-5A0A11|
 
 
-Scenario Outline:  Enter Back office URl Then withdraw the claim
-    
-    When clicks on application link
-    When user enters the <CRN number>
-    When search button is clicked
-    Then click on view application 
-    When click withdraw
-   # Then confirm withdraw
-  
+   Scenario Outline:  Enter Back office URl and confirm payment
+ 
+    Then clicked on Claims tab
+    When user enters the <claim number>
+    Then search button is clicked
+    Then click on view claim 
+    Then confirm payment
+    #Then Click Back
 
-   Examples:
-  |CRN number|  
-  |106609259|
+  Examples:
+  |claim number|  
+  |FUDC-92E6-3856|
+
