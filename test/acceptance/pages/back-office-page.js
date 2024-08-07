@@ -102,7 +102,7 @@ class BackOfficePage extends CommonActions {
     } 
       
     async claimNotFound(){
-      await this.elementToContainText(CLAIM_NOT_FOUND_EXPECTED,APPLICATION_NOT_FOUND_EXPECTED)
+      await this.elementToContainText(APPLICATION_NOT_FOUND_ACTUAL,CLAIM_NOT_FOUND_EXPECTED)
     }
     async agreementNotFound(){
       await this.elementToContainText(APPLICATION_NOT_FOUND_ACTUAL,APPLICATION_NOT_FOUND_EXPECTED)

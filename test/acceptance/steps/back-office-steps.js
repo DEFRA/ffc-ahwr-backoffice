@@ -84,7 +84,7 @@ Then(/^Click Back$/,async function(){
   await backOfficePage.clickonBack()
 }) 
 When(/^check if History is present$/, async function () {
-  await backOfficePage.historyTab()
+  await backOfficePage.clickhistoryTab()
 })
 When(/^click om Agreements View Details Tab$/, async function () {
   await backOfficePage.clickAgreementsViewDetailsTab()
