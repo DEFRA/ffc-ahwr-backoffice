@@ -14,12 +14,15 @@
    # Then confirm payment
     Then Click Back
   Examples:
+
   |claim number|  
   | FUDC-BDCA-293F|
+
 
    Scenario Outline:  Enter Back office URl Then Recommend to Reject
  
    
+
     When user enters the <claim number>
     Then search button is clicked
     Then click on view claim 
@@ -30,6 +33,7 @@
     #Then Click Back
 
   Examples:
+
   |claim number|  
   | FUDC-BDCA-293F|
 
@@ -62,6 +66,7 @@
   |Agreement number|  
   |IAHW-E551-AE43|
 
+
    Scenario Outline:  Enter Back office URl Then Recommend to Reject
 
     Then clicked on Agreements tab
@@ -77,6 +82,7 @@
   Examples:
   |Agreement number|  
   |IAHW-E551-AE43|
+
 
  Scenario Outline:  Enter invalid application number Then verify 
 
@@ -103,4 +109,5 @@
   Examples:
   |claim number|  
   |REDC-3B3C-7AEC|
+
 
