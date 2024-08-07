@@ -1,4 +1,4 @@
-@smoke1
+@smoke
  Feature: Search-substatuses
 
 Scenario Outline: 303780-ensure RECOMMENDED TO PAY Search work 
