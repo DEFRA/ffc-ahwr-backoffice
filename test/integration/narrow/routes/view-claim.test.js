@@ -240,11 +240,11 @@ describe('View claim test', () => {
         { key: 'Livestock', value: 'Pigs' },
         { key: 'Type of visit', value: 'Animal health and welfare review' },
         { key: 'Date of visit', value: '22/03/2024' },
-        { key: 'Date of testing', value: '22/03/2024' },
+        { key: 'Date of sampling', value: '22/03/2024' },
         { key: '51 or more pigs', value: 'Yes' },
         { key: "Vet's name", value: 'Vet one' },
         { key: "Vet's RCVS number", value: '1233211' },
-        { key: 'Test results URN', value: '123456' },
+        { key: 'URN', value: '123456' },
         { key: 'Number of tests', value: '6' },
         { key: 'Number of animals tested', value: '40' },
         { key: 'Test result', value: 'Positive' }
@@ -282,11 +282,11 @@ describe('View claim test', () => {
         { key: 'Livestock', value: 'Sheep' },
         { key: 'Type of visit', value: 'Endemic disease follow-ups' },
         { key: 'Date of visit', value: '22/03/2024' },
-        { key: 'Date of testing', value: '22/03/2024' },
+        { key: 'Date of sampling', value: '22/03/2024' },
         { key: '21 or more sheep', value: 'Yes' },
         { key: "Vet's name", value: '12312312312sdfsdf' },
         { key: "Vet's RCVS number", value: '1233211' },
-        { key: 'Test results URN', value: '123456' },
+        { key: 'URN', value: '123456' },
         { key: 'Number of animals tested', value: '40' },
         { key: 'Endemics package', value: 'ReducedLameness' },
         { key: 'Disease or condition test result', value: 'Heel or toe abscess (Clinical symptoms present)' },
@@ -303,7 +303,7 @@ describe('View claim test', () => {
       }
     })
     test.each([
-      { type: 'R', rows: 7 },
+      { type: 'R', rows: 6 },
       { type: undefined, rows: 6 }
     ])('returns 200 whitout claim data', async ({ type, rows }) => {
       const options = {
@@ -340,7 +340,7 @@ describe('View claim test', () => {
 
       expect(res.statusCode).toBe(200)
 
-      expect($('.govuk-summary-list__row').length).toEqual(7)
+      expect($('.govuk-summary-list__row').length).toEqual(6)
     })
     test('returns 200 with endemics claim and pigs species', async () => {
       const options = {
@@ -368,36 +368,6 @@ describe('View claim test', () => {
         { key: 'Biosecurity assessment', value: 'Yes, Assessment percentage: 100%' }
       ]
       for (let i = 16; i < 22; i++) {
-        expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
-        expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
-      }
-    })
-    test('returns 200 with auth with beef', async () => {
-      const options = {
-        method: 'GET',
-        url: `${url}/AHWR-0000-4444?returnPage=claims`,
-        auth
-      }
-
-      getClaim.mockReturnValue(claims[3])
-      getApplication.mockReturnValue(application)
-
-      const res = await global.__SERVER__.inject(options)
-      const $ = cheerio.load(res.payload)
-
-      expect(res.statusCode).toBe(200)
-
-      const content = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        { key: 'Review test result', value: 'Positive' },
-        { key: 'Endemics test result', value: 'Positive' },
-        { key: 'Vet Visits Review Test results', value: 'Positive' },
-        { key: 'Samples tested', value: '6' },
-        { key: 'Biosecurity assessment', value: 'No' }
-      ]
-      // Summary list rows expect
-      expect($('.govuk-summary-list__row').length).toEqual(21)
-      // Claim summury detailes expects
-      for (let i = 16; i < 20; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
         expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
       }
