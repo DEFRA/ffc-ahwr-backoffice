@@ -8,7 +8,8 @@
       <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
         <h1 class="govuk-heading-l">Claims</h1>
         <div class="user-search-box">
-            <label class="govuk-label govuk-label--s" for="searchText">Search claims</label>
+            <label class="govuk-label govuk-label--s" for="searchText">Find a claim.</label>
+            <div id="claimSearch-hint" class="govuk-hint">Search by claim number, visit type, SBI, claim date or status</div>
             <input type="hidden" name="crumb" value="{{crumb}}"/>
             <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{model.searchText}}" spellcheck="false">
             <button class="search-button" data-module="govuk-button" name="submit" value="search">
