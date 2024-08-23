@@ -242,22 +242,21 @@ describe('View claim test', () => {
         { key: 'Date of visit', value: '22/03/2024' },
         { key: 'Date of sampling', value: '22/03/2024' },
         { key: '51 or more pigs', value: 'Yes' },
+        { key: 'Number of oral fluid samples taken', value: '6' },
         { key: "Vet's name", value: 'Vet one' },
         { key: "Vet's RCVS number", value: '1233211' },
-        { key: 'URN', value: '123456' },
-        { key: 'Number of tests', value: '6' },
         { key: 'Number of animals tested', value: '40' },
-        { key: 'Test result', value: 'Positive' }
+        { key: 'URN', value: '123456' }
       ]
       // Summary list rows expect
-      expect($('.govuk-summary-list__row').length).toEqual(18)
+      expect($('.govuk-summary-list__row').length).toEqual(17)
       // Application summury detailes expects
       for (let i = 0; i < 6; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
         expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
       }
       // Claim summury detailes expects
-      for (let i = 6; i < 18; i++) {
+      for (let i = 6; i < 17; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
         expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
       }
@@ -357,17 +356,16 @@ describe('View claim test', () => {
 
       expect(res.statusCode).toBe(200)
       // Summary list rows expect
-      expect($('.govuk-summary-list__row').length).toEqual(22)
+      expect($('.govuk-summary-list__row').length).toEqual(21)
       // Claim summury detailes expects
       const content = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        { key: 'Review test result', value: 'Positive' },
-        { key: 'Vet Visits Review Test results', value: 'Positive' },
-        { key: 'Disease status category', value: '4' },
-        { key: 'Samples tested', value: '6' },
         { key: 'Herd vaccination status', value: 'Vaccinated' },
+        { key: 'URN', value: '123456' },
+        { key: 'Samples tested', value: '6' },
+        { key: 'Disease status category', value: '4' },
         { key: 'Biosecurity assessment', value: 'Yes, Assessment percentage: 100%' }
       ]
-      for (let i = 16; i < 22; i++) {
+      for (let i = 16; i < 21; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
         expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
       }

@@ -6,7 +6,7 @@ const { getApplication, getApplicationHistory } = require('../api/applications')
 const getApplicationHistoryModel = require('./models/application-history')
 const { getStyleClassByStatus } = require('../constants/status')
 const { formatStatusId } = require('./../lib/display-helper')
-const { livestockTypes, claimType } = require('./../constants/claim')
+const { livestockTypes } = require('./../constants/claim')
 const getRecommendData = require('./models/recommend-claim')
 const { sheepTestTypes, sheepTestResultsType } = require('./../constants/sheep-test-types')
 const { administrator, authoriser, processor, recommender, user } = require('../auth/permissions')
@@ -98,7 +98,7 @@ module.exports = {
       const applicationHistory = await getApplicationHistory(reference)
       const historyData = getApplicationHistoryModel(applicationHistory)
       const { isBeef, isDairy, isPigs, isSheep } = getLivestockTypes(data?.typeOfLivestock)
-      const { isEndemicsFollowUp } = getReviewType(type)
+      const { isReview, isEndemicsFollowUp } = getReviewType(type)
 
       const stageExecutionData = await getStageExecutionByApplication(request.params.reference)
       const contactPerson = stageExecutionData?.[0]?.executedBy
@@ -129,7 +129,7 @@ module.exports = {
 
       const organisationName = { key: { text: 'Business name' }, value: { html: upperFirstLetter(organisation?.name) } }
       const livestock = { key: { text: 'Livestock' }, value: { html: upperFirstLetter([livestockTypes.pigs, livestockTypes.sheep].includes(data?.typeOfLivestock) ? data?.typeOfLivestock : `${data?.typeOfLivestock} cattle`) } }
-      const typeOfVisit = { key: { text: 'Type of visit' }, value: { html: type === claimType.review ? 'Animal health and welfare review' : 'Endemic disease follow-ups' } }
+      const typeOfVisit = { key: { text: 'Type of visit' }, value: { html: isReview ? 'Animal health and welfare review' : 'Endemic disease follow-ups' } }
       const dateOfVisit = { key: { text: 'Date of visit' }, value: { html: formatedDateToUk(data?.dateOfVisit) } }
       const dateOfSampling = { key: { text: 'Date of sampling' }, value: { html: formatedDateToUk(data?.dateOfTesting) } }
       const typeOfLivestock = { key: { text: speciesEligibleNumber[data?.typeOfLivestock] }, value: { html: upperFirstLetter(data?.speciesNumbers) } }
@@ -137,7 +137,7 @@ module.exports = {
       const vetRCVSNumber = { key: { text: "Vet's RCVS number" }, value: { html: data?.vetRCVSNumber } }
       const piHunt = { key: { text: 'PI hunt' }, value: { html: upperFirstLetter(data?.piHunt) } }
       const laboratoryURN = { key: { text: isBeef || isDairy ? 'URN or test certificate' : 'URN' }, value: { html: data?.laboratoryURN } }
-      const numberOfOralFluidSamples = { key: { text: 'Number of tests' }, value: { html: data?.numberOfOralFluidSamples } }
+      const numberOfOralFluidSamples = { key: { text: 'Number of oral fluid samples taken' }, value: { html: data?.numberOfOralFluidSamples } }
       const numberAnimalsTested = { key: { text: 'Number of animals tested' }, value: { html: data?.numberAnimalsTested } }
       const reviewTestResults = { key: { text: 'Review test result' }, value: { html: upperFirstLetter(data?.reviewTestResults) } }
       const testResults = (returnClaimDetailIfExist(data?.testResults && typeof data?.testResults === 'string', { key: { text: data?.reviewTestResults ? 'Follow-up test result' : 'Test result' }, value: { html: typeof data?.testResults === 'string' ? upperFirstLetter(data?.testResults) : '' } }))
@@ -203,9 +203,7 @@ module.exports = {
         vetName,
         vetRCVSNumber,
         laboratoryURN,
-        numberOfOralFluidSamples,
         numberAnimalsTested,
-        reviewTestResults,
         testResults,
         vetVisitsReviewTestResults,
         diseaseStatus,
@@ -223,18 +221,16 @@ module.exports = {
         dateOfVisit,
         dateOfSampling,
         typeOfLivestock,
+        numberOfOralFluidSamples,
         vetName,
         vetRCVSNumber,
         piHunt,
-        laboratoryURN,
-        numberOfOralFluidSamples,
         numberAnimalsTested,
         reviewTestResults,
-        testResults,
-        vetVisitsReviewTestResults,
-        diseaseStatus,
-        numberOfSamplesTested,
         herdVaccinationStatus,
+        laboratoryURN,
+        numberOfSamplesTested,
+        diseaseStatus,
         getBiosecurityRow()
       ]
       const speciesRows = () => {
