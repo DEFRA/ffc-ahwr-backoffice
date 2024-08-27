@@ -30,6 +30,7 @@ const speciesEligibleNumber = {
 const returnClaimDetailIfExist = (property, value) => property && value
 
 const claimSummaryDetails = (organisation, data, type) => [
+ 
   (returnClaimDetailIfExist(organisation?.name, { key: { text: 'Business name' }, value: { html: upperFirstLetter(organisation?.name) } })),
   (returnClaimDetailIfExist(data?.typeOfLivestock, { key: { text: 'Livestock' }, value: { html: upperFirstLetter([livestockTypes.pigs, livestockTypes.sheep].includes(data?.typeOfLivestock) ? data?.typeOfLivestock : `${data?.typeOfLivestock} cattle`) } })),
   (returnClaimDetailIfExist(type, { key: { text: 'Type of visit' }, value: { html: type === claimType.review ? 'Animal health and welfare review' : 'Endemic disease follow-ups' } })),
@@ -109,11 +110,11 @@ module.exports = {
 
       const organisation = application?.data?.organisation
       const applicationSummaryDetails = [
-        { key: { text: 'Name' }, value: { text: organisation?.farmerName } },
+        { key: { text: 'Agreement holder' }, value: { text: organisation?.farmerName } },
         { key: { text: 'SBI number' }, value: { text: organisation?.sbi } },
         { key: { text: 'Address' }, value: { text: organisation?.address } },
-        { key: { text: 'Email address' }, value: { text: organisation?.email } },
-        { key: { text: 'Organisation email address' }, value: { text: organisation?.orgEmail } },
+        { key: { text: 'Agreement holder email' }, value: { text: organisation?.email } },
+        { key: { text: 'Business email' }, value: { text: organisation?.orgEmail } },
         { key: { text: 'Agreement Number' }, value: { text: applicationReference } }
       ]
 
@@ -150,6 +151,7 @@ module.exports = {
         backLink: backLink(claim?.applicationReference, request.query.returnPage),
         returnPage: request.query.returnPage,
         reference,
+        agreementReference: application?.reference,
         title: upperFirstLetter(application?.data?.organisation?.name),
         claimSummaryDetails: claimSummaryDetails(organisation, data, type),
         contactPerson,
