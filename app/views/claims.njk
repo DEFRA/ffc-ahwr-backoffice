@@ -5,44 +5,62 @@
 {% block content %}
   <form method="POST" action="/claims">
     <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
-        <h1 class="govuk-heading-l">Claims</h1>
-        <div class="user-search-box">
-            <label class="govuk-label govuk-label--s" for="searchText">Search claims</label>
-            <input type="hidden" name="crumb" value="{{crumb}}"/>
-            <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{model.searchText}}" spellcheck="false">
-            <button class="search-button" data-module="govuk-button" name="submit" value="search">
-                    Search
-            </button>
-        </div>
-      </div>
-      {% if model.error or error %}
-        <div class="govuk-grid-column-full">
-          <p class="govuk-error-message">{{model.error}}{{error}}</p>
-        </div>
-      {% else %}
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-7">Claims and agreements</h1>
         <div class="govuk-grid-column-full">
           <div class="moj-scrollable-pane">
             <div class="moj-scrollable-pane__wrapper">
-              {{ govukTable({
-                  attributes: {
-                    'data-module': 'moj-sortable-table'
-                  },
-                  firstCellIsHeader: false,
-                  head: model.header,
-                  rows: model.claims
-                }) 
-              }}
-              {{ govukPagination({
-                  previous: model.previous,
-                  next: model.next,
-                  items: model.pages
-                }) 
-              }}
+              <div class="govuk-tabs" data-module="govuk-tabs">
+                <ul class="govuk-tabs__list">
+                  <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+                    <span class="govuk-tabs__tab">
+                      Claims
+                    </span>
+                  </li>
+                  <a class="govuk-tabs__list-item govuk-body" href="/agreements">
+                    <span class="govuk-tabs__tab">
+                      Agreements
+                    </span>
+                  </a>
+                </ul>
+                <div class="govuk-tabs__panel" id="claims">
+                  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+                    <h1 class="govuk-heading-l">Claims</h1>
+                    <div class="user-search-box">
+                      <label class="govuk-label govuk-label--s" for="searchText">Find a claim</label>
+                      <div id="claimSearch-hint" class="govuk-hint">Search by claim number, visit type, SBI, claim date or status.</div>
+                      <input type="hidden" name="crumb" value="{{crumb}}"/>
+                      <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{model.searchText}}" spellcheck="false">
+                      <button class="search-button" data-module="govuk-button" name="submit" value="search">
+                        Search
+                      </button>
+                    </div>
+                  </div>
+                  {% if model.error or error %}
+                    <div class="govuk-grid-column-full">
+                      <p class="govuk-error-message">{{model.error}}{{error}}</p>
+                    </div>
+                  {% endif %}
+
+                    {{ govukTable({
+                        attributes: {
+                          'data-module': 'moj-sortable-table'
+                        },
+                        firstCellIsHeader: false,
+                        head: model.header,
+                        rows: model.claims
+                      }) 
+                    }}
+                </div>
+                {{ govukPagination({
+                    previous: model.previous,
+                    next: model.next,
+                    items: model.pages
+                  }) 
+                }}
+              </div>
             </div>
           </div>
         </div>
-      {% endif %}
     </div>
   </form>
 {% endblock %}

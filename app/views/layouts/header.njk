@@ -22,26 +22,14 @@
           </div>
           <div class="govuk-header__content">
             <a href="/" class="govuk-header__link govuk-header__service-name">
-              Animal health and welfare review agreements
+              Get funding to improve animal health and welfare
             </a>
             <nav aria-label="Menu" class="govuk-header__navigation">
               <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" hidden>
                 Menu
               </button>
-              <div id="navigation">
-                <ul class="govuk-header__navigation-list govuk-grid-column-two-thirds">
-                  <li class="govuk-header__navigation-item {{"govuk-header__navigation-item--active" if currentPath == "/claims"}}">
-                    <a class="govuk-header__link" href="/claims">
-                      Claims
-                    </a>
-                  </li>
-                  <li class="govuk-header__navigation-item {{"govuk-header__navigation-item--active" if currentPath == "/agreements"}}">
-                    <a class="govuk-header__link" href="/agreements">
-                      Agreements  
-                    </a>
-                  </li>
-                </ul>
-                <ul class="govuk-header__navigation-list govuk-grid-column-one-thirds ">
+              <div id="navigation ">
+                <ul class="govuk-header__navigation-list govuk-grid-column-one-thirds govuk-!-text-align-right ">
                   <li class="govuk-header__navigation-item {{"govuk-header__navigation-item--active" if currentPath == "/account"}}">
                     <a class="govuk-header__link govuk-!-font-weight-regular" href="/account">
                       {{user.name}}
@@ -62,7 +50,7 @@
       {{ govukHeader({
         homepageUrl: "https://www.gov.uk/",
         containerClasses: "govuk-width-container",
-        serviceName: "Annual health and welfare review agreements",
+        serviceName: "Get funding to improve animal health and welfare",
         serviceUrl: "#",
         navigation:[{
             text: 'Sign In',

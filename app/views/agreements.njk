@@ -1,53 +1,66 @@
 {% extends './layouts/layout.njk' %}
-
 {% block pageTitle %}
   {{ siteTitle }}: AHWR Agreements
 {% endblock %}
 {% block content %}
-
   <form method="POST" action="/agreements">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds govuk-!-padding-bottom-9">
-      <h1 class="govuk-heading-l">Agreements</h1>
-      <div class="user-search-box">
-        <label class="govuk-label govuk-label--s" for="searchText">
-          Search agreements
-        </label>
-        <input type="hidden" name="crumb" value="{{crumb}}"/>
-        <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{model.searchText}}" spellcheck="false">
-        <button class="search-button" data-module="govuk-button" name="submit" value="search">
-                Search
-        </button>
-      </div>
-    </div>
+    <div class="govuk-grid-row">
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-7">Claims and agreements</h1>
+        <div class="govuk-grid-column-full">
+          <div class="moj-scrollable-pane">
+            <div class="moj-scrollable-pane__wrapper">
+              <div class="govuk-tabs" data-module="govuk-tabs">
+                <ul class="govuk-tabs__list">
+                  <a class="govuk-tabs__list-item govuk-body" href="/claims">
+                    <span class="govuk-tabs__tab">
+                      Claims
+                    </span>
+                  </a>
+                  <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+                    <span class="govuk-tabs__tab">
+                      Agreements
+                    </span>
+                  </li>
+                </ul>
+                <div class="govuk-tabs__panel" id="claims">
+                  <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+                    <h1 class="govuk-heading-l">Agreements</h1>
+                    <div class="user-search-box">
+                      <label class="govuk-label govuk-label--s" for="searchText">Find an agreement</label>
+                      <div id="claimSearch-hint" class="govuk-hint">Search agreement number, business, SBI, agreement date or status.</div>
+                      <input type="hidden" name="crumb" value="{{crumb}}"/>
+                      <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{model.searchText}}" spellcheck="false">
+                      <button class="search-button" data-module="govuk-button" name="submit" value="search">
+                        Search
+                      </button>
+                    </div>
+                  </div>
+                  {% if model.error or error %}
+                    <div class="govuk-grid-column-full">
+                      <p class="govuk-error-message">{{model.error}}{{error}}</p>
+                    </div>
+                  {% endif %}
 
-    {% if model.error or error %}
-      <div class="govuk-grid-column-full">
-        <p class="govuk-error-message">{{model.error}}{{error}}</p>
-      </div>
-    {% else %}
-      <div class="govuk-grid-column-full">
-        <div class="moj-scrollable-pane">
-
-          <div class="moj-scrollable-pane__wrapper">
-            {{ govukTable({
-                  attributes: {
-                    'data-module': 'moj-sortable-table'
-                  },
-                  firstCellIsHeader: false,
-                  head: model.header,
-                  rows: model.applications
-                }) }}
-            {{ govukPagination({
-                  previous: model.previous,
-                  next: model.next,
-                  items: model.pages
-                }) 
-              }}
+                    {{ govukTable({
+                        attributes: {
+                          'data-module': 'moj-sortable-table'
+                        },
+                        firstCellIsHeader: false,
+                        head: model.header,
+                        rows: model.applications
+                      }) 
+                    }}
+                </div>
+                {{ govukPagination({
+                    previous: model.previous,
+                    next: model.next,
+                    items: model.pages
+                  }) 
+                }}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    {% endif %}
-      </div>
+    </div>
   </form>
 {% endblock %}
