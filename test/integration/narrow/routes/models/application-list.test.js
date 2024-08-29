@@ -23,7 +23,7 @@ describe('Application-list model test', () => {
       { n: 4, field: 'Status', direction: 'DESC' },
       { n: 4, field: 'Status', direction: 'ASC' }
     ])('getApplicationTableHeader $field $direction', async ({ n, field, direction }) => {
-      const sortField = { field: field, direction: direction }
+      const sortField = { field, direction }
       const ariaSort = direction === 'DESC' ? 'descending' : 'ascending'
       const res = getApplicationTableHeader(sortField)
       expect(res).not.toBeNull()
@@ -46,7 +46,7 @@ describe('Application-list model test', () => {
       { n: 4, field: 'Status', direction: 'DESC' },
       { n: 4, field: 'Status', direction: 'ASC' }
     ])('getApplicationTableHeader $field $direction', async ({ n, field, direction }) => {
-      const sortField = { field: field, direction: direction }
+      const sortField = { field, direction }
       const res = getApplicationTableHeader(sortField)
       expect(res).not.toBeNull()
     })

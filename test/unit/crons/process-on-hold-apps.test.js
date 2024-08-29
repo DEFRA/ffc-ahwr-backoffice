@@ -5,7 +5,6 @@ describe('Process process on hold applications function test.', () => {
   const { processApplicationClaim, getApplications } = require('../../../app/api/applications')
 
   beforeEach(() => {
-    jest.useFakeTimers('modern')
     jest.setSystemTime(MOCK_NOW)
     jest.mock('../../../app/config', () => ({
       ...jest.requireActual('../../../../app/config'),
