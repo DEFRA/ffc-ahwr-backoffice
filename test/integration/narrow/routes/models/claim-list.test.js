@@ -24,7 +24,7 @@ describe('Application-list model test', () => {
       { n: 5, field: 'status', direction: 'DESC' },
       { n: 5, field: 'status', direction: 'ASC' }
     ])('getClaimTableHeader $field $direction', async ({ n, field, direction }) => {
-      const sortField = { field: field, direction: direction }
+      const sortField = { field, direction }
       const ariaSort = direction === 'DESC' ? 'descending' : 'ascending'
       const res = getClaimTableHeader(sortField)
       expect(res).not.toBeNull()
