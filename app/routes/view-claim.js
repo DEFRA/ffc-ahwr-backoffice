@@ -140,7 +140,12 @@ module.exports = {
       const numberOfOralFluidSamples = { key: { text: 'Number of oral fluid samples taken' }, value: { html: data?.numberOfOralFluidSamples } }
       const numberAnimalsTested = { key: { text: 'Number of animals tested' }, value: { html: data?.numberAnimalsTested } }
       const reviewTestResults = { key: { text: 'Review test result' }, value: { html: upperFirstLetter(data?.reviewTestResults) } }
-      const testResults = (returnClaimDetailIfExist(data?.testResults && typeof data?.testResults === 'string', { key: { text: data?.reviewTestResults ? 'Follow-up test result' : 'Test result' }, value: { html: typeof data?.testResults === 'string' ? upperFirstLetter(data?.testResults) : '' } }))
+      const testResults = (
+        returnClaimDetailIfExist(
+          data?.testResults && typeof data?.testResults === 'string',
+          { key: { text: data?.reviewTestResults ? 'Follow-up test result' : 'Test result' }, value: { html: upperFirstLetter(data?.testResults) } }
+        )
+      )
       const vetVisitsReviewTestResults = { key: { text: 'Vet Visits Review Test results' }, value: { html: upperFirstLetter(data?.vetVisitsReviewTestResults) } }
       const diseaseStatus = { key: { text: 'Disease status category' }, value: { html: data?.diseaseStatus } }
       const numberOfSamplesTested = { key: { text: 'Samples tested' }, value: { html: data?.numberOfSamplesTested } }
