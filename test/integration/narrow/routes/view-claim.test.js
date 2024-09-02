@@ -230,11 +230,13 @@ describe('View claim test', () => {
       expect(res.statusCode).toBe(200)
 
       const content = [
-        { key: 'Name', value: 'Russell Paul Davies' },
+        { key: 'Status', value: 'PAID' },
+        { key: 'Claim date', value: '9 August 2024' },
+        { key: 'Agreement holder', value: 'Russell Paul Davies' },
         { key: 'SBI number', value: '113494460' },
         { key: 'Address', value: 'Tesco Stores Ltd,Harwell,Betton,WHITE HOUSE FARM,VINCENT CLOSE,LEIGHTON BUZZARD,HR2 8AN,United Kingdom' },
-        { key: 'Email address', value: 'russelldaviese@seivadllessurm.com.test' },
-        { key: 'Organisation email address', value: 'orgEmail@gmail.com' },
+        { key: 'Agreement holder email', value: 'russelldaviese@seivadllessurm.com.test' },
+        { key: 'Business email', value: 'orgEmail@gmail.com' },
         { key: 'Agreement Number', value: 'AHWR-1234-APP1' },
         { key: 'Business name', value: 'Mrs S Clark' },
         { key: 'Livestock', value: 'Pigs' },
@@ -249,6 +251,7 @@ describe('View claim test', () => {
         { key: 'URN', value: '123456' }
       ]
       // Summary list rows expect
+      console.log('summary list $(\'.govuk-summary-list__row\').length')
       expect($('.govuk-summary-list__row').length).toEqual(17)
       // Application summury detailes expects
       for (let i = 0; i < 6; i++) {
@@ -277,6 +280,8 @@ describe('View claim test', () => {
       expect(res.statusCode).toBe(200)
 
       const content = [null, null, null, null, null, null,
+        { key: 'Status', value: 'PAID' },
+        { key: 'Claim date', value: '9 August 2024' },
         { key: 'Business name', value: 'Mrs S Clark' },
         { key: 'Livestock', value: 'Sheep' },
         { key: 'Type of visit', value: 'Endemic disease follow-ups' },
@@ -293,6 +298,8 @@ describe('View claim test', () => {
         { key: '', value: 'Tick pyaemia (Clinical symptoms present)' },
         { key: '', value: 'yyyyy (123) bbbb (ccc)' }
       ]
+      const length = $('.govuk-summary-list__row').length
+      console.log(`302 summary list ${length}`)
       // Summary list rows expect
       expect($('.govuk-summary-list__row').length).toEqual(21)
       // Claim summury detailes expects
@@ -318,6 +325,7 @@ describe('View claim test', () => {
       const $ = cheerio.load(res.payload)
 
       expect(res.statusCode).toBe(200)
+      console.log('summary list $(\'.govuk-summary-list__row\').length')
 
       // Summary list rows expect to show only application data or if type is provided show application data and type of review
       expect($('.govuk-summary-list__row').length).toEqual(rows)
