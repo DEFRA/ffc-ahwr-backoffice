@@ -230,11 +230,11 @@ describe('View claim test', () => {
       expect(res.statusCode).toBe(200)
 
       const content = [
-        { key: 'Name', value: 'Russell Paul Davies' },
+        { key: 'Agreement holder', value: 'Russell Paul Davies' },
         { key: 'SBI number', value: '113494460' },
         { key: 'Address', value: 'Tesco Stores Ltd,Harwell,Betton,WHITE HOUSE FARM,VINCENT CLOSE,LEIGHTON BUZZARD,HR2 8AN,United Kingdom' },
-        { key: 'Email address', value: 'russelldaviese@seivadllessurm.com.test' },
-        { key: 'Organisation email address', value: 'orgEmail@gmail.com' },
+        { key: 'Agreement holder email', value: 'russelldaviese@seivadllessurm.com.test' },
+        { key: 'Business email', value: 'orgEmail@gmail.com' },
         { key: 'Agreement Number', value: 'AHWR-1234-APP1' },
         { key: 'Business name', value: 'Mrs S Clark' },
         { key: 'Livestock', value: 'Pigs' },
@@ -277,6 +277,8 @@ describe('View claim test', () => {
       expect(res.statusCode).toBe(200)
 
       const content = [null, null, null, null, null, null,
+        { key: 'Status', value: 'PAID' },
+        { key: 'Claim date', value: '2 July 2024' },
         { key: 'Business name', value: 'Mrs S Clark' },
         { key: 'Livestock', value: 'Sheep' },
         { key: 'Type of visit', value: 'Endemic disease follow-ups' },
@@ -294,9 +296,9 @@ describe('View claim test', () => {
         { key: '', value: 'yyyyy (123) bbbb (ccc)' }
       ]
       // Summary list rows expect
-      expect($('.govuk-summary-list__row').length).toEqual(21)
+      expect($('.govuk-summary-list__row').length).toEqual(23)
       // Claim summury detailes expects
-      for (let i = 6; i < 21; i++) {
+      for (let i = 6; i < 23; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
         expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
       }
@@ -356,7 +358,7 @@ describe('View claim test', () => {
 
       expect(res.statusCode).toBe(200)
       // Summary list rows expect
-      expect($('.govuk-summary-list__row').length).toEqual(21)
+      expect($('.govuk-summary-list__row').length).toEqual(23)
       // Claim summury detailes expects
       const content = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         { key: 'Herd vaccination status', value: 'Vaccinated' },
@@ -365,7 +367,7 @@ describe('View claim test', () => {
         { key: 'Disease status category', value: '4' },
         { key: 'Biosecurity assessment', value: 'Yes, Assessment percentage: 100%' }
       ]
-      for (let i = 16; i < 21; i++) {
+      for (let i = 16; i < 23; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
         expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
       }
