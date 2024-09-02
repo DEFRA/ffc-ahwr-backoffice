@@ -109,6 +109,7 @@ module.exports = {
       }
 
       const organisation = application?.data?.organisation
+      console.log(`all the application ${application}`)
       const applicationSummaryDetails = [
         { key: { text: 'Agreement holder' }, value: { text: organisation?.farmerName } },
         { key: { text: 'SBI number' }, value: { text: organisation?.sbi } },
@@ -151,7 +152,7 @@ module.exports = {
         backLink: backLink(claim?.applicationReference, request.query.returnPage),
         returnPage: request.query.returnPage,
         reference,
-        agreementReference: application?.reference,
+        applicationReference,
         title: upperFirstLetter(application?.data?.organisation?.name),
         claimSummaryDetails: claimSummaryDetails(organisation, data, type),
         contactPerson,
