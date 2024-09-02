@@ -16,6 +16,7 @@ const claimFormHelper = require('./utils/claim-form-helper')
 const checkboxErrors = require('./utils/checkbox-errors')
 const { getLivestockTypes } = require('./../lib/get-livestock-types')
 const { getReviewType } = require('./../lib/get-review-type')
+const { convertDateToFormattedString } = require('./../routes/utils/date-converter')
 
 const backLink = (applicationReference, returnPage) => {
   return returnPage && returnPage === 'claims' ? '/claims' : `/agreement/${applicationReference}/claims`
@@ -56,7 +57,7 @@ module.exports = {
         throw boom.badRequest()
       }
 
-      const { data, reference, type, applicationReference } = claim
+      const { data, reference, type, applicationReference, status: claimStatus, statusId, createdAt } = claim
       const application = await getApplication(applicationReference)
 
       if (!application) {
@@ -64,13 +65,15 @@ module.exports = {
       }
 
       const organisation = application?.data?.organisation
+      console.log('')
       const applicationSummaryDetails = [
-        { key: { text: 'Name' }, value: { text: organisation?.farmerName } },
+        { key: { text: 'Agreement Number' }, value: { text: applicationReference } },
+        { key: { text: 'Agreement date' }, value: { text: formatedDateToUk(application.createdAt) } },
+        { key: { text: 'Agreement holder' }, value: { text: organisation?.farmerName } },
         { key: { text: 'SBI number' }, value: { text: organisation?.sbi } },
         { key: { text: 'Address' }, value: { text: organisation?.address } },
-        { key: { text: 'Email address' }, value: { text: organisation?.email } },
-        { key: { text: 'Organisation email address' }, value: { text: organisation?.orgEmail } },
-        { key: { text: 'Agreement Number' }, value: { text: applicationReference } }
+        { key: { text: 'Agreement holder email' }, value: { text: organisation?.email } },
+        { key: { text: 'Business email' }, value: { text: organisation?.orgEmail } }
       ]
 
       const {
@@ -127,6 +130,8 @@ module.exports = {
           })
         : [])
 
+      const status = { key: { text: 'Status' }, value: { html: `<span class='govuk-tag ${getStyleClassByStatus(formatStatusId(statusId))}'> ${upperFirstLetter(claimStatus?.status)} </span>` } }
+      const ClaimDate = { key: { text: 'Claim date' }, value: { html: convertDateToFormattedString(createdAt) } }
       const organisationName = { key: { text: 'Business name' }, value: { html: upperFirstLetter(organisation?.name) } }
       const livestock = { key: { text: 'Livestock' }, value: { html: upperFirstLetter([livestockTypes.pigs, livestockTypes.sheep].includes(data?.typeOfLivestock) ? data?.typeOfLivestock : `${data?.typeOfLivestock} cattle`) } }
       const typeOfVisit = { key: { text: 'Type of visit' }, value: { html: isReview ? 'Animal health and welfare review' : 'Endemic disease follow-ups' } }
@@ -156,6 +161,8 @@ module.exports = {
       }
 
       const beefRows = [
+        status,
+        ClaimDate,
         organisationName,
         livestock,
         typeOfVisit,
@@ -175,6 +182,8 @@ module.exports = {
       ]
 
       const dairyRows = [
+        status,
+        ClaimDate,
         organisationName,
         livestock,
         typeOfVisit,
@@ -194,6 +203,8 @@ module.exports = {
       ]
 
       const sheepRows = [
+        status,
+        ClaimDate,
         organisationName,
         livestock,
         typeOfVisit,
@@ -215,6 +226,8 @@ module.exports = {
       ]
 
       const pigRows = [
+        status,
+
         organisationName,
         livestock,
         typeOfVisit,
@@ -258,6 +271,7 @@ module.exports = {
         backLink: backLink(claim?.applicationReference, request.query.returnPage),
         returnPage: request.query.returnPage,
         reference,
+        applicationReference,
         title: upperFirstLetter(application?.data?.organisation?.name),
         claimSummaryDetails: rowsWithData,
         contactPerson,
