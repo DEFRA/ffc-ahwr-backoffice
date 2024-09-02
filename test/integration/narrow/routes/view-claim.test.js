@@ -238,7 +238,7 @@ describe('View claim test', () => {
 
       const content = [
         { key: 'Agreement Number', value: 'AHWR-1234-APP1' },
-        { key: 'Agreement date', value: '23/08/2024' },
+        { key: 'Agreement date', value: '22/03/2024' },
         { key: 'Agreement holder', value: 'Russell Paul Davies' },
         { key: 'SBI number', value: '113494460' },
         {
@@ -330,7 +330,7 @@ describe('View claim test', () => {
       // Summary list rows expect
       expect($('.govuk-summary-list__row').length).toEqual(24)
       // Claim summury detailes expects
-      for (let i = 7; i < 24; i++) {
+      for (let i = 6; i < 24; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
           content[i].key
         )
