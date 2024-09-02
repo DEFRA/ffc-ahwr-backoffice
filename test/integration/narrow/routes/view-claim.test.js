@@ -264,7 +264,7 @@ describe('View claim test', () => {
         { key: 'URN', value: '123456' }
       ]
       // Summary list rows expect
-      expect($('.govuk-summary-list__row').length).toEqual(19)
+      expect($('.govuk-summary-list__row').length).toEqual(20)
       // Application summury detailes expects
       for (let i = 0; i < 6; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
