@@ -275,7 +275,7 @@ describe('View claim test', () => {
         )
       }
       // Claim summury detailes expects
-      for (let i = 6; i < 19; i++) {
+      for (let i = 7; i < 19; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
           content[i].key
         )

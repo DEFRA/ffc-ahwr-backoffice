@@ -232,7 +232,7 @@ module.exports = {
 
       const pigRows = [
         status,
-
+        ClaimDate,
         organisationName,
         livestock,
         typeOfVisit,
