@@ -249,14 +249,14 @@ describe('View claim test', () => {
         { key: 'URN', value: '123456' }
       ]
       // Summary list rows expect
-      expect($('.govuk-summary-list__row').length).toEqual(17)
+      expect($('.govuk-summary-list__row').length).toEqual(19)
       // Application summury detailes expects
       for (let i = 0; i < 6; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
         expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
       }
       // Claim summury detailes expects
-      for (let i = 6; i < 17; i++) {
+      for (let i = 6; i < 19; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
         expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
       }
@@ -296,16 +296,16 @@ describe('View claim test', () => {
         { key: '', value: 'yyyyy (123) bbbb (ccc)' }
       ]
       // Summary list rows expect
-      expect($('.govuk-summary-list__row').length).toEqual(23)
+      expect($('.govuk-summary-list__row').length).toEqual(24)
       // Claim summury detailes expects
-      for (let i = 6; i < 23; i++) {
+      for (let i = 7; i < 24; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
         expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
       }
     })
     test.each([
-      { type: 'R', rows: 6 },
-      { type: undefined, rows: 6 }
+      { type: 'R', rows: 7 },
+      { type: undefined, rows: 7 }
     ])('returns 200 whitout claim data', async ({ type, rows }) => {
       const options = {
         method: 'GET',
@@ -341,7 +341,7 @@ describe('View claim test', () => {
 
       expect(res.statusCode).toBe(200)
 
-      expect($('.govuk-summary-list__row').length).toEqual(6)
+      expect($('.govuk-summary-list__row').length).toEqual(7)
     })
     test('returns 200 with endemics claim and pigs species', async () => {
       const options = {
@@ -358,7 +358,7 @@ describe('View claim test', () => {
 
       expect(res.statusCode).toBe(200)
       // Summary list rows expect
-      expect($('.govuk-summary-list__row').length).toEqual(23)
+      expect($('.govuk-summary-list__row').length).toEqual(24)
       // Claim summury detailes expects
       const content = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         { key: 'Herd vaccination status', value: 'Vaccinated' },
@@ -367,7 +367,7 @@ describe('View claim test', () => {
         { key: 'Disease status category', value: '4' },
         { key: 'Biosecurity assessment', value: 'Yes, Assessment percentage: 100%' }
       ]
-      for (let i = 16; i < 23; i++) {
+      for (let i = 16; i < 24; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
         expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
       }
