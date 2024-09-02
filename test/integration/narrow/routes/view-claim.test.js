@@ -409,7 +409,7 @@ describe('View claim test', () => {
 
       expect(res.statusCode).toBe(200)
       // Summary list rows expect
-      expect($('.govuk-summary-list__row').length).toEqual(23)
+      expect($('.govuk-summary-list__row').length).toEqual(24)
       // Claim summury detailes expects
       const content = [
         null,
@@ -437,7 +437,7 @@ describe('View claim test', () => {
           value: 'Yes, Assessment percentage: 100%'
         }
       ]
-      for (let i = 17; i < 24; i++) {
+      for (let i = 16; i < 24; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
           content[i].key
         )
