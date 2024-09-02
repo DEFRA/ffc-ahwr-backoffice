@@ -238,7 +238,7 @@ describe('View claim test', () => {
 
       const content = [
         { key: 'Agreement Number', value: 'AHWR-1234-APP1' },
-        { key: 'Agreement date', value: '	23/08/2024' },
+        { key: 'Agreement date', value: '23/08/2024' },
         { key: 'Agreement holder', value: 'Russell Paul Davies' },
         { key: 'SBI number', value: '113494460' },
         {
