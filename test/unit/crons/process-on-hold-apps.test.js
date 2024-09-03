@@ -7,7 +7,7 @@ describe('Process process on hold applications function test.', () => {
   beforeEach(() => {
     jest.setSystemTime(MOCK_NOW)
     jest.mock('../../../app/config', () => ({
-      ...jest.requireActual('../../../../app/config'),
+      ...jest.requireActual('../../../app/config'),
       onHoldAppScheduler: {
         enabled: true,
         schedule: '0 18 * * 1-5'
@@ -33,7 +33,7 @@ describe('Process process on hold applications function test.', () => {
   })
 
   test('test error while running process', async () => {
-    const processOnHoldApplications = require('../../../app/crons/process-on-hold/process')
+    const { processOnHoldApplications } = require('../../../app/crons/process-on-hold/process')
     getApplications.mockImplementation(async () => {
       throw new Error('Invalid something error')
     })
@@ -44,7 +44,7 @@ describe('Process process on hold applications function test.', () => {
   })
 
   test('test error handled', async () => {
-    const processOnHoldApplications = require('../../../app/crons/process-on-hold/process')
+    const { processOnHoldApplications } = require('../../../app/crons/process-on-hold/process')
     processApplicationClaim.mockImplementation(async () => {
       throw new Error('Invalid something error')
     })
@@ -55,7 +55,7 @@ describe('Process process on hold applications function test.', () => {
   })
 
   test('test error handled no pending application', async () => {
-    const processOnHoldApplications = require('../../../app/crons/process-on-hold/process')
+    const { processOnHoldApplications } = require('../../../app/crons/process-on-hold/process')
     getApplications.mockResolvedValue({
       applications: [],
       total: 0
@@ -74,7 +74,7 @@ describe('Process process on hold applications function test.', () => {
       }],
       total: 1
     })
-    const processOnHoldApplications = require('../../../app/crons/process-on-hold/process')
+    const { processOnHoldApplications } = require('../../../app/crons/process-on-hold/process')
     const result = await processOnHoldApplications()
     expect(result).toBeTruthy()
     expect(getApplications).toHaveBeenCalled()
@@ -89,7 +89,7 @@ describe('Process process on hold applications function test.', () => {
       }],
       total: 1
     })
-    const processOnHoldApplications = require('../../../app/crons/process-on-hold/process')
+    const { processOnHoldApplications } = require('../../../app/crons/process-on-hold/process')
     const result = await processOnHoldApplications()
     expect(result).toBeTruthy()
     expect(getApplications).toHaveBeenCalled()
