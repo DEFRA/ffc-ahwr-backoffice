@@ -241,15 +241,8 @@ describe('View claim test', () => {
         { key: 'Agreement date', value: '22/03/2024' },
         { key: 'Agreement holder', value: 'Russell Paul Davies' },
         { key: 'SBI number', value: '113494460' },
-        {
-          key: 'Address',
-          value:
-            'Tesco Stores Ltd,Harwell,Betton,WHITE HOUSE FARM,VINCENT CLOSE,LEIGHTON BUZZARD,HR2 8AN,United Kingdom'
-        },
-        {
-          key: 'Agreement holder email',
-          value: 'russelldaviese@seivadllessurm.com.test'
-        },
+        { key: 'Address', value: 'Tesco Stores Ltd,Harwell,Betton,WHITE HOUSE FARM,VINCENT CLOSE,LEIGHTON BUZZARD,HR2 8AN,United Kingdom' },
+        { key: 'Agreement holder email', value: 'russelldaviese@seivadllessurm.com.test' },
         { key: 'Business email', value: 'orgEmail@gmail.com' },
         { key: 'Business name', value: 'Mrs S Clark' },
         { key: 'Livestock', value: 'Pigs' },
@@ -266,7 +259,7 @@ describe('View claim test', () => {
       // Summary list rows expect
       expect($('.govuk-summary-list__row').length).toEqual(20)
       // Application summury detailes expects
-      for (let i = 0; i < 7; i++) {
+      for (let i = 0; i < 6; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
           content[i].key
         )
@@ -275,7 +268,7 @@ describe('View claim test', () => {
         )
       }
       // Claim summury detailes expects
-      for (let i = 7; i < 20; i++) {
+      for (let i = 6; i < 20; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
           content[i].key
         )
@@ -330,7 +323,7 @@ describe('View claim test', () => {
       // Summary list rows expect
       expect($('.govuk-summary-list__row').length).toEqual(24)
       // Claim summury detailes expects
-      for (let i = 7; i < 24; i++) {
+      for (let i = 6; i < 24; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
           content[i].key
         )
@@ -437,7 +430,7 @@ describe('View claim test', () => {
           value: 'Yes, Assessment percentage: 100%'
         }
       ]
-      for (let i = 16; i < 24; i++) {
+      for (let i = 17; i < 24; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
           content[i].key
         )
