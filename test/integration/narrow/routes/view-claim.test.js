@@ -244,6 +244,8 @@ describe('View claim test', () => {
         { key: 'Address', value: 'Tesco Stores Ltd,Harwell,Betton,WHITE HOUSE FARM,VINCENT CLOSE,LEIGHTON BUZZARD,HR2 8AN,United Kingdom' },
         { key: 'Agreement holder email', value: 'russelldaviese@seivadllessurm.com.test' },
         { key: 'Business email', value: 'orgEmail@gmail.com' },
+        { key: 'Status', value: 'PAID' },
+        { key: 'Claim date', value: '22/03/2024' },
         { key: 'Business name', value: 'Mrs S Clark' },
         { key: 'Livestock', value: 'Pigs' },
         { key: 'Type of visit', value: 'Animal health and welfare review' },
