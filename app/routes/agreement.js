@@ -3,17 +3,17 @@ const boom = require('@hapi/boom')
 const crumbCache = require('./utils/crumb-cache')
 const { administrator, authoriser, processor, recommender, user } = require('../auth/permissions')
 const { getApplication } = require('../api/applications')
-const { getClaimsByApplicationReference } = require('../api/claims')
 const { formatedDateToUk, formatTypeOfVisit, formatSpecies, formatStatusId } = require('../lib/display-helper')
 const { getClaimSearch, setClaimSearch } = require('../session')
 const { claimSearch } = require('../session/keys')
 const { getStyleClassByStatus } = require('../constants/status')
 const { serviceUri } = require('../config')
 const { getContactHistory, displayContactHistory } = require('../api/contact-history')
+const { viewModel } = require('./models/claim-list')
 
 const pageUrl = '/agreement/{reference}/claims'
 const getAriaSort = (sortField, direction, field) => sortField && sortField.field === field ? direction : 'none'
-
+const agreementPageLimit = 6
 module.exports = [{
   method: 'GET',
   path: pageUrl,
@@ -27,7 +27,6 @@ module.exports = [{
     handler: async (request, h) => {
       await crumbCache.generateNewCrumb(request, h)
       const application = await getApplication(request.params.reference)
-      const claims = await getClaimsByApplicationReference(request.params.reference)
       const contactHistory = await getContactHistory(request.params.reference)
       const contactHistoryDetails = displayContactHistory(contactHistory)
       if (!application) {
@@ -36,13 +35,13 @@ module.exports = [{
 
       const organisation = application.data?.organisation
       const summaryDetails = [
-        { field: 'Name', newValue: organisation?.farmerName, oldValue: contactHistoryDetails.farmerName },
+        { field: 'Agreement number', newValue: request.params.reference, oldValue: null },
+        { field: 'Agreement date', newValue: formatedDateToUk(application.createdAt), oldValue: null },
+        { field: 'Agreement holder', newValue: organisation?.farmerName, oldValue: contactHistoryDetails.farmerName },
+        { field: 'Agreement holder email', newValue: organisation?.email, oldValue: contactHistoryDetails.email },
         { field: 'SBI number', newValue: organisation?.sbi, oldValue: null },
         { field: 'Address', newValue: organisation?.address, oldValue: contactHistoryDetails.address },
-        { field: 'Email address', newValue: organisation?.email, oldValue: contactHistoryDetails.email },
-        { field: 'Organisation email address', newValue: organisation?.orgEmail, oldValue: contactHistoryDetails.orgEmail },
-        { field: 'Date of agreement', newValue: formatedDateToUk(application.createdAt), oldValue: null },
-        { field: 'Agreement number', newValue: request.params.reference, oldValue: null }
+        { field: 'Business email', newValue: organisation?.orgEmail, oldValue: contactHistoryDetails.orgEmail }
       ]
 
       const applicationSummaryDetails = summaryDetails.filter((row) => row.newValue)
@@ -88,8 +87,8 @@ module.exports = [{
       {
         text: 'Details'
       }]
-
-      const claimTableClaims = claims?.map((claim) => {
+      const { model } = await viewModel(request, request.query.page, agreementPageLimit)
+      const claimTableClaims = model.claimsData.claims?.map((claim) => {
         return [
           {
             text: claim.reference,
@@ -122,11 +121,12 @@ module.exports = [{
               'data-sort-value': `${claim.statusId}`
             }
           },
-          { html: `<a href="${serviceUri}/view-claim/${claim.reference}">View details</a>` }
+          { html: `<a href="${serviceUri}/view-claim/${claim.reference}">View claim</a>` }
         ]
       })
 
       return h.view('agreement', {
+        model,
         backLink: `/agreements${request?.query?.page ? '?page=' + request.query.page : ''}`,
         businessName: application.data?.organisation?.name,
         applicationSummaryDetails,
