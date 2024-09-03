@@ -245,7 +245,7 @@ describe('View claim test', () => {
         { key: 'Agreement holder email', value: 'russelldaviese@seivadllessurm.com.test' },
         { key: 'Business email', value: 'orgEmail@gmail.com' },
         { key: 'Status', value: 'PAID' },
-        { key: 'Claim date', value: '22 March 2024' },
+        { key: 'Claim date', value: '25 March 2024' },
         { key: 'Business name', value: 'Mrs S Clark' },
         { key: 'Livestock', value: 'Pigs' },
         { key: 'Type of visit', value: 'Animal health and welfare review' },
@@ -335,8 +335,8 @@ describe('View claim test', () => {
       }
     })
     test.each([
-      { type: 'R', rows: 6 },
-      { type: undefined, rows: 6 }
+      { type: 'R', rows: 7 },
+      { type: undefined, rows: 7 }
     ])('returns 200 whitout claim data', async ({ type, rows }) => {
       const options = {
         method: 'GET',
