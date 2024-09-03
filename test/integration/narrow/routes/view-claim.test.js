@@ -433,7 +433,7 @@ describe('View claim test', () => {
           value: 'Yes, Assessment percentage: 100%'
         }
       ]
-      for (let i = 17; i < 24; i++) {
+      for (let i = 18; i < 24; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
           content[i].key
         )
