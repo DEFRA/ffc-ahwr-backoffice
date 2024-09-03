@@ -245,7 +245,7 @@ describe('View claim test', () => {
         { key: 'Agreement holder email', value: 'russelldaviese@seivadllessurm.com.test' },
         { key: 'Business email', value: 'orgEmail@gmail.com' },
         { key: 'Status', value: 'PAID' },
-        { key: 'Claim date', value: '22/03/2024' },
+        { key: 'Claim date', value: '22 March 2024' },
         { key: 'Business name', value: 'Mrs S Clark' },
         { key: 'Livestock', value: 'Pigs' },
         { key: 'Type of visit', value: 'Animal health and welfare review' },
@@ -302,7 +302,7 @@ describe('View claim test', () => {
         null,
         null,
         { key: 'Status', value: 'PAID' },
-        { key: 'Claim date', value: '2 July 2024' },
+        { key: 'Claim date', value: '25 March 2024' },
         { key: 'Business name', value: 'Mrs S Clark' },
         { key: 'Livestock', value: 'Sheep' },
         { key: 'Type of visit', value: 'Endemic disease follow-ups' },
@@ -325,7 +325,7 @@ describe('View claim test', () => {
       // Summary list rows expect
       expect($('.govuk-summary-list__row').length).toEqual(24)
       // Claim summury detailes expects
-      for (let i = 6; i < 24; i++) {
+      for (let i = 7; i < 24; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
           content[i].key
         )
@@ -335,8 +335,8 @@ describe('View claim test', () => {
       }
     })
     test.each([
-      { type: 'R', rows: 7 },
-      { type: undefined, rows: 7 }
+      { type: 'R', rows: 6 },
+      { type: undefined, rows: 6 }
     ])('returns 200 whitout claim data', async ({ type, rows }) => {
       const options = {
         method: 'GET',
