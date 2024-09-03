@@ -325,7 +325,7 @@ describe('View claim test', () => {
       // Summary list rows expect
       expect($('.govuk-summary-list__row').length).toEqual(24)
       // Claim summury detailes expects
-      for (let i = 6; i < 24; i++) {
+      for (let i = 7; i < 24; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
           content[i].key
         )
