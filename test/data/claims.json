@@ -21,6 +21,23 @@
         "updatedBy": null,
         "status": {
             "status": "PAID"
+        },
+        "application": {
+            "data": {
+                "type": "EE",
+                "reference": null,
+                "declaration": true,
+                "offerStatus": "accepted",
+                "organisation": {
+                    "sbi": "113494460",
+                    "name": "Mrs S Clark",
+                    "email": "russelldaviese@seivadllessurm.com.test",
+                    "address": "Tesco Stores Ltd,Harwell,Betton,WHITE HOUSE FARM,VINCENT CLOSE,LEIGHTON BUZZARD,HR2 8AN,United Kingdom",
+                    "userType": "newUser",
+                    "farmerName": "Russell Paul Davies"
+                },
+                "confirmCheckDetails": "yes"
+            }
         }
     },
     {
@@ -45,6 +62,23 @@
         "updatedBy": null,
         "status": {
             "status": "ON HOLD"
+        },
+        "application": {
+            "data": {
+                "type": "EE",
+                "reference": null,
+                "declaration": true,
+                "offerStatus": "accepted",
+                "organisation": {
+                    "sbi": "113494460",
+                    "name": "Mrs S Clark",
+                    "email": "russelldaviese@seivadllessurm.com.test",
+                    "address": "Tesco Stores Ltd,Harwell,Betton,WHITE HOUSE FARM,VINCENT CLOSE,LEIGHTON BUZZARD,HR2 8AN,United Kingdom",
+                    "userType": "newUser",
+                    "farmerName": "Russell Paul Davies"
+                },
+                "confirmCheckDetails": "yes"
+            }
         }
     }
 ]
