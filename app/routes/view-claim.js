@@ -67,12 +67,12 @@ module.exports = {
       const organisation = application?.data?.organisation
 
       const applicationSummaryDetails = [
-        { key: { text: 'Agreement Number' }, value: { text: applicationReference } },
+        { key: { text: 'Agreement number' }, value: { text: applicationReference } },
         { key: { text: 'Agreement date' }, value: { text: formatedDateToUk(application.createdAt) } },
         { key: { text: 'Agreement holder' }, value: { text: organisation?.farmerName } },
+        { key: { text: 'Agreement holder email' }, value: { text: organisation?.email } },
         { key: { text: 'SBI number' }, value: { text: organisation?.sbi } },
         { key: { text: 'Address' }, value: { text: organisation?.address } },
-        { key: { text: 'Agreement holder email' }, value: { text: organisation?.email } },
         { key: { text: 'Business email' }, value: { text: organisation?.orgEmail } }
       ]
 

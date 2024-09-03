@@ -237,12 +237,12 @@ describe('View claim test', () => {
       expect(res.statusCode).toBe(200)
 
       const content = [
-        { key: 'Agreement Number', value: 'AHWR-1234-APP1' },
+        { key: 'Agreement number', value: 'AHWR-1234-APP1' },
         { key: 'Agreement date', value: '22/03/2024' },
         { key: 'Agreement holder', value: 'Russell Paul Davies' },
+        { key: 'Agreement holder email', value: 'russelldaviese@seivadllessurm.com.test' },
         { key: 'SBI number', value: '113494460' },
         { key: 'Address', value: 'Tesco Stores Ltd,Harwell,Betton,WHITE HOUSE FARM,VINCENT CLOSE,LEIGHTON BUZZARD,HR2 8AN,United Kingdom' },
-        { key: 'Agreement holder email', value: 'russelldaviese@seivadllessurm.com.test' },
         { key: 'Business email', value: 'orgEmail@gmail.com' },
         { key: 'Status', value: 'PAID' },
         { key: 'Claim date', value: '25 March 2024' },

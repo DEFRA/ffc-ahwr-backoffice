@@ -34,7 +34,7 @@
         }) }}
       {% endif %}
 
-      <h1 class="govuk-caption-l govuk-!-margin-bottom-3">Claim by <a href="/agreement/{{applicationReference}}">{{ title }}</a> </h1>
+      <h1 class="govuk-caption-l govuk-!-margin-bottom-3">Claim by <a href="/agreement/{{applicationReference}}/claims?page=1">{{ title }}</a> </h1>
       <h1 class="govuk-heading-l govuk-!-margin-bottom-7"> Claim number: {{reference}} <span class="govuk-tag {{ status.tagClass }}">{{ status.capitalisedtype }}</span></h1>
       
       {{ govukSummaryList({ rows: applicationSummaryDetails }) }}
