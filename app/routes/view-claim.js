@@ -65,7 +65,7 @@ module.exports = {
       }
 
       const organisation = application?.data?.organisation
-      
+
       const applicationSummaryDetails = [
         { key: { text: 'Agreement Number' }, value: { text: applicationReference } },
         { key: { text: 'Agreement date' }, value: { text: formatedDateToUk(application.createdAt) } },
