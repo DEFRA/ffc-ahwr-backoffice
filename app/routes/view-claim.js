@@ -131,7 +131,7 @@ module.exports = {
       const livestock = { key: { text: 'Livestock' }, value: { html: upperFirstLetter([livestockTypes.pigs, livestockTypes.sheep].includes(data?.typeOfLivestock) ? data?.typeOfLivestock : `${data?.typeOfLivestock} cattle`) } }
       const typeOfVisit = { key: { text: 'Type of visit' }, value: { html: isReview ? 'Animal health and welfare review' : 'Endemic disease follow-ups' } }
       const dateOfVisit = { key: { text: 'Date of visit' }, value: { html: formatedDateToUk(data?.dateOfVisit) } }
-      const dateOfSampling = { key: { text: 'Date of sampling' }, value: { html: formatedDateToUk(data?.dateOfTesting) } }
+      const dateOfSampling = { key: { text: 'Date of sampling' }, value: { html: data?.dateOfTesting && formatedDateToUk(data?.dateOfTesting) } }
       const typeOfLivestock = { key: { text: speciesEligibleNumber[data?.typeOfLivestock] }, value: { html: upperFirstLetter(data?.speciesNumbers) } }
       const vetName = { key: { text: "Vet's name" }, value: { html: upperFirstLetter(data?.vetsName) } }
       const vetRCVSNumber = { key: { text: "Vet's RCVS number" }, value: { html: data?.vetRCVSNumber } }
@@ -140,7 +140,12 @@ module.exports = {
       const numberOfOralFluidSamples = { key: { text: 'Number of oral fluid samples taken' }, value: { html: data?.numberOfOralFluidSamples } }
       const numberAnimalsTested = { key: { text: 'Number of animals tested' }, value: { html: data?.numberAnimalsTested } }
       const reviewTestResults = { key: { text: 'Review test result' }, value: { html: upperFirstLetter(data?.reviewTestResults) } }
-      const testResults = (returnClaimDetailIfExist(data?.testResults && typeof data?.testResults === 'string', { key: { text: data?.reviewTestResults ? 'Follow-up test result' : 'Test result' }, value: { html: typeof data?.testResults === 'string' ? upperFirstLetter(data?.testResults) : '' } }))
+      const testResults = (
+        returnClaimDetailIfExist(
+          data?.testResults && typeof data?.testResults === 'string',
+          { key: { text: data?.reviewTestResults ? 'Follow-up test result' : 'Test result' }, value: { html: upperFirstLetter(data?.testResults) } }
+        )
+      )
       const vetVisitsReviewTestResults = { key: { text: 'Vet Visits Review Test results' }, value: { html: upperFirstLetter(data?.vetVisitsReviewTestResults) } }
       const diseaseStatus = { key: { text: 'Disease status category' }, value: { html: data?.diseaseStatus } }
       const numberOfSamplesTested = { key: { text: 'Samples tested' }, value: { html: data?.numberOfSamplesTested } }
@@ -233,6 +238,7 @@ module.exports = {
         diseaseStatus,
         getBiosecurityRow()
       ]
+
       const speciesRows = () => {
         switch (true) {
           case isBeef:
