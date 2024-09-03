@@ -425,6 +425,8 @@ describe('View claim test', () => {
         null,
         null,
         null,
+        null,
+        null,
         { key: 'Herd vaccination status', value: 'Vaccinated' },
         { key: 'URN', value: '123456' },
         { key: 'Samples tested', value: '6' },
