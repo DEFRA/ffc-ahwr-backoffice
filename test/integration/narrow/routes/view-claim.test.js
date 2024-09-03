@@ -301,6 +301,7 @@ describe('View claim test', () => {
         null,
         null,
         null,
+        null,
         { key: 'Status', value: 'PAID' },
         { key: 'Claim date', value: '25 March 2024' },
         { key: 'Business name', value: 'Mrs S Clark' },
@@ -432,7 +433,7 @@ describe('View claim test', () => {
           value: 'Yes, Assessment percentage: 100%'
         }
       ]
-      for (let i = 16; i < 24; i++) {
+      for (let i = 17; i < 24; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
           content[i].key
         )
