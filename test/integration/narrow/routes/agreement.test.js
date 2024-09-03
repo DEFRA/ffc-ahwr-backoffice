@@ -17,6 +17,20 @@ const contactHistory = require('../../../../app/api/contact-history')
 jest.mock('../../../../app/api/contact-history.js')
 contactHistory.getContactHistory = jest.fn().mockReturnValue(contactHistoryData)
 
+const pagination = require('../../../../app/pagination')
+jest.mock('../../../../app/pagination')
+
+pagination.getPagination = jest.fn().mockReturnValue({
+  limit: 10, offset: 0
+})
+
+pagination.getPagingData = jest.fn().mockReturnValue({
+  page: 1, totalPages: 1, total: 1, limit: 10, url: undefined
+})
+
+jest.mock('../../../../app/api/claims.js')
+claims.getClaims = jest.fn().mockReturnValue({ total: 9, claims: claimData })
+
 jest.mock('../../../../app/api/contact-history.js')
 contactHistory.displayContactHistory = jest.fn().mockReturnValue({
   orgEmail: 'Na',

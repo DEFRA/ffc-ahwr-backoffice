@@ -7,9 +7,9 @@ const { getStyleClassByStatus } = require('../../constants/status')
 const { getPagination, getPagingData } = require('../../pagination')
 const { formatTypeOfVisit, formatSpecies, formatedDateToUk } = require('../../lib/display-helper')
 
-const viewModel = (request, page) => {
+const viewModel = (request, page, limit) => {
   return (async () => {
-    return { model: await createModel(request, page) }
+    return { model: await createModel(request, page, limit) }
   })()
 }
 
@@ -65,10 +65,10 @@ const getClaimTableHeader = (sortField) => {
   }]
 }
 
-async function createModel (request, page) {
+async function createModel (request, page, pageLimit) {
   page = page ?? request.query?.page ?? 1
   const path = request.headers.path ?? ''
-  const { limit, offset } = getPagination(page)
+  const { limit, offset } = getPagination(page, pageLimit)
   const { searchText, searchType } = checkValidSearch(getClaimSearch(request, claimSearch.searchText))
   const sortField = getClaimSearch(request, claimSearch.sort) ?? undefined
   const claimsData = await getClaims(searchType, searchText, limit, offset, sortField)
@@ -120,7 +120,8 @@ async function createModel (request, page) {
       claims,
       header: getClaimTableHeader(getClaimSearch(request, claimSearch.sort)),
       ...pagingData,
-      searchText: getClaimSearch(request, claimSearch.searchText)
+      searchText: getClaimSearch(request, claimSearch.searchText),
+      claimsData
     }
   } else {
     return {
