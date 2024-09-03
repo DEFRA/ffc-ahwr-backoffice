@@ -266,7 +266,7 @@ describe('View claim test', () => {
       // Summary list rows expect
       expect($('.govuk-summary-list__row').length).toEqual(20)
       // Application summury detailes expects
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 7; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
           content[i].key
         )
@@ -275,7 +275,7 @@ describe('View claim test', () => {
         )
       }
       // Claim summury detailes expects
-      for (let i = 7; i < 19; i++) {
+      for (let i = 7; i < 20; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
           content[i].key
         )
@@ -409,7 +409,7 @@ describe('View claim test', () => {
 
       expect(res.statusCode).toBe(200)
       // Summary list rows expect
-      expect($('.govuk-summary-list__row').length).toEqual(23)
+      expect($('.govuk-summary-list__row').length).toEqual(24)
       // Claim summury detailes expects
       const content = [
         null,
