@@ -35,7 +35,7 @@
       {% endif %}
 
       <h1 class="govuk-caption-l govuk-!-margin-bottom-3">Claim by <a href="/view-agreement/{{applicationReference}}">{{ title }}</a> </h1>
-      <h1 class="govuk-heading-l govuk-!-margin-bottom-7"> Claim number: {{reference}} <span class="govuk-tag {{ status.tagClass }}">  {{ status.capitalisedtype }}</span></h1>
+      <h1 class="govuk-heading-l govuk-!-margin-bottom-7"> Claim number: {{reference}} <span class="govuk-tag {{ status.tagClass }}">{{ status.capitalisedtype }}</span></h1>
       
       {{ govukSummaryList({ rows: applicationSummaryDetails }) }}
 
@@ -56,7 +56,7 @@
       {% endif %}
 
       {% set claimHTML %}
-        <h2 class="govuk-heading-l govuk-!-margin-bottom-5">Claim Details</h2>
+        <h2 class="govuk-heading-l govuk-!-margin-bottom-5">Claim details</h2>
         {{ govukSummaryList({ rows: claimSummaryDetails }) }}
         {% if displayMoveToInCheckFromHold %}
           <div class="govuk-body govuk-!-text-align-left" id="move-to-in-check">
