@@ -14,6 +14,7 @@ const { viewModel } = require('./models/claim-list')
 const pageUrl = '/agreement/{reference}/claims'
 const getAriaSort = (sortField, direction, field) => sortField && sortField.field === field ? direction : 'none'
 const agreementPageLimit = 6
+
 module.exports = [{
   method: 'GET',
   path: pageUrl,
@@ -31,6 +32,10 @@ module.exports = [{
       const contactHistoryDetails = displayContactHistory(contactHistory)
       if (!application) {
         throw boom.badRequest()
+      }
+      const customSearch = {
+        searchText: request.params.reference,
+        searchType: 'appRef'
       }
 
       const organisation = application.data?.organisation
@@ -87,7 +92,8 @@ module.exports = [{
       {
         text: 'Details'
       }]
-      const { model } = await viewModel(request, request.query.page, agreementPageLimit)
+      const { model } = await viewModel(request, request.query.page, agreementPageLimit, customSearch)
+      console.log('>>>>>>>>>>>>>>>', model.claimsData.claims)
       const claimTableClaims = model.claimsData.claims?.map((claim) => {
         return [
           {
