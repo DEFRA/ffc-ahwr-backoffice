@@ -93,7 +93,7 @@ module.exports = [{
         text: 'Details'
       }]
       const { model } = await viewModel(request, request.query.page, agreementPageLimit, customSearch)
-      const claimTableClaims = model.claimsData.claims?.map((claim) => {
+      const claimTableClaims = model?.claimsData?.claims?.map((claim) => {
         return [
           {
             text: claim.reference,
@@ -132,6 +132,7 @@ module.exports = [{
 
       return h.view('agreement', {
         model,
+        claimsRowsTotal: model?.claimsData?.total,
         backLink: `/agreements${request?.query?.page ? '?page=' + request.query.page : ''}`,
         businessName: application.data?.organisation?.name,
         applicationSummaryDetails,
