@@ -93,7 +93,6 @@ module.exports = [{
         text: 'Details'
       }]
       const { model } = await viewModel(request, request.query.page, agreementPageLimit, customSearch)
-      console.log('>>>>>>>>>>>>>>>', model.claimsData.claims)
       const claimTableClaims = model.claimsData.claims?.map((claim) => {
         return [
           {
