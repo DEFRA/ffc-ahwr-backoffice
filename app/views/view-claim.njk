@@ -29,11 +29,14 @@
   <div class="govuk-grid-row govuk-!-padding-top-3 govuk-!-padding-bottom-4">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">Claim number: {{reference}}</h1>
-      <h1 class="govuk-caption-l">Claim by <a class="govuk-link" href="/agreement/{{applicationReference}}/claims?page=1">{{ title }}</a> </h1>
+      <h1 class="govuk-caption-l">Claim by <a class="govuk-link" href={{businessNameLink}}>{{ title }}</a>
+      </h1>
     </div>
     <div class="govuk-grid-column-one-third govuk-!-text-align-right">
       <div class="govuk-tag govuk-!-margin-top-1 govuk-!-margin-bottom-3 {{ status.tagClass }}">{{ status.capitalisedtype }}</div>
-      <h1 class="govuk-caption-l"><a class="govuk-link" href="/claims">Back to all claims</a></h1>
+      <h1 class="govuk-caption-l">
+        <a class="govuk-link" href="/claims">Back to all claims</a>
+      </h1>
     </div>
   </div>
   <hr>
@@ -46,7 +49,7 @@
           errorList: errors
         }) }}
       {% endif %}
-      
+
       {{ govukSummaryList({ rows: applicationSummaryDetails }) }}
 
       {% if recommendData != false %}
@@ -68,22 +71,22 @@
     </div>
     <div class="govuk-grid-column-full">
       {% set claimHTML %}
-        <h2 class="govuk-heading-l govuk-!-margin-bottom-5">Claim details</h2>
-        {{ govukSummaryList({ rows: claimSummaryDetails }) }}
-        {% if displayMoveToInCheckFromHold %}
-          <div class="govuk-body govuk-!-text-align-left" id="move-to-in-check">
-            <p class="govuk-body">If you recommend this claim for a full verification check, move it to ‘in check’.</p>
-            <a class="govuk-button govuk-!-margin-bottom-4" role="button" href="/view-claim/{{ reference }}?moveToInCheck=true{{"&returnPage="+returnPage if returnPage}}" draggable="false" data-module="govuk-button">
+      <h2 class="govuk-heading-l govuk-!-margin-bottom-5">Claim details</h2>
+      {{ govukSummaryList({ rows: claimSummaryDetails }) }}
+      {% if displayMoveToInCheckFromHold %}
+        <div class="govuk-body govuk-!-text-align-left" id="move-to-in-check">
+          <p class="govuk-body">If you recommend this claim for a full verification check, move it to ‘in check’.</p>
+          <a class="govuk-button govuk-!-margin-bottom-4" role="button" href="/view-claim/{{ reference }}?moveToInCheck=true{{"&returnPage="+returnPage if returnPage}}" draggable="false" data-module="govuk-button">
               Move claim to 'in check'
             </a>
-            <p class="govuk-body">If no further checks are required, you do not need to do anything. The claim will automatically move to ‘ready to pay’.</p>
-          </div>
-        {% endif %}
+          <p class="govuk-body">If no further checks are required, you do not need to do anything. The claim will automatically move to ‘ready to pay’.</p>
+        </div>
+      {% endif %}
       {% endset -%}
 
       {% set historyHTML %}
-        <h2 class="govuk-heading-l govuk-!-margin-bottom-5">History</h2>
-        {{ govukTable({
+      <h2 class="govuk-heading-l govuk-!-margin-bottom-5">History</h2>
+      {{ govukTable({
           head: historyData.header,
           rows: historyData.rows
         }) }}

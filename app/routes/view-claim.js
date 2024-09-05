@@ -18,10 +18,10 @@ const { getLivestockTypes } = require('./../lib/get-livestock-types')
 const { getReviewType } = require('./../lib/get-review-type')
 const { convertDateToFormattedString } = require('./../routes/utils/date-converter')
 
-const backLink = (applicationReference, returnPage) => {
-  return returnPage && returnPage === 'claims' ? '/claims' : `/agreement/${applicationReference}/claims`
+const claimsLink = '/claims'
+const getBackLink = (applicationReference, returnPage) => {
+  return returnPage && returnPage === 'claims' ? claimsLink : `/agreement/${applicationReference}/claims`
 }
-
 const speciesEligibleNumber = {
   beef: '11 or more beef cattle ',
   dairy: '11 or more dairy cattle ',
@@ -271,10 +271,15 @@ module.exports = {
         ...speciesRows()
       ]
       const rowsWithData = rows.filter((row) => row?.value?.html)
+      const backLink = getBackLink(claim?.applicationReference, request.query.returnPage)
 
+      const businessNameLink = (() => {
+        return backLink === claimsLink ? claimsLink : `/agreement/${claim?.applicationReference}/claims?page=1`
+      })()
       return h.view('view-claim', {
         page: 1,
-        backLink: backLink(claim?.applicationReference, request.query.returnPage),
+        backLink,
+        businessNameLink,
         returnPage: request.query.returnPage,
         reference,
         applicationReference,
