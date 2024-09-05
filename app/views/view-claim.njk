@@ -29,7 +29,7 @@
   <div class="govuk-grid-row govuk-!-padding-top-3 govuk-!-padding-bottom-4">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">Claim number: {{reference}}</h1>
-      <h1 class="govuk-caption-l">Claim by <a class="govuk-link" href="/agreement/{{applicationReference}}/claims?page=1">{{ title }}</a> </h1>
+      <h1 class="govuk-caption-l">Claim by <a class="govuk-link" href="/agreement/{{applicationReference}}/claims?page=1&returnPage=view-claim&reference={{reference}}">{{ title }}</a> </h1>
     </div>
     <div class="govuk-grid-column-one-third govuk-!-text-align-right">
       <div class="govuk-tag govuk-!-margin-top-1 govuk-!-margin-bottom-3 {{ status.tagClass }}">{{ status.capitalisedtype }}</div>
