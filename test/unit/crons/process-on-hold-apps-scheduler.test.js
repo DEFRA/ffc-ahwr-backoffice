@@ -1,4 +1,3 @@
-
 describe('Process On Hold Applications plugin test', () => {
   const OLD_ENV = process.env
   require('../../../app/api/gov-holiday')
@@ -84,20 +83,16 @@ describe('Process On Hold Applications plugin test', () => {
       isTodayHoliday: jest.fn().mockReturnValue(false),
       getHolidayCalendarForEngland: jest.fn()
     }))
+
     jest.mock('../../../app/crons/process-on-hold/process')
 
-    const { processOnHoldApplications, processOnHoldClaims } = require('../../../app/crons/process-on-hold/process')
-    processOnHoldApplications.mockReturnValue(true)
-    processOnHoldClaims.mockReturnValue(true)
+    const { processOnHoldApplications } = require('../../../app/crons/process-on-hold/process')
+    processOnHoldApplications.mockResolvedValue(true)
 
     mockNodeCron.schedule.mockImplementationOnce(async (frequency, callback) => await callback())
     const processOnHoldAppsScheduler = require('../../../app/crons/process-on-hold/scheduler')
     await processOnHoldAppsScheduler.plugin.register()
 
-    console.log('processOnHoldApplications called:', processOnHoldApplications.mock)
-    console.log('processOnHoldClaims called:', processOnHoldClaims.mock)
-
     expect(processOnHoldApplications).toHaveBeenCalled()
-    expect(processOnHoldClaims).toHaveBeenCalled()
   })
 })

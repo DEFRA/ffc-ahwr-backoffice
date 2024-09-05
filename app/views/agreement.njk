@@ -39,10 +39,12 @@
             </div>
         </div>
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <h3 class="govuk-heading-m">
+            {% if claimsRowsTotal %}
+                <div class="govuk-grid-column-full">
+                    <h3 class="govuk-heading-m">
   Claims by this business
 </h3>
+                {% endif %}
             </div>
             <div class="govuk-grid-column-full">
                 <div class="moj-scrollable-pane__wrapper">
