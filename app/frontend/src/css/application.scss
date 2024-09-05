@@ -4,7 +4,7 @@ $govuk-assets-path: "~govuk-frontend/dist/govuk/assets/";
 @import "./guidance-layout";
 
 .govuk-width-container, .moj-header__container, .moj-primary-navigation__container {
-  max-width: 960px;
+  max-width: 90% !important;
 }
 
 $moj-assets-path: "~@ministryofjustice/frontend/moj/assets/";
