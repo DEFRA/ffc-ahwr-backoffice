@@ -119,15 +119,15 @@ module.exports = {
 
       const getSheepDiseasesTestedRow = () => (data?.typeOfLivestock === livestockTypes.sheep && isEndemicsFollowUp && typeof data?.testResults === 'object' && data?.testResults?.length
         ? (data?.testResults || []).map((sheepTest, index) => {
-          return {
-            key: { text: index === 0 ? 'Disease or condition test result' : '' },
-            value: {
-              html: typeof sheepTest.result === 'object'
-                ? sheepTest.result.map((testResult) => `${testResult.diseaseType} (${testResult.result})</br>`).join(' ')
-                : `${sheepTestTypes[data?.sheepEndemicsPackage].find((test) => test.value === sheepTest.diseaseType).text} (${sheepTestResultsType[sheepTest.diseaseType].find(resultType => resultType.value === sheepTest.result).text})`
+            return {
+              key: { text: index === 0 ? 'Disease or condition test result' : '' },
+              value: {
+                html: typeof sheepTest.result === 'object'
+                  ? sheepTest.result.map((testResult) => `${testResult.diseaseType} (${testResult.result})</br>`).join(' ')
+                  : `${sheepTestTypes[data?.sheepEndemicsPackage].find((test) => test.value === sheepTest.diseaseType).text} (${sheepTestResultsType[sheepTest.diseaseType].find(resultType => resultType.value === sheepTest.result).text})`
+              }
             }
-          }
-        })
+          })
         : [])
 
       const status = { key: { text: 'Status' }, value: { html: `<span class='govuk-tag ${getStyleClassByStatus(formatStatusId(statusId))}'> ${upperFirstLetter(claimStatus?.status)} </span>` } }
