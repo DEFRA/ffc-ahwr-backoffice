@@ -12,6 +12,9 @@ const { getContactHistory, displayContactHistory } = require('../api/contact-his
 const { viewModel } = require('./models/claim-list')
 
 const pageUrl = '/agreement/{reference}/claims'
+const getBackLink = (claimReference, returnPage, agreementsPageLink) => {
+  return returnPage && returnPage === 'view-claim' ? `/view-claim/${claimReference}` : agreementsPageLink
+}
 const getAriaSort = (sortField, direction, field) => sortField && sortField.field === field ? direction : 'none'
 const agreementPageLimit = 6
 
@@ -126,14 +129,14 @@ module.exports = [{
               'data-sort-value': `${claim.statusId}`
             }
           },
-          { html: `<a href="${serviceUri}/view-claim/${claim.reference}">View claim</a>` }
+          { html: `<a href="${serviceUri}/view-claim/${claim.reference}?returnPage=view-agreement">View claim</a>` }
         ]
       })
-
+      const agreementsPageLink = `/agreements${request?.query?.page ? '?page=' + request.query.page : ''}`
       return h.view('agreement', {
         model,
         claimsRowsTotal: model?.claimsData?.total,
-        backLink: `/agreements${request?.query?.page ? '?page=' + request.query.page : ''}`,
+        backLink: getBackLink(request?.query?.reference, request?.query?.returnPage, agreementsPageLink),
         businessName: application.data?.organisation?.name,
         applicationSummaryDetails,
         claimTable: claimTableClaims

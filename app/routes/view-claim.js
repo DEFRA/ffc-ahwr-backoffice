@@ -19,7 +19,7 @@ const { getReviewType } = require('./../lib/get-review-type')
 const { convertDateToFormattedString } = require('./../routes/utils/date-converter')
 
 const backLink = (applicationReference, returnPage) => {
-  return returnPage && returnPage === 'claims' ? '/claims' : `/agreement/${applicationReference}/claims`
+  return returnPage && returnPage === 'view-agreement' ? `/agreement/${applicationReference}/claims` : '/claims'
 }
 
 const speciesEligibleNumber = {

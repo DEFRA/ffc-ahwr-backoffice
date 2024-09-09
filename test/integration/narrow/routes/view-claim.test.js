@@ -445,5 +445,38 @@ describe('View claim test', () => {
         )
       }
     })
+
+    test('the back link should go to agreement details if the user is coming from agreement details page', async () => {
+      const options = {
+        method: 'GET',
+        url: `${url}/AHWR-0000-4444?returnPage=view-agreement`,
+        auth
+      }
+
+      getClaim.mockReturnValue(claims[0])
+      getApplication.mockReturnValue(application)
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      expect(res.statusCode).toBe(200)
+      expect($('.govuk-back-link').attr('href')).toEqual('/agreement/AHWR-1234-APP1/claims')
+    })
+    test('the back link should go to all claims main tab if the user is coming from all claims main tab', async () => {
+      const options = {
+        method: 'GET',
+        url: `${url}/AHWR-0000-4444`,
+        auth
+      }
+
+      getClaim.mockReturnValue(claims[0])
+      getApplication.mockReturnValue(application)
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      expect(res.statusCode).toBe(200)
+      expect($('.govuk-back-link').attr('href')).toEqual('/claims')
+    })
   })
 })
