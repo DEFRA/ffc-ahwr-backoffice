@@ -462,10 +462,10 @@ describe('View claim test', () => {
       expect(res.statusCode).toBe(200)
       expect($('.govuk-back-link').attr('href')).toEqual('/agreement/AHWR-1234-APP1/claims')
     })
-    test.only('the back link should go to all claims main tab if the user is coming from all claims main tab', async () => {
+    test('the back link should go to all claims main tab if the user is coming from all claims main tab', async () => {
       const options = {
         method: 'GET',
-        url: `${url}/AHWR-0000-4444?returnPage=claims`,
+        url: `${url}/AHWR-0000-4444`,
         auth
       }
 
