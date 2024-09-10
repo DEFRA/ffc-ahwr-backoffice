@@ -187,7 +187,7 @@ describe('Claims test', () => {
       expect($('title').text()).toContain('Administration - My Farm')
       expectPhaseBanner.ok($)
 
-      expect($('.govuk-back-link').attr('href')).toEqual('/agreements?page=1')
+      expect($('.govuk-back-link').attr('href')).toEqual('/agreements')
     })
   })
 })
