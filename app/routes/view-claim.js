@@ -16,7 +16,6 @@ const claimFormHelper = require('./utils/claim-form-helper')
 const checkboxErrors = require('./utils/checkbox-errors')
 const { getLivestockTypes } = require('./../lib/get-livestock-types')
 const { getReviewType } = require('./../lib/get-review-type')
-const { convertDateToFormattedString } = require('./../routes/utils/date-converter')
 
 const backLink = (applicationReference, returnPage) => {
   return returnPage && returnPage === 'view-agreement' ? `/agreement/${applicationReference}/claims` : '/claims'
@@ -131,7 +130,7 @@ module.exports = {
         : [])
 
       const status = { key: { text: 'Status' }, value: { html: `<span class='govuk-tag ${getStyleClassByStatus(formatStatusId(statusId))}'> ${upperFirstLetter(claimStatus?.status)} </span>` } }
-      const claimDate = { key: { text: 'Claim date' }, value: { html: convertDateToFormattedString(createdAt) } }
+      const claimDate = { key: { text: 'Claim date' }, value: { html: formatedDateToUk(createdAt) } }
       const organisationName = { key: { text: 'Business name' }, value: { html: upperFirstLetter(organisation?.name) } }
       const livestock = { key: { text: 'Livestock' }, value: { html: upperFirstLetter([livestockTypes.pigs, livestockTypes.sheep].includes(data?.typeOfLivestock) ? data?.typeOfLivestock : `${data?.typeOfLivestock} cattle`) } }
       const typeOfVisit = { key: { text: 'Type of visit' }, value: { html: isReview ? 'Animal health and welfare review' : 'Endemic disease follow-ups' } }
