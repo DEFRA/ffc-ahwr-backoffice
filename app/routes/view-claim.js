@@ -68,7 +68,7 @@ module.exports = {
 
       const applicationSummaryDetails = [
         { key: { text: 'Agreement number' }, value: { text: applicationReference } },
-        { key: { text: 'Agreement date' }, value: { text: formatedDateToUk(application.createdAt) } },
+        { key: { text: 'Agreement date' }, value: { text: convertDateToFormattedString(application.createdAt) } },
         { key: { text: 'Agreement holder' }, value: { text: organisation?.farmerName } },
         { key: { text: 'Agreement holder email' }, value: { text: organisation?.email } },
         { key: { text: 'SBI number' }, value: { text: organisation?.sbi } },
@@ -131,7 +131,7 @@ module.exports = {
         : [])
 
       const status = { key: { text: 'Status' }, value: { html: `<span class='govuk-tag ${getStyleClassByStatus(formatStatusId(statusId))}'> ${upperFirstLetter(claimStatus?.status)} </span>` } }
-      const claimDate = { key: { text: 'Claim date' }, value: { html: convertDateToFormattedString(createdAt) } }
+      const claimDate = { key: { text: 'Claim date' }, value: { html: formatedDateToUk(createdAt) } }
       const organisationName = { key: { text: 'Business name' }, value: { html: upperFirstLetter(organisation?.name) } }
       const livestock = { key: { text: 'Livestock' }, value: { html: upperFirstLetter([livestockTypes.pigs, livestockTypes.sheep].includes(data?.typeOfLivestock) ? data?.typeOfLivestock : `${data?.typeOfLivestock} cattle`) } }
       const typeOfVisit = { key: { text: 'Type of visit' }, value: { html: isReview ? 'Animal health and welfare review' : 'Endemic disease follow-ups' } }
