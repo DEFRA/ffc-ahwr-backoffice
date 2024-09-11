@@ -16,7 +16,6 @@ const claimFormHelper = require('./utils/claim-form-helper')
 const checkboxErrors = require('./utils/checkbox-errors')
 const { getLivestockTypes } = require('./../lib/get-livestock-types')
 const { getReviewType } = require('./../lib/get-review-type')
-const { convertDateToFormattedString } = require('./../routes/utils/date-converter')
 
 const backLink = (applicationReference, returnPage) => {
   return returnPage && returnPage === 'view-agreement' ? `/agreement/${applicationReference}/claims` : '/claims'
@@ -68,7 +67,7 @@ module.exports = {
 
       const applicationSummaryDetails = [
         { key: { text: 'Agreement number' }, value: { text: applicationReference } },
-        { key: { text: 'Agreement date' }, value: { text: convertDateToFormattedString(application.createdAt) } },
+        { key: { text: 'Agreement date' }, value: { text: formatedDateToUk(application.createdAt) } },
         { key: { text: 'Agreement holder' }, value: { text: organisation?.farmerName } },
         { key: { text: 'Agreement holder email' }, value: { text: organisation?.email } },
         { key: { text: 'SBI number' }, value: { text: organisation?.sbi } },
