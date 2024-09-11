@@ -25,18 +25,18 @@
 {% endblock %}
 
 {% block content %}
-  <hr class="govuk-!-margin-0">
-  <div class="govuk-grid-row govuk-!-padding-top-3 govuk-!-padding-bottom-4">
-    <div class="govuk-grid-column-two-thirds">
+  <hr class="govuk-hr govuk-grid-column-two-thirds govuk-!-padding-left-0 govuk-!-padding-right-0">
+  <div class="govuk-grid-row govuk-!-padding-top-3 govuk-!-padding-bottom-4 govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-two-thirds govuk-!-padding-left-0 govuk-!-padding-right-0">
       <h1 class="govuk-heading-l">Claim number: {{reference}}</h1>
       <h1 class="govuk-caption-l">Claim by <a class="govuk-link" href="/agreement/{{applicationReference}}/claims?page=1&returnPage=view-claim&reference={{reference}}">{{ title }}</a> </h1>
     </div>
-    <div class="govuk-grid-column-one-third govuk-!-text-align-right">
+    <div class="govuk-grid-column-one-third govuk-!-text-align-right govuk-!-padding-left-0 govuk-!-padding-right-0">
       <div class="govuk-tag govuk-!-margin-top-1 govuk-!-margin-bottom-3 {{ status.tagClass }}">{{ status.capitalisedtype }}</div>
       <h1 class="govuk-caption-l"><a class="govuk-link" href="/claims">Back to all claims</a></h1>
     </div>
   </div>
-  <hr>
+  <hr class="govuk-hr govuk-grid-column-two-thirds govuk-!-padding-left-0 govuk-!-padding-right-0">
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -66,7 +66,7 @@
       {% endif %}
 
     </div>
-    <div class="govuk-grid-column-full">
+    <div class="govuk-grid-column-two-thirds">
       {% set claimHTML %}
         <h2 class="govuk-heading-l govuk-!-margin-bottom-5">Claim details</h2>
         {{ govukSummaryList({ rows: claimSummaryDetails }) }}
