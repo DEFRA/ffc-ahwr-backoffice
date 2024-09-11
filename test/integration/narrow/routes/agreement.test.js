@@ -17,6 +17,20 @@ const contactHistory = require('../../../../app/api/contact-history')
 jest.mock('../../../../app/api/contact-history.js')
 contactHistory.getContactHistory = jest.fn().mockReturnValue(contactHistoryData)
 
+const pagination = require('../../../../app/pagination')
+jest.mock('../../../../app/pagination')
+
+pagination.getPagination = jest.fn().mockReturnValue({
+  limit: 10, offset: 0
+})
+
+pagination.getPagingData = jest.fn().mockReturnValue({
+  page: 1, totalPages: 1, total: 1, limit: 10, url: undefined
+})
+
+jest.mock('../../../../app/api/claims.js')
+claims.getClaims = jest.fn().mockReturnValue({ total: 9, claims: claimData })
+
 jest.mock('../../../../app/api/contact-history.js')
 contactHistory.displayContactHistory = jest.fn().mockReturnValue({
   orgEmail: 'Na',
@@ -144,6 +158,36 @@ describe('Claims test', () => {
 
       const res = await global.__SERVER__.inject(options)
       expect(res.result).toEqual(1)
+    })
+    test('the back link should go to view claim if the user is coming from view claim page', async () => {
+      const options = {
+        method: 'GET',
+        url: `${url}?page=1&returnPage=view-claim&reference=REDC-6179-D9D3`,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      const $ = cheerio.load(res.payload)
+      expect($('title').text()).toContain('Administration - My Farm')
+      expectPhaseBanner.ok($)
+
+      expect($('.govuk-back-link').attr('href')).toEqual('/view-claim/REDC-6179-D9D3')
+    })
+    test('the back link should go to all agreements if the user is coming from all agreements main tab', async () => {
+      const options = {
+        method: 'GET',
+        url: `${url}?page=1`,
+        auth
+      }
+
+      const res = await global.__SERVER__.inject(options)
+      expect(res.statusCode).toBe(200)
+      const $ = cheerio.load(res.payload)
+      expect($('title').text()).toContain('Administration - My Farm')
+      expectPhaseBanner.ok($)
+
+      expect($('.govuk-back-link').attr('href')).toEqual('/agreements?page=1')
     })
   })
 })

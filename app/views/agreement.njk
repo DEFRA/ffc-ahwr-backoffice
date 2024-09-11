@@ -3,7 +3,7 @@
 {%block pageTitle %}{{ siteTitle }} - {{ businessName }}{%endblock%}
 
     {% block beforeContent %}
-      {{ govukBackLink({
+        {{ govukBackLink({
         text: "Back",
         href: backLink
       }) }}
@@ -13,7 +13,7 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 <h1 class="govuk-caption-l govuk-!-margin-bottom-3">
-                All business claims
+                Agreement details and claims
             </h1>
                 <h2 class="govuk-heading-l">{{ businessName }}</h2>
                 <dl class="govuk-summary-list govuk-!-margin-bottom-9">
@@ -39,6 +39,13 @@
             </div>
         </div>
         <div class="govuk-grid-row">
+            {% if claimsRowsTotal %}
+                <div class="govuk-grid-column-full">
+                    <h3 class="govuk-heading-m">
+  Claims by this business
+</h3>
+                {% endif %}
+            </div>
             <div class="govuk-grid-column-full">
                 <div class="moj-scrollable-pane__wrapper">
                     {{ govukTable({
@@ -50,6 +57,12 @@
                     rows: claimTable.claims
                 }) }}
                 </div>
+                {{ govukPagination({
+                    previous: model.previous,
+                    next: model.next,
+                    items: model.pages
+                  }) 
+                }}
             </div>
         </div>
     </div>

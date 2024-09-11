@@ -1,7 +1,10 @@
 const cheerio = require('cheerio')
 const { getClaim } = require('../../../../app/api/claims')
 const { administrator } = require('../../../../app/auth/permissions')
-const { getApplication, getApplicationHistory } = require('../../../../app/api/applications')
+const {
+  getApplication,
+  getApplicationHistory
+} = require('../../../../app/api/applications')
 
 jest.mock('../../../../app/auth')
 jest.mock('../../../../app/session')
@@ -10,7 +13,10 @@ jest.mock('../../../../app/api/applications')
 
 describe('View claim test', () => {
   const url = '/view-claim'
-  const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: 'test user' } }
+  const auth = {
+    strategy: 'session-auth',
+    credentials: { scope: [administrator], account: 'test user' }
+  }
   const application = {
     id: '787b407f-29da-4d75-889f-1c614d47e87e',
     reference: 'AHWR-1234-APP1',
@@ -24,7 +30,8 @@ describe('View claim test', () => {
         name: 'Mrs S Clark',
         email: 'russelldaviese@seivadllessurm.com.test',
         orgEmail: 'orgEmail@gmail.com',
-        address: 'Tesco Stores Ltd,Harwell,Betton,WHITE HOUSE FARM,VINCENT CLOSE,LEIGHTON BUZZARD,HR2 8AN,United Kingdom',
+        address:
+          'Tesco Stores Ltd,Harwell,Betton,WHITE HOUSE FARM,VINCENT CLOSE,LEIGHTON BUZZARD,HR2 8AN,United Kingdom',
         userType: 'newUser',
         farmerName: 'Russell Paul Davies'
       },
@@ -230,14 +237,15 @@ describe('View claim test', () => {
       expect(res.statusCode).toBe(200)
 
       const content = [
-        { key: 'Status', value: 'PAID' },
-        { key: 'Claim date', value: '9 August 2024' },
+        { key: 'Agreement number', value: 'AHWR-1234-APP1' },
+        { key: 'Agreement date', value: '22/03/2024' },
         { key: 'Agreement holder', value: 'Russell Paul Davies' },
+        { key: 'Agreement holder email', value: 'russelldaviese@seivadllessurm.com.test' },
         { key: 'SBI number', value: '113494460' },
         { key: 'Address', value: 'Tesco Stores Ltd,Harwell,Betton,WHITE HOUSE FARM,VINCENT CLOSE,LEIGHTON BUZZARD,HR2 8AN,United Kingdom' },
-        { key: 'Agreement holder email', value: 'russelldaviese@seivadllessurm.com.test' },
         { key: 'Business email', value: 'orgEmail@gmail.com' },
-        { key: 'Agreement Number', value: 'AHWR-1234-APP1' },
+        { key: 'Status', value: 'PAID' },
+        { key: 'Claim date', value: '25 March 2024' },
         { key: 'Business name', value: 'Mrs S Clark' },
         { key: 'Livestock', value: 'Pigs' },
         { key: 'Type of visit', value: 'Animal health and welfare review' },
@@ -251,17 +259,24 @@ describe('View claim test', () => {
         { key: 'URN', value: '123456' }
       ]
       // Summary list rows expect
-      console.log('summary list $(\'.govuk-summary-list__row\').length')
-      expect($('.govuk-summary-list__row').length).toEqual(17)
+      expect($('.govuk-summary-list__row').length).toEqual(20)
       // Application summury detailes expects
       for (let i = 0; i < 6; i++) {
-        expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
-        expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
+        expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
+          content[i].key
+        )
+        expect($('.govuk-summary-list__value').eq(i).text()).toMatch(
+          content[i].value
+        )
       }
       // Claim summury detailes expects
-      for (let i = 6; i < 17; i++) {
-        expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
-        expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
+      for (let i = 6; i < 20; i++) {
+        expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
+          content[i].key
+        )
+        expect($('.govuk-summary-list__value').eq(i).text()).toMatch(
+          content[i].value
+        )
       }
     })
     test('returns 200 with endemics claim and sheep species', async () => {
@@ -279,9 +294,16 @@ describe('View claim test', () => {
 
       expect(res.statusCode).toBe(200)
 
-      const content = [null, null, null, null, null, null,
-        { key: 'Status', value: 'PAID' },
-        { key: 'Claim date', value: '9 August 2024' },
+      const content = [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        { key: 'Status', value: 'Recommended to Pay' },
+        { key: 'Claim date', value: '20 March 2024' },
         { key: 'Business name', value: 'Mrs S Clark' },
         { key: 'Livestock', value: 'Sheep' },
         { key: 'Type of visit', value: 'Endemic disease follow-ups' },
@@ -293,7 +315,10 @@ describe('View claim test', () => {
         { key: 'URN', value: '123456' },
         { key: 'Number of animals tested', value: '40' },
         { key: 'Endemics package', value: 'ReducedLameness' },
-        { key: 'Disease or condition test result', value: 'Heel or toe abscess (Clinical symptoms present)' },
+        {
+          key: 'Disease or condition test result',
+          value: 'Heel or toe abscess (Clinical symptoms present)'
+        },
         { key: '', value: 'Shelly hoof (Clinical symptoms not present)' },
         { key: '', value: 'Tick pyaemia (Clinical symptoms present)' },
         { key: '', value: 'yyyyy (123) bbbb (ccc)' }
@@ -301,16 +326,20 @@ describe('View claim test', () => {
       const length = $('.govuk-summary-list__row').length
       console.log(`302 summary list ${length}`)
       // Summary list rows expect
-      expect($('.govuk-summary-list__row').length).toEqual(21)
+      expect($('.govuk-summary-list__row').length).toEqual(24)
       // Claim summury detailes expects
-      for (let i = 6; i < 21; i++) {
-        expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
-        expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
+      for (let i = 7; i < 24; i++) {
+        expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
+          content[i].key
+        )
+        expect($('.govuk-summary-list__value').eq(i).text()).toMatch(
+          content[i].value
+        )
       }
     })
     test.each([
-      { type: 'R', rows: 6 },
-      { type: undefined, rows: 6 }
+      { type: 'R', rows: 7 },
+      { type: undefined, rows: 7 }
     ])('returns 200 whitout claim data', async ({ type, rows }) => {
       const options = {
         method: 'GET',
@@ -319,7 +348,10 @@ describe('View claim test', () => {
       }
 
       getClaim.mockReturnValue({ ...claims[0], data: undefined, type })
-      getApplication.mockReturnValue({ ...application, data: { ...application.data, organisation: undefined } })
+      getApplication.mockReturnValue({
+        ...application,
+        data: { ...application.data, organisation: undefined }
+      })
 
       const res = await global.__SERVER__.inject(options)
       const $ = cheerio.load(res.payload)
@@ -331,23 +363,35 @@ describe('View claim test', () => {
       expect($('.govuk-summary-list__row').length).toEqual(rows)
     })
     test('returns 200 whitout claim data', async () => {
-      const encodedErrors = 'W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI3JlamVjdC1jbGFpbS1wYW5lbCJ9XQ%3D%3D'
-      const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: 'test user' } }
+      const encodedErrors =
+        'W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI3JlamVjdC1jbGFpbS1wYW5lbCJ9XQ%3D%3D'
+      const auth = {
+        strategy: 'session-auth',
+        credentials: { scope: [administrator], account: 'test user' }
+      }
       const options = {
         method: 'GET',
         url: `${url}/AHWR-0000-4444?errors=${encodedErrors}`,
         auth
       }
 
-      getClaim.mockReturnValue({ ...claims[0], statusId: 5, data: undefined, type: 'R' })
-      getApplication.mockReturnValue({ ...application, data: { ...application.data, organisation: undefined } })
+      getClaim.mockReturnValue({
+        ...claims[0],
+        statusId: 5,
+        data: undefined,
+        type: 'R'
+      })
+      getApplication.mockReturnValue({
+        ...application,
+        data: { ...application.data, organisation: undefined }
+      })
 
       const res = await global.__SERVER__.inject(options)
       const $ = cheerio.load(res.payload)
 
       expect(res.statusCode).toBe(200)
 
-      expect($('.govuk-summary-list__row').length).toEqual(6)
+      expect($('.govuk-summary-list__row').length).toEqual(7)
     })
     test('returns 200 with endemics claim and pigs species', async () => {
       const options = {
@@ -364,19 +408,78 @@ describe('View claim test', () => {
 
       expect(res.statusCode).toBe(200)
       // Summary list rows expect
-      expect($('.govuk-summary-list__row').length).toEqual(21)
+      expect($('.govuk-summary-list__row').length).toEqual(24)
       // Claim summury detailes expects
-      const content = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+      const content = [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
         { key: 'Herd vaccination status', value: 'Vaccinated' },
         { key: 'URN', value: '123456' },
         { key: 'Samples tested', value: '6' },
         { key: 'Disease status category', value: '4' },
-        { key: 'Biosecurity assessment', value: 'Yes, Assessment percentage: 100%' }
+        {
+          key: 'Biosecurity assessment',
+          value: 'Yes, Assessment percentage: 100%'
+        }
       ]
-      for (let i = 16; i < 21; i++) {
-        expect($('.govuk-summary-list__key').eq(i).text()).toMatch(content[i].key)
-        expect($('.govuk-summary-list__value').eq(i).text()).toMatch(content[i].value)
+      for (let i = 19; i < 24; i++) {
+        expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
+          content[i].key
+        )
+        expect($('.govuk-summary-list__value').eq(i).text()).toMatch(
+          content[i].value
+        )
       }
+    })
+
+    test('the back link should go to agreement details if the user is coming from agreement details page', async () => {
+      const options = {
+        method: 'GET',
+        url: `${url}/AHWR-0000-4444?returnPage=view-agreement`,
+        auth
+      }
+
+      getClaim.mockReturnValue(claims[0])
+      getApplication.mockReturnValue(application)
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      expect(res.statusCode).toBe(200)
+      expect($('.govuk-back-link').attr('href')).toEqual('/agreement/AHWR-1234-APP1/claims')
+    })
+    test('the back link should go to all claims main tab if the user is coming from all claims main tab', async () => {
+      const options = {
+        method: 'GET',
+        url: `${url}/AHWR-0000-4444`,
+        auth
+      }
+
+      getClaim.mockReturnValue(claims[0])
+      getApplication.mockReturnValue(application)
+
+      const res = await global.__SERVER__.inject(options)
+      const $ = cheerio.load(res.payload)
+
+      expect(res.statusCode).toBe(200)
+      expect($('.govuk-back-link').attr('href')).toEqual('/claims')
     })
   })
 })

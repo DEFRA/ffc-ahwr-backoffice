@@ -8,6 +8,5 @@ const convertDateToFormattedString = (dateValue) => {
 }
 
 module.exports = {
-
   convertDateToFormattedString
 }
