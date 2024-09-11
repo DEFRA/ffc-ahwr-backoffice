@@ -155,7 +155,7 @@ module.exports = {
       const diseaseStatus = { key: { text: 'Disease status category' }, value: { html: data?.diseaseStatus } }
       const numberOfSamplesTested = { key: { text: 'Samples tested' }, value: { html: data?.numberOfSamplesTested } }
       const herdVaccinationStatus = { key: { text: 'Herd vaccination status' }, value: { html: upperFirstLetter(data?.herdVaccinationStatus) } }
-      const sheepEndemicsPackage = { key: { text: 'Endemics package' }, value: { html: upperFirstLetter(data?.sheepEndemicsPackage) } }
+      const sheepEndemicsPackage = { key: { text: 'Endemics package' }, value: { html: upperFirstLetter(sheepPackages[data?.sheepEndemicsPackage]) } }
       const piHuntRecommendedRow = {
         key: { text: 'Vet recommended PI hunt' },
         value: { html: upperFirstLetter(data?.piHuntRecommended) }
