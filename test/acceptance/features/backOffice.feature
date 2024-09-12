@@ -4,38 +4,58 @@
    Scenario Outline:  Enter Back office URl Then Recommend to Pay
    Given the user is on the backoffice URL
    Then enter email credentials
-    Then clicked on Claims tab
-    When user enters the <claim number>
-    Then search button is clicked
-    Then click on view claim 
-    Then check if History is present
-    Then Recomment to Pay
-    Then select the checkboxes
+   When user enters the <Claim number>
+   Then search button is clicked
+   Then click on view claim 
+   Then validate the <Claim number> in the header
+   Then check if History is present
+   Then Recomment to Pay
+   Then select the checkboxes
    # Then confirm payment
     Then Click Back
   Examples:
+  |Claim number|  
+  |FUBC-3AB9-FC7F|
 
-  |claim number|  
-  | FUDC-BDCA-293F|
+
+ Scenario Outline:  validate back to all claims functionality
+
+   When user enters the <Claim number>
+   Then search button is clicked
+   Then click on view claim 
+   Then validate the back to all claims functionality
+ Examples:
+  |Claim number|  
+  |FUBC-3AB9-FC7F|
+ 
+ Scenario Outline:  validate back to all claims functionality
+
+   When user enters the <Claim number>
+   Then search button is clicked
+   Then click on view claim 
+   Then validate the business link functionality
+   Then Click Back
+   Then Click Back
+    Examples:
+  |Claim number|  
+  |FUBC-3AB9-FC7F|
 
 
    Scenario Outline:  Enter Back office URl Then Recommend to Reject
  
    
-
-    When user enters the <claim number>
+    When user enters the <Claim number>
     Then search button is clicked
     Then click on view claim 
     Then Recomment to Reject
     Then select the checkboxes
     Then Click Back
   # Then confirm payment
-    #Then Click Back
+    Then Click Back
 
   Examples:
-
-  |claim number|  
-  | FUDC-BDCA-293F|
+  |Claim number|  
+  |FUBC-3AB9-FC7F|
 
    Scenario Outline:  Enter invalid application number Then verify 
 
@@ -64,8 +84,7 @@
 
   Examples:
   |Agreement number|  
-  |IAHW-E551-AE43|
-
+  |	IAHW-7BAC-5CE4|
 
    Scenario Outline:  Enter Back office URl Then Recommend to Reject
 
@@ -81,8 +100,7 @@
 
   Examples:
   |Agreement number|  
-  |IAHW-E551-AE43|
-
+  |IAHW-7BAC-5CE4|
 
  Scenario Outline:  Enter invalid application number Then verify 
 
@@ -108,6 +126,5 @@
 
   Examples:
   |claim number|  
-  |REDC-3B3C-7AEC|
-
+  |FUDC-92E6-3856|
 

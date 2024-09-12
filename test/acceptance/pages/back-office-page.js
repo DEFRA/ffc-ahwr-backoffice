@@ -1,6 +1,6 @@
 const CommonActions = require('./common-actions')
 const AGREEMENTS_HEADER_LINK='a[href="/agreements"]'
-const CLAIM_HEADER_LINK='a[href="/claims"]'
+//const CLAIM_HEADER_LINK='a[href="/claims"]'
 //const APPLICATION_BUTTON='//a[text()="Applications"]'
 const SEARCH_BUTTON='.search-button'
 const SEARCH_TEXT='#searchText'
@@ -28,10 +28,13 @@ const Email_Pwd='[name="passwd"]'
 const Next='#idSIButton9'
 const BACK='.govuk-back-link'
 const HISTORY_TAB='#tab_history'
-const AGREEMENT_VIEW_DETAILS='//a[text()="View details"]'
+const AGREEMENT_VIEW_DETAILS='//a[text()="View claim"]'
 const PAY='#authorise-payment-button'
-class BackOfficePage extends CommonActions {
-    async getHomePage() {
+const HEADER_VALIDATE='.govuk-heading-l'
+const BACK_TO_ALL_CLAIMS='a[href="/claims"]'
+const VALIDATE_BUSINESS='//a[@class="govuk-link"and contains(@href, "/agreement")]'
+
+class BackOfficePage extends CommonActions {    async getHomePage() {
       const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs))
         await this.open()
         await sleep(10000)
@@ -120,6 +123,15 @@ class BackOfficePage extends CommonActions {
       await this.clickOn(AGREEMENT_VIEW_DETAILS)
     }
    
+    async validateHeaderValue(number){
+         await this.elementToExtractValue(HEADER_VALIDATE,number)
+    }
+    async clickBackToAllClaims(){
+      await this.clickOn(BACK_TO_ALL_CLAIMS)
+    }
+    async clickBusiness(){
+      await this.clickOn(VALIDATE_BUSINESS)
+    }
 
 }
 module.exports = BackOfficePage

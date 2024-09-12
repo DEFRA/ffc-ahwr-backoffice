@@ -89,3 +89,12 @@ When(/^check if History is present$/, async function () {
 When(/^click om Agreements View Details Tab$/, async function () {
   await backOfficePage.clickAgreementsViewDetailsTab()
 })
+When(/^validate the (.*) in the header$/, async function (number) {
+  await backOfficePage.validateHeaderValue(number)
+})
+When(/^validate the back to all claims functionality$/, async function () {
+  await backOfficePage.clickBackToAllClaims()
+})
+When(/^validate the business link functionality$/, async function () {
+  await backOfficePage.clickBusiness()
+})
