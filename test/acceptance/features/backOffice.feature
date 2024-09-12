@@ -4,18 +4,42 @@
    Scenario Outline:  Enter Back office URl Then Recommend to Pay
    Given the user is on the backoffice URL
    Then enter email credentials
-    Then clicked on Claims tab
-    When user enters the <claim number>
-    Then search button is clicked
-    Then click on view claim 
-    Then check if History is present
-    Then Recomment to Pay
-    Then select the checkboxes
+   When user enters the <Claim number>
+   Then search button is clicked
+   Then click on view claim 
+   Then validate the <Claim number> in the header
+   Then check if History is present
+   Then Recomment to Pay
+   Then select the checkboxes
    # Then confirm payment
     Then Click Back
   Examples:
   |Claim number|  
-  |FUDC-7E7A-12B4|
+  |FUBC-3AB9-FC7F|
+
+
+ Scenario Outline:  validate back to all claims functionality
+
+   When user enters the <Claim number>
+   Then search button is clicked
+   Then click on view claim 
+   Then validate the back to all claims functionality
+ Examples:
+  |Claim number|  
+  |FUBC-3AB9-FC7F|
+ 
+ Scenario Outline:  validate back to all claims functionality
+
+   When user enters the <Claim number>
+   Then search button is clicked
+   Then click on view claim 
+   Then validate the business link functionality
+   Then Click Back
+   Then Click Back
+    Examples:
+  |Claim number|  
+  |FUBC-3AB9-FC7F|
+
 
    Scenario Outline:  Enter Back office URl Then Recommend to Reject
  
@@ -27,11 +51,11 @@
     Then select the checkboxes
     Then Click Back
   # Then confirm payment
-    #Then Click Back
+    Then Click Back
 
   Examples:
-  |Claim numberr|  
-  |FUDC-7E7A-12B4|
+  |Claim number|  
+  |FUBC-3AB9-FC7F|
 
    Scenario Outline:  Enter invalid application number Then verify 
 
@@ -60,7 +84,7 @@
 
   Examples:
   |Agreement number|  
-  |IAHW-F94E-8EBF|
+  |	IAHW-7BAC-5CE4|
 
    Scenario Outline:  Enter Back office URl Then Recommend to Reject
 
@@ -76,7 +100,7 @@
 
   Examples:
   |Agreement number|  
-  |IAHW-F94E-8EBF|
+  |IAHW-7BAC-5CE4|
 
  Scenario Outline:  Enter invalid application number Then verify 
 
@@ -91,16 +115,16 @@
   |AHWR-62A1-5A0A11|
 
 
-   Scenario Outline:  Enter Back office URl and confirm payment
+#    Scenario Outline:  Enter Back office URl and confirm payment
  
-    Then clicked on Claims tab
-    When user enters the <claim number>
-    Then search button is clicked
-    Then click on view claim 
-    Then confirm payment
-    #Then Click Back
+#     Then clicked on Claims tab
+#     When user enters the <claim number>
+#     Then search button is clicked
+#     Then click on view claim 
+#     Then confirm payment
+#     #Then Click Back
 
-  Examples:
-  |claim number|  
-  |FUDC-92E6-3856|
+#   Examples:
+#   |claim number|  
+#   |FUDC-92E6-3856|
 

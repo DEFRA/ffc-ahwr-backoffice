@@ -22,6 +22,14 @@ class CommonActions {
     await locator.setValue(text)
   }
 
+  async elementToExtractValue(element, text){
+    const locator = await browser.$(element)
+    const value=await locator.getText()
+    const regex = /[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}/;
+    const match = value.match(regex);
+    expect(text).to.include(match)
+  }
+
   async elementToContainText (element, text) {
     const locator = await browser.$(element)
     expect(await locator.getText()).to.include(text)

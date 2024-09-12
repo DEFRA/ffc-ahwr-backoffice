@@ -84,8 +84,17 @@ Then(/^Click Back$/,async function(){
   await backOfficePage.clickonBack()
 }) 
 When(/^check if History is present$/, async function () {
-  await backOfficePage.historyTab()
+  await backOfficePage.clickhistoryTab()
 })
 When(/^click om Agreements View Details Tab$/, async function () {
   await backOfficePage.clickAgreementsViewDetailsTab()
+})
+When(/^validate the (.*) in the header$/, async function (number) {
+  await backOfficePage.validateHeaderValue(number)
+})
+When(/^validate the back to all claims functionality$/, async function () {
+  await backOfficePage.clickBackToAllClaims()
+})
+When(/^validate the business link functionality$/, async function () {
+  await backOfficePage.clickBusiness()
 })
