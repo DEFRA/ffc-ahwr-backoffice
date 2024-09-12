@@ -314,7 +314,7 @@ describe('View claim test', () => {
         { key: "Vet's RCVS number", value: '1233211' },
         { key: 'URN', value: '123456' },
         { key: 'Number of animals tested', value: '40' },
-        { key: 'Endemics package', value: 'Reduced level of lameness' },
+        { key: 'Endemics package', value: 'Lameness' },
         {
           key: 'Disease or condition test result',
           value: 'Heel or toe abscess (Clinical symptoms present)'
@@ -323,8 +323,7 @@ describe('View claim test', () => {
         { key: '', value: 'Tick pyaemia (Clinical symptoms present)' },
         { key: '', value: 'yyyyy (123) bbbb (ccc)' }
       ]
-      const length = $('.govuk-summary-list__row').length
-      console.log(`302 summary list ${length}`)
+
       // Summary list rows expect
       expect($('.govuk-summary-list__row').length).toEqual(24)
       // Claim summury detailes expects
@@ -357,7 +356,6 @@ describe('View claim test', () => {
       const $ = cheerio.load(res.payload)
 
       expect(res.statusCode).toBe(200)
-      console.log('summary list $(\'.govuk-summary-list__row\').length')
 
       // Summary list rows expect to show only application data or if type is provided show application data and type of review
       expect($('.govuk-summary-list__row').length).toEqual(rows)
