@@ -67,7 +67,6 @@ const getClaimTableHeader = (sortField) => {
 
 async function createModel (request, page, pageLimit, customSearch) {
   page = page ?? request.query?.page ?? 1
-  const path = request.headers.path ?? ''
   const { limit, offset } = getPagination(page, pageLimit)
   const { searchText, searchType } = customSearch?.searchText ? customSearch : checkValidSearch(getClaimSearch(request, claimSearch.searchText))
   const sortField = getClaimSearch(request, claimSearch.sort) ?? undefined
@@ -113,9 +112,9 @@ async function createModel (request, page, pageLimit, customSearch) {
           'data-sort-value': `${claim.status.status}`
         }
       },
-      { html: `<a href="${serviceUri}/view-claim/${claim.reference}?returnPage=claims">View claim</a>` }
+      { html: `<a href="${serviceUri}/view-claim/${claim.reference}?cPage=${page}&returnPage=claims">View claim</a>` }
     ])
-    const pagingData = getPagingData(claimsData.total ?? 0, limit, page, path)
+    const pagingData = getPagingData(claimsData.total ?? 0, limit, page)
     return {
       claims,
       header: getClaimTableHeader(getClaimSearch(request, claimSearch.sort)),

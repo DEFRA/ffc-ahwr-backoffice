@@ -74,7 +74,6 @@ async function createModel (request, page) {
   const currentPath = `/${viewTemplate}`
   page = page ?? request.query.page ?? 1
   const { limit, offset } = getPagination(page)
-  const path = request.headers.path ?? ''
   const searchText = getAppSearch(request, keys.appSearch.searchText)
   const searchType = getAppSearch(request, keys.appSearch.searchType)
   const filterStatus = getAppSearch(request, keys.appSearch.filterStatus) ?? []
@@ -119,14 +118,14 @@ async function createModel (request, page) {
         output[1].attributes = { 'data-sort-value': `${n.data?.organisation?.name}` }
         output[5] = {
           html: n.type === 'EE'
-            ? `<a href="${serviceUri}/agreement/${n.reference}/claims?page=${page}">View claims</a>`
+            ? `<a href="${serviceUri}/agreement/${n.reference}/claims?aPage=${page}">View claims</a>`
             : `<a href="${serviceUri}/view-agreement/${n.reference}?page=${page}">View details</a>`
         }
       }
 
       return output
     })
-    const pagingData = getPagingData(apps.total ?? 0, limit, page, path)
+    const pagingData = getPagingData(apps.total ?? 0, limit, page)
     const groupByStatus = apps.applicationStatus.map(s => {
       return {
         status: s.status,
