@@ -32,7 +32,7 @@
       <h1 class="govuk-caption-l">Claim by <a class="govuk-link" href="/agreement/{{applicationReference}}/claims?page=1&returnPage=view-claim&reference={{reference}}">{{ title }}</a> </h1>
     </div>
     <div class="govuk-grid-column-one-third govuk-!-text-align-right">
-      <div class="govuk-tag govuk-!-margin-top-1 govuk-!-margin-bottom-3 {{ status.tagClass }}">{{ status.capitalisedtype }}</div>
+      <span class="app-long-tag"><div class="govuk-tag govuk-!-margin-top-1 govuk-!-margin-bottom-3 govuk-!-text-align-left {{ status.tagClass }}">{{ status.normalType }}</div></span>
       <h1 class="govuk-caption-l"><a class="govuk-link" href="/claims">Back to all claims</a></h1>
     </div>
   </div>

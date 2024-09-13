@@ -130,7 +130,7 @@ module.exports = {
           })
         : [])
 
-      const status = { key: { text: 'Status' }, value: { html: `<span class='govuk-tag ${getStyleClassByStatus(formatStatusId(statusId))}'> ${upperFirstLetter(claimStatus?.status)} </span>` } }
+      const status = { key: { text: 'Status' }, value: { html: `<span class='app-long-tag'><span class='govuk-tag ${getStyleClassByStatus(formatStatusId(statusId))}'> ${upperFirstLetter(claimStatus?.status.toLowerCase())} </span></span>` } }
       const claimDate = { key: { text: 'Claim date' }, value: { html: formatedDateToUk(createdAt) } }
       const organisationName = { key: { text: 'Business name' }, value: { html: upperFirstLetter(organisation?.name) } }
       const livestock = { key: { text: 'Livestock' }, value: { html: upperFirstLetter([livestockTypes.pigs, livestockTypes.sheep].includes(data?.typeOfLivestock) ? data?.typeOfLivestock : `${data?.typeOfLivestock} cattle`) } }
