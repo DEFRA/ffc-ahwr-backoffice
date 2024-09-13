@@ -314,7 +314,7 @@ describe('View claim test', () => {
         { key: "Vet's RCVS number", value: '1233211' },
         { key: 'URN', value: '123456' },
         { key: 'Number of animals tested', value: '40' },
-        { key: 'Endemics package', value: 'Lameness' },
+        { key: 'Sheep health package', value: 'Lameness' },
         {
           key: 'Disease or condition test result',
           value: 'Heel or toe abscess (Clinical symptoms present)'

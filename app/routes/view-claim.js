@@ -17,8 +17,8 @@ const checkboxErrors = require('./utils/checkbox-errors')
 const { getLivestockTypes } = require('./../lib/get-livestock-types')
 const { getReviewType } = require('./../lib/get-review-type')
 
-const backLink = (applicationReference, returnPage) => {
-  return returnPage && returnPage === 'view-agreement' ? `/agreement/${applicationReference}/claims` : '/claims'
+const backLink = (applicationReference, returnPage, page) => {
+  return returnPage === 'view-agreement' ? `/agreement/${applicationReference}/claims` : `/claims?page=${page ?? 1}`
 }
 
 const speciesEligibleNumber = {
@@ -46,6 +46,7 @@ module.exports = {
         recommendToPay: Joi.bool().default(false),
         recommendToReject: Joi.bool().default(false),
         moveToInCheck: Joi.bool().default(false),
+        cPage: Joi.string().allow(null),
         returnPage: Joi.string().allow(null)
       })
     },
@@ -154,7 +155,7 @@ module.exports = {
       const diseaseStatus = { key: { text: 'Disease status category' }, value: { html: data?.diseaseStatus } }
       const numberOfSamplesTested = { key: { text: 'Samples tested' }, value: { html: data?.numberOfSamplesTested } }
       const herdVaccinationStatus = { key: { text: 'Herd vaccination status' }, value: { html: upperFirstLetter(data?.herdVaccinationStatus) } }
-      const sheepEndemicsPackage = { key: { text: 'Endemics package' }, value: { html: upperFirstLetter(sheepPackages[data?.sheepEndemicsPackage]) } }
+      const sheepEndemicsPackage = { key: { text: 'Sheep health package' }, value: { html: upperFirstLetter(sheepPackages[data?.sheepEndemicsPackage]) } }
       const piHuntRecommendedRow = {
         key: { text: 'Vet recommended PI hunt' },
         value: { html: upperFirstLetter(data?.piHuntRecommended) }
@@ -273,7 +274,7 @@ module.exports = {
 
       return h.view('view-claim', {
         page: 1,
-        backLink: backLink(claim?.applicationReference, request.query.returnPage),
+        backLink: backLink(claim?.applicationReference, request.query.returnPage, request.query.cPage),
         returnPage: request.query.returnPage,
         reference,
         applicationReference,

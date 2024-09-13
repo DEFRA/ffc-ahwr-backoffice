@@ -113,9 +113,9 @@ async function createModel (request, page, pageLimit, customSearch) {
           'data-sort-value': `${claim.status.status}`
         }
       },
-      { html: `<a href="${serviceUri}/view-claim/${claim.reference}?returnPage=claims">View claim</a>` }
+      { html: `<a href="${serviceUri}/view-claim/${claim.reference}?cPage=${page}&returnPage=claims">View claim</a>` }
     ])
-    const pagingData = getPagingData(claimsData.total ?? 0, limit, page, path)
+    const pagingData = getPagingData(claimsData.total ?? 0, limit, page)
     return {
       claims,
       header: getClaimTableHeader(getClaimSearch(request, claimSearch.sort)),

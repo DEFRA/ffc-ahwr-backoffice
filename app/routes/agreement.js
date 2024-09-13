@@ -12,8 +12,8 @@ const { getContactHistory, displayContactHistory } = require('../api/contact-his
 const { viewModel } = require('./models/claim-list')
 
 const pageUrl = '/agreement/{reference}/claims'
-const getBackLink = (claimReference, returnPage, agreementsPageLink) => {
-  return returnPage && returnPage === 'view-claim' ? `/view-claim/${claimReference}` : agreementsPageLink
+const getBackLink = (page, claimReference, returnPage) => {
+  return returnPage === 'view-claim' ? `/view-claim/${claimReference}` : `/agreements?page=${page ?? 1}`
 }
 const getAriaSort = (sortField, direction, field) => sortField && sortField.field === field ? direction : 'none'
 const agreementPageLimit = 6
@@ -26,6 +26,12 @@ module.exports = [{
     validate: {
       params: Joi.object({
         reference: Joi.string()
+      }),
+      query: Joi.object({
+        page: Joi.string().allow(null),
+        aPage: Joi.string().allow(null),
+        returnPage: Joi.string().allow(null),
+        reference: Joi.string().allow(null)
       })
     },
     handler: async (request, h) => {
@@ -132,11 +138,11 @@ module.exports = [{
           { html: `<a href="${serviceUri}/view-claim/${claim.reference}?returnPage=view-agreement">View claim</a>` }
         ]
       })
-      const agreementsPageLink = `/agreements${request?.query?.page ? '?page=' + request.query.page : ''}`
+    
       return h.view('agreement', {
         model,
         claimsRowsTotal: model?.claimsData?.total,
-        backLink: getBackLink(request?.query?.reference, request?.query?.returnPage, agreementsPageLink),
+        backLink: getBackLink(request?.query?.aPage, request?.query?.reference, request?.query?.returnPage),
         businessName: application.data?.organisation?.name,
         applicationSummaryDetails,
         claimTable: claimTableClaims

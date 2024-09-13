@@ -17,10 +17,10 @@ function getPagination (page = 1, limit = displayPageSize) {
  * @param  Url url
  */
 
-function getPagingData (total, limit, page, url) {
+function getPagingData (total, limit, page) {
   const totalPages = Math.ceil(total / limit)
-  const previous = Number(page) === 1 ? null : { href: `${url}?page=${Number(page) - 1}` }
-  const next = totalPages === 1 || totalPages === Number(page) ? null : { href: `${url}?page=${Number(page) + 1}` }
+  const previous = Number(page) === 1 ? null : { href: `?page=${Number(page) - 1}` }
+  const next = totalPages === 1 || totalPages === Number(page) ? null : { href: `?page=${Number(page) + 1}` }
   const pages = totalPages === 1
     ? null
     : []
@@ -31,7 +31,7 @@ function getPagingData (total, limit, page, url) {
         pages.push({
           number: x,
           current: x === Number(page),
-          href: `${url}?page=${x}`
+          href: `?page=${x}`
         })
       }
     }
