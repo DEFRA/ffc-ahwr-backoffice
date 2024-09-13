@@ -5,7 +5,7 @@ const { claimSearch } = require('../../session/keys')
 const checkValidSearch = require('../../lib/search-validation')
 const { getStyleClassByStatus } = require('../../constants/status')
 const { getPagination, getPagingData } = require('../../pagination')
-const { formatTypeOfVisit, formatSpecies, formatedDateToUk } = require('../../lib/display-helper')
+const { formatTypeOfVisit, formatSpecies, formatedDateToUk, upperFirstLetter } = require('../../lib/display-helper')
 
 const viewModel = (request, page, limit, customSearch) => {
   return (async () => {
@@ -108,7 +108,7 @@ async function createModel (request, page, pageLimit, customSearch) {
         }
       },
       {
-        html: `<span class="govuk-tag ${getStyleClassByStatus(claim.status.status)}">${claim.status.status.toUpperCase()}</span>`,
+        html: `<span class="app-long-tag"><span class="govuk-tag ${getStyleClassByStatus(claim.status.status)}">${upperFirstLetter(claim.status.status.toLowerCase())}</span></span>`,
         attributes: {
           'data-sort-value': `${claim.status.status}`
         }

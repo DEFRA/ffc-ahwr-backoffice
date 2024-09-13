@@ -37,7 +37,7 @@
       <h1 class="govuk-caption-l govuk-!-margin-bottom-3">Agreement number: {{ reference }}</h1>
 
       <h2 class="govuk-heading-l govuk-!-margin-bottom-7">{{ organisationName }}
-        <span class="govuk-tag {{ statusClass }}">{{ status }}</span></h2>
+        <span class="app-long-tag"><span class="govuk-tag {{ statusClass }}">{{ statusLabel }}</span></span></h2>
       {% if withdrawConfirmationForm %}
         {{ viewWithdrawConfirmationForm(endemics, reference, page, crumb, errors[0]) }}
       {% endif %}

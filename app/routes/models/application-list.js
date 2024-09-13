@@ -4,6 +4,7 @@ const { getAppSearch } = require('../../session')
 const { getStyleClassByStatus } = require('../../constants/status')
 const keys = require('../../session/keys')
 const { serviceUri, endemics } = require('../../config')
+const { upperFirstLetter } = require('../../lib/display-helper')
 
 const viewModel = (request, page) => {
   return (async () => {
@@ -106,7 +107,7 @@ async function createModel (request, page) {
           }
         },
         {
-          html: `<span class="govuk-tag ${statusClass}">${n.status.status}</span>`,
+          html: `<span class="app-long-tag"><span class="govuk-tag ${statusClass}">${upperFirstLetter(n.status.status.toLowerCase())}</span></span>`,
           attributes: {
             'data-sort-value': `${n.status.status}`
           }
