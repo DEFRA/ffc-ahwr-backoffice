@@ -237,3 +237,7 @@ a.pagination__link:focus {
     color: #000000;
   }
 }
+
+.app-long-tag .govuk-tag {
+  max-width: 300px;
+}
