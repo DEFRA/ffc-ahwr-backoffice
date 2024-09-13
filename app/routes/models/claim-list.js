@@ -67,7 +67,6 @@ const getClaimTableHeader = (sortField) => {
 
 async function createModel (request, page, pageLimit, customSearch) {
   page = page ?? request.query?.page ?? 1
-  const path = request.headers.path ?? ''
   const { limit, offset } = getPagination(page, pageLimit)
   const { searchText, searchType } = customSearch?.searchText ? customSearch : checkValidSearch(getClaimSearch(request, claimSearch.searchText))
   const sortField = getClaimSearch(request, claimSearch.sort) ?? undefined

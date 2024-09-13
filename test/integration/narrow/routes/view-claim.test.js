@@ -477,7 +477,7 @@ describe('View claim test', () => {
       const $ = cheerio.load(res.payload)
 
       expect(res.statusCode).toBe(200)
-      expect($('.govuk-back-link').attr('href')).toEqual('/claims')
+      expect($('.govuk-back-link').attr('href')).toEqual('/claims?page=1')
     })
   })
 })

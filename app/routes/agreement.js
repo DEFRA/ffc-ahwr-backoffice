@@ -138,7 +138,7 @@ module.exports = [{
           { html: `<a href="${serviceUri}/view-claim/${claim.reference}?returnPage=view-agreement">View claim</a>` }
         ]
       })
-    
+
       return h.view('agreement', {
         model,
         claimsRowsTotal: model?.claimsData?.total,

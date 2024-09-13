@@ -74,7 +74,6 @@ async function createModel (request, page) {
   const currentPath = `/${viewTemplate}`
   page = page ?? request.query.page ?? 1
   const { limit, offset } = getPagination(page)
-  const path = request.headers.path ?? ''
   const searchText = getAppSearch(request, keys.appSearch.searchText)
   const searchType = getAppSearch(request, keys.appSearch.searchType)
   const filterStatus = getAppSearch(request, keys.appSearch.filterStatus) ?? []
