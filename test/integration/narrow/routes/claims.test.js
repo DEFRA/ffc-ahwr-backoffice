@@ -16,7 +16,7 @@ pagination.getPagination = jest.fn().mockReturnValue({
 })
 
 pagination.getPagingData = jest.fn().mockReturnValue({
-  page: 1, totalPages: 1, total: 1, limit: 10, url: undefined
+  page: 1, totalPages: 1, total: 1, limit: 10
 })
 claims.getClaims = jest.fn().mockReturnValue(claimData)
 
