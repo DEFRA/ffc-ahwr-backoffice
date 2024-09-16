@@ -19,7 +19,7 @@ pagination.getPagination = jest.fn().mockReturnValue({
 })
 
 pagination.getPagingData = jest.fn().mockReturnValue({
-  page: 1, totalPages: 1, total: 1, limit: 10
+  page: 1, totalPages: 1, total: 1, limit: 10, url: undefined
 })
 applications.getApplications = jest.fn().mockReturnValue(applicationData)
 
@@ -86,7 +86,7 @@ describe('Applications test', () => {
       expect(pagination.getPagination).toBeCalled()
       expect(pagination.getPagination).toHaveBeenCalledWith(1)
       expect(pagination.getPagingData).toBeCalled()
-      expect(pagination.getPagingData).toHaveBeenCalledWith(9, 10, 1)
+      expect(pagination.getPagingData).toHaveBeenCalledWith(9, 10, 1, '')
       expectPhaseBanner.ok($)
     })
     test('should head column agreement date when endemics enable  true', async () => {
@@ -136,7 +136,7 @@ describe('Applications test', () => {
       expect(pagination.getPagination).toBeCalled()
       expect(pagination.getPagination).toHaveBeenCalledWith(2)
       expect(pagination.getPagingData).toBeCalled()
-      expect(pagination.getPagingData).toHaveBeenCalledWith(9, 10, 2)
+      expect(pagination.getPagingData).toHaveBeenCalledWith(9, 10, 2, '')
       expectPhaseBanner.ok($)
     })
     test('returns 200 without query parameter', async () => {
@@ -151,7 +151,7 @@ describe('Applications test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-heading-l').text()).toEqual('Agreements')
       expect($('title').text()).toContain('AHWR Agreements')
-      expect($('span.govuk-tag--green').text()).toContain('AGREED')
+      expect($('span.govuk-tag--green').text()).toContain('Agreed')
       expect($('span.govuk-tag--yellow').text()).toContain('DATA INPUTTED')
       expect($('span.govuk-tag--orange').text()).toContain('CHECK')
       expect($('span.govuk-tag--blue').text()).toContain('PAID')
@@ -179,7 +179,7 @@ describe('Applications test', () => {
       const $ = cheerio.load(res.payload)
       expect($('h1.govuk-heading-l').text()).toEqual('Agreements')
       expect($('title').text()).toContain('AHWR Agreements')
-      expect($('span.govuk-tag--green').text()).toContain('AGREED')
+      expect($('span.govuk-tag--green').text()).toContain('Agreed')
       expect($('span.govuk-tag--yellow').text()).toContain('DATA INPUTTED')
       expect($('span.govuk-tag--orange').text()).toContain('CHECK')
       expect($('span.govuk-tag--blue').text()).toContain('PAID')
