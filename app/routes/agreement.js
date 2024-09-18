@@ -3,7 +3,7 @@ const boom = require('@hapi/boom')
 const crumbCache = require('./utils/crumb-cache')
 const { administrator, authoriser, processor, recommender, user } = require('../auth/permissions')
 const { getApplication } = require('../api/applications')
-const { formatedDateToUk, formatTypeOfVisit, formatSpecies, formatStatusId } = require('../lib/display-helper')
+const { formatedDateToUk, formatTypeOfVisit, formatSpecies, formatStatusId, upperFirstLetter } = require('../lib/display-helper')
 const { getClaimSearch, setClaimSearch } = require('../session')
 const { claimSearch } = require('../session/keys')
 const { getStyleClassByStatus } = require('../constants/status')
@@ -130,7 +130,7 @@ module.exports = [{
             }
           },
           {
-            html: `<span class="govuk-tag ${getStyleClassByStatus(formatStatusId(claim.statusId))}">${formatStatusId(claim.statusId)}</span>`,
+            html: `<span class='app-long-tag'><span class="govuk-tag ${getStyleClassByStatus(formatStatusId(claim.statusId))}">${upperFirstLetter(formatStatusId(claim.statusId).toLowerCase())}</span></span>`,
             attributes: {
               'data-sort-value': `${claim.statusId}`
             }

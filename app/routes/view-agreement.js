@@ -11,6 +11,7 @@ const claimFormHelper = require('./utils/claim-form-helper')
 const applicationStatus = require('../constants/application-status')
 const checkboxErrors = require('./utils/checkbox-errors')
 const { getContactHistory, displayContactHistory } = require('../api/contact-history')
+const { upperFirstLetter } = require('../lib/display-helper')
 
 module.exports = {
   method: 'GET',
@@ -49,6 +50,7 @@ module.exports = {
       }
 
       const status = application.status.status.toUpperCase()
+      const statusLabel = upperFirstLetter(application.status.status.toLowerCase())
       const statusClass = getStyleClassByStatus(application.status.status)
       const mappedAuth = mapAuth(request)
       const withdrawLinkStatus = ['AGREED']
@@ -92,6 +94,7 @@ module.exports = {
         endemics: endemics.enabled,
         reference: application.reference,
         status,
+        statusLabel,
         statusClass,
         organisationName: application?.data?.organisation?.name,
         vetVisit: application?.vetVisit,
