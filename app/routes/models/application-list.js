@@ -5,7 +5,6 @@ const { getStyleClassByStatus } = require('../../constants/status')
 const keys = require('../../session/keys')
 const { serviceUri, endemics } = require('../../config')
 const { upperFirstLetter } = require('../../lib/display-helper')
-const { sort } = require('../agreement')
 
 const viewModel = (request, page) => {
   return (async () => {
@@ -14,7 +13,6 @@ const viewModel = (request, page) => {
 }
 
 const getApplicationTableHeader = (sortField) => {
-  console.log('>>>>>>>>>>>>>>>>', sortField)
   const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
   let agreementDateTitle = 'Apply date'
   let headerColumns = [{
