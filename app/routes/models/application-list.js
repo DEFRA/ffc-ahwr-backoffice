@@ -126,7 +126,7 @@ async function createModel (request, page) {
 
       return output
     })
-    const pagingData = getPagingData(apps.total ?? 0, limit, page)
+    const pagingData = getPagingData(apps.total ?? 0, limit, parseInt(page), request.query)
     const groupByStatus = apps.applicationStatus.map(s => {
       return {
         status: s.status,
