@@ -115,7 +115,7 @@ async function createModel (request, page) {
       ]
 
       if (endemics.enabled) {
-        output[0].attributes = { 'data-sort-value': `${n.data?.organisation?.name}` }
+        output[0].attributes = { 'data-sort-value': `${n.reference}` }
         output[1].attributes = { 'data-sort-value': `${n.data?.organisation?.name}` }
         output[5] = {
           html: n.type === 'EE'
