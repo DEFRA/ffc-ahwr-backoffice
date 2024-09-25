@@ -86,7 +86,7 @@ describe('Applications test', () => {
       expect(pagination.getPagination).toBeCalled()
       expect(pagination.getPagination).toHaveBeenCalledWith(1)
       expect(pagination.getPagingData).toBeCalled()
-      expect(pagination.getPagingData).toHaveBeenCalledWith(9, 10, 1)
+      expect(pagination.getPagingData).toHaveBeenCalledWith(9, 10, 1, {"limit": 20, "page": 1})
       expectPhaseBanner.ok($)
     })
     test('should head column agreement date when endemics enable  true', async () => {
@@ -136,7 +136,7 @@ describe('Applications test', () => {
       expect(pagination.getPagination).toBeCalled()
       expect(pagination.getPagination).toHaveBeenCalledWith(2)
       expect(pagination.getPagingData).toBeCalled()
-      expect(pagination.getPagingData).toHaveBeenCalledWith(9, 10, 2)
+      expect(pagination.getPagingData).toHaveBeenCalledWith(9, 10, 1, {"limit": 20, "page": 1})
       expectPhaseBanner.ok($)
     })
     test('returns 200 without query parameter', async () => {
