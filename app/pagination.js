@@ -1,4 +1,5 @@
 const { displayPageSize } = require('./config')
+const { generateQueryString } = require('./routes/utils/generate-query-string')
 
 /**
  * Get limit and offset on basis of page selected for querying data.
@@ -17,10 +18,11 @@ function getPagination (page = 1, limit = displayPageSize) {
  * @param  Url url
  */
 
-function getPagingData (total, limit, page) {
+function getPagingData (total, limit, page, query) {
+  const queryString = generateQueryString(query, ['page'])
   const totalPages = Math.ceil(total / limit)
-  const previous = Number(page) === 1 ? null : { href: `?page=${Number(page) - 1}` }
-  const next = totalPages === 1 || totalPages === Number(page) ? null : { href: `?page=${Number(page) + 1}` }
+  const previous = Number(page) === 1 ? null : { href: `?page=${Number(page) - 1}${queryString}` }
+  const next = totalPages === 1 || totalPages === Number(page) ? null : { href: `?page=${Number(page) + 1}${queryString}` }
   const pages = totalPages === 1
     ? null
     : []
@@ -31,7 +33,7 @@ function getPagingData (total, limit, page) {
         pages.push({
           number: x,
           current: x === Number(page),
-          href: `?page=${x}`
+          href: `?page=${x}${queryString}`
         })
       }
     }
