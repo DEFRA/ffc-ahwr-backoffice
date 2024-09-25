@@ -1,16 +1,18 @@
 const generateQueryString = (query, paramsToRemove = []) => {
-    paramsToRemove.forEach((param) => {
-        delete query[`${param}`]
-    })
+  if (!query) return ''
 
-    let queryString = ''
-    Object.entries(query).forEach(([k, v], i) => {
-        queryString += `&${k}=${v}`
-    })
+  paramsToRemove.forEach((param) => {
+    delete query[`${param}`]
+  })
 
-    return queryString
+  let queryString = ''
+  Object.entries(query).forEach(([k, v], i) => {
+    queryString += `&${k}=${v}`
+  })
+
+  return queryString
 }
 
 module.exports = {
-    generateQueryString
+  generateQueryString
 }
