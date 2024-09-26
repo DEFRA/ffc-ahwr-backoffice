@@ -138,6 +138,7 @@ module.exports = {
       const dateOfVisit = { key: { text: 'Date of visit' }, value: { html: formatedDateToUk(data?.dateOfVisit) } }
       const dateOfSampling = { key: { text: 'Date of sampling' }, value: { html: data?.dateOfTesting && formatedDateToUk(data?.dateOfTesting) } }
       const typeOfLivestock = { key: { text: speciesEligibleNumber[data?.typeOfLivestock] }, value: { html: upperFirstLetter(data?.speciesNumbers) } }
+      const sheepName = { key: { text: 'Favourite sheep' }, value: { html: upperFirstLetter(data?.sheepName) } }
       const vetName = { key: { text: "Vet's name" }, value: { html: upperFirstLetter(data?.vetsName) } }
       const vetRCVSNumber = { key: { text: "Vet's RCVS number" }, value: { html: data?.vetRCVSNumber } }
       const piHunt = { key: { text: 'PI hunt' }, value: { html: upperFirstLetter(data?.piHunt) } }
@@ -216,6 +217,7 @@ module.exports = {
         dateOfVisit,
         dateOfSampling,
         typeOfLivestock,
+        sheepName,
         vetName,
         vetRCVSNumber,
         laboratoryURN,
