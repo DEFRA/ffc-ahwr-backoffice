@@ -68,11 +68,6 @@ const gethistoryTableRows = (applicationHistory) => {
   historyRecords.sort((a, b) => {
     return new Date(a.ChangedOn) - new Date(b.ChangedOn)
   })
-  console.log(historyRecords.length, 'Before sort')
-  historyRecords.filter(function (item, pos, ary) {
-    return !pos || item.Payload.statusId !== ary[pos - 1].Payload.statusId
-  })
-  console.log(historyRecords.length, 'After sort')
 
   return historyRecords?.map(hr => {
     return [
