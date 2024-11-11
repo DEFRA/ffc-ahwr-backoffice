@@ -43,7 +43,7 @@ module.exports = {
 
       if (endemics.enabled) {
         const userName = getUser(request).username
-        await updateApplicationStatus(request.payload.reference, userName, applicationStatus.withdrawn)
+        await updateApplicationStatus(request.payload.reference, userName, applicationStatus.withdrawn, request.logger)
 
         return h.redirect(`/view-agreement/${request.payload.reference}?page=${request?.payload?.page}`)
       } else {

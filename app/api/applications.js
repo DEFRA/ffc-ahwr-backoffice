@@ -1,22 +1,19 @@
-const Wreck = require('@hapi/wreck')
+const wreck = require('@hapi/wreck')
 const { applicationApiUri } = require('../config')
 
-async function getApplication (reference) {
-  const url = `${applicationApiUri}/application/get/${reference}`
+async function getApplication (applicationReference, logger) {
+  const endpoint = `${applicationApiUri}/application/get/${applicationReference}`
   try {
-    const response = await Wreck.get(url, { json: true })
-    if (response.res.statusCode !== 200) {
-      return null
-    }
-    return response.payload
+    const { payload } = await wreck.get(endpoint, { json: true })
+    return payload
   } catch (err) {
-    console.log(err)
-    return null
+    logger.setBindings({ err, endpoint })
+    throw err
   }
 }
 
-async function getApplications (searchType, searchText, limit, offset, filterStatus, sort) {
-  const url = `${applicationApiUri}/application/search`
+async function getApplications (searchType, searchText, limit, offset, filterStatus, sort, logger) {
+  const endpoint = `${applicationApiUri}/application/search`
   const options = {
     payload: {
       search: { text: searchText, type: searchType },
@@ -28,36 +25,15 @@ async function getApplications (searchType, searchText, limit, offset, filterSta
     json: true
   }
   try {
-    const response = await Wreck.post(url, options)
-    if (response.res.statusCode !== 200) {
-      return { applications: [], total: 0, applicationStatus: [] }
-    }
-    return response.payload
+    const { payload } = await wreck.post(endpoint, options)
+    return payload
   } catch (err) {
-    console.log(err)
-    return { applications: [], total: 0, applicationStatus: [] }
+    logger.setBindings({ err, endpoint })
+    throw err
   }
 }
 
-async function withdrawApplication (reference, user, status) {
-  const url = `${applicationApiUri}/application/${reference}`
-  const options = {
-    payload: {
-      user,
-      status
-    },
-    json: true
-  }
-  try {
-    await Wreck.put(url, options)
-    return true
-  } catch (err) {
-    console.log(err)
-    return false
-  }
-}
-
-async function processApplicationClaim (reference, user, approved) {
+async function processApplicationClaim (reference, user, approved, logger) {
   const url = `${applicationApiUri}/application/claim`
   const options = {
     payload: {
@@ -68,16 +44,16 @@ async function processApplicationClaim (reference, user, approved) {
     json: true
   }
   try {
-    await Wreck.post(url, options)
-    return true
+    const { payload } = await wreck.post(url, options)
+    return payload
   } catch (err) {
-    console.log(err)
-    return false
+    logger.setBindings({ err })
+    throw err
   }
 }
 
-async function updateApplicationStatus (reference, user, status) {
-  const url = `${applicationApiUri}/application/${reference}`
+async function updateApplicationStatus (reference, user, status, logger) {
+  const endpoint = `${applicationApiUri}/application/${reference}`
   const options = {
     payload: {
       user,
@@ -86,51 +62,39 @@ async function updateApplicationStatus (reference, user, status) {
     json: true
   }
   try {
-    const response = await Wreck.put(url, options)
-    if (response.res.statusCode !== 200) {
-      return null
-    }
-    return true
+    const { payload } = await wreck.put(endpoint, options)
+    return payload
   } catch (err) {
-    console.log(err)
+    logger.setBindings({ err })
     return false
   }
 }
 
-async function getApplicationHistory (reference) {
-  const url = `${applicationApiUri}/application/history/${reference}`
+async function getApplicationHistory (reference, logger) {
+  const endpoint = `${applicationApiUri}/application/history/${reference}`
   try {
-    const response = await Wreck.get(url, { json: true })
-    if (response.res.statusCode !== 200) {
-      throw new Error(`HTTP ${response.res.statusCode} (${response.res.statusMessage})`)
-    }
-    return response.payload
+    const { payload } = await wreck.get(endpoint, { json: true })
+    return payload
   } catch (err) {
-    console.error(`Getting application history for ${reference} failed: ${err.message}`)
-
-    return { historyRecords: [] }
+    logger.setBindings({ err, endpoint })
+    throw err
   }
 }
 
-async function getApplicationEvents (reference) {
-  const url = `${applicationApiUri}/application/events/${reference}`
+async function getApplicationEvents (reference, logger) {
+  const endpoint = `${applicationApiUri}/application/events/${reference}`
   try {
-    const response = await Wreck.get(url, { json: true })
-    if (response.res.statusCode !== 200) {
-      throw new Error(`HTTP ${response.res.statusCode} (${response.res.statusMessage})`)
-    }
-    return response.payload
+    const { payload } = await wreck.get(endpoint, { json: true })
+    return payload
   } catch (err) {
-    console.error(`Getting application events for ${reference} failed: ${err.message}`)
-
-    return { eventRecords: [] }
+    logger.setBindings({ err })
+    throw err
   }
 }
 
 module.exports = {
   getApplications,
   getApplication,
-  withdrawApplication,
   processApplicationClaim,
   getApplicationHistory,
   getApplicationEvents,

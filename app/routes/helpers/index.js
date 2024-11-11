@@ -1,9 +1,6 @@
-// utils/route-helpers.js
 const { Buffer } = require('buffer')
 
-// Abstract redirect logic
-function redirectWithError (h, claimOrApplication, reference, page, returnPage, error, errorMessage) {
-  console.error(errorMessage, error.message) // Centralized error logging
+function redirectWithError (h, claimOrApplication, reference, page, returnPage, error) {
   const encodedErrors = encodeURIComponent(Buffer.from(JSON.stringify(error)).toString('base64'))
 
   if (claimOrApplication === 'claim') {
@@ -13,9 +10,7 @@ function redirectWithError (h, claimOrApplication, reference, page, returnPage, 
   }
 }
 
-// Abstract redirect logic
-function redirectRejectWithError (h, claimOrApplication, reference, page, returnPage, error, errorMessage) {
-  console.error(errorMessage, error.message) // Centralized error logging
+function redirectRejectWithError (h, claimOrApplication, reference, page, returnPage, error) {
   const encodedErrors = encodeURIComponent(Buffer.from(JSON.stringify(error)).toString('base64'))
 
   if (claimOrApplication === 'claim') {
@@ -33,5 +28,4 @@ function redirectToViewApplication (h, claimOrApplication, reference, page, retu
   }
 }
 
-// Export the helper functions
 module.exports = { redirectWithError, redirectToViewApplication, redirectRejectWithError }

@@ -79,7 +79,8 @@ async function createModel (request, page) {
   const searchType = getAppSearch(request, keys.appSearch.searchType)
   const filterStatus = getAppSearch(request, keys.appSearch.filterStatus) ?? []
   const sortField = getAppSearch(request, keys.appSearch.sort) ?? undefined
-  const apps = await getApplications(searchType, searchText, limit, offset, filterStatus, sortField)
+  const apps = await getApplications(searchType, searchText, limit, offset, filterStatus, sortField, request.logger)
+
   if (apps.total > 0) {
     let statusClass
     const applications = apps.applications.map(n => {

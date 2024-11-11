@@ -3,17 +3,19 @@ const _ = require('lodash')
 const { applicationApiUri } = require('../config')
 const { fieldsNames, labels, notAvailable } = require('./../constants/contact-history')
 
-async function getContactHistory (reference) {
-  const url = `${applicationApiUri}/application/contact-history/${reference}`
+async function getContactHistory (reference, logger) {
+  const endpoint = `${applicationApiUri}/application/contact-history/${reference}`
   try {
-    const response = await Wreck.get(url, { json: true })
-    if (response.res.statusCode !== 200) {
-      return null
-    }
-    return response.payload
+    const { payload } = await Wreck.get(endpoint, { json: true })
+
+    return payload
   } catch (err) {
-    console.log(err)
-    return null
+    if (err.output.statusCode === 404) {
+      return null
+    } else {
+      logger.setBindings({ err, endpoint })
+      throw err
+    }
   }
 }
 

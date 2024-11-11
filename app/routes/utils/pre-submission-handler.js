@@ -5,7 +5,7 @@ const preSubmissionHandler = async (request, h) => {
   if (request.method === 'post') {
     const lookupCrumb = await crumbCache.lookupSubmissionCrumb(request)
     if (lookupCrumb?.crumb) {
-      console.log('Duplicate crumb found: %s', request.plugins.crumb)
+      request.logger.setBindings({ crumb: request.plugins.crumb })
       return Boom.forbidden('Duplicate submission')
     } else {
       await crumbCache.cacheSubmissionCrumb(request)

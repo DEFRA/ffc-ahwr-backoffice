@@ -1,36 +1,19 @@
-const Wreck = require('@hapi/wreck')
+const wreck = require('@hapi/wreck')
 const { applicationApiUri } = require('../config')
 
-async function getClaim (reference) {
-  const url = `${applicationApiUri}/claim/get-by-reference/${reference}`
+async function getClaim (reference, logger) {
+  const endpoint = `${applicationApiUri}/claim/get-by-reference/${reference}`
   try {
-    const response = await Wreck.get(url, { json: true })
-    if (response.res.statusCode !== 200) {
-      return null
-    }
-    return response.payload
+    const { payload } = await wreck.get(endpoint, { json: true })
+    return payload
   } catch (err) {
-    console.log(err)
-    return null
+    logger.setBindings({ err, endpoint })
+    throw err
   }
 }
 
-async function getClaimsByApplicationReference (reference) {
-  const url = `${applicationApiUri}/claim/get-by-application-reference/${reference}`
-  try {
-    const response = await Wreck.get(url, { json: true })
-    if (response.res.statusCode !== 200) {
-      return null
-    }
-    return response.payload
-  } catch (err) {
-    console.log(err)
-    return null
-  }
-}
-
-async function getClaims (searchType, searchText, limit, offset, sort) {
-  const url = `${applicationApiUri}/claim/search`
+async function getClaims (searchType, searchText, limit, offset, sort, logger) {
+  const endpoint = `${applicationApiUri}/claim/search`
   const options = {
     payload: {
       search: { text: searchText, type: searchType },
@@ -41,19 +24,16 @@ async function getClaims (searchType, searchText, limit, offset, sort) {
     json: true
   }
   try {
-    const response = await Wreck.post(url, options)
-    if (response.res.statusCode !== 200) {
-      return { claims: [], total: 0 }
-    }
-    return response.payload
+    const { payload } = await wreck.post(endpoint, options)
+    return payload
   } catch (err) {
-    console.log(err)
-    return { claims: [], total: 0 }
+    logger.setBindings({ err, endpoint })
+    throw err
   }
 }
 
-async function updateClaimStatus (reference, user, status) {
-  const url = `${applicationApiUri}/claim/update-by-reference`
+async function updateClaimStatus (reference, user, status, logger) {
+  const endpoint = `${applicationApiUri}/claim/update-by-reference`
   const options = {
     payload: {
       reference,
@@ -63,20 +43,16 @@ async function updateClaimStatus (reference, user, status) {
     json: true
   }
   try {
-    const response = await Wreck.put(url, options)
-    if (response.res.statusCode !== 200) {
-      throw new Error(response.res)
-    }
-    return true
+    const { payload } = await wreck.put(endpoint, options)
+    return payload
   } catch (err) {
-    console.log(err)
-    return false
+    logger.setBingings({ err })
+    throw err
   }
 }
 
 module.exports = {
   getClaim,
   getClaims,
-  updateClaimStatus,
-  getClaimsByApplicationReference
+  updateClaimStatus
 }

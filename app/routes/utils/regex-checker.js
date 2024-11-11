@@ -5,7 +5,6 @@ const regexChecker = (regex, str) => {
     regexValue = new RegExp(regex)
   } catch (error) {
     isValid = false
-    console.error(`Invalid regex: ${regex} is ${isValid}`)
     return isValid
   }
   return !!regexValue.test(str)

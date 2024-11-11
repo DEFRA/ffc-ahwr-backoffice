@@ -1,6 +1,5 @@
 const { Buffer } = require('buffer')
 const Joi = require('joi')
-const boom = require('@hapi/boom')
 const { endemics } = require('../config')
 const { getApplication, getApplicationHistory, getApplicationEvents } = require('../api/applications')
 const { administrator, processor, user, recommender, authoriser } = require('../auth/permissions')
@@ -34,11 +33,9 @@ module.exports = {
       })
     },
     handler: async (request, h) => {
-      const application = await getApplication(request.params.reference)
-      if (!application) {
-        throw boom.badRequest()
-      }
-      const applicationHistory = await getApplicationHistory(request.params.reference)
+      const application = await getApplication(request.params.reference, request.logger)
+
+      const applicationHistory = await getApplicationHistory(request.params.reference, request.logger)
 
       let applicationEvents
       if ((application?.claimed ||
@@ -46,7 +43,7 @@ module.exports = {
         application?.statusId === applicationStatus.readyToPay ||
         application?.statusId === applicationStatus.rejected) &&
         !application?.data?.dateOfClaim) {
-        applicationEvents = await getApplicationEvents(application?.data?.organisation.sbi)
+        applicationEvents = await getApplicationEvents(application?.data?.organisation.sbi, request.logger)
       }
 
       const status = application.status.status.toUpperCase()
@@ -78,7 +75,7 @@ module.exports = {
         displayRecommendToRejectConfirmationForm,
         errorMessage: checkboxErrors(errors, 'pnl-recommend-confirmation')
       }
-      const contactHistory = await getContactHistory(request.params.reference)
+      const contactHistory = await getContactHistory(request.params.reference, request.logger)
       const contactHistoryDetails = displayContactHistory(contactHistory)
       const organisation = application.data?.organisation
       const listData = [

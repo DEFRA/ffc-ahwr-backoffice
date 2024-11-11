@@ -6,12 +6,12 @@ module.exports = {
   options: {
     auth: false
   },
-  handler: async (_, h) => {
+  handler: async (request, h) => {
     try {
       const authUrl = await auth.getAuthenticationUrl()
       return h.redirect(authUrl)
     } catch (err) {
-      console.log('Error authenticating', err)
+      request.logger.setBindings({ err })
     }
     return h.view('error-pages/500').code(500)
   }

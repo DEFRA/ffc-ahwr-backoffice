@@ -7,7 +7,7 @@ const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
 const permissions = require('../auth/permissions')
 const stages = require('../constants/application-stages')
 const stageExecutionActions = require('../constants/application-stage-execution-actions')
-const { failActionConsoleLog, failActionTwoCheckboxes } = require('../routes/utils/fail-action-two-checkboxes')
+const { failActionTwoCheckboxes } = require('../routes/utils/fail-action-two-checkboxes')
 const recommendToPayOrRejectSchema = require('./validationSchemas/recommend-to-pay-or-reject-schema')
 
 module.exports = {
@@ -17,9 +17,10 @@ module.exports = {
     pre: [{ method: preDoubleSubmitHandler }],
     validate: {
       payload: recommendToPayOrRejectSchema,
-      failAction: async (request, h, error) => {
-        failActionConsoleLog(request, error, 'recommend-to-pay')
-        const errors = await failActionTwoCheckboxes(error, 'pnl-recommend-confirmation')
+      failAction: async (request, h, err) => {
+        request.logger.setBindings({ err })
+
+        const errors = await failActionTwoCheckboxes(err, 'pnl-recommend-confirmation')
 
         if (request.payload.claimOrApplication === 'claim') {
           return h
@@ -33,28 +34,30 @@ module.exports = {
       }
     },
     handler: async (request, h) => {
-      try {
-        const userRole = mapAuth(request)
-        if (!userRole.isRecommender && !userRole.isAdministrator) {
-          throw Boom.internal('User must be a recommender or an admin')
-        }
-        await processStageActions(
-          request,
-          permissions.recommender,
-          stages.claimApproveReject,
-          stageExecutionActions.recommendToPay,
-          false
-        )
-        await crumbCache.generateNewCrumb(request, h)
+      const { claimOrApplication, reference } = request.payload
+      const userRole = mapAuth(request)
+      request.logger.setBindings({
+        claimOrApplication,
+        reference,
+        userRole
+      })
+      if (!userRole.isRecommender && !userRole.isAdministrator) {
+        throw Boom.internal('User must be a recommender or an admin')
+      }
 
-        if (request.payload.claimOrApplication === 'claim') {
-          return h.redirect(`/view-claim/${request.payload.reference}${request.payload?.returnPage && '?returnPage=' + request.payload?.returnPage}`)
-        } else {
-          return h.redirect(`/view-agreement/${request.payload.reference}?page=${request.payload.page}`)
-        }
-      } catch (error) {
-        console.error(`routes:recommend-to-pay: Error when processing request: ${error.message}`)
-        throw Boom.internal(error.message)
+      await processStageActions(
+        request,
+        permissions.recommender,
+        stages.claimApproveReject,
+        stageExecutionActions.recommendToPay,
+        false
+      )
+      await crumbCache.generateNewCrumb(request, h)
+
+      if (request.payload.claimOrApplication === 'claim') {
+        return h.redirect(`/view-claim/${request.payload.reference}${request.payload?.returnPage && '?returnPage=' + request.payload?.returnPage}`)
+      } else {
+        return h.redirect(`/view-agreement/${request.payload.reference}?page=${request.payload.page}`)
       }
     }
   }

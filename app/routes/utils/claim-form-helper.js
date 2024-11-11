@@ -6,8 +6,8 @@ const { status } = require('../../constants/status')
 const stageExecutionActions = require('../../constants/application-stage-execution-actions')
 const { formatStatusId, upperFirstLetter } = require('../../lib/display-helper')
 
-const getRecommendationAndAuthorizationStatus = async (userName, applicationReference) => {
-  const stageExecutions = await getStageExecutionByApplication(applicationReference)
+const getRecommendationAndAuthorizationStatus = async (userName, applicationReference, logger) => {
+  const stageExecutions = await getStageExecutionByApplication(applicationReference, logger)
   const canClaimBeRecommended = stageExecutions.length === 0
   // Process recommendation records
   const processRecords = (actionType, executedByUser) => stageExecutions
@@ -111,7 +111,7 @@ const claimFormHelper = async (request, applicationReference, statusId, applicat
     canUserRecommendOrAuthorise: mapAuth(request).isAdministrator || mapAuth(request).isRecommender || mapAuth(request).isAuthoriser
   }
 
-  const recommendStatus = await getRecommendationAndAuthorizationStatus(userName, applicationReference)
+  const recommendStatus = await getRecommendationAndAuthorizationStatus(userName, applicationReference, request.logger)
   const displayForms = determineDisplayForms(statusId, mappedAuth, recommendStatus, applicationOrClaim, request.query)
 
   const subStatus = upperFirstLetter(formatStatusId(statusId).toLowerCase())

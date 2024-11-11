@@ -1,6 +1,5 @@
 const { Buffer } = require('buffer')
 const Joi = require('joi')
-const boom = require('@hapi/boom')
 const { getClaim } = require('../api/claims')
 const { getApplication, getApplicationHistory } = require('../api/applications')
 const getApplicationHistoryModel = require('./models/application-history')
@@ -51,20 +50,16 @@ module.exports = {
       })
     },
     handler: async (request, h) => {
-      const claim = await getClaim(request.params.reference)
-
-      if (!claim) {
-        throw boom.badRequest()
-      }
+      const claim = await getClaim(request.params.reference, request.logger)
 
       const { data, reference, type, applicationReference, status: claimStatus, statusId, createdAt } = claim
-      const application = await getApplication(applicationReference)
 
-      if (!application) {
-        throw boom.badRequest()
-      }
+      request.logger.setBindings({ applicationReference })
 
+      const application = await getApplication(applicationReference, request.logger)
       const organisation = application?.data?.organisation
+
+      request.logger.setBindings({ sbi: organisation?.sbi })
 
       const applicationSummaryDetails = [
         { key: { text: 'Agreement number' }, value: { text: applicationReference } },
@@ -98,12 +93,12 @@ module.exports = {
         errorMessage: checkboxErrors(errors, 'pnl-recommend-confirmation')
       }
 
-      const applicationHistory = await getApplicationHistory(reference)
+      const applicationHistory = await getApplicationHistory(reference, request.logger)
       const historyData = getApplicationHistoryModel(applicationHistory)
       const { isBeef, isDairy, isPigs, isSheep } = getLivestockTypes(data?.typeOfLivestock)
       const { isReview, isEndemicsFollowUp } = getReviewType(type)
 
-      const stageExecutionData = await getStageExecutionByApplication(request.params.reference)
+      const stageExecutionData = await getStageExecutionByApplication(request.params.reference, request.logger)
       const contactPerson = stageExecutionData?.[0]?.executedBy
       const getBiosecurityRow = () => (data?.biosecurity && isEndemicsFollowUp && [livestockTypes.pigs, livestockTypes.beef, livestockTypes.dairy].includes(data?.typeOfLivestock) &&
       {

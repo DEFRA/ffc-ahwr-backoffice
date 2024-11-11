@@ -11,7 +11,7 @@ module.exports = {
       await auth.authenticate(request.query.code, request.cookieAuth)
       return h.redirect('/claims')
     } catch (err) {
-      console.error('Error authenticating:', err)
+      request.logger.setBindings({ err })
     }
 
     return h.view('error-pages/500').code(500)
