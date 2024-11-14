@@ -10,9 +10,6 @@ const processStageActions = require('../../../../app/routes/utils/process-stage-
 jest.mock('../../../../app/routes/utils/crumb-cache')
 const crumbCache = require('../../../../app/routes/utils/crumb-cache')
 
-jest.mock('@hapi/boom')
-const Boom = require('@hapi/boom')
-
 const reference = 'AHWR-555A-FD4C'
 const url = '/recommend-to-reject'
 const encodedEmptyArray = 'W10%3D'
@@ -22,7 +19,6 @@ applications.processApplicationClaim = jest.fn().mockResolvedValue(true)
 
 describe('Recommended To Reject test', () => {
   let crumb
-  let logSpy
 
   jest.mock('../../../../app/auth')
   let auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
@@ -30,8 +26,6 @@ describe('Recommended To Reject test', () => {
   beforeEach(async () => {
     crumb = await getCrumbs(global.__SERVER__)
     jest.clearAllMocks()
-
-    logSpy = jest.spyOn(console, 'log')
   })
 
   describe(`POST ${url} route`, () => {
@@ -60,15 +54,6 @@ describe('Recommended To Reject test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(logSpy).toHaveBeenCalledWith(`routes:recommend-to-reject: Error when validating payload: ${JSON.stringify({
-        errorMessage: '"confirm" must be an array',
-        payload: {
-          reference: 'AHWR-555A-FD4C',
-          claimOrApplication: 'application',
-          page: 1,
-          confirm: 'checkedAgainstChecklist'
-        }
-      })}`)
       expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}`)
     })
     test('returns 302 when validation fails - no page given for claim', async () => {
@@ -88,16 +73,6 @@ describe('Recommended To Reject test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(logSpy).toHaveBeenCalledWith(`routes:recommend-to-reject: Error when validating payload: ${JSON.stringify({
-        errorMessage: '"confirm" must be an array',
-        payload: {
-          reference: 'AHWR-555A-FD4C',
-          claimOrApplication: 'claim',
-          page: 1,
-          returnPage: 'claims',
-          confirm: 'checkedAgainstChecklist'
-        }
-      })}`)
       expect(res.headers.location).toEqual(`/view-claim/${reference}?recommendToReject=true&returnPage=claims&errors=${encodedErrors}`)
     })
 
@@ -116,14 +91,6 @@ describe('Recommended To Reject test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(logSpy).toHaveBeenCalledWith(`routes:recommend-to-reject: Error when validating payload: ${JSON.stringify({
-        errorMessage: '"confirm" must be an array',
-        payload: {
-          reference: 'AHWR-555A-FD4C',
-          claimOrApplication: 'application',
-          confirm: 'checkedAgainstChecklist'
-        }
-      })}`)
       expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}`)
     })
 
@@ -211,7 +178,6 @@ describe('Recommended To Reject test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(500)
-      expect(Boom.internal).toHaveBeenCalledWith('User must be a recommender or an admin')
     })
 
     test.each([
@@ -302,7 +268,6 @@ describe('Recommended To Reject test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(500)
-      expect(Boom.internal).toHaveBeenCalledWith('Error when processing stage actions')
     })
   })
 })

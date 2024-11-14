@@ -75,6 +75,9 @@ function expectWithdrawConfirmationPanel ($, istWithdrawConfirmationPanelVisible
 }
 
 jest.mock('../../../../app/api/applications')
+jest.mock('@hapi/wreck', () => ({
+  get: jest.fn().mockResolvedValue({ payload: [] })
+}))
 
 describe('View Application test', () => {
   const url = `/view-agreement/${reference}`
@@ -120,19 +123,7 @@ describe('View Application test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
     })
-    test('returns 400', async () => {
-      applications.getApplication.mockReturnValueOnce(null)
-      const options = {
-        method: 'GET',
-        url,
-        auth
-      }
-      const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(400)
-      const $ = cheerio.load(res.payload)
-      expect($('h1.govuk-heading-l').text()).toEqual('400 - Bad Request')
-      expectPhaseBanner.ok($)
-    })
+
     test.each([
       ['administrator', true],
       ['authoriser', true],

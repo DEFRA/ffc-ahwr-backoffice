@@ -34,7 +34,6 @@ module.exports = {
     },
     handler: async (request, h) => {
       const application = await getApplication(request.params.reference, request.logger)
-
       const applicationHistory = await getApplicationHistory(request.params.reference, request.logger)
 
       let applicationEvents

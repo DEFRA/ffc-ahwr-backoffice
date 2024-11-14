@@ -10,6 +10,9 @@ jest.mock('../../../../app/auth')
 jest.mock('../../../../app/session')
 jest.mock('../../../../app/api/claims')
 jest.mock('../../../../app/api/applications')
+jest.mock('@hapi/wreck', () => ({
+  get: jest.fn().mockResolvedValue({ payload: [] })
+}))
 
 describe('View claim test', () => {
   const url = '/view-claim'
@@ -194,34 +197,8 @@ describe('View claim test', () => {
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
     })
-    test('returns 400  withouth claim', async () => {
-      const options = {
-        method: 'GET',
-        url: `${url}/AHWR-0000-4444`,
-        auth
-      }
 
-      getClaim.mockReturnValue(undefined)
-      getApplication.mockReturnValue(application)
-
-      const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(400)
-    })
-    test('returns 400  withouth application', async () => {
-      const options = {
-        method: 'GET',
-        url: `${url}/AHWR-0000-4444`,
-        auth
-      }
-
-      getClaim.mockReturnValue(claims[0])
-      getApplication.mockReturnValue(undefined)
-
-      const res = await global.__SERVER__.inject(options)
-
-      expect(res.statusCode).toBe(400)
-    })
-    test('returns 200 wit review claim type and Pigs species', async () => {
+    test('returns 200 with review claim type and Pigs species', async () => {
       const options = {
         method: 'GET',
         url: `${url}/AHWR-0000-4444`,

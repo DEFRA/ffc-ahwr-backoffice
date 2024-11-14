@@ -12,6 +12,7 @@ describe('Reject Application test', () => {
   let crumb
   const url = '/reject-application-claim/'
   jest.mock('../../../../app/auth')
+
   let auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
 
   beforeAll(() => {
@@ -123,7 +124,7 @@ describe('Reject Application test', () => {
       expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
     })
     test('Reject claim processed', async () => {
-      auth = { strategy: 'session-auth', credentials: { scope: [], account: { homeAccountId: 'testId', name: 'admin' } } }
+      auth = { strategy: 'session-auth', credentials: { scope: ['authoriser'], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {
         method: 'POST',
         url,
@@ -140,7 +141,7 @@ describe('Reject Application test', () => {
 
       const res = await global.__SERVER__.inject(options)
 
-      expect(res.statusCode).toBe(500)
+      expect(res.statusCode).toBe(302)
     })
     test('Reject application invalid reference', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }

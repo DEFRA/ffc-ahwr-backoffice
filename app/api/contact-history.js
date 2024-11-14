@@ -1,4 +1,4 @@
-const Wreck = require('@hapi/wreck')
+const wreck = require('@hapi/wreck')
 const _ = require('lodash')
 const { applicationApiUri } = require('../config')
 const { fieldsNames, labels, notAvailable } = require('./../constants/contact-history')
@@ -6,7 +6,7 @@ const { fieldsNames, labels, notAvailable } = require('./../constants/contact-hi
 async function getContactHistory (reference, logger) {
   const endpoint = `${applicationApiUri}/application/contact-history/${reference}`
   try {
-    const { payload } = await Wreck.get(endpoint, { json: true })
+    const { payload } = await wreck.get(endpoint, { json: true })
 
     return payload
   } catch (err) {

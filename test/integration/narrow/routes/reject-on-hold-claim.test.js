@@ -10,6 +10,9 @@ describe('Reject On Hold (move to In Check) Application test', () => {
   let crumb
   const url = '/reject-on-hold-claim/'
   jest.mock('../../../../app/auth')
+  jest.mock('@hapi/wreck', () => ({
+    put: jest.fn().mockReturnValue({})
+  }))
   let auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
 
   beforeAll(() => {
@@ -103,7 +106,8 @@ describe('Reject On Hold (move to In Check) Application test', () => {
       }
 
       const res = await global.__SERVER__.inject(options)
-      expect(applications.updateApplicationStatus).toHaveBeenCalledWith(reference, 'admin', 5)
+      const logger = expect.any(Object)
+      expect(applications.updateApplicationStatus).toHaveBeenCalledWith(reference, 'admin', 5, logger)
       expect(applications.updateApplicationStatus).toHaveBeenCalledTimes(1)
       expect(res.statusCode).toBe(302)
       expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
@@ -218,7 +222,7 @@ describe('Reject On Hold (move to In Check) Application test', () => {
       }
 
       const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(500)
+      expect(res.statusCode).toBe(401)
     })
 
     test('Reject application claim not processed', async () => {

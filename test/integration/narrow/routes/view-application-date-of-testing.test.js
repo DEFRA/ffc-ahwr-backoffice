@@ -34,6 +34,10 @@ describe('View Application test with Date of Testing enabled', () => {
     }
   }))
 
+  jest.mock('@hapi/wreck', () => ({
+    get: jest.fn().mockResolvedValue({ payload: [] })
+  }))
+
   beforeAll(() => {
     jest.clearAllMocks()
     jest.mock('../../../../app/routes/utils/claim-form-helper')

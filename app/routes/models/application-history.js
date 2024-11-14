@@ -10,7 +10,7 @@ const formatDate = (dateToFormat, currentDateFormat = 'YYYY-MM-DD', dateFormat =
 
 const parseData = (payload, key) => {
   const data = payload ? JSON.parse(payload) : {}
-  return data[key] || ''
+  return data[key]
 }
 
 const filterRecords = (applicationHistory) => {

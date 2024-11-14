@@ -9,16 +9,13 @@ const Wreck = require('@hapi/wreck')
 
 describe('Holiday Functions', () => {
   describe('getHolidayCalendarForEngland', () => {
-    let consoleSpy
     let wreckGetSpy
 
     beforeEach(() => {
-      consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
       wreckGetSpy = jest.spyOn(Wreck, 'get')
     })
 
     afterEach(() => {
-      consoleSpy.mockRestore()
       wreckGetSpy.mockRestore()
     })
 
@@ -37,46 +34,33 @@ describe('Holiday Functions', () => {
       expect(wreckGetSpy).toHaveBeenCalledWith('https://www.gov.uk/bank-holidays.json', { json: true })
     })
 
-    it('should handle errors gracefully', async () => {
-      wreckGetSpy.mockRejectedValue(new Error('Network error'))
+    it('should throw errors', async () => {
+      wreckGetSpy.mockRejectedValueOnce('holiday boom')
 
-      await expect(holidays.getHolidayCalendarForEngland()).resolves.toEqual([])
-      expect(consoleSpy).toHaveBeenCalledWith('Getting holidays failed: Network error')
+      expect(async () => {
+        await holidays.getHolidayCalendarForEngland()
+      }).rejects.toBe('holiday boom')
     })
 
-    it('when payload NULL should return false if today is not a holiday', async () => {
-      const payloadNull = null
+    it('throws if payload is missing events', async () => {
       wreckGetSpy.mockResolvedValue({
-        payload: payloadNull
+        payload: []
       })
 
-      await expect(holidays.getHolidayCalendarForEngland()).resolves.toEqual([])
-      expect(consoleSpy).toHaveBeenCalledWith('Getting holidays failed: Invalid payload structure')
-    })
-
-    it('when payload not have division should return false if today is not a holiday', async () => {
-      wreckGetSpy.mockResolvedValue({
-        payload: {}
-      })
-
-      await expect(holidays.getHolidayCalendarForEngland()).resolves.toEqual([])
+      expect(async () => {
+        await holidays.getHolidayCalendarForEngland()
+      }).rejects.toThrow('bank holidays response missing events')
     })
   })
 
   describe('isTodayCustomHoliday', () => {
-    let consoleSpy
-    let consoleSpyLog
     let wreckGetSpy
 
     beforeEach(() => {
-      consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
-      consoleSpyLog = jest.spyOn(console, 'log').mockImplementation(() => {})
       wreckGetSpy = jest.spyOn(Wreck, 'get')
     })
 
     afterEach(() => {
-      consoleSpy.mockRestore()
-      consoleSpyLog.mockRestore()
       wreckGetSpy.mockRestore()
     })
 
@@ -86,14 +70,26 @@ describe('Holiday Functions', () => {
       })
 
       expect(await holidays.isTodayCustomHoliday()).toBeTruthy()
-      expect(consoleSpyLog).toHaveBeenCalledWith('today is a custom holiday')
     })
 
-    it('should return false when response is no 200', async () => {
-      wreckGetSpy.mockRejectedValue(new Error('Network error'))
+    it('should return false when response is 404', async () => {
+      wreckGetSpy.mockRejectedValueOnce({
+        output: { statusCode: 404 }
+      })
 
-      expect(await holidays.isTodayCustomHoliday()).toBeFalsy()
-      expect(consoleSpy).toHaveBeenCalledWith('today is not a custom holiday : Network error')
+      expect(await holidays.isTodayCustomHoliday()).toBe(false)
+    })
+
+    it('should return throw errors', async () => {
+      const errorResponse = {
+        output: { statusCode: 500 }
+      }
+
+      wreckGetSpy.mockRejectedValueOnce(errorResponse)
+
+      expect(async () => {
+        await holidays.isTodayCustomHoliday()
+      }).rejects.toBe(errorResponse)
     })
   })
 

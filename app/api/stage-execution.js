@@ -2,7 +2,7 @@ const wreck = require('@hapi/wreck')
 const { applicationApiUri } = require('../config')
 
 async function getStageExecutionByApplication (applicationReference, logger) {
-  const endpoint = `${applicationApiUri}/stageexecutions/${applicationReference}`
+  const endpoint = `${applicationApiUri}/stageexecution/${applicationReference}`
   try {
     const { payload } = await wreck.get(endpoint, { json: true })
 

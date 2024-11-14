@@ -43,7 +43,7 @@ const processStageActions = async (request, role, stage, action, isClaimToBePaid
       case applicationStageActions.processApplicationClaim: {
         const response = request.payload.claimOrApplication === 'application'
           ? await processApplicationClaim(request.payload.reference, userName, isClaimToBePaid, request.logger)
-          : await updateClaimStatus(request.payload.reference, userName, newStatus)
+          : await updateClaimStatus(request.payload.reference, userName, newStatus, request.logger)
         results.push({ action: 'Processed claim', response })
         break
       }

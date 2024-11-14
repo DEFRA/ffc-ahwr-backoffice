@@ -1,8 +1,8 @@
-const Wreck = require('@hapi/wreck')
+const wreck = require('@hapi/wreck')
 jest.mock('@hapi/wreck')
 jest.mock('../../../app/config')
 const { applicationApiUri } = require('../../../app/config')
-const { getAllStageExecutions, getStageExecutionByApplication, addStageExecution, updateStageExecution } = require('../../../app/api/stage-execution')
+const { getStageExecutionByApplication, addStageExecution, updateStageExecution } = require('../../../app/api/stage-execution')
 
 const payload = {
   applicationReference: 'AHWR-0000-0000',
@@ -12,75 +12,6 @@ const payload = {
 }
 
 describe('Stage Execution API', () => {
-  let logSpy
-
-  beforeEach(() => {
-    logSpy = jest.spyOn(console, 'log')
-  })
-
-  afterEach(() => {
-    logSpy.mockRestore()
-  })
-
-  describe('getAllStageExecutions', () => {
-    test('getAllStageExecutions should return valid stage execution array', async () => {
-      const wreckResponse = {
-        payload: {
-          stageExecutions: ['stage1', 'stage2']
-        },
-        res: {
-          statusCode: 200
-        }
-      }
-      const options = {
-        json: true
-      }
-      Wreck.get = jest.fn(async function (_url, _options) {
-        return wreckResponse
-      })
-      const response = await getAllStageExecutions()
-      expect(response).not.toStrictEqual([])
-      expect(response.stageExecutions).toStrictEqual(['stage1', 'stage2'])
-      expect(Wreck.get).toHaveBeenCalledTimes(1)
-      expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution`, options)
-    })
-    test('getAllStageExecutions should return null', async () => {
-      const wreckResponse = {
-        payload: {
-          stageExecutions: ['stage1', 'stage2']
-        },
-        res: {
-          statusCode: 404
-        }
-      }
-      const options = {
-        json: true
-      }
-      Wreck.get = jest.fn(async function (_url, _options) {
-        return wreckResponse
-      })
-      const response = await getAllStageExecutions()
-      expect(response).toStrictEqual([])
-      expect(Wreck.get).toHaveBeenCalledTimes(1)
-      expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution`, options)
-    })
-    test('getAllStageExecutions should return null when error thrown', async () => {
-      const options = {
-        json: true
-      }
-      Wreck.get = jest.fn(async function (_url, _options) {
-        throw new Error('Error')
-      })
-      const response = await getAllStageExecutions()
-      expect(response).toStrictEqual([])
-      expect(logSpy).toHaveBeenCalledTimes(2)
-      expect(logSpy).toHaveBeenNthCalledWith(1, 'Application API: Getting all stage executions')
-      expect(logSpy).toHaveBeenNthCalledWith(2, 'Application API: Error while getting all stage executions: Error')
-      expect(Wreck.get).toHaveBeenCalledTimes(1)
-      expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution`, options)
-    })
-  })
-
   describe('getStageExecutionByApplication', () => {
     test('getStageExecutionByApplication should return valid stage execution array', async () => {
       const wreckResponse = {
@@ -94,53 +25,54 @@ describe('Stage Execution API', () => {
       const options = {
         json: true
       }
-      Wreck.get = jest.fn(async function (_url, _options) {
-        return wreckResponse
-      })
+      wreck.get = jest.fn().mockResolvedValueOnce(wreckResponse)
       const response = await getStageExecutionByApplication('AHWR-0000-0000')
-      expect(response).not.toStrictEqual([])
-      expect(response.stageExecutions).toStrictEqual(['stage1', 'stage2'])
-      expect(Wreck.get).toHaveBeenCalledTimes(1)
-      expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution/AHWR-0000-0000`, options)
+
+      expect(response).toEqual(wreckResponse.payload)
+      expect(wreck.get).toHaveBeenCalledTimes(1)
+      expect(wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution/AHWR-0000-0000`, options)
     })
-    test('getStageExecutionByApplication should return null', async () => {
+
+    test('getStageExecutionByApplication should return empty array if non exist', async () => {
       const wreckResponse = {
-        payload: {
-          stageExecutions: ['stage1', 'stage2']
-        },
-        res: {
+        output: {
           statusCode: 404
         }
       }
       const options = {
         json: true
       }
-      Wreck.get = jest.fn(async function (_url, _options) {
-        return wreckResponse
-      })
-      const response = await getStageExecutionByApplication('AHWR-0000-0000')
-      expect(response).toStrictEqual([])
-      expect(Wreck.get).toHaveBeenCalledTimes(1)
-      expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution/AHWR-0000-0000`, options)
+      wreck.get = jest.fn().mockRejectedValueOnce(wreckResponse)
+      const logger = { setBindings: jest.fn() }
+      const response = await getStageExecutionByApplication('AHWR-0000-0000', logger)
+
+      expect(response).toEqual([])
+      expect(wreck.get).toHaveBeenCalledTimes(1)
+      expect(wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution/AHWR-0000-0000`, options)
     })
-    test('getStageExecutionByApplication should return null when error thrown', async () => {
+
+    test('getStageExecutionByApplication should throw errors', async () => {
+      const wreckResponse = {
+        output: {
+          statusCode: 500
+        }
+      }
       const options = {
         json: true
       }
-      Wreck.get = jest.fn(async function (_url, _options) {
-        throw new Error('Error')
-      })
-      const response = await getStageExecutionByApplication('AHWR-0000-0000')
-      expect(response).toStrictEqual([])
-      expect(logSpy).toHaveBeenCalledTimes(1)
-      expect(logSpy).toHaveBeenNthCalledWith(1, 'Application API: Error while getting stage executions by application AHWR-0000-0000: Error')
-      expect(Wreck.get).toHaveBeenCalledTimes(1)
-      expect(Wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution/AHWR-0000-0000`, options)
+      wreck.get = jest.fn().mockRejectedValueOnce(wreckResponse)
+      const logger = { setBindings: jest.fn() }
+
+      expect(async () => {
+        await getStageExecutionByApplication('AHWR-0000-0000', logger)
+      }).rejects.toEqual(wreckResponse)
+      expect(wreck.get).toHaveBeenCalledTimes(1)
+      expect(wreck.get).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution/AHWR-0000-0000`, options)
     })
   })
 
   describe('addStageExecution', () => {
-    test('addStageExecution should return valid stage execution array', async () => {
+    test('addStageExecution should return stage execution', async () => {
       const wreckResponse = {
         payload: {
           stageExecution: 'stage1'
@@ -153,51 +85,27 @@ describe('Stage Execution API', () => {
         payload,
         json: true
       }
-      Wreck.post = jest.fn(async function (_url, _options) {
-        return wreckResponse
-      })
+      wreck.post = jest.fn().mockResolvedValueOnce(wreckResponse)
       const response = await addStageExecution(payload)
-      expect(response).not.toStrictEqual([])
-      expect(response.stageExecution).toStrictEqual('stage1')
-      expect(Wreck.post).toHaveBeenCalledTimes(1)
-      expect(Wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution`, options)
+
+      expect(response).toEqual(wreckResponse.payload)
+      expect(wreck.post).toHaveBeenCalledTimes(1)
+      expect(wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution`, options)
     })
-    test('addStageExecution should return null', async () => {
-      const wreckResponse = {
-        payload: {
-          stageExecution: 'stage1'
-        },
-        res: {
-          statusCode: 404
-        }
-      }
+
+    test('addStageExecution should throw errors', async () => {
       const options = {
         payload,
         json: true
       }
-      Wreck.post = jest.fn(async function (_url, _options) {
-        return wreckResponse
-      })
-      const response = await addStageExecution(payload)
-      expect(response).toStrictEqual([])
-      expect(Wreck.post).toHaveBeenCalledTimes(1)
-      expect(Wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution`, options)
-    })
-    test('addStageExecution should return null when error thrown', async () => {
-      const options = {
-        payload,
-        json: true
-      }
-      Wreck.post = jest.fn(async function (_url, _options) {
-        throw new Error('Error')
-      })
-      const response = await addStageExecution(payload)
-      expect(response).toStrictEqual([])
-      expect(logSpy).toHaveBeenCalledTimes(2)
-      expect(logSpy).toHaveBeenNthCalledWith(1, `Application API: Adding stage execution, ${JSON.stringify(payload)}`)
-      expect(logSpy).toHaveBeenNthCalledWith(2, 'Application API: Error while adding stage execution: Error')
-      expect(Wreck.post).toHaveBeenCalledTimes(1)
-      expect(Wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution`, options)
+      wreck.post = jest.fn().mockRejectedValueOnce('add execution boom')
+      const logger = { setBindings: jest.fn() }
+
+      expect(async () => {
+        await addStageExecution(payload, logger)
+      }).rejects.toBe('add execution boom')
+      expect(wreck.post).toHaveBeenCalledTimes(1)
+      expect(wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution`, options)
     })
   })
 
@@ -214,49 +122,26 @@ describe('Stage Execution API', () => {
       const options = {
         json: true
       }
-      Wreck.put = jest.fn(async function (_url, _options) {
-        return wreckResponse
-      })
+      wreck.put = jest.fn().mockResolvedValueOnce(wreckResponse)
       const response = await updateStageExecution(2)
-      expect(response).not.toStrictEqual([])
-      expect(response.stageExecution).toStrictEqual('stage1')
-      expect(Wreck.put).toHaveBeenCalledTimes(1)
-      expect(Wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution/2`, options)
+
+      expect(response).toBe(wreckResponse.payload)
+      expect(wreck.put).toHaveBeenCalledTimes(1)
+      expect(wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution/2`, options)
     })
-    test('updateStageExecution should return null', async () => {
-      const wreckResponse = {
-        payload: {
-          stageExecution: 'stage1'
-        },
-        res: {
-          statusCode: 404
-        }
-      }
+
+    test('updateStageExecution should throw errors', async () => {
       const options = {
         json: true
       }
-      Wreck.put = jest.fn(async function (_url, _options) {
-        return wreckResponse
-      })
-      const response = await updateStageExecution(2)
-      expect(response).toStrictEqual([])
-      expect(Wreck.put).toHaveBeenCalledTimes(1)
-      expect(Wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution/2`, options)
-    })
-    test('updateStageExecution should return null when error thrown', async () => {
-      const options = {
-        json: true
-      }
-      Wreck.put = jest.fn(async function (_url, _options) {
-        throw new Error('Error')
-      })
-      const response = await updateStageExecution(2)
-      expect(response).toStrictEqual([])
-      expect(logSpy).toHaveBeenCalledTimes(2)
-      expect(logSpy).toHaveBeenNthCalledWith(1, 'Application API: Updating stage execution 2')
-      expect(logSpy).toHaveBeenNthCalledWith(2, 'Application API: Error while updating stage execution: Error')
-      expect(Wreck.put).toHaveBeenCalledTimes(1)
-      expect(Wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution/2`, options)
+      wreck.put = jest.fn().mockRejectedValueOnce('update execution boom')
+      const logger = { setBindings: jest.fn() }
+      expect(async () => {
+        await updateStageExecution(2, logger)
+      }).rejects.toBe('update execution boom')
+
+      expect(wreck.put).toHaveBeenCalledTimes(1)
+      expect(wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/stageexecution/2`, options)
     })
   })
 })

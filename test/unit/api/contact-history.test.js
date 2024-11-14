@@ -1,15 +1,15 @@
 const { getContactHistory, displayContactHistory } = require('../../../app/api/contact-history')
-const Wreck = require('@hapi/wreck')
+const wreck = require('@hapi/wreck')
 
 jest.mock('@hapi/wreck')
 jest.mock('../../../app/config')
 
 describe('contact-history', () => {
   describe('getContactHistory', () => {
-    test('returns null if response status is not 200', async () => {
+    test('returns null if response status is 404', async () => {
       const reference = '123'
-      Wreck.get.mockReturnValueOnce({
-        res: {
+      wreck.get.mockRejectedValueOnce({
+        output: {
           statusCode: 404
         }
       })
@@ -22,7 +22,7 @@ describe('contact-history', () => {
     test('returns contact history payload on 200 response', async () => {
       const reference = '123'
       const payload = [{ createdAt: '2020-01-01', data: { field: 'email', oldValue: 'test@example.com' } }]
-      Wreck.get.mockReturnValueOnce({
+      wreck.get.mockReturnValueOnce({
         res: {
           statusCode: 200
         },
@@ -32,6 +32,23 @@ describe('contact-history', () => {
       const result = await getContactHistory(reference)
 
       expect(result).toEqual(payload)
+    })
+
+    test('throws errors', () => {
+      const logger = { setBindings: jest.fn() }
+
+      const response = {
+        message: 'history boom',
+        output: {
+          statusCode: 500
+        }
+      }
+
+      wreck.get.mockRejectedValueOnce(response)
+
+      expect(async () => {
+        await getContactHistory('E100', logger)
+      }).rejects.toBe(response)
     })
   })
 

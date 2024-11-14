@@ -34,7 +34,7 @@ async function getApplications (searchType, searchText, limit, offset, filterSta
 }
 
 async function processApplicationClaim (reference, user, approved, logger) {
-  const url = `${applicationApiUri}/application/claim`
+  const endpoint = `${applicationApiUri}/application/claim`
   const options = {
     payload: {
       reference,
@@ -44,10 +44,10 @@ async function processApplicationClaim (reference, user, approved, logger) {
     json: true
   }
   try {
-    const { payload } = await wreck.post(url, options)
+    const { payload } = await wreck.post(endpoint, options)
     return payload
   } catch (err) {
-    logger.setBindings({ err })
+    logger.setBindings({ err, endpoint })
     throw err
   }
 }
@@ -65,8 +65,8 @@ async function updateApplicationStatus (reference, user, status, logger) {
     const { payload } = await wreck.put(endpoint, options)
     return payload
   } catch (err) {
-    logger.setBindings({ err })
-    return false
+    logger.setBindings({ err, endpoint })
+    throw err
   }
 }
 

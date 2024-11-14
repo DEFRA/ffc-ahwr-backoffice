@@ -46,7 +46,7 @@ async function updateClaimStatus (reference, user, status, logger) {
     const { payload } = await wreck.put(endpoint, options)
     return payload
   } catch (err) {
-    logger.setBingings({ err })
+    logger.setBindings({ err, endpoint })
     throw err
   }
 }

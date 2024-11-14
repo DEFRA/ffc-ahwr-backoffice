@@ -3,7 +3,6 @@ describe('Logout test', () => {
   let server
 
   jest.mock('../../../../app/auth/azure-auth')
-  const { logout } = require('../../../../app/auth')
 
   beforeEach(async () => {
     server = await createServer()
@@ -20,8 +19,6 @@ describe('Logout test', () => {
   }
 
   test('GET /logout route redirects to /login', async () => {
-    logout.mockResolvedValue({})
-
     const options = {
       method: 'GET',
       url: '/logout',
@@ -29,6 +26,7 @@ describe('Logout test', () => {
     }
 
     const response = await server.inject(options)
+
     expect(response.statusCode).toBe(302)
     expect(response.headers.location).toEqual('/login')
   })

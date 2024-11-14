@@ -7,7 +7,8 @@ const regexChecker = (regex, str) => {
     isValid = false
     return isValid
   }
-  return !!regexValue.test(str)
+
+  return regexValue.test(str)
 }
 
 module.exports = regexChecker
