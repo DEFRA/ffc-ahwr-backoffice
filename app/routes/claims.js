@@ -15,13 +15,8 @@ module.exports = [{
   options: {
     auth: { scope: [administrator, authoriser, processor, recommender, user] },
     handler: async (request, h) => {
-      try {
-        await crumbCache.generateNewCrumb(request, h)
-        return h.view('claims', await viewModel(request)) // NOSONAR
-      } catch (err) {
-        console.log(err)
-        throw err
-      }
+      await crumbCache.generateNewCrumb(request, h)
+      return h.view('claims', await viewModel(request)) // NOSONAR
     }
   }
 },
