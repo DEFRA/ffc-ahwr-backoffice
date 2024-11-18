@@ -5,21 +5,10 @@ const parsePayload = (events, eventType) => {
 }
 
 const parseData = (events, type, key) => {
-  let value = ''
-  let raisedOn = ''
-  let raisedBy = ''
-  const data = parsePayload(events, type)
-
-  try {
-    value = data?.data[key]
-    raisedOn = data?.raisedOn
-    raisedBy = data?.raisedBy
-  } catch (error) {
-    console.log(`${key} not found`)
-  }
+  const { data, raisedOn = '', raisedBy = '' } = parsePayload(events, type)
 
   return {
-    value,
+    value: data?.[key] || '',
     raisedOn,
     raisedBy
   }

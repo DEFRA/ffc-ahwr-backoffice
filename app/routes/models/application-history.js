@@ -9,16 +9,8 @@ const formatDate = (dateToFormat, currentDateFormat = 'YYYY-MM-DD', dateFormat =
 }
 
 const parseData = (payload, key) => {
-  let value = ''
   const data = payload ? JSON.parse(payload) : {}
-
-  try {
-    value = data[key]
-  } catch (error) {
-    console.log(`${key} not found`)
-  }
-
-  return value
+  return data[key]
 }
 
 const filterRecords = (applicationHistory) => {

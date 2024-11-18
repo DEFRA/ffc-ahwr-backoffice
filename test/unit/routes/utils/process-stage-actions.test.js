@@ -1,6 +1,9 @@
 const processStageActions = require('../../../../app/routes/utils/process-stage-actions')
 
 const mockRequest = {
+  logger: {
+    setBindings: jest.fn()
+  },
   payload: {
     reference: 'AHWR-555A-FD4C',
     claimOrApplication: 'application'
@@ -11,6 +14,9 @@ const mockRole = 'Recommender'
 const mockStage = 'Claim Approve/Reject'
 const isClaimToBePaid = false
 
+jest.mock('@hapi/wreck', () => ({
+  put: jest.fn().mockReturnValue({ payload: 'mock response' })
+}))
 jest.mock('../../../../app/auth/get-user')
 const getUser = require('../../../../app/auth/get-user')
 getUser.mockReturnValue({ username: 'test-user' })
@@ -40,13 +46,6 @@ const { processApplicationClaim } = require('../../../../app/api/applications')
 processApplicationClaim.mockResolvedValue('claim-processed')
 
 describe('Process stage action test', () => {
-  let logSpy
-  let errorSpy
-  beforeAll(() => {
-    jest.clearAllMocks()
-    logSpy = jest.spyOn(console, 'log')
-    errorSpy = jest.spyOn(console, 'error')
-  })
   test('Process all actions', async () => {
     const response = await processStageActions(mockRequest, mockRole, mockStage, 'Recommended to pay', isClaimToBePaid)
     expect(response).toEqual([
@@ -60,11 +59,12 @@ describe('Process stage action test', () => {
       payload: {
         reference: 'AHWR-555A-FD4C',
         claimOrApplication: 'claim'
-      }
+      },
+      logger: { setBindings: jest.fn() }
     }, mockRole, mockStage, 'Recommended to pay', isClaimToBePaid)
     expect(response).toEqual([
       { action: 'Added stage execution', stageExecutionRow: 'stage-execution-row' },
-      { action: 'Processed claim', response: false },
+      { action: 'Processed claim', response: 'mock response' },
       { action: 'Updated stage execution', response: 'stage-execution-row' }
     ])
   })
@@ -73,11 +73,12 @@ describe('Process stage action test', () => {
       payload: {
         reference: 'AHWR-555A-FD4C',
         claimOrApplication: 'claim'
-      }
+      },
+      logger: { setBindings: jest.fn() }
     }, mockRole, mockStage, 'Recommended to pay', true)
     expect(response).toEqual([
       { action: 'Added stage execution', stageExecutionRow: 'stage-execution-row' },
-      { action: 'Processed claim', response: false },
+      { action: 'Processed claim', response: 'mock response' },
       { action: 'Updated stage execution', response: 'stage-execution-row' }
     ])
   })
@@ -86,9 +87,5 @@ describe('Process stage action test', () => {
     await expect(
       processStageActions(mockRequest, 'Wrong role', mockStage, 'Recommended to pay', isClaimToBePaid)
     ).rejects.toThrow(new Error('Error when filtering stage configurations for role Wrong role and stage Claim Approve/Reject'))
-
-    expect(logSpy).toHaveBeenCalledWith('processStageActions error: ', `Error when filtering stage configurations for role Wrong role and stage ${mockStage}`)
-    expect(errorSpy).toHaveBeenCalledWith(new Error(`Error when filtering stage configurations for role Wrong role and stage ${mockStage}`)
-    )
   })
 })

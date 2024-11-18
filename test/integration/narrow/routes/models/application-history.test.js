@@ -140,6 +140,7 @@ describe('Application-history model test', () => {
       ]
     }
     const res = getHistoryData(applicationHistoryData)
+
     expect(res).not.toBeNull()
     expect(res.header[0].text).toEqual('Date')
     expect(res.header[1].text).toEqual('Time')

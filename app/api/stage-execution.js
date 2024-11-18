@@ -1,79 +1,52 @@
-const Wreck = require('@hapi/wreck')
+const wreck = require('@hapi/wreck')
 const { applicationApiUri } = require('../config')
 
-async function getAllStageExecutions () {
-  const url = `${applicationApiUri}/stageexecution`
-  console.log('Application API: Getting all stage executions')
+async function getStageExecutionByApplication (applicationReference, logger) {
+  const endpoint = `${applicationApiUri}/stageexecution/${applicationReference}`
   try {
-    const response = await Wreck.get(url, { json: true })
-    if (response.res.statusCode !== 200) {
-      throw new Error(`HTTP ${response.res.statusCode} (${response.res.statusMessage})`)
-    }
-    return response.payload
+    const { payload } = await wreck.get(endpoint, { json: true })
+
+    return payload
   } catch (err) {
-    console.log(`Application API: Error while getting all stage executions: ${err.message}`)
-    console.error(err)
-    return []
+    if (err.output.statusCode === 404) {
+      return []
+    } else {
+      logger.setBindings({ err, endpoint })
+      throw err
+    }
   }
 }
 
-async function getStageExecutionByApplication (applicationReference) {
-  const url = `${applicationApiUri}/stageexecution/${applicationReference}`
-  try {
-    const response = await Wreck.get(url, { json: true })
-    if (response.res.statusCode !== 200) {
-      throw new Error(`HTTP ${response.res.statusCode} (${response.res.statusMessage})`)
-    }
-    console.log(`Application API: Got stage executions by application ${JSON.stringify(applicationReference)}: ${JSON.stringify(response.payload)}`)
-    return response.payload
-  } catch (err) {
-    console.log(`Application API: Error while getting stage executions by application ${applicationReference}: ${err.message}`)
-    console.error(err)
-    return []
-  }
-}
-
-async function addStageExecution (payload) {
-  const url = `${applicationApiUri}/stageexecution`
-  console.log(`Application API: Adding stage execution, ${JSON.stringify(payload)}`)
+async function addStageExecution (payload, logger) {
+  const endpoint = `${applicationApiUri}/stageexecution`
   const options = {
     payload,
     json: true
   }
   try {
-    const response = await Wreck.post(url, options)
-    if (response.res.statusCode !== 200) {
-      throw new Error(`HTTP ${response.res.statusCode} (${response.res.statusMessage})`)
-    }
-    return response.payload
+    const { payload } = await wreck.post(endpoint, options)
+    return payload
   } catch (err) {
-    console.log(`Application API: Error while adding stage execution: ${err.message}`)
-    console.error(err)
-    return []
+    logger.setBindings({ err, endpoint })
+    throw err
   }
 }
 
-async function updateStageExecution (id) {
-  const url = `${applicationApiUri}/stageexecution/${id}`
-  console.log(`Application API: Updating stage execution ${id}`)
+async function updateStageExecution (id, logger) {
+  const endpoint = `${applicationApiUri}/stageexecution/${id}`
   const options = {
     json: true
   }
   try {
-    const response = await Wreck.put(url, options)
-    if (response.res.statusCode !== 200) {
-      throw new Error(`HTTP ${response.res.statusCode} (${response.res.statusMessage})`)
-    }
-    return response.payload
+    const { payload } = await wreck.put(endpoint, options)
+    return payload
   } catch (err) {
-    console.log(`Application API: Error while updating stage execution: ${err.message}`)
-    console.error(err)
-    return []
+    logger.setBindings({ err, endpoint })
+    throw err
   }
 }
 
 module.exports = {
-  getAllStageExecutions,
   getStageExecutionByApplication,
   addStageExecution,
   updateStageExecution

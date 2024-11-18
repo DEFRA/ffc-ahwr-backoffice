@@ -6,25 +6,22 @@ const { isTodayHoliday } = require('../../api/gov-holiday')
 module.exports = {
   plugin: {
     name: 'onHoldAppScheduler',
-    register: async () => {
-      console.log(`${new Date().toISOString()} processing OnHold applications:Running on Hold application scheduler... ${JSON.stringify(
-        config.onHoldAppScheduler
-      )}`)
+    register: async (server) => {
+      server.logger.info({
+        schedule: config.onHoldAppScheduler
+      }, 'registering schedule for processing on hold applications and claims')
+
       cron.schedule(config.onHoldAppScheduler.schedule, async () => {
         try {
           const isHoliday = await isTodayHoliday()
-          if (isHoliday) {
-            console.log('Today is a holiday.')
-          } else {
-            console.log(`${new Date().toISOString()} processing OnHold applications:on Hold applications are about to be processed`)
-            await processOnHoldApplications()
-            console.log(`${new Date().toISOString()} processing OnHold applications:on Hold applications has been processed`)
-            console.log(`${new Date().toISOString()} processing OnHold claims: on Hold claims are about to be processed`)
-            await processOnHoldClaims()
-            console.log(`${new Date().toISOString()} processing OnHold claims: on Hold claims has been processed`)
+          server.logger.setBindings({ isHoliday })
+          if (!isHoliday) {
+            await processOnHoldApplications(server.logger)
+            await processOnHoldClaims(server.logger)
           }
-        } catch (error) {
-          console.error(`${new Date().toISOString()} processing OnHold applications/claims: Error while processing on Hold applications/claims`, error)
+          server.logger.info('processing on hold applications and claims')
+        } catch (err) {
+          server.logger.error({ err }, 'processing on hold applications and claims')
         }
       }, {
         scheduled: config.onHoldAppScheduler.enabled

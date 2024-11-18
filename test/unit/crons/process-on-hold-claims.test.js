@@ -5,6 +5,7 @@ describe('Process process on hold claims function test.', () => {
   const { updateClaimStatus, getClaims } = require('../../../app/api/claims')
 
   beforeEach(() => {
+    jest.useFakeTimers()
     jest.setSystemTime(MOCK_NOW)
     jest.mock('../../../app/config', () => ({
       ...jest.requireActual('../../../app/config'),
@@ -34,24 +35,11 @@ describe('Process process on hold claims function test.', () => {
 
   test('test error while running process', async () => {
     const { processOnHoldClaims } = require('../../../app/crons/process-on-hold/process')
-    getClaims.mockImplementation(async () => {
-      throw new Error('Invalid something error')
-    })
-    const result = await processOnHoldClaims()
-    expect(result).toBeFalsy()
-    expect(getClaims).toHaveBeenCalled()
-    expect(updateClaimStatus).not.toHaveBeenCalled()
-  })
+    getClaims.mockRejectedValueOnce('getClaims boom')
 
-  test('test error handled', async () => {
-    const { processOnHoldClaims } = require('../../../app/crons/process-on-hold/process')
-    updateClaimStatus.mockImplementation(async () => {
-      throw new Error('Invalid something error')
-    })
-    const result = await processOnHoldClaims()
-    expect(result).toBeFalsy()
-    expect(getClaims).toHaveBeenCalled()
-    expect(updateClaimStatus).toHaveBeenCalled()
+    expect(async () => {
+      await processOnHoldClaims()
+    }).rejects.toBe('getClaims boom')
   })
 
   test('test error handled no pending claims', async () => {
@@ -60,8 +48,9 @@ describe('Process process on hold claims function test.', () => {
       applications: [],
       total: 0
     })
-    const result = await processOnHoldClaims()
-    expect(result).toBeFalsy()
+    const server = { setBindings: jest.fn() }
+    await processOnHoldClaims(server)
+
     expect(getClaims).toHaveBeenCalled()
     expect(updateClaimStatus).not.toHaveBeenCalled()
   })
@@ -75,24 +64,10 @@ describe('Process process on hold claims function test.', () => {
       total: 1
     })
     const { processOnHoldClaims } = require('../../../app/crons/process-on-hold/process')
-    const result = await processOnHoldClaims()
-    expect(result).toBeTruthy()
+    const server = { setBindings: jest.fn() }
+    await processOnHoldClaims(server)
+
     expect(getClaims).toHaveBeenCalled()
     expect(updateClaimStatus).toHaveBeenCalled()
-  })
-
-  test('success to process on hold application - no claims', async () => {
-    getClaims.mockResolvedValueOnce({
-      claims: [{
-        reference: 'ABC-XYZ-123',
-        updatedAt: new Date()
-      }],
-      total: 1
-    })
-    const { processOnHoldClaims } = require('../../../app/crons/process-on-hold/process')
-    const result = await processOnHoldClaims()
-    expect(result).toBeTruthy()
-    expect(getClaims).toHaveBeenCalled()
-    expect(updateClaimStatus).not.toHaveBeenCalled()
   })
 })

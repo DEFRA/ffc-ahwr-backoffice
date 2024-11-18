@@ -9,11 +9,4 @@ const failActionTwoCheckboxes = async (error, panel) => {
   return checkboxErrors
 }
 
-const failActionConsoleLog = async (request, error, routeForLog) => {
-  console.log(`routes:${routeForLog}: Error when validating payload: ${JSON.stringify({
-    errorMessage: error.message,
-    payload: request.payload
-  })}`)
-}
-
-module.exports = { failActionConsoleLog, failActionTwoCheckboxes }
+module.exports = { failActionTwoCheckboxes }

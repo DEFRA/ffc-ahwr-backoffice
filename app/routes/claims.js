@@ -53,6 +53,7 @@ module.exports = [{
         setClaimSearch(request, claimSearch.searchText, request.payload?.searchText)
         return h.view(viewTemplate, await viewModel(request, 1)) // NOSONAR
       } catch (err) {
+        request.logger.setBindings({ err })
         return h.view(viewTemplate, { ...request.payload, error: err }).code(400).takeover()
       }
     }

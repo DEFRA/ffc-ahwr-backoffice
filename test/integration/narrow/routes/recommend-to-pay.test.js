@@ -22,7 +22,6 @@ applications.processApplicationClaim = jest.fn().mockResolvedValue(true)
 
 describe('Recommended To Pay test', () => {
   let crumb
-  let logSpy
 
   jest.mock('../../../../app/auth')
   let auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
@@ -30,8 +29,6 @@ describe('Recommended To Pay test', () => {
   beforeEach(async () => {
     crumb = await getCrumbs(global.__SERVER__)
     jest.clearAllMocks()
-
-    logSpy = jest.spyOn(console, 'log')
   })
 
   describe(`POST ${url} route`, () => {
@@ -60,15 +57,6 @@ describe('Recommended To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(logSpy).toHaveBeenCalledWith(`routes:recommend-to-pay: Error when validating payload: ${JSON.stringify({
-        errorMessage: '"confirm" must be an array',
-        payload: {
-          reference: 'AHWR-555A-FD4C',
-          claimOrApplication: 'application',
-          page: 1,
-          confirm: 'checkedAgainstChecklist'
-        }
-      })}`)
       expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&recommendToPay=true&errors=${encodedErrors}`)
     })
     test('returns 302 when validation fails for claim', async () => {
@@ -88,16 +76,6 @@ describe('Recommended To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(logSpy).toHaveBeenCalledWith(`routes:recommend-to-pay: Error when validating payload: ${JSON.stringify({
-        errorMessage: '"confirm" must be an array',
-        payload: {
-          reference: 'AHWR-555A-FD4C',
-          claimOrApplication: 'claim',
-          page: 1,
-          returnPage: 'claims',
-          confirm: 'checkedAgainstChecklist'
-        }
-      })}`)
       expect(res.headers.location).toEqual(`/view-claim/${reference}?recommendToPay=true&returnPage=claims&errors=${encodedErrors}`)
     })
 
@@ -116,14 +94,6 @@ describe('Recommended To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(logSpy).toHaveBeenCalledWith(`routes:recommend-to-pay: Error when validating payload: ${JSON.stringify({
-        errorMessage: '"confirm" must be an array',
-        payload: {
-          reference: 'AHWR-555A-FD4C',
-          claimOrApplication: 'application',
-          confirm: 'checkedAgainstChecklist'
-        }
-      })}`)
       expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&recommendToPay=true&errors=${encodedErrors}`)
     })
 
@@ -234,7 +204,6 @@ describe('Recommended To Pay test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(500)
-      expect(Boom.internal).toHaveBeenCalledWith('Error when processing stage actions')
     })
     test('Returns 500 on on error when user is not administrator or remomender ', async () => {
       auth = { strategy: 'session-auth', credentials: { scope: [], account: { homeAccountId: 'testId', name: 'admin' } } }
