@@ -10,11 +10,11 @@
     "pretest": "npm run test:lint",
     "test": "jest --runInBand --forceExit --detectOpenHandles",
     "test:watch": "jest --coverage=false --onlyChanged --watch --runInBand",
-    "test:watch:all": "npm run test:watch & build:watch",
+    "test:watch:all": "npm run test:watch & npm run build:watch",
     "test:lint": "standard",
     "test:lint-fix": "standard --fix",
     "test:debug": "node --inspect-brk=0.0.0.0 ./node_modules/jest/bin/jest.js --coverage=false --onlyChanged --watch --runInBand --no-cache",
-    "start:watch": "npm run build:watch & start:nodemon",
+    "start:watch": "npm run build:watch & npm run start:nodemon",
     "start:debug": "nodemon --inspect-brk=0.0.0.0 --ext css,js,njk --legacy-watch app/index.js",
     "start:nodemon": "nodemon --inspect=0.0.0.0 --ext css,js,njk --legacy-watch app/index.js"
   },
