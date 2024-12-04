@@ -48,7 +48,10 @@ const schema = Joi.object({
     schedule: Joi.string().default('0 18 * * 1-5')
   },
   endemics: {
-    enabled: Joi.bool().default(false)
+    enabled: Joi.bool().required()
+  },
+  multiSpecies: {
+    enabled: Joi.bool().required()
   }
 })
 
@@ -93,7 +96,10 @@ const config = {
     schedule: process.env.ON_HOLD_APP_PROCESS_SCHEDULE
   },
   endemics: {
-    enabled: process.env.ENDEMICS_ENABLED
+    enabled: process.env.ENDEMICS_ENABLED === 'true'
+  },
+  multiSpecies: {
+    enabled: process.env.MULTI_SPECIES_ENABLED === 'true'
   }
 }
 

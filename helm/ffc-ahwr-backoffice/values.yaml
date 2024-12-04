@@ -47,7 +47,8 @@ container:
   dateOfTestingEnabled:
   onHoldAppProcessEnabled:
   onHoldAppProcessSchedule:
-  endemicsEnabled:
+  endemicsEnabled: 'true'
+  multiSpeciesEnabled: 'false'
 
 deployment:
   cpuThreshold: 40
