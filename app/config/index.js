@@ -98,7 +98,7 @@ const config = {
   endemics: {
     enabled: process.env.ENDEMICS_ENABLED
   },
-  multiSpecies:{
+  multiSpecies: {
     enabled: process.env.MULTI_SPECIES_ENABLED
   }
 }
