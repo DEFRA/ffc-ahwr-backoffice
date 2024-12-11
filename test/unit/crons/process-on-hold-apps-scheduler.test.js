@@ -13,6 +13,7 @@ describe('Process On Hold Applications plugin test', () => {
   })
 
   test('test node cron executed', async () => {
+    const mockLogger = { info: jest.fn(), error: jest.fn(), setBindings: jest.fn() }
     process.env.ON_HOLD_APP_PROCESS_SCHEDULE = '0 18 * * 1-5'
     const mockNodeCron = require('node-cron')
     jest.mock('node-cron', () => {
@@ -23,7 +24,11 @@ describe('Process On Hold Applications plugin test', () => {
     jest.mock('../../../app/crons/process-on-hold/process')
     require('../../../app/crons/process-on-hold/process')
     const processOnHoldAppsScheduler = require('../../../app/crons/process-on-hold/scheduler')
-    const server = { logger: { info: jest.fn(), setBindings: jest.fn() } }
+    const server = {
+      logger: {
+        ...mockLogger, child: jest.fn().mockReturnValue(mockLogger)
+      }
+    }
     await processOnHoldAppsScheduler.plugin.register(server)
     expect(mockNodeCron.schedule).toHaveBeenCalledWith(
       '0 18 * * 1-5', expect.any(Function), { scheduled: true }
@@ -31,6 +36,7 @@ describe('Process On Hold Applications plugin test', () => {
   })
 
   test('Is Holiday True - test Process On Hold Applications not called', async () => {
+    const mockLogger = { info: jest.fn(), error: jest.fn(), setBindings: jest.fn() }
     const mockNodeCron = require('node-cron')
     jest.mock('node-cron', () => {
       return {
@@ -47,12 +53,17 @@ describe('Process On Hold Applications plugin test', () => {
     const { processOnHoldApplications } = require('../../../app/crons/process-on-hold/process')
     mockNodeCron.schedule.mockImplementationOnce(async (frequency, callback) => await callback())
     const processOnHoldAppsScheduler = require('../../../app/crons/process-on-hold/scheduler')
-    const server = { logger: { info: jest.fn(), setBindings: jest.fn() } }
+    const server = {
+      logger: {
+        ...mockLogger, child: jest.fn().mockReturnValue(mockLogger)
+      }
+    }
     await processOnHoldAppsScheduler.plugin.register(server)
     expect(processOnHoldApplications).toBeCalledTimes(0)
   })
 
   test('Is Holiday Throw Error - test Process On Hold Applications not called', async () => {
+    const mockLogger = { info: jest.fn(), error: jest.fn(), setBindings: jest.fn() }
     const mockNodeCron = require('node-cron')
     jest.mock('node-cron', () => {
       return {
@@ -69,12 +80,17 @@ describe('Process On Hold Applications plugin test', () => {
     const { processOnHoldApplications } = require('../../../app/crons/process-on-hold/process')
     mockNodeCron.schedule.mockImplementationOnce(async (frequency, callback) => await callback())
     const processOnHoldAppsScheduler = require('../../../app/crons/process-on-hold/scheduler')
-    const server = { logger: { error: jest.fn(), info: jest.fn() } }
+    const server = {
+      logger: {
+        ...mockLogger, child: jest.fn().mockReturnValue(mockLogger)
+      }
+    }
     await processOnHoldAppsScheduler.plugin.register(server)
     expect(processOnHoldApplications).toBeCalledTimes(0)
   })
 
   test('test Process On Hold Applications called', async () => {
+    const mockLogger = { info: jest.fn(), error: jest.fn(), setBindings: jest.fn() }
     const mockNodeCron = require('node-cron')
     jest.mock('node-cron', () => {
       return {
@@ -94,7 +110,11 @@ describe('Process On Hold Applications plugin test', () => {
 
     mockNodeCron.schedule.mockImplementationOnce(async (_, callback) => await callback())
     const processOnHoldAppsScheduler = require('../../../app/crons/process-on-hold/scheduler')
-    const server = { logger: { info: jest.fn(), setBindings: jest.fn() } }
+    const server = {
+      logger: {
+        ...mockLogger, child: jest.fn().mockReturnValue(mockLogger)
+      }
+    }
     await processOnHoldAppsScheduler.plugin.register(server)
 
     expect(processOnHoldApplications).toHaveBeenCalled()

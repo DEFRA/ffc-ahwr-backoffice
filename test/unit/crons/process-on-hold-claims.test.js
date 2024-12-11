@@ -48,8 +48,8 @@ describe('Process process on hold claims function test.', () => {
       applications: [],
       total: 0
     })
-    const server = { setBindings: jest.fn() }
-    await processOnHoldClaims(server)
+    const logger = { setBindings: jest.fn() }
+    await processOnHoldClaims(logger)
 
     expect(getClaims).toHaveBeenCalled()
     expect(updateClaimStatus).not.toHaveBeenCalled()
@@ -64,8 +64,8 @@ describe('Process process on hold claims function test.', () => {
       total: 1
     })
     const { processOnHoldClaims } = require('../../../app/crons/process-on-hold/process')
-    const server = { setBindings: jest.fn() }
-    await processOnHoldClaims(server)
+    const logger = { setBindings: jest.fn() }
+    await processOnHoldClaims(logger)
 
     expect(getClaims).toHaveBeenCalled()
     expect(updateClaimStatus).toHaveBeenCalled()
