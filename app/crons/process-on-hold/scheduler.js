@@ -12,16 +12,17 @@ module.exports = {
       }, 'registering schedule for processing on hold applications and claims')
 
       cron.schedule(config.onHoldAppScheduler.schedule, async () => {
+        const logger = server.logger.child({})
         try {
           const isHoliday = await isTodayHoliday()
-          server.logger.setBindings({ isHoliday })
+          logger.setBindings({ isHoliday })
           if (!isHoliday) {
-            await processOnHoldApplications(server.logger)
-            await processOnHoldClaims(server.logger)
+            await processOnHoldApplications(logger)
+            await processOnHoldClaims(logger)
           }
-          server.logger.info('processing on hold applications and claims')
+          logger.info('processing on hold applications and claims')
         } catch (err) {
-          server.logger.error({ err }, 'processing on hold applications and claims')
+          logger.error({ err }, 'processing on hold applications and claims')
         }
       }, {
         scheduled: config.onHoldAppScheduler.enabled
