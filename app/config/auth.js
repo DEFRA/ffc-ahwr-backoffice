@@ -9,7 +9,7 @@ const schema = Joi.object({
 })
 
 const config = {
-  enabled: process.env.AADAR_ENABLED,
+  enabled: process.env.AADAR_ENABLED === 'true',
   clientSecret: process.env.AADAR_CLIENT_SECRET,
   clientId: process.env.AADAR_CLIENT_ID,
   authority: `https://login.microsoftonline.com/${process.env.AADAR_TENANT_ID}`,
