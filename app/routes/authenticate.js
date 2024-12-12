@@ -10,7 +10,7 @@ module.exports = {
     try {
       console.log('query', JSON.stringify(request.query))
       console.log('cookieAuth', JSON.stringify(request.cookieAuth))
-      
+
       await auth.authenticate(request.query.code, request.cookieAuth)
       return h.redirect('/claims')
     } catch (err) {
