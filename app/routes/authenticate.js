@@ -8,8 +8,7 @@ module.exports = {
   },
   handler: async (request, h) => {
     try {
-      console.log('query', JSON.stringify(request.query))
-      console.log('cookieAuth', JSON.stringify(request.cookieAuth))
+      console.log('req query', request.query)
 
       await auth.authenticate(request.query.code, request.cookieAuth)
       return h.redirect('/claims')
