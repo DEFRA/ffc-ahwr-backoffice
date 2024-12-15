@@ -24,6 +24,7 @@ module.exports = {
       server.auth.default('session-auth')
 
       server.ext('onPreAuth', async (request, h) => {
+        console.log(request.auth)
         if (request.auth.credentials) {
           await auth.refresh(request.auth.credentials.account, request.cookieAuth)
         }
