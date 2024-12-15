@@ -30,7 +30,8 @@ const authenticate = async (redirectCode, cookieAuth) => {
     code: redirectCode,
     redirectUri: config.auth.redirectUrl
   })
-
+  console.log('Got a token...')
+  console.log(token)
   cookieAuth.set({
     scope: token.idTokenClaims.roles,
     account: token.account
