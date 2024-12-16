@@ -20,8 +20,6 @@ const { error, value } = schema.validate(config, { abortEarly: false })
 
 if (error) {
   throw new Error(`The auth config is invalid. ${error.message}`)
-} else {
-  console.log('config', JSON.stringify(value))
 }
 
 module.exports = value
