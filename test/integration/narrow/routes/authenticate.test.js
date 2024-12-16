@@ -26,7 +26,7 @@ describe('Authentication route tests', () => {
 
       const response = await server.inject(options)
       expect(response.statusCode).toBe(302)
-      expect(response.headers.location).toEqual('/claims')
+      expect(response.headers.location).toEqual('/')
     })
 
     test('GET /authenticate route returns a 500 error due to try catch', async () => {

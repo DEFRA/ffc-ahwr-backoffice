@@ -8,10 +8,8 @@ module.exports = {
   },
   handler: async (request, h) => {
     try {
-      console.log('req query', request.query)
-
       await auth.authenticate(request.query.code, request.cookieAuth)
-      return h.redirect('/claims')
+      return h.redirect('/')
     } catch (err) {
       request.logger.setBindings({ err })
     }
