@@ -31,8 +31,6 @@ const authenticate = async (redirectCode, cookieAuth) => {
     redirectUri: config.auth.redirectUrl
   })
 
-  console.log(JSON.stringify(token))
-  console.log(JSON.stringify({ cookieAuth }))
   cookieAuth.set({
     scope: token.idTokenClaims.roles,
     account: token.account
