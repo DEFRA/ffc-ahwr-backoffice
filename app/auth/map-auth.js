@@ -2,7 +2,6 @@ const isInRole = require('./is-in-role')
 const { administrator, processor, user, recommender, authoriser } = require('./permissions')
 
 const mapAuth = (request) => {
-  console.log(request.auth)
   return {
     isAuthenticated: request.auth.isAuthenticated,
     isAnonymous: !request.auth.isAuthenticated,
