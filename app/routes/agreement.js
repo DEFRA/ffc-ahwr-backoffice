@@ -51,7 +51,7 @@ module.exports = [{
       const summaryDetails = [
         { field: 'Agreement number', newValue: request.params.reference, oldValue: null },
         { field: 'Agreement date', newValue: formatedDateToUk(application.createdAt), oldValue: null },
-        { field: 'Agreement holder', newValue: organisation?.farmerName, oldValue: contactHistoryDetails.farmerName },
+        { field: 'Agreement holder', newValue: organisation?.name, oldValue: null },
         { field: 'Agreement holder email', newValue: organisation?.email, oldValue: contactHistoryDetails.email },
         { field: 'SBI number', newValue: organisation?.sbi, oldValue: null },
         { field: 'Address', newValue: organisation?.address, oldValue: contactHistoryDetails.address },

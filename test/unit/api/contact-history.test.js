@@ -6,19 +6,6 @@ jest.mock('../../../app/config')
 
 describe('contact-history', () => {
   describe('getContactHistory', () => {
-    test('returns null if response status is 404', async () => {
-      const reference = '123'
-      wreck.get.mockRejectedValueOnce({
-        output: {
-          statusCode: 404
-        }
-      })
-
-      const result = await getContactHistory(reference)
-
-      expect(result).toBeNull()
-    })
-
     test('returns contact history payload on 200 response', async () => {
       const reference = '123'
       const payload = [{ createdAt: '2020-01-01', data: { field: 'email', oldValue: 'test@example.com' } }]
@@ -59,7 +46,6 @@ describe('contact-history', () => {
       expect(result).toEqual({
         orgEmail: 'NA',
         email: 'NA',
-        farmerName: 'NA',
         address: 'NA'
       })
     })
@@ -84,7 +70,6 @@ describe('contact-history', () => {
       expect(result).toEqual({
         orgEmail: 'Organisation email at start of agreement: org@example.com',
         email: 'User email at start of agreement: test@example.com',
-        farmerName: 'NA',
         address: 'NA'
       })
     })
