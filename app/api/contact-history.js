@@ -1,5 +1,4 @@
 const wreck = require('@hapi/wreck')
-const _ = require('lodash')
 const { applicationApiUri } = require('../config')
 const { fieldsNames, labels, notAvailable } = require('./../constants/contact-history')
 
@@ -17,12 +16,16 @@ async function getContactHistory (reference, logger) {
 
 const getContactFieldData = (contactHistoryData, field) => {
   const filteredData = contactHistoryData.filter(contact => contact.data?.field === field)
-  if (filteredData.length) {
-    const oldValue = _.sortBy(filteredData, [function (data) { return new Date(data.createdAt) }])[0].data.oldValue
-    return `${labels[field]} ${oldValue}`
-  } else {
+
+  if (filteredData.length === 0) {
     return 'NA'
   }
+
+  const [firstUpdate] = filteredData.sort((a, b) =>
+    new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+  )
+
+  return `${labels[field]} ${firstUpdate.data.oldValue}`
 }
 
 const displayContactHistory = (contactHistory) => {

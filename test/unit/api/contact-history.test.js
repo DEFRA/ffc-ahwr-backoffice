@@ -55,21 +55,33 @@ describe('contact-history', () => {
         createdAt: '2020-01-01',
         data: {
           field: 'orgEmail',
-          oldValue: 'org@example.com'
+          oldValue: 'more-recent-org@example.com'
+        }
+      }, {
+        createdAt: '2019-12-01',
+        data: {
+          field: 'orgEmail',
+          oldValue: 'original-org@example.com'
         }
       }, {
         createdAt: '2020-02-01',
         data: {
           field: 'email',
-          oldValue: 'test@example.com'
+          oldValue: 'more-recent-test@example.com'
+        }
+      }, {
+        createdAt: '2020-01-01',
+        data: {
+          field: 'email',
+          oldValue: 'original-test@example.com'
         }
       }]
 
       const result = displayContactHistory(contactHistory)
 
       expect(result).toEqual({
-        orgEmail: 'Organisation email at start of agreement: org@example.com',
-        email: 'User email at start of agreement: test@example.com',
+        orgEmail: 'Organisation email at start of agreement: original-org@example.com',
+        email: 'User email at start of agreement: original-test@example.com',
         address: 'NA'
       })
     })

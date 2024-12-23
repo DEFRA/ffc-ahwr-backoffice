@@ -1,10 +1,5 @@
 const browserstack = require('browserstack-local')
-//const { ReportAggregator, HtmlReporter } = require('@rpii/wdio-html-reporter')
-//const log4js = require('@log4js-node/log4js-api')
 const allureReporter = require('@wdio/allure-reporter')
-//const cucumberJson = require('wdio-cucumberjs-json-reporter')
-//const logger = log4js.getLogger('default')
-const _ = require('lodash')
 const timeStamp = new Date().toLocaleString()
 const envRoot = (process.env.TEST_ENVIRONMENT_ROOT_URL || 'http://host.docker.internal:3004')
 const chromeArgs = process.env.CHROME_ARGS ? process.env.CHROME_ARGS.split(' ') : []
