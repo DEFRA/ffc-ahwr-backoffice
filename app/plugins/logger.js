@@ -1,7 +1,13 @@
 const pino = require('hapi-pino')
 const { name } = require('../../package.json')
 
-const transport = { target: 'pino-pretty' }
+const transport = {
+  target: 'pino-pretty',
+  options: {
+    singleLine: true,
+    colorize: true
+  }
+}
 const testLevel = { level: 'silent' }
 
 const req = (req) => ({
