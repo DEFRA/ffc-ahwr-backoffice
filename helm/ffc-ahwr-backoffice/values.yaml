@@ -6,7 +6,7 @@ image: ffc-ahwr-backoffice
 
 labels: {}
 
-aadPodIdentity: true
+workloadIdentity: true
 
 appInsights:
   connectionString:
