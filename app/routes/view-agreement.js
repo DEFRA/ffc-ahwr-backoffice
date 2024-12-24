@@ -78,7 +78,7 @@ module.exports = {
       const contactHistoryDetails = displayContactHistory(contactHistory)
       const organisation = application.data?.organisation
       const listData = [
-        { field: 'Name', newValue: organisation?.farmerName, oldValue: contactHistoryDetails.farmerName },
+        { field: 'Name', newValue: organisation?.name, oldValue: null },
         { field: 'SBI number', newValue: organisation?.sbi, oldValue: null },
         { field: 'Address', newValue: organisation?.address, oldValue: contactHistoryDetails.address },
         { field: 'Email address', newValue: organisation?.email, oldValue: contactHistoryDetails.email },
