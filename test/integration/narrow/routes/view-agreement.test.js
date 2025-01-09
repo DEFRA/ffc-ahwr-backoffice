@@ -23,7 +23,7 @@ function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
 function expectApplicationDetails ($) {
   expect($('.govuk-summary-list__row').length).toEqual(5)
 
-  expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name')
+  expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Business name')
   expect($('.govuk-summary-list__value').eq(0).text()).toMatch('My Farm')
 
   expect($('.govuk-summary-list__key').eq(1).text()).toMatch('SBI number')

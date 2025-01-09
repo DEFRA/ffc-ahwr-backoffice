@@ -216,7 +216,7 @@ describe('View claim test', () => {
       const content = [
         { key: 'Agreement number', value: 'AHWR-1234-APP1' },
         { key: 'Agreement date', value: '22/03/2024' },
-        { key: 'Agreement holder', value: 'Test Farm Lodge' },
+        { key: 'Business name', value: 'Test Farm Lodge' },
         { key: 'Agreement holder email', value: 'russelldaviese@seivadllessurm.com.test' },
         { key: 'SBI number', value: '113494460' },
         { key: 'Address', value: 'Tesco Stores Ltd,Harwell,Betton,WHITE HOUSE FARM,VINCENT CLOSE,LEIGHTON BUZZARD,HR2 8AN,United Kingdom' },
@@ -237,7 +237,7 @@ describe('View claim test', () => {
       ]
       // Summary list rows expect
       expect($('.govuk-summary-list__row').length).toEqual(20)
-      // Application summury detailes expects
+      // Application summary details expects
       for (let i = 0; i < 6; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
           content[i].key
@@ -246,7 +246,7 @@ describe('View claim test', () => {
           content[i].value
         )
       }
-      // Claim summury detailes expects
+      // Claim summary details expects
       for (let i = 6; i < 20; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
           content[i].key
@@ -303,7 +303,7 @@ describe('View claim test', () => {
 
       // Summary list rows expect
       expect($('.govuk-summary-list__row').length).toEqual(24)
-      // Claim summury detailes expects
+      // Claim summary details expects
       for (let i = 7; i < 24; i++) {
         expect($('.govuk-summary-list__key').eq(i).text()).toMatch(
           content[i].key
@@ -384,7 +384,7 @@ describe('View claim test', () => {
       expect(res.statusCode).toBe(200)
       // Summary list rows expect
       expect($('.govuk-summary-list__row').length).toEqual(24)
-      // Claim summury detailes expects
+      // Claim summary details expects
       const content = [
         null,
         null,

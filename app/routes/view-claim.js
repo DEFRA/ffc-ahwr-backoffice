@@ -64,7 +64,7 @@ module.exports = {
       const applicationSummaryDetails = [
         { key: { text: 'Agreement number' }, value: { text: applicationReference } },
         { key: { text: 'Agreement date' }, value: { text: formatedDateToUk(application.createdAt) } },
-        { key: { text: 'Agreement holder' }, value: { text: organisation?.name } },
+        { key: { text: 'Business name' }, value: { text: organisation?.name } },
         { key: { text: 'Agreement holder email' }, value: { text: organisation?.email } },
         { key: { text: 'SBI number' }, value: { text: organisation?.sbi } },
         { key: { text: 'Address' }, value: { text: organisation?.address } },
