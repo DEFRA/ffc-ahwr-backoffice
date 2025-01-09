@@ -79,7 +79,7 @@ describe('View Application test with Date of Testing enabled', () => {
       expect($('h2.govuk-heading-l').text()).toContain(status)
       expect($('title').text()).toContain('Administration: User Agreement')
       expect($('.govuk-summary-list__row').length).toEqual(5)
-      expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name')
+      expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Business name')
       expect($('.govuk-summary-list__value').eq(0).text()).toMatch('My Farm')
 
       expect($('.govuk-summary-list__key').eq(1).text()).toMatch('SBI number')
@@ -137,7 +137,7 @@ describe('View Application test with Date of Testing enabled', () => {
       expect($('h2.govuk-heading-l').text()).toContain(status)
       expect($('title').text()).toContain('Administration: User Agreement')
       expect($('.govuk-summary-list__row').length).toEqual(5)
-      expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Name')
+      expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Business name')
       expect($('.govuk-summary-list__value').eq(0).text()).toMatch('My Farm')
 
       expect($('.govuk-summary-list__key').eq(1).text()).toMatch('SBI number')
