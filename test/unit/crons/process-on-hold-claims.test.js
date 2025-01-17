@@ -33,7 +33,7 @@ describe('Process process on hold claims function test.', () => {
     jest.clearAllMocks()
   })
 
-  test('test error while running process', async () => {
+  test('error while running process', async () => {
     const { processOnHoldClaims } = require('../../../app/crons/process-on-hold/process')
     getClaims.mockRejectedValueOnce('getClaims boom')
 
@@ -42,10 +42,10 @@ describe('Process process on hold claims function test.', () => {
     }).rejects.toBe('getClaims boom')
   })
 
-  test('test error handled no pending claims', async () => {
+  test('no pending claims', async () => {
     const { processOnHoldClaims } = require('../../../app/crons/process-on-hold/process')
     getClaims.mockResolvedValue({
-      applications: [],
+      claims: [],
       total: 0
     })
     const logger = { setBindings: jest.fn() }
@@ -69,5 +69,30 @@ describe('Process process on hold claims function test.', () => {
 
     expect(getClaims).toHaveBeenCalled()
     expect(updateClaimStatus).toHaveBeenCalled()
+  })
+
+  test('captures failed updates', async () => {
+    getClaims.mockResolvedValueOnce({
+      claims: [{
+        reference: 'ABC-XYZ-123',
+        updatedAt: '2023-10-01T19:40:00.424Z'
+      }, {
+        reference: 'ABC-XYZ-456',
+        updatedAt: '2023-10-01T19:40:00.424Z'
+      }],
+      total: 2
+    })
+    updateClaimStatus.mockRejectedValueOnce(new Error('boom'))
+    const { processOnHoldClaims } = require('../../../app/crons/process-on-hold/process')
+    const logger = { setBindings: jest.fn() }
+    await processOnHoldClaims(logger)
+
+    expect(logger.setBindings.mock.calls).toEqual([
+      [{ claimsTotal: 2 }],
+      [{
+        claimRefs: ['ABC-XYZ-456'],
+        failedClaimRefs: ['ABC-XYZ-123']
+      }]
+    ])
   })
 })

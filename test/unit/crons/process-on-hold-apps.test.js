@@ -86,4 +86,29 @@ describe('Process process on hold applications function test.', () => {
     expect(getApplications).toHaveBeenCalled()
     expect(processApplicationClaim).not.toHaveBeenCalled()
   })
+
+  test('captures failed updates', async () => {
+    getApplications.mockResolvedValueOnce({
+      applications: [{
+        reference: 'ABC-XYZ-123',
+        updatedAt: '2023-10-01T19:40:00.424Z'
+      }, {
+        reference: 'ABC-XYZ-456',
+        updatedAt: '2023-10-01T19:40:00.424Z'
+      }],
+      total: 2
+    })
+    processApplicationClaim.mockRejectedValueOnce(new Error('boom'))
+    const { processOnHoldApplications } = require('../../../app/crons/process-on-hold/process')
+    const logger = { setBindings: jest.fn() }
+    await processOnHoldApplications(logger)
+
+    expect(logger.setBindings.mock.calls).toEqual([
+      [{ applicationsTotal: 2 }],
+      [{
+        applicationRefs: ['ABC-XYZ-123', 'ABC-XYZ-456'],
+        failedApplicationRefs: ['ABC-XYZ-123']
+      }]
+    ])
+  })
 })

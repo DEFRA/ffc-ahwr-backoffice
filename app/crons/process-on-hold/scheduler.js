@@ -1,3 +1,4 @@
+const appInsights = require('applicationinsights')
 const cron = require('node-cron')
 const config = require('../../config')
 const { processOnHoldApplications, processOnHoldClaims } = require('./process')
@@ -20,9 +21,16 @@ module.exports = {
             await processOnHoldApplications(logger)
             await processOnHoldClaims(logger)
           }
+
+          const { failedApplicationRefs, failedClaimRefs } = logger.bindings()
+          if (failedApplicationRefs.length > 0 || failedClaimRefs.length > 0) {
+            throw new Error('failed updates')
+          }
+
           logger.info('processing on hold applications and claims')
         } catch (err) {
           logger.error({ err }, 'processing on hold applications and claims')
+          appInsights.defaultClient.trackException({ exception: err })
         }
       }, {
         scheduled: config.onHoldAppScheduler.enabled
