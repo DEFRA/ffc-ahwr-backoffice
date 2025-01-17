@@ -45,7 +45,6 @@
   },
   "devDependencies": {
     "@hapi/catbox-memory": "^5.0.1",
-    "blipp": "^4.0.2",
     "cheerio": "^1.0.0-rc.10",
     "clean-webpack-plugin": "^4.0.0",
     "css-loader": "^6.6.0",
