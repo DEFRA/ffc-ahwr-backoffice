@@ -70,7 +70,8 @@ async function createModel (request, page, pageLimit, customSearch) {
   const { limit, offset } = getPagination(page, pageLimit)
   const { searchText, searchType } = customSearch?.searchText ? customSearch : checkValidSearch(getClaimSearch(request, claimSearch.searchText))
   const sortField = getClaimSearch(request, claimSearch.sort) ?? undefined
-  const claimsData = await getClaims(searchType, searchText, limit, offset, sortField, request.logger)
+  const filter = undefined
+  const claimsData = await getClaims(searchType, searchText, filter, limit, offset, sortField, request.logger)
   let claims = []
   if (claimsData.total > 0) {
     claims = claimsData.claims.map((claim) => [

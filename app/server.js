@@ -71,10 +71,6 @@ async function createServer () {
     }
   })
 
-  if (config.isDev) {
-    await server.register(require('blipp'))
-  }
-
   await server.register(onHoldAppScheduler)
 
   return server

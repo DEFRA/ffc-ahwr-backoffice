@@ -1,6 +1,6 @@
 {
   "name": "ffc-ahwr-backoffice",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Back office of the health and welfare of your livestock",
   "homepage": "https://github.com/DEFRA/ffc-ahwr-backoffice",
   "main": "app/index.js",
@@ -16,7 +16,8 @@
     "test:debug": "node --inspect-brk=0.0.0.0 ./node_modules/jest/bin/jest.js --coverage=false --onlyChanged --watch --runInBand --no-cache",
     "start:watch": "npm run build:watch & npm run start:nodemon",
     "start:debug": "nodemon --inspect-brk=0.0.0.0 --ext css,js,njk --legacy-watch app/index.js",
-    "start:nodemon": "nodemon --inspect=0.0.0.0 --ext css,js,njk --legacy-watch app/index.js"
+    "start:nodemon": "nodemon --inspect=0.0.0.0 --ext css,js,njk --legacy-watch app/index.js",
+    "jest": "jest"
   },
   "author": "Defra",
   "license": "OGL-UK-3.0",
@@ -44,7 +45,6 @@
   },
   "devDependencies": {
     "@hapi/catbox-memory": "^5.0.1",
-    "blipp": "^4.0.2",
     "cheerio": "^1.0.0-rc.10",
     "clean-webpack-plugin": "^4.0.0",
     "css-loader": "^6.6.0",
