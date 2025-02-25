@@ -88,9 +88,6 @@ const config = {
   useRedis: process.env.NODE_ENV !== 'test',
   applicationApiUri: process.env.APPLICATION_API_URI,
   displayPageSize: process.env.DISPLAY_PAGE_SIZE,
-  dateOfTesting: {
-    enabled: process.env.DATE_OF_TESTING_ENABLED
-  },
   onHoldAppScheduler: {
     enabled: process.env.ON_HOLD_APP_PROCESS_ENABLED,
     schedule: process.env.ON_HOLD_APP_PROCESS_SCHEDULE

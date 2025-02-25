@@ -8,72 +8,71 @@ const formatDate = (dateToFormat, currentDateFormat = 'YYYY-MM-DD', dateFormat =
   return ''
 }
 
-const parseData = (payload, key) => {
-  const data = payload ? JSON.parse(payload) : {}
-  return data[key]
-}
-
-const filterRecords = (applicationHistory) => {
-  return [
-    ...(applicationHistory.historyRecords?.filter(apphr =>
-      [
-        applicationStatus.withdrawn,
-        applicationStatus.readyToPay,
-        applicationStatus.rejected,
-        applicationStatus.onHold,
-        applicationStatus.inCheck,
-        applicationStatus.recommendToPay,
-        applicationStatus.recommendToReject
-      ].includes(parseData(apphr.Payload, 'statusId'))
-    ) || [])
-  ]
-}
+const filterRecords = (applicationHistory) => applicationHistory
+  .historyRecords.filter((apphr) =>
+    [
+      applicationStatus.withdrawn,
+      applicationStatus.readyToPay,
+      applicationStatus.rejected,
+      applicationStatus.onHold,
+      applicationStatus.inCheck,
+      applicationStatus.recommendToPay,
+      applicationStatus.recommendToReject
+    ].includes(JSON.parse(apphr.Payload).statusId)
+  )
 
 const getStatusText = (status, subStatus) => {
   switch (status) {
     case applicationStatus.withdrawn:
-      return 'Withdraw completed'
+      return 'Withdrawn'
     case applicationStatus.readyToPay:
-      return subStatus || 'Claim approved'
+      return subStatus || 'Approved'
     case applicationStatus.rejected:
-      return subStatus || 'Claim rejected'
+      return subStatus || 'Rejected'
     case applicationStatus.inCheck:
-      return subStatus === undefined ? 'Moved to In Check' : subStatus
+      return subStatus === undefined ? "Moved to 'In Check'" : subStatus
     case applicationStatus.onHold:
       return subStatus || 'On Hold'
     case applicationStatus.recommendToPay:
-      return "Claim moved to 'recommended to pay'"
+      return "Moved to 'Recommended to Pay'"
     case applicationStatus.recommendToReject:
-      return "Claim moved to 'recommended to reject'"
+      return "Moved to 'Recommended to Reject'"
     default:
       return ''
   }
 }
 
 const gethistoryTableHeader = () => {
-  return [{ text: 'Date' }, { text: 'Time' }, { text: 'Action' }, { text: 'User' }]
+  return [
+    { text: 'Date' },
+    { text: 'Time' },
+    { text: 'Action' },
+    { text: 'User' },
+    { text: 'Note' }
+  ]
 }
 
 const gethistoryTableRows = (applicationHistory) => {
   const historyRecords = filterRecords(applicationHistory)
 
-  historyRecords.sort((a, b) => {
-    return new Date(a.ChangedOn) - new Date(b.ChangedOn)
-  })
+  return historyRecords.map(({ ChangedOn, ChangedBy, Payload }) => {
+    const { statusId, subStatus, note } = JSON.parse(Payload)
 
-  return historyRecords?.map(hr => {
     return [
-      { text: formatDate(hr.ChangedOn, moment.ISO_8601, 'DD/MM/YYYY') },
-      { text: formatDate(hr.ChangedOn, moment.ISO_8601, 'HH:mm:ss') },
-      { text: getStatusText(parseData(hr.Payload, 'statusId'), parseData(hr.Payload, 'subStatus')) },
-      { text: hr.ChangedBy }
+      { text: formatDate(ChangedOn, moment.ISO_8601, 'DD/MM/YYYY') },
+      { text: formatDate(ChangedOn, moment.ISO_8601, 'HH:mm:ss') },
+      { text: getStatusText(statusId, subStatus) },
+      { text: ChangedBy },
+      { text: note }
     ]
   })
 }
 
-module.exports = (applicationHistory) => {
+const getHistoryDetails = (applicationHistory) => {
   return {
     header: gethistoryTableHeader(),
     rows: gethistoryTableRows(applicationHistory)
   }
 }
+
+module.exports = { getHistoryDetails }

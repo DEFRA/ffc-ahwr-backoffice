@@ -1,0 +1,38 @@
+<div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="withdraw">
+  <form method="post" action="/withdraw-agreement" class="ahwr-update-form">
+    <a href="/view-agreement/{{ reference }}?page={{ page }}" class="govuk-link govuk-body">Back</a>
+    {{ govukCheckboxes({
+      name: "confirm",
+      fieldset: {
+        legend: {
+          text: "Withdraw agreement",
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-3"
+        }
+      },
+      items: [
+        {
+          value: 'receivedCopyOfCustomersRequest',
+          text: 'I confirm I have received a written copy of the customer’s request to withdraw this agreement.'
+        },
+        {
+          value: 'SentCopyOfRequest',
+          text: 'I have sent a copy of this request to my team leader.'
+        },
+        {
+          value: 'attachedCopyOfCustomersRecord',
+          text: 'I have attached a copy to the customer’s record in the Customer Relationship Management system.'
+        }
+      ],
+      errorMessage: errorMessages.confirm
+    }) }}
+    {{ govukButton({
+      text: "Confirm and continue"
+    }) }}
+    <input type="hidden" name="reference" value="{{ reference }}" />
+    <input type="hidden" name="page" value="{{ page }}" />
+    <input type="hidden" name="crumb" value="{{ crumb }}"/>
+  </form>
+</div>
+
+

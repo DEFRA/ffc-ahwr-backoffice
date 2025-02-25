@@ -44,9 +44,9 @@ describe('View Application test with Date of Testing enabled', () => {
     claimFormHelper = require('../../../../app/routes/utils/claim-form-helper')
 
     claimFormHelper.mockReturnValue({
-      displayRecommendationForm: false,
-      displayRecommendToPayConfirmationForm: false,
-      displayRecommendToRejectConfirmationForm: false,
+      displayRecommendAction: false,
+      recommendToPayForm: false,
+      displayRecommendToRejectForm: false,
       displayAuthorisationForm: false,
       displayAuthoriseToPayConfirmationForm: false,
       displayAuthoriseToRejectConfirmationForm: false,

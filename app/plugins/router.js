@@ -20,7 +20,8 @@ const routes = [].concat(
   require('../routes/claims'),
   require('../routes/recommend-to-pay'),
   require('../routes/recommend-to-reject'),
-  require('../routes/reject-on-hold-claim')
+  require('../routes/move-to-in-check'),
+  require('../routes/update-status')
 )
 
 module.exports = {

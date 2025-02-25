@@ -100,9 +100,9 @@ describe('View Application test', () => {
     claimFormHelper = require('../../../../app/routes/utils/claim-form-helper')
 
     claimFormHelper.mockReturnValue({
-      displayRecommendationForm: false,
-      displayRecommendToPayConfirmationForm: false,
-      displayRecommendToRejectConfirmationForm: false,
+      recommendAction: false,
+      recommendToPayForm: false,
+      recommendToRejectForm: false,
       displayAuthorisationForm: false,
       displayAuthoriseToPayConfirmationForm: false,
       displayAuthoriseToRejectConfirmationForm: false,
@@ -152,7 +152,7 @@ describe('View Application test', () => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       claimFormHelper.mockReturnValueOnce({
-        displayRecommendationForm: areRecommendButtonsVisible
+        recommendAction: areRecommendButtonsVisible
       })
       const options = {
         method: 'GET',
@@ -254,11 +254,11 @@ describe('View Application test', () => {
     test.each([
       false,
       true
-    ])('Recommended to pay confirm form displayed as expected when claim helper returns %s', async (displayRecommendToPayConfirmationForm) => {
+    ])('Recommended to pay confirm form displayed as expected when claim helper returns %s', async (recommendToPayForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       claimFormHelper.mockResolvedValueOnce({
-        displayRecommendToPayConfirmationForm
+        recommendToPayForm
       })
       const ERROR_MESSAGE_TEXT = 'error_message_text'
       const options = {
@@ -273,7 +273,7 @@ describe('View Application test', () => {
       const res = await global.__SERVER__.inject(options)
       const $ = cheerio.load(res.payload)
 
-      if (displayRecommendToPayConfirmationForm) {
+      if (recommendToPayForm) {
         const recommendToPayForm = $('#recommendConfirmationForm')
         expect(recommendToPayForm.length).toEqual(1)
         expect(recommendToPayForm.find('.govuk-button').text().trim()).toEqual('Confirm and continue')
@@ -323,11 +323,11 @@ describe('View Application test', () => {
     test.each([
       false,
       true
-    ])('Recommended to reject confirm form displayed as expected when claim helper returns %s', async (displayRecommendToRejectConfirmationForm) => {
+    ])('Recommended to reject confirm form displayed as expected when claim helper returns %s', async (recommendToRejectForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       claimFormHelper.mockResolvedValueOnce({
-        displayRecommendToRejectConfirmationForm
+        recommendToRejectForm
       })
       const ERROR_MESSAGE_TEXT = 'error_message_text'
       const options = {
@@ -342,7 +342,7 @@ describe('View Application test', () => {
       const res = await global.__SERVER__.inject(options)
       const $ = cheerio.load(res.payload)
 
-      if (displayRecommendToRejectConfirmationForm) {
+      if (recommendToRejectForm) {
         const recommendToRejectForm = $('#recommendConfirmationForm')
         expect(recommendToRejectForm.length).toEqual(1)
         expect(recommendToRejectForm.find('.govuk-button').text().trim()).toEqual('Confirm and continue')

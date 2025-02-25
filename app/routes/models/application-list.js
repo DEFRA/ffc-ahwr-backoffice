@@ -120,14 +120,14 @@ async function createModel (request, page) {
         output[1].attributes = { 'data-sort-value': `${n.data?.organisation?.name}` }
         output[5] = {
           html: n.type === 'EE'
-            ? `<a href="${serviceUri}/agreement/${n.reference}/claims?aPage=${page}">View claims</a>`
+            ? `<a href="${serviceUri}/agreement/${n.reference}/claims?page=${page}">View claims</a>`
             : `<a href="${serviceUri}/view-agreement/${n.reference}?page=${page}">View details</a>`
         }
       }
 
       return output
     })
-    const pagingData = getPagingData(apps.total ?? 0, limit, parseInt(page), request.query)
+    const pagingData = getPagingData(apps.total ?? 0, limit, request.query)
     const groupByStatus = apps.applicationStatus.map(s => {
       return {
         status: s.status,

@@ -9,19 +9,18 @@ const { formatStatusId, upperFirstLetter } = require('../../lib/display-helper')
 const getRecommendationAndAuthorizationStatus = async (userName, applicationReference, logger) => {
   const stageExecutions = await getStageExecutionByApplication(applicationReference, logger)
   const canClaimBeRecommended = stageExecutions.length === 0
-  // Process recommendation records
-  const processRecords = (actionType, executedByUser) => stageExecutions
+
+  const processRecords = (actionType) => stageExecutions
     .filter(execution => execution.stageConfigurationId === stageConfigId.claimApproveRejectRecommender)
     .filter(execution => execution.action.action.includes(actionType))
-    .filter(execution => executedByUser ? execution.executedBy === userName : execution.executedBy !== userName)
+    .filter(execution => execution.executedBy !== userName)
     .length > 0
 
-  const hasClaimBeenRecommendedToPay = processRecords(stageExecutionActions.recommendToPay, false)
-  const hasClaimBeenRecommendedToReject = processRecords(stageExecutionActions.recommendToReject, false)
-  const claimRecommendedToPayByDifferentUser = processRecords(stageExecutionActions.recommendToPay, false)
-  const claimRecommendedToRejectByDifferentUser = processRecords(stageExecutionActions.recommendToReject, false)
+  const hasClaimBeenRecommendedToPay = processRecords(stageExecutionActions.recommendToPay)
+  const hasClaimBeenRecommendedToReject = processRecords(stageExecutionActions.recommendToReject)
+  const claimRecommendedToPayByDifferentUser = processRecords(stageExecutionActions.recommendToPay)
+  const claimRecommendedToRejectByDifferentUser = processRecords(stageExecutionActions.recommendToReject)
 
-  // Check if claim has already been authorised
   const hasClaimAlreadyBeenAuthorised = stageExecutions
     .filter(execution => execution.stageConfigurationId === stageConfigId.claimApproveRejectAuthoriser)
     .some(execution => [stageExecutionActions.authorisePayment, stageExecutionActions.authoriseRejection].includes(execution.action.action))
@@ -48,7 +47,7 @@ const claimStatus = (statusId) => {
 }
 
 const queryStatus = (query) => {
-  const { moveToInCheck, recommendToPay, recommendToReject, approve, reject } = query
+  const { moveToInCheck, recommendToPay, recommendToReject, approve, reject, updateStatus } = query
   const neitherRecommendToPayNorToReject = !recommendToPay && !recommendToReject
   const approveOrReject = approve || reject
   return {
@@ -58,45 +57,54 @@ const queryStatus = (query) => {
     neitherRecommendToPayNorToReject,
     approve,
     reject,
-    approveOrReject
+    approveOrReject,
+    updateStatus
   }
 }
 
 const determineDisplayForms = (statusId, authStatus, recommendStatus, applicationOrClaim, query) => {
   const { isApplicationInCheck, isApplicationRecommendedToPay, isApplicationRecommendedToReject, isApplicationRecommendedToPayOrToReject, isApplicationOnHold } = claimStatus(statusId)
-  const { canUserRecommend, canUserAuthorise, canUserRecommendOrAuthorise } = authStatus
+  const { canUserRecommend, canUserAuthorise, canUserRecommendOrAuthorise, isAdministrator } = authStatus
   const { canClaimBeRecommended, canClaimBeAuthorised } = recommendStatus
-  const { moveToInCheck, recommendToPay, recommendToReject, neitherRecommendToPayNorToReject, approve, reject, approveOrReject } = queryStatus(query)
+  const { moveToInCheck, recommendToPay, recommendToReject, neitherRecommendToPayNorToReject, approve, reject, approveOrReject, updateStatus } = queryStatus(query)
 
   const canClaimBeRecommendedByUser = isApplicationInCheck && canUserRecommend && canClaimBeRecommended
   const canClaimBeAuthorisedByUser = canUserAuthorise && canClaimBeAuthorised
   const canClaimBeMovedFromOnHold = isApplicationOnHold && canUserRecommendOrAuthorise
+  const displayRecommendAction = canClaimBeRecommendedByUser && neitherRecommendToPayNorToReject
+  const displayRecommendToPayForm = Boolean(canClaimBeRecommendedByUser && recommendToPay)
+  const displayRecommendToRejectForm = Boolean(canClaimBeRecommendedByUser && recommendToReject)
+  const displayMoveToInCheckAction = canClaimBeMovedFromOnHold && !moveToInCheck
+  const displayMoveClaimToInCheckForm = Boolean(canClaimBeMovedFromOnHold && moveToInCheck)
 
-  const displayRecommendationForm = canClaimBeRecommendedByUser && neitherRecommendToPayNorToReject
-  const displayRecommendToPayConfirmationForm = canClaimBeRecommendedByUser && recommendToPay
-  const displayRecommendToRejectConfirmationForm = canClaimBeRecommendedByUser && recommendToReject
-  const displayMoveToInCheckFromHold = canClaimBeMovedFromOnHold && !moveToInCheck
-  const displayOnHoldConfirmationForm = canClaimBeMovedFromOnHold && moveToInCheck
+  let displayAuthoriseOrRejectAction = false
+  let displayAuthorisePaymentForm = isApplicationRecommendedToPay && canClaimBeAuthorisedByUser
+  let displayRejectClaimForm = Boolean(isApplicationRecommendedToReject && canClaimBeAuthorisedByUser)
+  let displayRejectAction = false
 
-  let displayAuthoriseOrRejectForm = false
-  let displayAuthoriseToPayConfirmationForm = isApplicationRecommendedToPay && canClaimBeAuthorisedByUser
-  let displayAuthoriseToRejectConfirmationForm = isApplicationRecommendedToReject && canClaimBeAuthorisedByUser
-  if (applicationOrClaim === 'claim') {
-    displayAuthoriseOrRejectForm = isApplicationRecommendedToPayOrToReject && canClaimBeAuthorisedByUser && !approveOrReject
-    displayAuthoriseToPayConfirmationForm = displayAuthoriseToPayConfirmationForm && approve
-    displayAuthoriseToRejectConfirmationForm = displayAuthoriseToRejectConfirmationForm && reject
-  }
+  displayAuthoriseOrRejectAction = isApplicationRecommendedToPayOrToReject && canClaimBeAuthorisedByUser && !approveOrReject
+  displayRejectAction = displayAuthoriseOrRejectAction && isApplicationRecommendedToReject
+  displayAuthorisePaymentForm = Boolean(displayAuthorisePaymentForm && approve)
+  displayRejectClaimForm = Boolean(displayRejectClaimForm && reject)
+
+  const displayUpdateStatusForm = Boolean(isAdministrator && updateStatus)
 
   return {
-    displayRecommendationForm,
-    displayRecommendToPayConfirmationForm,
-    displayRecommendToRejectConfirmationForm,
-    displayAuthoriseOrRejectForm,
-    displayAuthorisePaymentButton: displayAuthoriseOrRejectForm && isApplicationRecommendedToPay,
-    displayAuthoriseToPayConfirmationForm,
-    displayAuthoriseToRejectConfirmationForm,
-    displayMoveToInCheckFromHold,
-    displayOnHoldConfirmationForm
+    displayRecommendAction,
+    displayRecommendToPayForm,
+    displayRecommendToRejectForm,
+    displayAuthoriseOrRejectAction,
+    displayAuthorisePaymentButton: displayAuthoriseOrRejectAction && isApplicationRecommendedToPay,
+    displayAuthorisePaymentForm, // remove
+    displayRejectAction,
+    displayRejectClaimForm, // remove
+    displayRejectForm: displayRejectClaimForm,
+    authoriseAction: displayAuthoriseOrRejectAction && isApplicationRecommendedToPay,
+    displayAuthoriseForm: displayAuthorisePaymentForm,
+    displayMoveToInCheckAction,
+    displayMoveClaimToInCheckForm, // remove
+    displayMoveToInCheckForm: displayMoveClaimToInCheckForm,
+    displayUpdateStatusForm
   }
 }
 

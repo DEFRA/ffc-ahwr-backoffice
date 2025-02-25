@@ -1,0 +1,39 @@
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+<div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="update-status">
+  <form method="post" action="/update-status" class="ahwr-update-form">
+    {% if claimOrAgreement == 'agreement' %}
+      <a href="/view-agreement/{{ reference }}?page={{ page }}" class="govuk-link govuk-body">Back</a>
+    {% elif claimOrAgreement == 'claim' %}
+      <a href="/view-claim/{{ reference }}?page={{ page }}&returnPage={{ returnPage }}" class="govuk-link govuk-body">Back</a>
+    {% endif %}
+    <h2 class="govuk-heading-l">Update {{ claimOrAgreement }} status</h2>
+    {{ govukSelect({
+      id: "status",
+      name: "status",
+      label: {
+        text: "Status",
+        classes: "govuk-label--s"
+      },
+      items: statusOptions
+    }) }}
+    {{ govukInput({
+      id: "note",
+      name: "note",
+      label: {
+        text: "Note",
+        classes: "govuk-label--s"
+      },
+      errorMessage: errorMessages.note
+    }) }}
+    {{ govukButton({
+      text: "Confirm and continue"
+    }) }}
+    <input type="hidden" name="claimOrAgreement" value="{{ claimOrAgreement }}" />
+    <input type="hidden" name="reference" value="{{ reference }}" />
+    <input type="hidden" name="page" value="{{ page }}" />
+    <input type="hidden" name="returnPage" value="{{ returnPage }}" />
+    <input type="hidden" name="crumb" value="{{ crumb }}" />
+  </form>
+</div>

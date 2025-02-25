@@ -3,22 +3,23 @@ module.exports = {
     name: 'error-pages',
     register: (server, _) => {
       server.ext('onPreResponse', (request, h) => {
-        const response = request.response
+        const { response } = request
 
         if (response.isBoom) {
           const { payload } = response.output
+          const { statusCode, message } = payload
 
-          if (payload.statusCode >= 400 && payload.statusCode < 500) {
-            return h.view('error-pages/4xx', { payload }).code(payload.statusCode)
+          request.logger.setBindings({ message })
+
+          if (statusCode >= 400 && statusCode < 500) {
+            return h.view('error-pages/4xx', { payload }).code(statusCode)
           }
 
-          request.log('error', {
-            statusCode: payload.statusCode,
-            message: payload.message,
+          request.logger.error({
             stack: response.data ? response.data.stack : response.stack
           })
 
-          return h.view('error-pages/500').code(payload.statusCode)
+          return h.view('error-pages/500').code(statusCode)
         }
 
         return h.continue

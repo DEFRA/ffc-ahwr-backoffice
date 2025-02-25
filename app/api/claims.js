@@ -33,13 +33,14 @@ async function getClaims (searchType, searchText, filter, limit, offset, sort, l
   }
 }
 
-async function updateClaimStatus (reference, user, status, logger) {
+async function updateClaimStatus (reference, user, status, logger, note) {
   const endpoint = `${applicationApiUri}/claim/update-by-reference`
   const options = {
     payload: {
       reference,
       status,
-      user
+      user,
+      note
     },
     json: true
   }

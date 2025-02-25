@@ -1,25 +1,25 @@
 const joi = require('joi')
+const { updateApplicationStatus } = require('../api/applications')
+const { updateClaimStatus } = require('../api/claims')
 const getUser = require('../auth/get-user')
 const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
 const crumbCache = require('./utils/crumb-cache')
-const { processApplicationClaim } = require('../api/applications')
-const { updateClaimStatus } = require('../api/claims')
+const { administrator, recommender, authoriser } = require('../auth/permissions')
+const { inCheck } = require('../constants/application-status')
 const { prepareValidationErrors } = require('./utils/prepare-validation-errors')
-const { administrator, authoriser } = require('../auth/permissions')
-const { readyToPay } = require('../constants/application-status')
 
 module.exports = {
   method: 'post',
-  path: '/approve-application-claim',
+  path: '/move-to-in-check',
   options: {
-    auth: { scope: [administrator, authoriser] },
+    auth: { scope: [administrator, recommender, authoriser]},
     pre: [{ method: preDoubleSubmitHandler }],
     validate: {
       payload: joi.object({
         claimOrAgreement: joi.string().valid('claim', 'agreement').required(),
         confirm: joi.array().items(
-          joi.string().valid('approveClaim').required(),
-          joi.string().valid('sentChecklist').required()
+          joi.string().valid('recommendToMoveOnHoldClaim').required(),
+          joi.string().valid('updateIssuesLog').required()
         ).required().messages({
           'any.required': 'Select all checkboxes',
           'array.base': 'Select all checkboxes'
@@ -30,15 +30,16 @@ module.exports = {
       }),
       failAction: async (request, h, err) => {
         const { claimOrAgreement, page, reference, returnPage } = request.payload
-
+        console.log(err.details)
         request.logger.setBindings({ err, reference })
 
-        const errors = prepareValidationErrors(err.details, '#authorise')
-        const query = new URLSearchParams({ page, approve: 'true', errors })
+        const errors = prepareValidationErrors(err.details, '#move-to-in-check')
+        const query = new URLSearchParams({ page, moveToInCheck: 'true', errors })
 
         if (claimOrAgreement === 'claim') {
           query.append('returnPage', returnPage)
         }
+
         return h
           .redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`)
           .takeover()
@@ -55,10 +56,9 @@ module.exports = {
 
       if (claimOrAgreement === 'claim') {
         query.append('returnPage', returnPage)
-        await updateClaimStatus(reference, username, readyToPay, request.logger)
+        await updateClaimStatus(reference, username, inCheck, request.logger)
       } else {
-        const isClaimToBePaid = true
-        await processApplicationClaim(reference, username, isClaimToBePaid, request.logger)
+        await updateApplicationStatus(reference, username, inCheck, request.logger)
       }
 
       return h.redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`)

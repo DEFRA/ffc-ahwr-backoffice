@@ -1,0 +1,39 @@
+<div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="move-to-in-check">
+  <form method="post" action="/move-to-in-check" class="ahwr-update-form">
+    {% if claimOrAgreement == 'agreement' %}
+      <a href="/view-agreement/{{ reference }}?page={{ page }}" class="govuk-link govuk-body">Back</a>
+    {% elif claimOrAgreement == 'claim' %}
+      <a href="/view-claim/{{ reference }}?page={{ page }}&returnPage={{ returnPage }}" class="govuk-link govuk-body">Back</a>
+    {% endif %}
+    {{ govukCheckboxes({
+      name: "confirm",
+      fieldset: {
+        legend: {
+          text: "Move claim to 'in check'",
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--l"
+        }
+      },
+      items: [
+        {
+          value: "recommendToMoveOnHoldClaim",
+          text: "I have reviewed this claim and recommend it is moved to 'in check'"
+        },
+        {
+          value: "updateIssuesLog",
+          text: "I have updated the issues log to show this claim is now 'in check'"
+        }
+      ],
+      errorMessage: errorMessages.confirm
+    }) }}
+    {{ govukButton({
+      text: "Confirm and continue",
+      preventDoubleClick: true
+    }) }}
+    <input type="hidden" name="claimOrAgreement" value="{{ claimOrAgreement }}" />
+    <input type="hidden" name="reference" value="{{ reference }}" />
+    <input type="hidden" name="page" value="{{ page }}" />
+    <input type="hidden" name="returnPage" value="{{ returnPage }}" />
+    <input type="hidden" name="crumb" value="{{ crumb }}"/>
+  </form>
+</div>
