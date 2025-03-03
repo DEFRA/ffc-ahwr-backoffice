@@ -1,15 +1,4 @@
 {% extends './layouts/layout.njk' %}
-{% from "./macros/view-application-tabs.njk" import viewApplicationTabs %}
-{% from "./macros/withdraw-confirmation-form.njk" import viewWithdrawConfirmationForm %}
-{% from "./macros/claim-confirmation-form.njk" import viewClaimConfirmationForm %}
-{% from "./macros/approve-claim-confirmation-form.njk" import viewApproveClaimConfirmationForm %}
-{% from "./macros/reject-claim-confirmation-form.njk" import viewRejectClaimConfirmationForm %}
-{% from "./macros/recommend-form.njk" import viewRecommendForm %}
-{% from "./macros/recommend-confirmation-form.njk" import viewRecommendConfirmationForm %}
-{% from "./macros/view-authorise-or-reject-form.njk" import viewAuthoriseOrRejectForm %}
-{% from "./macros/view-authorise-payment-confirm-form.njk" import viewAuthorisePaymentConfirmForm %}
-{% from "./macros/view-reject-claim-confirm-form.njk" import viewRejectClaimConfirmForm %}
-{% from "./macros/move-claim-to-in-check-confirmation-form.njk" import viewMoveClaimToInCheckConfirmationForm %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% block pageTitle %}
@@ -33,18 +22,14 @@
           errorList: errors
         }) }}
       {% endif %}
-
       <h1 class="govuk-caption-l govuk-!-margin-bottom-3">Agreement number: {{ reference }}</h1>
-
       <h2 class="govuk-heading-l govuk-!-margin-bottom-7">{{ organisationName }}
-        <span class="app-long-tag"><span class="govuk-tag {{ statusClass }}">{{ statusLabel }}</span></span></h2>
-      {% if withdrawConfirmationForm %}
-        {{ viewWithdrawConfirmationForm(endemics, reference, page, crumb, errors[0]) }}
-      {% endif %}
-      <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-        {% for item in model.listData %}
+        <span class="app-long-tag"><span class="govuk-tag {{ statusClass }}">{{ statusLabel }}</span></span>
+      </h2>
+      <dl class="govuk-summary-list govuk-!-margin-bottom-9" id="organisation-details">
+        {% for item in organisationDetails %}
           <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">{{item.field}}</dt>
+            <dt class="govuk-summary-list__key">{{ item.field }}</dt>
             <dd class="govuk-summary-list__value">
               <p>{{item.newValue}}</p>
               {% if (item.oldValue) and (item.oldValue != "NA") %}
@@ -61,40 +46,44 @@
           </div>
         {% endfor %}
       </dl>
-      {% if model.recommendData != false %}
-        {{ viewRecommendConfirmationForm('application', reference, page, 'agreements', crumb, model.recommendData) }}
+      {% if withdrawForm %}
+        {% include "./includes/withdraw-form.njk" %}
       {% endif %}
-      {% if recommendToReject.display %}
-        {{ viewRecommendToRejectConfirmationForm('application', reference, page, crumb, recommendToReject.errorMessage) }}
+      {% if moveToInCheckForm %}
+        {%  include "./includes/move-to-in-check-form.njk" %}
       {% endif %}
-      {% if authorisePaymentConfirmForm.display %}
-        {{ viewAuthorisePaymentConfirmForm('application', reference, page, 'agreements', crumb, authorisePaymentConfirmForm.errorMessage) }}
+      {% if recommendToPayForm %}
+        {% include "./includes/recommend-to-pay-form.njk" %}
       {% endif %}
-      {% if rejectClaimConfirmForm.display %}
-        {{ viewRejectClaimConfirmForm('application', reference, page, 'agreements', crumb, rejectClaimConfirmForm.errorMessage) }}
+      {% if recommendToRejectForm %}
+        {% include "./includes/recommend-to-reject-form.njk" %}
       {% endif %}
-      {% if onHoldConfirmationForm.display %}
-        {{ viewMoveClaimToInCheckConfirmationForm('application', reference, page, 'agreements', crumb, onHoldConfirmationForm.errorMessage) }}
+      {% if authoriseForm %}
+        {% include "./includes/authorise-form.njk" %}
       {% endif %}
-      {{ viewApplicationTabs(model, vetVisit, claimed, payment, subStatus, displayMoveToInCheckFromHold, reference, page) }}
-      {% if withdrawLink %}
-        {% if endemics %}
-          <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-              <h2 class="govuk-heading-m">Further action</h2>
-              <p class="govuk-body">This customer has successfully submitted an application but, if they ask, they can withdraw from an agreement.</p>
-              <a class="govuk-button" href="/view-agreement/{{ reference }}?page={{page}}&withdraw=true" role="button" draggable="false" data-module="govuk-button">Withdraw</a>
-            </div>
-          </div>
-        {% else %}
-          <a class="govuk-link govuk-body" href="/view-agreement/{{ reference }}?page={{page}}&withdraw=true">Withdraw</a>
-        {% endif %}
+      {% if rejectForm %}
+        {% include "./includes/reject-form.njk" %}
       {% endif %}
-      {% if recommendForm %}
-        {{ viewRecommendForm('application', reference, page, 'agreements', crumb) }}
+      {% if updateStatusForm %}
+        {% include "./includes/update-status-form.njk" %}
       {% endif %}
-      {% if authoriseOrRejectForm.display %}
-        {{ viewAuthoriseOrRejectForm('application', reference, page, 'agreements', crumb, authoriseOrRejectForm.displayAuthorisePaymentButton) }}
+
+      {% include "./includes/application-tabs.njk" %}
+
+      {% if withdrawAction %}
+        {% include "./includes/withdraw-action.njk" %}
+      {% endif %}
+      {% if moveToInCheckAction %}
+        {% include "./includes/move-to-in-check-action.njk" %}
+      {% endif %}
+      {% if recommendAction %}
+        {% include "./includes/recommend-action.njk" %}
+      {% endif %}
+      {% if authoriseAction %}
+        {% include "./includes/authorise-action.njk" %}
+      {% endif %}
+      {% if rejectAction %}
+        {% include "./includes/reject-action.njk" %}
       {% endif %}
     </div>
   </div>

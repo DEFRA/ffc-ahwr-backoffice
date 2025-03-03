@@ -76,7 +76,7 @@ module.exports = (searchText) => {
       searchType = 'organisation'
       break
   }
-  if (searchText.length <= 0) {
+  if (searchText.length === 0) {
     searchType = 'reset'
   }
 

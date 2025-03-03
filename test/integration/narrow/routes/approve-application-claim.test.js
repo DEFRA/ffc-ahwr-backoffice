@@ -4,23 +4,14 @@ const { administrator, authoriser } = require('../../../../app/auth/permissions'
 const getCrumbs = require('../../../utils/get-crumbs')
 
 const reference = 'AHWR-555A-FD4C'
-const encodedErrors = 'W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI2F1dGhvcmlzZS1wYXltZW50LXBhbmVsIn1d'
 
 describe('/approve-application-claim', () => {
-  let processStageActions
   let crumb
   const url = '/approve-application-claim/'
   jest.mock('../../../../app/auth')
+  jest.mock('../../../../app/api/applications')
+  jest.mock('../../../../app/api/claims')
   let auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
-
-  beforeAll(() => {
-    jest.mock('../../../../app/routes/utils/process-stage-actions')
-    processStageActions = require('../../../../app/routes/utils/process-stage-actions')
-  })
-
-  afterAll(() => {
-    jest.resetModules()
-  })
 
   beforeEach(async () => {
     crumb = await getCrumbs(global.__SERVER__)
@@ -62,18 +53,13 @@ describe('/approve-application-claim', () => {
         url,
         payload: {
           reference,
-          claimOrApplication: 'application',
+          claimOrAgreement: 'agreement',
           confirm: ['approveClaim', 'sentChecklist'],
           page: 1,
           crumb
         },
         headers: { cookie: `crumb=${crumb}` }
       }
-      const response = [
-        { action: 'addStageExecution', data: { applicationReference: reference } },
-        { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
-      ]
-      processStageActions.mockResolvedValueOnce(response)
 
       const res1 = await global.__SERVER__.inject(options)
       expect(res1.statusCode).toBe(302)
@@ -85,6 +71,7 @@ describe('/approve-application-claim', () => {
     })
 
     test('Approve application invalid reference', async () => {
+      const errors = 'W3sidGV4dCI6IlwicmVmZXJlbmNlXCIgbXVzdCBiZSBhIHN0cmluZyIsImhyZWYiOiIjYXV0aG9yaXNlIiwia2V5IjoicmVmZXJlbmNlIn1d'
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {
         method: 'POST',
@@ -92,6 +79,8 @@ describe('/approve-application-claim', () => {
         auth,
         headers: { cookie: `crumb=${crumb}` },
         payload: {
+          claimOrAgreement: 'agreement',
+          page: 1,
           reference: 123,
           confirm: ['approveClaim', 'sentChecklist'],
           crumb
@@ -101,7 +90,7 @@ describe('/approve-application-claim', () => {
       const res = await global.__SERVER__.inject(options)
 
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual('/view-agreement/123?page=1&approve=true&errors=W10%3D')
+      expect(res.headers.location).toEqual(`/view-agreement/123?page=1&approve=true&errors=${errors}`)
     })
 
     test.each([
@@ -116,27 +105,14 @@ describe('/approve-application-claim', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
-          claimOrApplication: 'application',
+          claimOrAgreement: 'agreement',
           confirm: ['approveClaim', 'sentChecklist'],
           page: 1,
           crumb
         }
       }
-      const response = [
-        { action: 'addStageExecution', data: { applicationReference: reference } },
-        { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
-      ]
-      processStageActions.mockResolvedValueOnce(response)
-
       const res = await global.__SERVER__.inject(options)
 
-      expect(processStageActions).toHaveBeenCalledWith(
-        expect.anything(),
-        role,
-        'Claim Approve/Reject',
-        'Ready to pay',
-        true
-      )
       expect(res.statusCode).toBe(302)
       expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
     })
@@ -153,33 +129,22 @@ describe('/approve-application-claim', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
-          claimOrApplication: 'claim',
+          claimOrAgreement: 'claim',
           confirm: ['approveClaim', 'sentChecklist'],
           page: 1,
           returnPage: 'claims',
           crumb
         }
       }
-      const response = [
-        { action: 'addStageExecution', data: { applicationReference: reference } },
-        { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
-      ]
-      processStageActions.mockResolvedValueOnce(response)
 
       const res = await global.__SERVER__.inject(options)
 
-      expect(processStageActions).toHaveBeenCalledWith(
-        expect.anything(),
-        role,
-        'Claim Approve/Reject',
-        'Ready to pay',
-        true
-      )
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-claim/${reference}?returnPage=claims`)
+      expect(res.headers.location).toEqual(`/view-claim/${reference}?page=1&returnPage=claims`)
     })
 
     test('Approve application claim not processed', async () => {
+      const errors = 'W3sidGV4dCI6IlwiY29uZmlybVwiIGRvZXMgbm90IGNvbnRhaW4gMSByZXF1aXJlZCB2YWx1ZShzKSIsImhyZWYiOiIjYXV0aG9yaXNlIiwia2V5IjoiY29uZmlybSJ9XQ%3D%3D'
       const options = {
         method: 'POST',
         url,
@@ -187,16 +152,15 @@ describe('/approve-application-claim', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
-          claimOrApplication: 'application',
+          claimOrAgreement: 'agreement',
           confirm: ['sentChecklist'],
           page: 1,
           crumb
         }
       }
       const res = await global.__SERVER__.inject(options)
-      expect(processStageActions).not.toHaveBeenCalled()
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&approve=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&approve=true&errors=${errors}`)
     })
 
     test('If user is not administrator or authoriser', async () => {
@@ -207,7 +171,7 @@ describe('/approve-application-claim', () => {
         auth,
         headers: { cookie: `crumb=${crumb}` },
         payload: {
-          claimOrApplication: 'application',
+          claimOrAgreement: 'agreement',
           confirm: ['approveClaim', 'sentChecklist'],
           reference,
           crumb
@@ -215,45 +179,7 @@ describe('/approve-application-claim', () => {
       }
       const res = await global.__SERVER__.inject(options)
 
-      expect(res.statusCode).toBe(500)
-    })
-
-    test('retuns 400 Bad Request', async () => {
-      const options = {
-        method: 'POST',
-        url,
-        auth,
-        headers: { cookie: `crumb=${crumb}` },
-        payload: {
-          reference,
-          claimOrApplication: 'application',
-          page: 1,
-          crumb
-        }
-      }
-      const res = await global.__SERVER__.inject(options)
-      expect(processStageActions).not.toHaveBeenCalled()
-      expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&approve=true&errors=${encodedErrors}`)
-    })
-    test('retuns 400 Bad Request for claim', async () => {
-      const options = {
-        method: 'POST',
-        url,
-        auth,
-        headers: { cookie: `crumb=${crumb}` },
-        payload: {
-          reference,
-          claimOrApplication: 'claim',
-          page: 1,
-          returnPage: 'claims',
-          crumb
-        }
-      }
-      const res = await global.__SERVER__.inject(options)
-      expect(processStageActions).not.toHaveBeenCalled()
-      expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-claim/${reference}?approve=true&returnPage=claims&errors=${encodedErrors}`)
+      expect(res.statusCode).toBe(403)
     })
   })
 })

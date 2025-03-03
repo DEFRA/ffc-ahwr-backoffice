@@ -1,8 +1,4 @@
-const { createModel, viewModel } = require('../../../../../app/routes/models/claim-list')
-const { getClaimTableHeader } = require('../../../../../app/routes/models/claim-list')
-const { getClaims } = require('../../../../../app/api/claims')
-jest.mock('../../../../../app/api/claims')
-
+const { getClaimTableHeader, getClaimTableRows } = require('../../../../../app/routes/models/claim-list')
 const { setEndemicsEnabled } = require('../../../../mocks/config')
 
 describe('Application-list model test', () => {
@@ -34,58 +30,57 @@ describe('Application-list model test', () => {
 })
 
 describe('Application-list createModel', () => {
-  const response = {
-    claims: [
-      {
-        id: '32ccceb1-038f-4c6b-8ed0-af0cf70af831',
-        reference: 'AHWR-1111-1111',
-        applicationReference: 'AHWR-1234-APP1',
+  const claims = [
+    {
+      id: '32ccceb1-038f-4c6b-8ed0-af0cf70af831',
+      reference: 'AHWR-1111-1111',
+      applicationReference: 'AHWR-1234-APP1',
+      data: {
+        vetsName: 'asdasd',
+        dateOfVisit: '2024-03-22T00:00:00.000Z',
+        dateOfTesting: '2024-03-22T00:00:00.000Z',
+        laboratoryURN: '123123',
+        vetRCVSNumber: '1235671',
+        speciesNumbers: 'yes',
+        typeOfLivestock: 'sheep',
+        numberAnimalsTested: '123'
+      },
+      statusId: 8,
+      type: 'R',
+      createdAt: '2024-03-22T12:20:18.307Z',
+      updatedAt: '2024-03-22T12:20:18.307Z',
+      createdBy: 'sql query',
+      updatedBy: null,
+      status: {
+        status: 'PAID'
+      },
+      application: {
         data: {
-          vetsName: 'asdasd',
-          dateOfVisit: '2024-03-22T00:00:00.000Z',
-          dateOfTesting: '2024-03-22T00:00:00.000Z',
-          laboratoryURN: '123123',
-          vetRCVSNumber: '1235671',
-          speciesNumbers: 'yes',
-          typeOfLivestock: 'sheep',
-          numberAnimalsTested: '123'
-        },
-        statusId: 8,
-        type: 'R',
-        createdAt: '2024-03-22T12:20:18.307Z',
-        updatedAt: '2024-03-22T12:20:18.307Z',
-        createdBy: 'sql query',
-        updatedBy: null,
-        status: {
-          status: 'PAID'
-        },
-        application: {
-          data: {
-            organisation: {
-              sbi: 123456
-            }
+          organisation: {
+            sbi: 123456
           }
         }
       }
-    ],
-    total: 1
-  }
+    }
+  ]
+
   beforeAll(() => {
     setEndemicsEnabled(true)
   })
 
-  afterAll(() => {
-    getClaims.mockClear()
-  })
+  test('getClaimTableRows', async () => {
+    const page = 1
+    const returnPage = 'claim'
+    const rows = getClaimTableRows(claims, page, returnPage)
 
-  test('createModel should return view claims', async () => {
-    getClaims.mockImplementation(() => response)
-    const result = await createModel({ request: { payload: { searchText: 'AHWR-1111-1111' } }, headers: { path: 'some path' } })
-    expect(result.claims[0][0].text).toContain('AHWR-1111-1111')
+    expect(rows[0][0].text).toBe('AHWR-1111-1111')
   })
-  test('createModel should return No claims found.', async () => {
-    getClaims.mockImplementation(() => { return { claims: [] } })
-    const result = await viewModel({ request: { payload: { searchText: 'AHWR-1111-' } }, headers: { path: undefined } }, 1)
-    expect(result.model.error).toContain('No claims found.')
+  test('getClaimTableRows showSBI false', async () => {
+    const page = 1
+    const returnPage = 'claim'
+    const showSBI = false
+    const rows = getClaimTableRows(claims, page, returnPage, showSBI)
+
+    expect(rows[0][0].text).toBe('AHWR-1111-1111')
   })
 })

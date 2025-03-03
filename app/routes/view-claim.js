@@ -1,23 +1,25 @@
 const { Buffer } = require('buffer')
-const Joi = require('joi')
+const joi = require('joi')
 const { getClaim } = require('../api/claims')
 const { getApplication, getApplicationHistory } = require('../api/applications')
-const getApplicationHistoryModel = require('./models/application-history')
-const { getStyleClassByStatus } = require('../constants/status')
-const { formatStatusId } = require('./../lib/display-helper')
-const { livestockTypes } = require('./../constants/claim')
-const getRecommendData = require('./models/recommend-claim')
-const { sheepPackages, sheepTestTypes, sheepTestResultsType } = require('./../constants/sheep-test-types')
+const { getHistoryDetails } = require('./models/application-history')
+const { getStyleClassByStatus, status: claimStatuses } = require('../constants/status')
+const { formatStatusId } = require('../lib/display-helper')
+const { livestockTypes } = require('../constants/claim')
+const { sheepPackages, sheepTestTypes, sheepTestResultsType } = require('../constants/sheep-test-types')
 const { administrator, authoriser, processor, recommender, user } = require('../auth/permissions')
-const { getStageExecutionByApplication } = require('../api/stage-execution')
 const { upperFirstLetter, formatedDateToUk } = require('../lib/display-helper')
-const claimFormHelper = require('./utils/claim-form-helper')
-const checkboxErrors = require('./utils/checkbox-errors')
-const { getLivestockTypes } = require('./../lib/get-livestock-types')
-const { getReviewType } = require('./../lib/get-review-type')
+const { getCurrentStatusEvent } = require('./utils/get-current-status-event')
+const { getClaimViewStates } = require('./utils/get-claim-view-states')
+const { getErrorMessagesByKey } = require('./utils/get-error-messages-by-key')
+const { getLivestockTypes } = require('../lib/get-livestock-types')
+const { getReviewType } = require('../lib/get-review-type')
+const mapAuth = require('../auth/map-auth')
 
 const backLink = (applicationReference, returnPage, page) => {
-  return returnPage === 'view-agreement' ? `/agreement/${applicationReference}/claims` : `/claims?page=${page ?? 1}`
+  return returnPage === 'agreement'
+    ? `/agreement/${applicationReference}/claims`
+    : `/claims?page=${page}`
 }
 
 const speciesEligibleNumber = {
@@ -30,76 +32,82 @@ const speciesEligibleNumber = {
 const returnClaimDetailIfExist = (property, value) => property && value
 
 module.exports = {
-  method: 'GET',
+  method: 'get',
   path: '/view-claim/{reference}',
   options: {
     auth: { scope: [administrator, authoriser, processor, recommender, user] },
     validate: {
-      params: Joi.object({
-        reference: Joi.string().valid()
+      params: joi.object({
+        reference: joi.string().valid()
       }),
-      query: Joi.object({
-        errors: Joi.string().allow(null),
-        approve: Joi.bool().default(false),
-        reject: Joi.bool().default(false),
-        recommendToPay: Joi.bool().default(false),
-        recommendToReject: Joi.bool().default(false),
-        moveToInCheck: Joi.bool().default(false),
-        cPage: Joi.string().allow(null),
-        returnPage: Joi.string().allow(null)
+      query: joi.object({
+        page: joi.string().default(1).allow(null),
+        returnPage: joi.string().optional().allow('').valid('agreement', 'claims'),
+        errors: joi.string().allow(null),
+        moveToInCheck: joi.bool().default(false),
+        recommendToPay: joi.bool().default(false),
+        recommendToReject: joi.bool().default(false),
+        approve: joi.bool().default(false),
+        reject: joi.bool().default(false),
+        updateStatus: joi.bool().default(false)
       })
     },
     handler: async (request, h) => {
+      const { page, returnPage } = request.query
       const claim = await getClaim(request.params.reference, request.logger)
 
       const { data, reference, type, applicationReference, status: claimStatus, statusId, createdAt } = claim
 
-      request.logger.setBindings({ applicationReference })
+      request.logger.setBindings({ applicationReference, reference })
 
       const application = await getApplication(applicationReference, request.logger)
-      const organisation = application?.data?.organisation
 
-      request.logger.setBindings({ sbi: organisation?.sbi })
+      const { organisation } = application.data
+
+      request.logger.setBindings({ sbi: organisation.sbi })
 
       const applicationSummaryDetails = [
         { key: { text: 'Agreement number' }, value: { text: applicationReference } },
         { key: { text: 'Agreement date' }, value: { text: formatedDateToUk(application.createdAt) } },
-        { key: { text: 'Business name' }, value: { text: organisation?.name } },
-        { key: { text: 'Agreement holder email' }, value: { text: organisation?.email } },
-        { key: { text: 'SBI number' }, value: { text: organisation?.sbi } },
-        { key: { text: 'Address' }, value: { text: organisation?.address } },
-        { key: { text: 'Business email' }, value: { text: organisation?.orgEmail } }
+        { key: { text: 'Business name' }, value: { text: organisation.name } },
+        { key: { text: 'Agreement holder email' }, value: { text: organisation.email } },
+        { key: { text: 'SBI number' }, value: { text: organisation.sbi } },
+        { key: { text: 'Address' }, value: { text: organisation.address } },
+        { key: { text: 'Business email' }, value: { text: organisation.orgEmail } }
       ]
-
-      const {
-        displayRecommendationForm,
-        displayRecommendToPayConfirmationForm,
-        displayRecommendToRejectConfirmationForm,
-        displayAuthoriseOrRejectForm,
-        displayAuthorisePaymentButton,
-        displayAuthoriseToPayConfirmationForm,
-        displayAuthoriseToRejectConfirmationForm,
-        displayMoveToInCheckFromHold,
-        displayOnHoldConfirmationForm
-      } = await claimFormHelper(request, request.params.reference, claim.statusId, 'claim')
 
       const errors = request.query.errors
         ? JSON.parse(Buffer.from(request.query.errors, 'base64').toString('utf8'))
         : []
 
-      const recommend = {
-        displayRecommendToPayConfirmationForm,
-        displayRecommendToRejectConfirmationForm,
-        errorMessage: checkboxErrors(errors, 'pnl-recommend-confirmation')
-      }
+      const claimHistory = await getApplicationHistory(reference, request.logger)
+      const historyDetails = getHistoryDetails(claimHistory)
+      const currentStatusEvent = getCurrentStatusEvent(claim, claimHistory)
 
-      const applicationHistory = await getApplicationHistory(reference, request.logger)
-      const historyData = getApplicationHistoryModel(applicationHistory)
+      const {
+        moveToInCheckAction,
+        moveToInCheckForm,
+        recommendAction,
+        recommendToPayForm,
+        recommendToRejectForm,
+        authoriseAction,
+        authoriseForm,
+        rejectAction,
+        rejectForm,
+        updateStatusForm
+      } = getClaimViewStates(request, claim.statusId, currentStatusEvent)
+
+      const statusOptions = Object.entries(claimStatuses)
+        .filter(([_, value]) => value !== claimStatuses.WITHDRAWN)
+        .map(([key, value]) => ({
+          text: upperFirstLetter(key).replace(/_/, ' '),
+          value,
+          selected: value === statusId
+        }))
+
       const { isBeef, isDairy, isPigs, isSheep } = getLivestockTypes(data?.typeOfLivestock)
       const { isReview, isEndemicsFollowUp } = getReviewType(type)
 
-      const stageExecutionData = await getStageExecutionByApplication(request.params.reference, request.logger)
-      const contactPerson = stageExecutionData?.[0]?.executedBy
       const getBiosecurityRow = () => (data?.biosecurity && isEndemicsFollowUp && [livestockTypes.pigs, livestockTypes.beef, livestockTypes.dairy].includes(data?.typeOfLivestock) &&
       {
         key: { text: 'Biosecurity assessment' },
@@ -112,20 +120,38 @@ module.exports = {
       }
       )
 
-      const getSheepDiseasesTestedRow = () => (data?.typeOfLivestock === livestockTypes.sheep && isEndemicsFollowUp && typeof data?.testResults === 'object' && data?.testResults?.length
-        ? (data?.testResults || []).map((sheepTest, index) => {
-            return {
-              key: { text: index === 0 ? 'Disease or condition test result' : '' },
-              value: {
-                html: typeof sheepTest.result === 'object'
-                  ? sheepTest.result.map((testResult) => `${testResult.diseaseType} (${testResult.result})</br>`).join(' ')
-                  : `${sheepTestTypes[data?.sheepEndemicsPackage].find((test) => test.value === sheepTest.diseaseType)?.text} (${sheepTestResultsType[sheepTest.diseaseType].find(resultType => resultType.value === sheepTest.result).text})`
+      const getSheepDiseasesTestedRow = () => (
+        data?.typeOfLivestock === livestockTypes.sheep &&
+        isEndemicsFollowUp &&
+        typeof data.testResults === 'object' && data.testResults.length
+          ? data.testResults.map((sheepTest, index) => {
+              return {
+                key: { text: index === 0 ? 'Disease or condition test result' : '' },
+                value: {
+                  html: typeof sheepTest.result === 'object'
+                    ? sheepTest.result.map((testResult) => `${testResult.diseaseType} (${testResult.result})</br>`).join(' ')
+                    : `${sheepTestTypes[data?.sheepEndemicsPackage].find((test) => test.value === sheepTest.diseaseType)?.text} (${sheepTestResultsType[sheepTest.diseaseType].find(resultType => resultType.value === sheepTest.result).text})`
+                }
               }
-            }
-          })
-        : [])
+            })
+          : [])
 
-      const status = { key: { text: 'Status' }, value: { html: `<span class='app-long-tag'><span class='govuk-tag ${getStyleClassByStatus(formatStatusId(statusId))}'> ${upperFirstLetter(claimStatus?.status.toLowerCase())} </span></span>` } }
+      const { isAdministrator } = mapAuth(request)
+      const actions = isAdministrator
+        ? {
+            items: [{
+              href: `/view-claim/${reference}?updateStatus=true&page=${page}&returnPage=${returnPage}#update-status`,
+              text: 'Change',
+              visuallyHiddenText: 'status'
+            }]
+          }
+        : null
+
+      const status = {
+        key: { text: 'Status' },
+        value: { html: `<span class='app-long-tag'><span class='govuk-tag ${getStyleClassByStatus(formatStatusId(statusId))}'> ${upperFirstLetter(claimStatus?.status.toLowerCase())} </span></span>` },
+        actions
+      }
       const claimDate = { key: { text: 'Claim date' }, value: { html: formatedDateToUk(createdAt) } }
       const organisationName = { key: { text: 'Business name' }, value: { html: upperFirstLetter(organisation?.name) } }
       const livestock = { key: { text: 'Livestock' }, value: { html: upperFirstLetter([livestockTypes.pigs, livestockTypes.sheep].includes(data?.typeOfLivestock) ? data?.typeOfLivestock : `${data?.typeOfLivestock} cattle`) } }
@@ -267,37 +293,33 @@ module.exports = {
       ]
       const rowsWithData = rows.filter((row) => row?.value?.html)
 
+      const errorMessages = getErrorMessagesByKey(errors)
+
       return h.view('view-claim', {
-        page: 1,
-        backLink: backLink(claim?.applicationReference, request.query.returnPage, request.query.cPage),
-        returnPage: request.query.returnPage,
+        page,
+        backLink: backLink(applicationReference, returnPage, page),
+        returnPage,
         reference,
         applicationReference,
-        title: upperFirstLetter(application?.data?.organisation?.name),
+        claimOrAgreement: 'claim',
+        title: upperFirstLetter(application.data.organisation.name),
         claimSummaryDetails: rowsWithData,
-        contactPerson,
+        contactPerson: currentStatusEvent?.ChangedBy,
         status: { capitalisedtype: formatStatusId(claim.statusId), normalType: upperFirstLetter(formatStatusId(claim.statusId).toLowerCase()), tagClass: getStyleClassByStatus(formatStatusId(claim.statusId)) },
         applicationSummaryDetails,
-        historyData,
-        recommendData: Object.entries(getRecommendData(recommend)).length === 0 ? false : getRecommendData(recommend),
-        recommendForm: displayRecommendationForm,
-        authoriseOrRejectForm: {
-          display: displayAuthoriseOrRejectForm,
-          displayAuthorisePaymentButton
-        },
-        authorisePaymentConfirmForm: {
-          display: displayAuthoriseToPayConfirmationForm,
-          errorMessage: checkboxErrors(errors, 'authorise-payment-panel')
-        },
-        rejectClaimConfirmForm: {
-          display: displayAuthoriseToRejectConfirmationForm,
-          errorMessage: checkboxErrors(errors, 'reject-claim-panel')
-        },
-        onHoldConfirmationForm: {
-          display: displayOnHoldConfirmationForm,
-          errorMessage: checkboxErrors(errors, 'confirm-move-to-in-check-panel')
-        },
-        displayMoveToInCheckFromHold,
+        historyDetails,
+        moveToInCheckAction,
+        moveToInCheckForm,
+        recommendAction,
+        recommendToPayForm,
+        recommendToRejectForm,
+        rejectAction,
+        rejectForm,
+        authoriseAction,
+        authoriseForm,
+        updateStatusForm,
+        statusOptions,
+        errorMessages,
         errors
       })
     }

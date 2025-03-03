@@ -1,22 +1,21 @@
-const Joi = require('joi')
+const joi = require('joi')
 const boom = require('@hapi/boom')
 const crumbCache = require('./utils/crumb-cache')
 const { administrator, authoriser, processor, recommender, user } = require('../auth/permissions')
 const { getApplication } = require('../api/applications')
-const { formatedDateToUk, formatTypeOfVisit, formatSpecies, formatStatusId, upperFirstLetter } = require('../lib/display-helper')
+const { formatedDateToUk } = require('../lib/display-helper')
 const { getClaimSearch, setClaimSearch } = require('../session')
 const { claimSearch } = require('../session/keys')
-const { getStyleClassByStatus } = require('../constants/status')
-const { serviceUri } = require('../config')
 const { getContactHistory, displayContactHistory } = require('../api/contact-history')
-const { viewModel } = require('./models/claim-list')
+const { getClaims } = require('../api/claims')
+const { getClaimTableHeader, getClaimTableRows } = require('./models/claim-list')
 
 const pageUrl = '/agreement/{reference}/claims'
 const getBackLink = (page, claimReference, returnPage) => {
-  return returnPage === 'view-claim' ? `/view-claim/${claimReference}` : `/agreements?page=${page ?? 1}`
+  return returnPage === 'view-claim'
+    ? `/view-claim/${claimReference}?page=${page}`
+    : `/agreements?page=${page}`
 }
-const getAriaSort = (sortField, direction, field) => sortField && sortField.field === field ? direction : 'none'
-const agreementPageLimit = 6
 
 module.exports = [{
   method: 'GET',
@@ -24,27 +23,24 @@ module.exports = [{
   options: {
     auth: { scope: [administrator, authoriser, processor, recommender, user] },
     validate: {
-      params: Joi.object({
-        reference: Joi.string()
+      params: joi.object({
+        reference: joi.string()
       }),
-      query: Joi.object({
-        page: Joi.string().allow(null),
-        aPage: Joi.string().allow(null),
-        returnPage: Joi.string().allow(null),
-        reference: Joi.string().allow(null)
+      query: joi.object({
+        reference: joi.string(),
+        page: joi.number().greater(0).default(1),
+        returnPage: joi.string()
       })
     },
     handler: async (request, h) => {
+      const { page, reference, returnPage } = request.query
+
       await crumbCache.generateNewCrumb(request, h)
       const application = await getApplication(request.params.reference)
       const contactHistory = await getContactHistory(request.params.reference)
       const contactHistoryDetails = displayContactHistory(contactHistory)
       if (!application) {
         throw boom.badRequest()
-      }
-      const customSearch = {
-        searchText: request.params.reference,
-        searchType: 'appRef'
       }
 
       const organisation = application.data?.organisation
@@ -61,96 +57,26 @@ module.exports = [{
       const applicationSummaryDetails = summaryDetails.filter((row) => row.newValue)
 
       const sortField = getClaimSearch(request, claimSearch.sort) ?? undefined
-      const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
-      const claimTableHeader = [{
-        text: 'Claim number',
-        attributes: {
-          'aria-sort': getAriaSort(sortField, direction, 'claim number'),
-          'data-url': `/agreement/${request.params.reference}/claims/sort/claim number`
-        }
-      },
-      {
-        text: 'Type of visit',
-        attributes: {
-          'aria-sort': getAriaSort(sortField, direction, 'type of visit'),
-          'data-url': `/agreement/${request.params.reference}/claims/sort/type of visit`
-        }
-      },
-      {
-        text: 'Species',
-        attributes: {
-          'aria-sort': getAriaSort(sortField, direction, 'species'),
-          'data-url': `/agreement/${request.params.reference}/claims/sort/species`
-        }
-      },
-      {
-        text: 'Claim date',
-        attributes: {
-          'aria-sort': getAriaSort(sortField, direction, 'claim date'),
-          'data-url': `/agreement/${request.params.reference}/claims/sort/claim date`
-        },
-        format: 'date'
-      },
-      {
-        text: 'Status',
-        attributes: {
-          'aria-sort': getAriaSort(sortField, direction, 'status'),
-          'data-url': `/agreement/${request.params.reference}/claims/sort/status`
-        }
-      },
-      {
-        text: 'Details'
-      }]
-      const { model } = await viewModel(request, request.query.page, agreementPageLimit, customSearch)
-      const claimTableClaims = model?.claimsData?.claims?.map((claim) => {
-        return [
-          {
-            text: claim.reference,
-            attributes: {
-              'data-sort-value': claim.reference
-            }
-          },
-          {
-            text: formatTypeOfVisit(claim.type),
-            attributes: {
-              'data-sort-value': claim.type
-            }
-          },
-          {
-            text: formatSpecies(claim.data?.typeOfLivestock),
-            attributes: {
-              'data-sort-value': claim.data?.typeOfLivestock
-            }
-          },
-          {
-            text: formatedDateToUk(claim.createdAt),
-            format: 'date',
-            attributes: {
-              'data-sort-value': claim.createdAt
-            }
-          },
-          {
-            html: `<span class='app-long-tag'><span class="govuk-tag ${getStyleClassByStatus(formatStatusId(claim.statusId))}">${upperFirstLetter(formatStatusId(claim.statusId).toLowerCase())}</span></span>`,
-            attributes: {
-              'data-sort-value': `${claim.statusId}`
-            }
-          },
-          { html: `<a href="${serviceUri}/view-claim/${claim.reference}?returnPage=view-agreement">View claim</a>` }
-        ]
-      })
+      const showSBI = false
+      const dataURLPrefix = `/agreement/${request.params.reference}/`
+      const header = getClaimTableHeader(sortField, dataURLPrefix, showSBI)
+
+      const searchText = request.params.reference
+      const searchType = 'appRef'
+      const filter = undefined
+      const limit = 30
+      const offset = 0
+      const { claims, total } = await getClaims(searchType, searchText, filter, limit, offset, sortField, request.logger)
+      const claimReturnPage = 'agreement'
+      const rows = getClaimTableRows(claims, page, claimReturnPage, showSBI)
 
       return h.view('agreement', {
-        model,
-        claimsRowsTotal: model?.claimsData?.total,
-        backLink: getBackLink(request?.query?.aPage, request?.query?.reference, request?.query?.returnPage),
+        backLink: getBackLink(page, reference, returnPage),
         businessName: application.data?.organisation?.name,
         applicationSummaryDetails,
-        claimTable: claimTableClaims
-          ? {
-              header: claimTableHeader,
-              claims: claimTableClaims
-            }
-          : undefined
+        claimsTotal: total,
+        header,
+        rows
       })
     }
   }
@@ -161,10 +87,10 @@ module.exports = [{
   options: {
     auth: { scope: [administrator, processor, user, recommender, authoriser] },
     validate: {
-      params: Joi.object({
-        reference: Joi.string(),
-        field: Joi.string(),
-        direction: Joi.string()
+      params: joi.object({
+        reference: joi.string(),
+        field: joi.string(),
+        direction: joi.string()
       })
     },
     handler: async (request, h) => {

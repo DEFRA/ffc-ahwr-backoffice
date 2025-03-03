@@ -1,120 +1,142 @@
 const { Buffer } = require('buffer')
-const Joi = require('joi')
-const { endemics } = require('../config')
+const joi = require('joi')
+const mapAuth = require('../auth/map-auth')
 const { getApplication, getApplicationHistory, getApplicationEvents } = require('../api/applications')
 const { administrator, processor, user, recommender, authoriser } = require('../auth/permissions')
-const { getStyleClassByStatus } = require('../constants/status')
-const ViewModel = require('./models/view-agreement')
-const mapAuth = require('../auth/map-auth')
-const claimFormHelper = require('./utils/claim-form-helper')
+const { getStyleClassByStatus, status: claimStatuses } = require('../constants/status')
+const { getClaimViewStates } = require('./utils/get-claim-view-states')
+const { getCurrentStatusEvent } = require('./utils/get-current-status-event')
 const applicationStatus = require('../constants/application-status')
-const checkboxErrors = require('./utils/checkbox-errors')
+const { getErrorMessagesByKey } = require('./utils/get-error-messages-by-key')
 const { getContactHistory, displayContactHistory } = require('../api/contact-history')
 const { upperFirstLetter } = require('../lib/display-helper')
+const { getOrganisationDetails } = require('./models/organisation-details')
+const { getApplicationDetails } = require('./models/application-details')
+const { getHistoryDetails } = require('./models/application-history')
+const { getApplicationClaimDetails } = require('./models/application-claim')
 
 module.exports = {
-  method: 'GET',
+  method: 'get',
   path: '/view-agreement/{reference}',
   options: {
     auth: { scope: [administrator, processor, user, recommender, authoriser] },
     validate: {
-      params: Joi.object({
-        reference: Joi.string().valid()
+      params: joi.object({
+        reference: joi.string()
       }),
-      query: Joi.object({
-        page: Joi.number().greater(0).default(1),
-        errors: Joi.string().allow(null),
-        withdraw: Joi.bool().default(false),
-        approve: Joi.bool().default(false),
-        reject: Joi.bool().default(false),
-        recommendToPay: Joi.bool().default(false),
-        recommendToReject: Joi.bool().default(false),
-        moveToInCheck: Joi.bool().default(false)
+      query: joi.object({
+        page: joi.number().greater(0).default(1),
+        errors: joi.string().allow(null),
+        withdraw: joi.bool().default(false),
+        moveToInCheck: joi.bool().default(false),
+        recommendToPay: joi.bool().default(false),
+        recommendToReject: joi.bool().default(false),
+        approve: joi.bool().default(false),
+        reject: joi.bool().default(false),
+        updateStatus: joi.bool().default(false)
       })
     },
     handler: async (request, h) => {
+      const { page } = request.query
       const application = await getApplication(request.params.reference, request.logger)
       const applicationHistory = await getApplicationHistory(request.params.reference, request.logger)
+      const currentStatusEvent = getCurrentStatusEvent(application, applicationHistory)
 
       let applicationEvents
-      if ((application?.claimed ||
-        application?.statusId === applicationStatus.inCheck ||
-        application?.statusId === applicationStatus.readyToPay ||
-        application?.statusId === applicationStatus.rejected) &&
-        !application?.data?.dateOfClaim) {
+      if ((application.claimed ||
+      application.statusId === applicationStatus.inCheck ||
+      application.statusId === applicationStatus.readyToPay ||
+      application.statusId === applicationStatus.rejected) &&
+      !application.data.dateOfClaim) {
         applicationEvents = await getApplicationEvents(application?.data?.organisation.sbi, request.logger)
       }
 
       const status = application.status.status.toUpperCase()
       const statusLabel = upperFirstLetter(application.status.status.toLowerCase())
       const statusClass = getStyleClassByStatus(application.status.status)
-      const mappedAuth = mapAuth(request)
-      const withdrawLinkStatus = ['AGREED']
-      const isAgreementAgreedAndUserIsAdminAuthoriserRecommender = withdrawLinkStatus.includes(application.status.status) && (mappedAuth.isAdministrator || mappedAuth.isAuthoriser)
-      const withdrawLink = isAgreementAgreedAndUserIsAdminAuthoriserRecommender && !request.query.withdraw
-      const withdrawConfirmationForm = isAgreementAgreedAndUserIsAdminAuthoriserRecommender && application.status.status !== 'WITHDRAWN' && request.query.withdraw
 
       const {
-        displayRecommendationForm,
-        displayRecommendToPayConfirmationForm,
-        displayRecommendToRejectConfirmationForm,
-        displayAuthoriseToPayConfirmationForm,
-        displayAuthoriseToRejectConfirmationForm,
-        subStatus,
-        displayMoveToInCheckFromHold,
-        displayOnHoldConfirmationForm
-      } = await claimFormHelper(request, request.params.reference, application.statusId)
+        withdrawAction,
+        withdrawForm,
+        moveToInCheckAction,
+        moveToInCheckForm,
+        recommendAction,
+        recommendToPayForm,
+        recommendToRejectForm,
+        authoriseAction,
+        authoriseForm,
+        rejectAction,
+        rejectForm,
+        updateStatusForm
+      } = getClaimViewStates(request, application.statusId, currentStatusEvent)
+
+      const statusOptions = Object.entries(claimStatuses)
+        .map(([key, value]) => ({
+          text: upperFirstLetter(key).replace(/_/, ' '),
+          value,
+          selected: value === application.statusId
+        }))
 
       const errors = request.query.errors
         ? JSON.parse(Buffer.from(request.query.errors, 'base64').toString('utf8'))
         : []
 
-      const recommend = {
-        displayRecommendToPayConfirmationForm,
-        displayRecommendToRejectConfirmationForm,
-        errorMessage: checkboxErrors(errors, 'pnl-recommend-confirmation')
+      const { isAdministrator } = mapAuth(request)
+      const actions = isAdministrator
+        ? {
+            items: [{
+              href: `/view-agreement/${application.reference}?updateStatus=true&page=${page}#update-status`,
+              text: 'Change',
+              visuallyHiddenText: 'status'
+            }]
+          }
+        : null
+
+      const statusRow = {
+        key: { text: 'Status' },
+        value: { html: `<span class="govuk-tag app-long-tag ${statusClass}">${statusLabel}</span>` },
+        actions
       }
+
       const contactHistory = await getContactHistory(request.params.reference, request.logger)
       const contactHistoryDetails = displayContactHistory(contactHistory)
-      const organisation = application.data?.organisation
-      const listData = [
-        { field: 'Business name', newValue: organisation?.name, oldValue: null },
-        { field: 'SBI number', newValue: organisation?.sbi, oldValue: null },
-        { field: 'Address', newValue: organisation?.address, oldValue: contactHistoryDetails.address },
-        { field: 'Email address', newValue: organisation?.email, oldValue: contactHistoryDetails.email },
-        { field: 'Organisation email address', newValue: organisation?.orgEmail, oldValue: contactHistoryDetails.orgEmail }
-      ]
-      const viewModel = new ViewModel(application, applicationHistory, recommend, applicationEvents)
-      viewModel.model.listData = listData
+      const { organisation } = application.data
+      const organisationDetails = getOrganisationDetails(organisation, contactHistoryDetails)
+      const applicationDetails = getApplicationDetails(application, statusRow)
+      const historyDetails = getHistoryDetails(applicationHistory)
+      const applicationClaimDetails = getApplicationClaimDetails(application, applicationEvents, statusRow)
+      const errorMessages = getErrorMessagesByKey(errors)
+
       return h.view('view-agreement', {
-        endemics: endemics.enabled,
+        page,
         reference: application.reference,
+        claimOrAgreement: 'agreement',
         status,
         statusLabel,
         statusClass,
-        organisationName: application?.data?.organisation?.name,
-        vetVisit: application?.vetVisit,
-        claimed: application?.claimed,
-        withdrawLink,
-        withdrawConfirmationForm,
-        payment: application?.payment,
-        ...viewModel,
-        page: request.query.page,
-        recommendForm: displayRecommendationForm,
-        authorisePaymentConfirmForm: {
-          display: displayAuthoriseToPayConfirmationForm,
-          errorMessage: checkboxErrors(errors, 'authorise-payment-panel')
-        },
-        rejectClaimConfirmForm: {
-          display: displayAuthoriseToRejectConfirmationForm,
-          errorMessage: checkboxErrors(errors, 'reject-claim-panel')
-        },
-        onHoldConfirmationForm: {
-          display: displayOnHoldConfirmationForm,
-          errorMessage: checkboxErrors(errors, 'confirm-move-to-in-check-panel')
-        },
-        displayMoveToInCheckFromHold,
-        subStatus,
+        organisationName: application.data.organisation.name,
+        vetVisit: application.vetVisit,
+        claimed: application.claimed,
+        payment: application.payment,
+        organisationDetails,
+        applicationDetails,
+        historyDetails,
+        applicationClaimDetails,
+        contactPerson: currentStatusEvent?.ChangedBy,
+        withdrawAction,
+        withdrawForm,
+        moveToInCheckAction,
+        moveToInCheckForm,
+        recommendAction,
+        recommendToPayForm,
+        recommendToRejectForm,
+        authoriseAction,
+        authoriseForm,
+        rejectAction,
+        rejectForm,
+        updateStatusForm,
+        statusOptions,
+        errorMessages,
         errors
       })
     }

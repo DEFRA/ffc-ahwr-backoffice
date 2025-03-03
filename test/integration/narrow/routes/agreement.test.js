@@ -172,7 +172,7 @@ describe('Claims test', () => {
       expect($('title').text()).toContain('Administration - My Farm')
       expectPhaseBanner.ok($)
 
-      expect($('.govuk-back-link').attr('href')).toEqual('/view-claim/REDC-6179-D9D3')
+      expect($('.govuk-back-link').attr('href')).toEqual('/view-claim/REDC-6179-D9D3?page=1')
     })
     test('the back link should go to all agreements if the user is coming from all agreements main tab', async () => {
       const options = {

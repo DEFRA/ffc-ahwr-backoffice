@@ -28,34 +28,32 @@
                     <div class="user-search-box">
                       <label class="govuk-label govuk-label--s" for="searchText">Find a claim</label>
                       <div id="claimSearch-hint" class="govuk-hint">Search by claim number, visit type, SBI, claim date or status.</div>
-                      <input type="hidden" name="crumb" value="{{crumb}}"/>
-                      <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{model.searchText}}" spellcheck="false">
+                      <input type="hidden" name="crumb" value="{{ crumb }}"/>
+                      <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{ searchText }}" spellcheck="false">
                       <button class="search-button" data-module="govuk-button" name="submit" value="search">
                         Search
                       </button>
                     </div>
                   </div>
-                  {% if model.error or error %}
+                  {% if error %}
                     <div class="govuk-grid-column-full">
-                      <p class="govuk-error-message">{{model.error}}{{error}}</p>
+                      <p class="govuk-error-message">{{ error }}</p>
                     </div>
                   {% endif %}
-
                     {{ govukTable({
                         attributes: {
                           'data-module': 'moj-sortable-table'
                         },
-                        firstCellIsHeader: false,
-                        head: model.header,
-                        rows: model.claims
-                      }) 
+                        head: header,
+                        rows: rows
+                      })
                     }}
                 </div>
                 {{ govukPagination({
-                    previous: model.previous,
-                    next: model.next,
-                    items: model.pages
-                  }) 
+                    previous: previous,
+                    next: next,
+                    items: pages
+                  })
                 }}
               </div>
             </div>

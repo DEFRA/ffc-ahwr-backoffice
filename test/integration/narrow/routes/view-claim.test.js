@@ -1,6 +1,6 @@
 const cheerio = require('cheerio')
 const { getClaim } = require('../../../../app/api/claims')
-const { administrator } = require('../../../../app/auth/permissions')
+const { administrator, recommender } = require('../../../../app/auth/permissions')
 const {
   getApplication,
   getApplicationHistory
@@ -183,7 +183,7 @@ describe('View claim test', () => {
       status: { status: 'PAID' }
     }
   ]
-  getApplicationHistory.mockReturnValue({ head: [], rows: [] })
+  getApplicationHistory.mockReturnValue({ historyRecords: [] })
   afterEach(async () => {
     jest.clearAllMocks()
   })
@@ -326,7 +326,7 @@ describe('View claim test', () => {
       getClaim.mockReturnValue({ ...claims[0], data: undefined, type })
       getApplication.mockReturnValue({
         ...application,
-        data: { ...application.data, organisation: undefined }
+        data: { ...application.data, organisation: {} }
       })
 
       const res = await global.__SERVER__.inject(options)
@@ -337,12 +337,12 @@ describe('View claim test', () => {
       // Summary list rows expect to show only application data or if type is provided show application data and type of review
       expect($('.govuk-summary-list__row').length).toEqual(rows)
     })
-    test('returns 200 whitout claim data', async () => {
+    test('returns 200 whithout claim data', async () => {
       const encodedErrors =
         'W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI3JlamVjdC1jbGFpbS1wYW5lbCJ9XQ%3D%3D'
       const auth = {
         strategy: 'session-auth',
-        credentials: { scope: [administrator], account: 'test user' }
+        credentials: { scope: [recommender], account: 'test user' }
       }
       const options = {
         method: 'GET',
@@ -358,7 +358,7 @@ describe('View claim test', () => {
       })
       getApplication.mockReturnValue({
         ...application,
-        data: { ...application.data, organisation: undefined }
+        data: { ...application.data, organisation: {} }
       })
 
       const res = await global.__SERVER__.inject(options)
@@ -427,7 +427,7 @@ describe('View claim test', () => {
     test('the back link should go to agreement details if the user is coming from agreement details page', async () => {
       const options = {
         method: 'GET',
-        url: `${url}/AHWR-0000-4444?returnPage=view-agreement`,
+        url: `${url}/AHWR-0000-4444?returnPage=agreement`,
         auth
       }
 

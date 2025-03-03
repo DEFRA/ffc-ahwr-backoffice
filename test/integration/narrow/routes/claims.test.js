@@ -11,6 +11,8 @@ jest.mock('../../../../app/api/claims')
 const pagination = require('../../../../app/pagination')
 jest.mock('../../../../app/pagination')
 
+jest.mock('../../../../app/routes/models/claim-list')
+
 pagination.getPagination = jest.fn().mockReturnValue({
   limit: 10, offset: 0
 })
@@ -37,7 +39,7 @@ describe('Applications test', () => {
     test('returns 200', async () => {
       const options = {
         method: 'GET',
-        url,
+        url: `${url}?page=1`,
         auth
       }
       const res = await global.__SERVER__.inject(options)

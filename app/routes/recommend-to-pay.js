@@ -1,64 +1,66 @@
-const { Buffer } = require('buffer')
-const Boom = require('@hapi/boom')
-const mapAuth = require('../auth/map-auth')
+const joi = require('joi')
+const getUser = require('../auth/get-user')
 const crumbCache = require('./utils/crumb-cache')
-const processStageActions = require('./utils/process-stage-actions')
 const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
-const permissions = require('../auth/permissions')
-const stages = require('../constants/application-stages')
-const stageExecutionActions = require('../constants/application-stage-execution-actions')
-const { failActionTwoCheckboxes } = require('../routes/utils/fail-action-two-checkboxes')
-const recommendToPayOrRejectSchema = require('./validationSchemas/recommend-to-pay-or-reject-schema')
+const { encodeErrorsForUI } = require('./utils/encode-errors-for-ui')
+const { updateApplicationStatus } = require('../api/applications')
+const { updateClaimStatus } = require('../api/claims')
+const { recommendToPay } = require('../constants/application-status')
+const { administrator, recommender } = require('../auth/permissions')
 
 module.exports = {
-  method: 'POST',
+  method: 'post',
   path: '/recommend-to-pay',
   options: {
+    auth: { scope: [administrator, recommender] },
     pre: [{ method: preDoubleSubmitHandler }],
     validate: {
-      payload: recommendToPayOrRejectSchema,
+      payload: joi.object({
+        claimOrAgreement: joi.string().valid('claim', 'agreement').required(),
+        confirm: joi.array().items(
+          joi.string().valid('checkedAgainstChecklist').required(),
+          joi.string().valid('sentChecklist').required()
+        ).required().messages({
+          'any.required': 'Select all checkboxes',
+          'array.base': 'Select all checkboxes'
+        }),
+        reference: joi.string().valid().required(),
+        page: joi.number().greater(0).default(1),
+        returnPage: joi.string().optional().allow('').valid('agreement', 'claims')
+      }),
       failAction: async (request, h, err) => {
-        request.logger.setBindings({ err })
+        const { claimOrAgreement, page, reference, returnPage } = request.payload
+        request.logger.setBindings({ err, reference })
 
-        const errors = await failActionTwoCheckboxes(err, 'pnl-recommend-confirmation')
+        const errors = encodeErrorsForUI(err.details, '#recommend-to-pay')
+        const query = new URLSearchParams({ page, recommendToPay: 'true', errors })
 
-        if (request.payload.claimOrApplication === 'claim') {
-          return h
-            .redirect(`/view-claim/${request.payload.reference}?recommendToPay=true${request.payload?.returnPage && '&returnPage=' + request.payload?.returnPage}&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
-            .takeover()
-        } else {
-          return h
-            .redirect(`/view-agreement/${request.payload.reference}?page=${request?.payload?.page || 1}&recommendToPay=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify(errors)).toString('base64'))}`)
-            .takeover()
+        if (claimOrAgreement === 'claim') {
+          query.append('returnPage', returnPage)
         }
+
+        return h
+          .redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`)
+          .takeover()
       }
     },
     handler: async (request, h) => {
-      const { claimOrApplication, reference } = request.payload
-      const userRole = mapAuth(request)
-      request.logger.setBindings({
-        claimOrApplication,
-        reference,
-        userRole
-      })
-      if (!userRole.isRecommender && !userRole.isAdministrator) {
-        throw Boom.internal('User must be a recommender or an admin')
-      }
+      const { claimOrAgreement, page, reference, returnPage } = request.payload
+      const { username } = getUser(request)
 
-      await processStageActions(
-        request,
-        permissions.recommender,
-        stages.claimApproveReject,
-        stageExecutionActions.recommendToPay,
-        false
-      )
+      request.logger.setBindings({ reference })
+
       await crumbCache.generateNewCrumb(request, h)
+      const query = new URLSearchParams({ page })
 
-      if (request.payload.claimOrApplication === 'claim') {
-        return h.redirect(`/view-claim/${request.payload.reference}${request.payload?.returnPage && '?returnPage=' + request.payload?.returnPage}`)
+      if (claimOrAgreement === 'claim') {
+        query.append('returnPage', returnPage)
+        await updateClaimStatus(reference, username, recommendToPay, request.logger)
       } else {
-        return h.redirect(`/view-agreement/${request.payload.reference}?page=${request.payload.page}`)
+        await updateApplicationStatus(reference, username, recommendToPay, request.logger)
       }
+
+      return h.redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`)
     }
   }
 }

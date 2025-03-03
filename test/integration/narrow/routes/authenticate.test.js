@@ -13,7 +13,7 @@ describe('Authentication route tests', () => {
     await server.stop()
   })
 
-  jest.mock('../../../../app/auth/azure-auth')
+  jest.mock('../../../../app/auth')
   const mockAzureAuth = require('../../../../app/auth')
 
   describe('Authenticate GET request', () => {

@@ -5,10 +5,9 @@ const applications = require('../../../../app/api/applications')
 const { administrator } = require('../../../../app/auth/permissions')
 const viewApplicationData = require('../../../data/view-applications.json')
 const applicationHistoryData = require('../../../data/application-history.json')
-const applicationEventData = require('../../../data/application-events.json')
 const { when, resetAllWhenMocks } = require('jest-when')
 const reference = 'AHWR-555A-FD4C'
-let claimFormHelper
+let getClaimViewStates
 
 function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
   if (isWithdrawLinkVisible) {
@@ -21,7 +20,7 @@ function expectWithdrawLink ($, reference, isWithdrawLinkVisible) {
   }
 }
 function expectApplicationDetails ($) {
-  expect($('.govuk-summary-list__row').length).toEqual(5)
+  expect($('#organisation-details .govuk-summary-list__row').length).toEqual(5)
 
   expect($('.govuk-summary-list__key').eq(0).text()).toMatch('Business name')
   expect($('.govuk-summary-list__value').eq(0).text()).toMatch('My Farm')
@@ -56,16 +55,6 @@ function expectRecommendButtons ($, areRecommendButtonsVisible) {
   }
 }
 
-function expectComplianceCheckPanel ($, isComplianceCheckPanelVisible) {
-  const panelClass = '.govuk-panel__title-s .govuk-!-font-size-36 .govuk-!-margin-top-1'
-  const approveClaimButtonClass = '.govuk-button .govuk-button .govuk-!-margin-bottom-3'
-  const rejectClaimButtonClass = '.govuk-button. govuk-button--secondary .govuk-!-margin-bottom-3'
-
-  isComplianceCheckPanelVisible ? expect($(panelClass).hasClass) : expect($(panelClass).not.hasClass)
-  isComplianceCheckPanelVisible ? expect($(approveClaimButtonClass).hasClass) : expect($(approveClaimButtonClass).not.hasClass)
-  isComplianceCheckPanelVisible ? expect($(rejectClaimButtonClass).hasClass) : expect($(rejectClaimButtonClass).not.hasClass)
-}
-
 function expectWithdrawConfirmationPanel ($, istWithdrawConfirmationPanelVisible) {
   const panelText = $('h1:contains("Withdraw agreement")').text()
   const confirmButtonText = $('button:contains("Confirm and continue")').text()
@@ -96,17 +85,16 @@ describe('View Application test', () => {
         enabled: true
       }
     }))
-    jest.mock('../../../../app/routes/utils/claim-form-helper')
-    claimFormHelper = require('../../../../app/routes/utils/claim-form-helper')
+    jest.mock('../../../../app/routes/utils/get-claim-view-states')
+    getClaimViewStates = require('../../../../app/routes/utils/get-claim-view-states')
 
-    claimFormHelper.mockReturnValue({
-      displayRecommendationForm: false,
-      displayRecommendToPayConfirmationForm: false,
-      displayRecommendToRejectConfirmationForm: false,
-      displayAuthorisationForm: false,
-      displayAuthoriseToPayConfirmationForm: false,
-      displayAuthoriseToRejectConfirmationForm: false,
-      claimSubStatus: null
+    getClaimViewStates.getClaimViewStates.mockReturnValue({
+      recommendAction: false,
+      recommendToPayForm: false,
+      recommendToRejectForm: false,
+      authoriseForm: false,
+      rejectForm: false,
+      withdrawAction: true
     })
   })
 
@@ -151,8 +139,8 @@ describe('View Application test', () => {
     ])('Recommend buttons displayed as expected for when claim helper returns %s', async (areRecommendButtonsVisible) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      claimFormHelper.mockReturnValueOnce({
-        displayRecommendationForm: areRecommendButtonsVisible
+      getClaimViewStates.getClaimViewStates.mockReturnValueOnce({
+        recommendAction: areRecommendButtonsVisible
       })
       const options = {
         method: 'GET',
@@ -166,14 +154,13 @@ describe('View Application test', () => {
     })
 
     test.each([
-      [true, 'Recommend to pay'],
-      [false, '']
-    ])('Present authorisation for payment panel', async (authorisePaymentButtonVisible, subStatus) => {
+      true,
+      false
+    ])('Present authorisation for payment panel', async (authoriseForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      when(claimFormHelper).mockReturnValue({
-        displayAuthoriseToPayConfirmationForm: authorisePaymentButtonVisible,
-        subStatus
+      when(getClaimViewStates.getClaimViewStates).mockReturnValue({
+        authoriseForm
       })
       const options = {
         method: 'GET',
@@ -184,22 +171,21 @@ describe('View Application test', () => {
       const res = await global.__SERVER__.inject(options)
       const $ = cheerio.load(res.payload)
 
-      if (authorisePaymentButtonVisible) {
-        expect($('#authorise-payment-panel').length).toEqual(1)
+      if (authoriseForm) {
+        expect($('#authorise').length).toEqual(1)
       } else {
-        expect($('#authorise-payment-panel').length).toEqual(0)
+        expect($('#authorise').length).toEqual(0)
       }
     })
 
     test.each([
-      [true, 'Recommend to reject'],
-      [false, '']
-    ])('Present authorisation for reject panel', async (authorisePaymentButtonVisible, subStatus) => {
+      true,
+      false
+    ])('Present authorisation for reject panel', async (rejectForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      when(claimFormHelper).mockReturnValue({
-        displayAuthoriseToPayConfirmationForm: authorisePaymentButtonVisible,
-        subStatus
+      when(getClaimViewStates.getClaimViewStates).mockReturnValue({
+        rejectForm
       })
       const options = {
         method: 'GET',
@@ -210,110 +196,113 @@ describe('View Application test', () => {
       const res = await global.__SERVER__.inject(options)
       const $ = cheerio.load(res.payload)
 
-      if (authorisePaymentButtonVisible) {
-        expect($('#authorise-payment-panel').length).toEqual(1)
+      if (rejectForm) {
+        expect($('#reject').length).toEqual(1)
       } else {
-        expect($('#authorise-payment-panel').length).toEqual(0)
+        expect($('#reject').length).toEqual(0)
       }
     })
 
     test.each([
       false,
       true
-    ])('Authorisation confirm form displayed as expected for role %s', async (displayAuthoriseToPayConfirmationForm) => {
+    ])('Authorisation form displayed as expected for role %s', async (authoriseForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      when(claimFormHelper).mockResolvedValue({
-        displayAuthoriseToPayConfirmationForm
+      when(getClaimViewStates.getClaimViewStates).mockReturnValue({
+        authoriseForm
       })
       const ERROR_MESSAGE_TEXT = 'error_message_text'
       const options = {
         method: 'GET',
-        url: `${url}?errors=${encodeURIComponent(Buffer.from(JSON.stringify([{
+        url: `${url}?errors=${Buffer.from(JSON.stringify([{
           text: ERROR_MESSAGE_TEXT,
-          href: '#authorise-payment-panel'
-        }])).toString('base64'))}`,
+          href: '#authorise',
+          key: 'confirm'
+        }])).toString('base64')}`,
         auth
       }
 
       const res = await global.__SERVER__.inject(options)
       const $ = cheerio.load(res.payload)
 
-      if (displayAuthoriseToPayConfirmationForm) {
-        const authorisePaymentForm = $('#form-authorise-payment')
-        expect(authorisePaymentForm.length).toEqual(1)
-        expect(authorisePaymentForm.find('.govuk-button').text().trim()).toEqual('Confirm and continue')
-        expect(authorisePaymentForm.find('input[name=reference]').attr('value')).toEqual(reference)
-        expect(authorisePaymentForm.find('#confirm-error').text().trim()).toEqual('Error: Select both checkboxes')
+      if (authoriseForm) {
+        const form = $('#authorise')
+        expect(form.length).toEqual(1)
+        expect(form.find('.govuk-button').text().trim()).toEqual('Confirm and continue')
+        expect(form.find('input[name=reference]').attr('value')).toEqual(reference)
+        expect(form.find('#confirm-error').text().trim()).toEqual(`Error: ${ERROR_MESSAGE_TEXT}`)
         expect($('.govuk-error-summary .govuk-list').text().trim()).toEqual(ERROR_MESSAGE_TEXT)
       } else {
-        expect($('#form-authorise-payment').length).toEqual(0)
+        expect($('#authorise').length).toEqual(0)
       }
     })
 
     test.each([
       false,
       true
-    ])('Recommended to pay confirm form displayed as expected when claim helper returns %s', async (displayRecommendToPayConfirmationForm) => {
+    ])('Recommended to pay form displayed as expected when claim helper returns %s', async (recommendToPayForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      claimFormHelper.mockResolvedValueOnce({
-        displayRecommendToPayConfirmationForm
+      getClaimViewStates.getClaimViewStates.mockReturnValueOnce({
+        recommendToPayForm
       })
       const ERROR_MESSAGE_TEXT = 'error_message_text'
       const options = {
         method: 'GET',
-        url: `${url}?errors=${encodeURIComponent(Buffer.from(JSON.stringify([{
+        url: `${url}?errors=${Buffer.from(JSON.stringify([{
           text: ERROR_MESSAGE_TEXT,
-          href: '#pnl-recommend-confirmation'
-        }])).toString('base64'))}`,
+          href: '#recommend-to-pay',
+          key: 'confirm'
+        }])).toString('base64')}`,
         auth
       }
 
       const res = await global.__SERVER__.inject(options)
       const $ = cheerio.load(res.payload)
 
-      if (displayRecommendToPayConfirmationForm) {
-        const recommendToPayForm = $('#recommendConfirmationForm')
-        expect(recommendToPayForm.length).toEqual(1)
-        expect(recommendToPayForm.find('.govuk-button').text().trim()).toEqual('Confirm and continue')
-        expect(recommendToPayForm.find('.govuk-label').first().text().trim()).toEqual('I have checked the claim against the verification checklist and it has passed. I recommend the payment is authorised.')
-        expect(recommendToPayForm.find('input[name=reference]').attr('value')).toEqual(reference)
-        expect(recommendToPayForm.find('#confirm-error').text().trim()).toEqual('Error: Select both checkboxes')
+      if (recommendToPayForm) {
+        const form = $('#recommend-to-pay')
+        expect(form.length).toEqual(1)
+        expect(form.find('.govuk-button').text().trim()).toEqual('Confirm and continue')
+        expect(form.find('.govuk-label').first().text().trim()).toEqual('I have checked the claim against the verification checklist and it has passed. I recommend the payment is authorised.')
+        expect(form.find('input[name=reference]').attr('value')).toEqual(reference)
+        expect(form.find('#confirm-error').text().trim()).toEqual(`Error: ${ERROR_MESSAGE_TEXT}`)
         expect($('.govuk-error-summary .govuk-list').text().trim()).toEqual(ERROR_MESSAGE_TEXT)
       } else {
-        expect($('#recommendConfirmationForm').length).toEqual(0)
+        expect($('#recommend-to-pay').length).toEqual(0)
       }
     })
 
     test.each([
       false,
       true
-    ])('Authorisation confirm form displayed as expected for role %s', async (displayAuthoriseToRejectConfirmationForm) => {
+    ])('Authorisation confirm form displayed as expected for role %s', async (rejectForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      when(claimFormHelper).mockResolvedValue({
-        displayAuthoriseToRejectConfirmationForm
+      getClaimViewStates.getClaimViewStates.mockReturnValueOnce({
+        rejectForm
       })
       const ERROR_MESSAGE_TEXT = 'error_message_text'
       const options = {
         method: 'GET',
-        url: `${url}?errors=${encodeURIComponent(Buffer.from(JSON.stringify([{
+        url: `${url}?errors=${Buffer.from(JSON.stringify([{
           text: ERROR_MESSAGE_TEXT,
-          href: '#reject-claim-panel'
-        }])).toString('base64'))}`,
+          href: '#reject',
+          key: 'confirm'
+        }])).toString('base64')}`,
         auth
       }
 
       const res = await global.__SERVER__.inject(options)
       const $ = cheerio.load(res.payload)
 
-      if (displayAuthoriseToRejectConfirmationForm) {
-        const rejectClaimPanel = $('#reject-claim-panel')
+      if (rejectForm) {
+        const rejectClaimPanel = $('#reject')
         expect(rejectClaimPanel.length).toEqual(1)
         expect(rejectClaimPanel.find('.govuk-button').text().trim()).toEqual('Confirm and continue')
         expect(rejectClaimPanel.find('input[name=reference]').attr('value')).toEqual(reference)
-        expect(rejectClaimPanel.find('#confirm-error').text().trim()).toEqual('Error: Select both checkboxes')
+        expect(rejectClaimPanel.find('#confirm-error').text().trim()).toEqual(`Error: ${ERROR_MESSAGE_TEXT}`)
         expect($('.govuk-error-summary .govuk-list').text().trim()).toEqual(ERROR_MESSAGE_TEXT)
       } else {
         expect($('#reject-claim-panel').length).toEqual(0)
@@ -323,18 +312,19 @@ describe('View Application test', () => {
     test.each([
       false,
       true
-    ])('Recommended to reject confirm form displayed as expected when claim helper returns %s', async (displayRecommendToRejectConfirmationForm) => {
+    ])('Recommended to reject confirm form displayed as expected when claim helper returns %s', async (recommendToRejectForm) => {
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      claimFormHelper.mockResolvedValueOnce({
-        displayRecommendToRejectConfirmationForm
+      getClaimViewStates.getClaimViewStates.mockReturnValueOnce({
+        recommendToRejectForm
       })
       const ERROR_MESSAGE_TEXT = 'error_message_text'
       const options = {
         method: 'GET',
         url: `${url}?errors=${encodeURIComponent(Buffer.from(JSON.stringify([{
           text: ERROR_MESSAGE_TEXT,
-          href: '#pnl-recommend-confirmation'
+          href: '#recommend-to-reject',
+          key: 'confirm'
         }])).toString('base64'))}`,
         auth
       }
@@ -342,82 +332,33 @@ describe('View Application test', () => {
       const res = await global.__SERVER__.inject(options)
       const $ = cheerio.load(res.payload)
 
-      if (displayRecommendToRejectConfirmationForm) {
-        const recommendToRejectForm = $('#recommendConfirmationForm')
+      if (recommendToRejectForm) {
+        const recommendToRejectForm = $('#recommend-to-reject')
         expect(recommendToRejectForm.length).toEqual(1)
         expect(recommendToRejectForm.find('.govuk-button').text().trim()).toEqual('Confirm and continue')
         expect(recommendToRejectForm.find('.govuk-label').first().text().trim()).toEqual('I have checked the claim against the verification checklist and it has not passed. I recommend the claim is rejected.')
         expect(recommendToRejectForm.find('input[name=reference]').attr('value')).toEqual(reference)
-        expect(recommendToRejectForm.find('#confirm-error').text().trim()).toEqual('Error: Select both checkboxes')
+        expect(recommendToRejectForm.find('#confirm-error').text().trim()).toEqual(`Error: ${ERROR_MESSAGE_TEXT}`)
         expect($('.govuk-error-summary .govuk-list').text().trim()).toEqual(ERROR_MESSAGE_TEXT)
       } else {
-        expect($('#recommendConfirmationForm').length).toEqual(0)
+        expect($('#recommend-to-reject').length).toEqual(0)
       }
-    })
-
-    test.each([
-      ['administrator', false],
-      ['processor', false],
-      ['user', false]
-    ])('Withdrawl link feature flag disabled, link not displayed for role %s', async (authScope, isWithdrawLinkVisible) => {
-      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
-      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      jest.clearAllMocks()
-
-      const options = {
-        method: 'GET',
-        url,
-        auth
-      }
-
-      const res = await global.__SERVER__.inject(options)
-      const $ = cheerio.load(res.payload)
-
-      expectWithdrawLink($, reference, isWithdrawLinkVisible)
-    })
-
-    test.each([
-      [false],
-      [true]
-    ])('Compliance checks feature flag enabled, authorisation panel displayed as expected', async (isComplianceCheckPanelVisible) => {
-      auth = { strategy: 'session-auth', credentials: { scope: ['administrator'] } }
-      jest.clearAllMocks()
-      jest.mock('../../../../app/config', () => ({
-        ...jest.requireActual('../../../../app/config'),
-        complianceChecks: {
-          enabled: true
-        }
-      }))
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
-      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      const options = {
-        method: 'GET',
-        url,
-        auth
-      }
-
-      const res = await global.__SERVER__.inject(options)
-      const $ = cheerio.load(res.payload)
-
-      expectComplianceCheckPanel($, isComplianceCheckPanelVisible)
     })
 
     test.each([
       ['administrator', true],
+      ['authoriser', true],
+      ['recommender', false],
       ['processor', false],
       ['user', false]
-    ])('Compliance checks feature flag enabled, authorisation panel displayed as expected for role %s', async (authScope, isComplianceCheckPanelVisible) => {
+    ])('Withdraw link feature flag disabled, link not displayed for role %s', async (authScope, withdrawAction) => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
-      jest.clearAllMocks()
-      jest.mock('../../../../app/config', () => ({
-        ...jest.requireActual('../../../../app/config'),
-        complianceChecks: {
-          enabled: true
-        }
-      }))
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
+      applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
+      getClaimViewStates.getClaimViewStates.mockReturnValueOnce({
+        withdrawAction
+      })
+
       const options = {
         method: 'GET',
         url,
@@ -427,34 +368,9 @@ describe('View Application test', () => {
       const res = await global.__SERVER__.inject(options)
       const $ = cheerio.load(res.payload)
 
-      expectComplianceCheckPanel($, isComplianceCheckPanelVisible)
+      expectWithdrawLink($, reference, withdrawAction)
     })
-    test.each([
-      ['administrator', false],
-      ['processor', false],
-      ['user', false]
-    ])('Compliance checks feature flag disabled, authorisation panel not displayed for role %s', async (authScope, isComplianceCheckPanelVisible) => {
-      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
-      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      jest.clearAllMocks()
-      jest.mock('../../../../app/config', () => ({
-        ...jest.requireActual('../../../../app/config'),
-        complianceChecks: {
-          enabled: false
-        }
-      }))
-      const options = {
-        method: 'GET',
-        url,
-        auth
-      }
 
-      const res = await global.__SERVER__.inject(options)
-      const $ = cheerio.load(res.payload)
-
-      expectComplianceCheckPanel($, isComplianceCheckPanelVisible)
-    })
     test.each([
       ['administrator', true],
       ['processor', false],
@@ -464,9 +380,6 @@ describe('View Application test', () => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      claimFormHelper.mockReturnValueOnce({
-        subStatus: status
-      })
       const options = {
         method: 'GET',
         url,
@@ -481,203 +394,24 @@ describe('View Application test', () => {
 
       expectApplicationDetails($)
 
-      expect($('tbody tr:nth-child(1)').text()).toContain('Date of agreement')
-      expect($('tbody tr:nth-child(1)').text()).toContain('06/06/2022')
-      expect($('tbody tr:nth-child(2)').text()).toContain('Business details correct')
-      expect($('tbody tr:nth-child(2)').text()).toContain('Yes')
-      expect($('tbody tr:nth-child(3)').text()).toContain('Type of review')
-      expect($('tbody tr:nth-child(3)').text()).toContain('Sheep')
-      expect($('tbody tr:nth-child(4)').text()).toContain('Number of livestock')
-      expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
-      expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
-      expect($('tbody tr:nth-child(5)').text()).toContain('Yes')
-      expect($('#application').text()).toContain(status)
-      expect($('#claim').text()).toContain(status)
+      expect($('#application .govuk-summary-list__row:nth-child(1) dt').text()).toContain('Status')
+      expect($('#application .govuk-summary-list__row:nth-child(1) dd').text()).toContain(status)
+      expect($('#application .govuk-summary-list__row:nth-child(2) dt').text()).toContain('Date of agreement')
+      expect($('#application .govuk-summary-list__row:nth-child(2) dd').text()).toContain('06/06/2022')
+      expect($('#application .govuk-summary-list__row:nth-child(3) dt').text()).toContain('Business details correct')
+      expect($('#application .govuk-summary-list__row:nth-child(3) dd').text()).toContain('Yes')
+      expect($('#application .govuk-summary-list__row:nth-child(4) dt').text()).toContain('Type of review')
+      expect($('#application .govuk-summary-list__row:nth-child(4) dd').text()).toContain('Sheep')
+      expect($('#application .govuk-summary-list__row:nth-child(5) dt').text()).toContain('Number of livestock')
+      expect($('#application .govuk-summary-list__row:nth-child(5) dd').text()).toContain('Minimum 21')
+      expect($('#application .govuk-summary-list__row:nth-child(6) dt').text()).toContain('Agreement accepted')
+      expect($('#application .govuk-summary-list__row:nth-child(6) dd').text()).toContain('Yes')
 
       expectWithdrawLink($, reference, isWithdrawLinkVisible)
 
       expectPhaseBanner.ok($)
     })
-    test('returns 200 application applied', async () => {
-      const status = 'Not agreed'
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.notagreed)
-      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      claimFormHelper.mockReturnValueOnce({
-        subStatus: status
-      })
-      const options = {
-        method: 'GET',
-        url,
-        auth
-      }
-      const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(200)
-      const $ = cheerio.load(res.payload)
-      expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
-      expect($('h2.govuk-heading-l').text()).toContain(status)
-      expect($('title').text()).toContain('Administration: User Agreement')
 
-      expectApplicationDetails($)
-
-      expect($('tbody tr:nth-child(1)').text()).toContain('Date agreement rejected')
-      expect($('tbody tr:nth-child(1)').text()).toContain('06/06/2022')
-      expect($('tbody tr:nth-child(2)').text()).toContain('Business details correct')
-      expect($('tbody tr:nth-child(2)').text()).toContain('Yes')
-      expect($('tbody tr:nth-child(3)').text()).toContain('Type of review')
-      expect($('tbody tr:nth-child(3)').text()).toContain('Sheep')
-      expect($('tbody tr:nth-child(4)').text()).toContain('Number of livestock')
-      expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
-      expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
-      expect($('tbody tr:nth-child(5)').text()).toContain('No')
-      expect($('#application').text()).toContain(status)
-      expect($('#claim').text()).toContain(status)
-
-      expectWithdrawLink($, reference, false)
-
-      expectPhaseBanner.ok($)
-    })
-    test('returns 200 application data inputted', async () => {
-      const status = 'Data inputted'
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.dataInputted)
-      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      claimFormHelper.mockReturnValueOnce({
-        subStatus: status
-      })
-      const options = {
-        method: 'GET',
-        url,
-        auth
-      }
-      const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(200)
-      const $ = cheerio.load(res.payload)
-      expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
-      expect($('h2.govuk-heading-l').text()).toContain(status)
-      expect($('title').text()).toContain('Administration: User Agreement')
-
-      expectApplicationDetails($)
-
-      expect($('#application').text()).toContain(status)
-      expect($('#claim').text()).toContain(status)
-
-      expectWithdrawLink($, reference, false)
-
-      expectPhaseBanner.ok($)
-    })
-
-    test('returns 200 application claim - claim date in application data', async () => {
-      const status = 'Claimed'
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.claim)
-      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      claimFormHelper.mockReturnValueOnce({
-        subStatus: status
-      })
-      const options = {
-        method: 'GET',
-        url,
-        auth
-      }
-      const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(200)
-      const $ = cheerio.load(res.payload)
-      expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
-      expect($('h2.govuk-heading-l').text()).toContain(status)
-      expect($('title').text()).toContain('Administration: User Agreement')
-
-      expectApplicationDetails($)
-
-      expect($('#application').text()).toContain(status)
-      expect($('#claim').text()).toContain(status)
-
-      expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('Date of review')
-      expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('07/11/2022')
-      expect($('tbody:nth-child(1) tr:nth-child(2)').text()).toContain('Date of claim')
-      expect($('tbody:nth-child(1) tr:nth-child(2)').text()).toContain('09/11/2022')
-      expect($('tbody:nth-child(1) tr:nth-child(3)').text()).toContain('Review details confirmed')
-      expect($('tbody:nth-child(1) tr:nth-child(3)').text()).toContain('Yes')
-      expect($('tbody:nth-child(1) tr:nth-child(4)').text()).toContain('Vet’s name')
-      expect($('tbody:nth-child(1) tr:nth-child(4)').text()).toContain('testVet')
-      expect($('tbody:nth-child(1) tr:nth-child(5)').text()).toContain('Vet’s RCVS number')
-      expect($('tbody:nth-child(1) tr:nth-child(5)').text()).toContain('1234234')
-      expect($('tbody:nth-child(1) tr:nth-child(6)').text()).toContain('Test results unique reference number (URN)')
-      expect($('tbody:nth-child(1) tr:nth-child(6)').text()).toContain('134242')
-
-      expectWithdrawLink($, reference, false)
-
-      expectPhaseBanner.ok($)
-    })
-
-    test('returns 200 application claim - no claim date in application data', async () => {
-      const status = 'Claimed'
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.claimWithNoClaimDate)
-      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      applications.getApplicationEvents.mockReturnValueOnce(applicationEventData)
-      claimFormHelper.mockReturnValueOnce({
-        subStatus: status
-      })
-      const options = {
-        method: 'GET',
-        url,
-        auth
-      }
-      const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(200)
-      const $ = cheerio.load(res.payload)
-      expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
-      expect($('h2.govuk-heading-l').text()).toContain(status)
-      expect($('title').text()).toContain('Administration: User Agreement')
-
-      expectApplicationDetails($)
-
-      expect($('#application').text()).toContain(status)
-      expect($('#claim').text()).toContain(status)
-
-      expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('Date of review')
-      expect($('tbody:nth-child(1) tr:nth-child(1)').text()).toContain('07/11/2022')
-      expect($('tbody:nth-child(1) tr:nth-child(2)').text()).toContain('Date of claim')
-      expect($('tbody:nth-child(1) tr:nth-child(2)').text()).toContain('09/11/2022')
-      expect($('tbody:nth-child(1) tr:nth-child(3)').text()).toContain('Review details confirmed')
-      expect($('tbody:nth-child(1) tr:nth-child(3)').text()).toContain('Yes')
-      expect($('tbody:nth-child(1) tr:nth-child(4)').text()).toContain('Vet’s name')
-      expect($('tbody:nth-child(1) tr:nth-child(4)').text()).toContain('testVet')
-      expect($('tbody:nth-child(1) tr:nth-child(5)').text()).toContain('Vet’s RCVS number')
-      expect($('tbody:nth-child(1) tr:nth-child(5)').text()).toContain('1234234')
-      expect($('tbody:nth-child(1) tr:nth-child(6)').text()).toContain('Test results unique reference number (URN)')
-      expect($('tbody:nth-child(1) tr:nth-child(6)').text()).toContain('134242')
-
-      expectWithdrawLink($, reference, false)
-
-      expectPhaseBanner.ok($)
-    })
-
-    test('returns 200 application paid', async () => {
-      const status = 'Paid'
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.paid)
-      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      claimFormHelper.mockReturnValueOnce({
-        subStatus: status
-      })
-      const options = {
-        method: 'GET',
-        url,
-        auth
-      }
-      const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(200)
-      const $ = cheerio.load(res.payload)
-      expect($('h1.govuk-caption-l').text()).toContain(`Agreement number: ${reference}`)
-      expect($('h2.govuk-heading-l').text()).toContain(status)
-      expect($('title').text()).toContain('Administration: User Agreement')
-
-      expectApplicationDetails($)
-
-      expect($('#application').text()).toContain(status)
-      expect($('#claim').text()).toContain(status)
-
-      expectWithdrawLink($, reference, false)
-
-      expectPhaseBanner.ok($)
-    })
     test.each([
       ['administrator'],
       ['processor'],
@@ -687,9 +421,6 @@ describe('View Application test', () => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      claimFormHelper.mockReturnValueOnce({
-        subStatus: status
-      })
       const options = {
         method: 'GET',
         url,
@@ -704,16 +435,16 @@ describe('View Application test', () => {
 
       expectApplicationDetails($)
 
-      expect($('tbody tr:nth-child(1)').text()).toContain('Date of agreement')
-      expect($('tbody tr:nth-child(1)').text()).toContain('06/06/2022')
-      expect($('tbody tr:nth-child(2)').text()).toContain('Business details correct')
-      expect($('tbody tr:nth-child(2)').text()).toContain('Yes')
-      expect($('tbody tr:nth-child(3)').text()).toContain('Type of review')
-      expect($('tbody tr:nth-child(3)').text()).toContain('Sheep')
-      expect($('tbody tr:nth-child(4)').text()).toContain('Number of livestock')
-      expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
-      expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
-      expect($('tbody tr:nth-child(5)').text()).toContain('Yes')
+      expect($('#application .govuk-summary-list__key').eq(1).text()).toContain('Date of agreement')
+      expect($('#application .govuk-summary-list__value').eq(1).text()).toContain('06/06/2022')
+      expect($('#application .govuk-summary-list__key').eq(2).text()).toContain('Business details correct')
+      expect($('#application .govuk-summary-list__value').eq(2).text()).toContain('Yes')
+      expect($('#application .govuk-summary-list__key').eq(3).text()).toContain('Type of review')
+      expect($('#application .govuk-summary-list__value').eq(3).text()).toContain('Sheep')
+      expect($('#application .govuk-summary-list__key').eq(4).text()).toContain('Number of livestock')
+      expect($('#application .govuk-summary-list__value').eq(4).text()).toContain('Minimum 21')
+      expect($('#application .govuk-summary-list__key').eq(5).text()).toContain('Agreement accepted')
+      expect($('#application .govuk-summary-list__value').eq(5).text()).toContain('Yes')
       expect($('#application').text()).toContain(status)
       expect($('#claim').text()).toContain(status)
 
@@ -728,9 +459,6 @@ describe('View Application test', () => {
       auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      claimFormHelper.mockReturnValueOnce({
-        subStatus: status
-      })
       const options = {
         method: 'GET',
         url,
@@ -745,16 +473,6 @@ describe('View Application test', () => {
 
       expectApplicationDetails($)
 
-      expect($('tbody tr:nth-child(1)').text()).toContain('Date of agreement')
-      expect($('tbody tr:nth-child(1)').text()).toContain('06/06/2022')
-      expect($('tbody tr:nth-child(2)').text()).toContain('Business details correct')
-      expect($('tbody tr:nth-child(2)').text()).toContain('Yes')
-      expect($('tbody tr:nth-child(3)').text()).toContain('Type of review')
-      expect($('tbody tr:nth-child(3)').text()).toContain('Sheep')
-      expect($('tbody tr:nth-child(4)').text()).toContain('Number of livestock')
-      expect($('tbody tr:nth-child(4)').text()).toContain('Minimum 21')
-      expect($('tbody tr:nth-child(5)').text()).toContain('Agreement accepted')
-      expect($('tbody tr:nth-child(5)').text()).toContain('Yes')
       expect($('#application').text()).toContain(status)
       expect($('#claim').text()).toContain(status)
 
@@ -797,48 +515,18 @@ describe('View Application test', () => {
       expect($('thead:nth-child(1) tr:nth-child(1) th:nth-child(4)').text()).toContain('User')
       expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(1)').text()).toContain('23/03/2023')
       expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(2)').text()).toContain('10:00:12')
-      expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(3)').text()).toContain('Claim approved')
+      expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(3)').text()).toContain('Approved')
       expect($('tbody:nth-child(2) tr:nth-child(1) td:nth-child(4)').text()).toContain('Daniel Jones')
       expect($('tbody:nth-child(2) tr:nth-child(2)').text()).toContain('24/03/2023')
       expect($('tbody:nth-child(2) tr:nth-child(2)').text()).toContain('09:30:00')
-      expect($('tbody:nth-child(2) tr:nth-child(2)').text()).toContain('Withdraw completed')
+      expect($('tbody:nth-child(2) tr:nth-child(2)').text()).toContain('Withdrawn')
       expect($('tbody:nth-child(2) tr:nth-child(2)').text()).toContain('Daniel Jones')
       expect($('tbody:nth-child(2) tr:nth-child(3)').text()).toContain('25/03/2023')
       expect($('tbody:nth-child(2) tr:nth-child(3)').text()).toContain('11:10:15')
-      expect($('tbody:nth-child(2) tr:nth-child(3)').text()).toContain('Claim rejected')
+      expect($('tbody:nth-child(2) tr:nth-child(3)').text()).toContain('Rejected')
       expect($('tbody:nth-child(2) tr:nth-child(3)').text()).toContain('Amanda Hassan')
 
       expectPhaseBanner.ok($)
-    })
-
-    test.each([
-      { actualState: viewApplicationData.agreed, expectedState: 'Agreed' },
-      { actualState: viewApplicationData.notagreed, expectedState: 'Not agreed' },
-      { actualState: viewApplicationData.claim, expectedState: 'Claimed' },
-      { actualState: viewApplicationData.dataInputted, expectedState: 'Data inputted' },
-      { actualState: viewApplicationData.paid, expectedState: 'Paid' },
-      { actualState: viewApplicationData.incheck, expectedState: 'In check' },
-      { actualState: viewApplicationData.readytopay, expectedState: 'Ready to pay' },
-      { actualState: viewApplicationData.withdrawn, expectedState: 'Withdrawn' },
-      { actualState: viewApplicationData.accepted, expectedState: 'Accepted' },
-      { actualState: viewApplicationData.rejected, expectedState: 'Rejected' }
-    ])('correct application and claim status displayed for $expectedState', async ({ actualState, expectedState }) => {
-      applications.getApplication.mockReturnValueOnce(actualState)
-      applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
-      applications.getApplicationEvents.mockReturnValueOnce(applicationEventData)
-      when(claimFormHelper).mockReturnValue({
-        subStatus: expectedState
-      })
-      const options = {
-        method: 'GET',
-        url,
-        auth
-      }
-      const res = await global.__SERVER__.inject(options)
-      const $ = cheerio.load(res.payload)
-
-      expect($('#application').text()).toContain(expectedState)
-      expect($('#claim').text()).toContain(expectedState)
     })
 
     test.each([
