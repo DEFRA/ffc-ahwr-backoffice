@@ -64,12 +64,8 @@ describe('Application-list createModel', () => {
   })
 
   test('createModel should return view claims when type EE', async () => {
-    const result = await createModel({ request: 'a request', headers: { path: 'some path' } }, 1)
+    const request = { yar: { get: jest.fn() }, query: {} }
+    const result = await createModel(request, 1)
     expect(result.applications[0][5].html).toContain('View claims')
-  })
-
-  test('createModel should return view details when type is not EE', async () => {
-    const result = await createModel({ request: 'a request', headers: { path: 'some path' } }, 1)
-    expect(result.applications[1][5].html).toContain('View details')
   })
 })

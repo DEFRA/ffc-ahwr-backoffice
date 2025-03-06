@@ -1,0 +1,11 @@
+<div class="govuk-body govuk-!-text-align-left" id="move-to-in-check">
+  <p class="govuk-body">If you recommend this claim for a full verification check, move it to 'in check'.</p>
+  <p>
+    {% if claimOrAgreement == 'agreement' %}
+      <a class="govuk-button govuk-!-margin-bottom-4" href="/view-agreement/{{ reference }}?page={{ page }}&moveToInCheck=true#move-to-in-check">Move claim to 'in check'</a>
+    {% elif claimOrAgreement == 'claim' %}
+      <a class="govuk-button govuk-!-margin-bottom-4" href="/view-claim/{{ reference }}?page={{ page }}&moveToInCheck=true&returnPage={{ returnPage }}#move-to-in-check">Move claim to 'in check'</a>
+    {% endif %}
+  </p>
+  <p class="govuk-body">If no further checks are required, you do not need to do anything. The claim will automatically move to 'ready to pay'.</p>
+</div>

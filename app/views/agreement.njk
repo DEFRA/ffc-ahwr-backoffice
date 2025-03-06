@@ -19,9 +19,9 @@
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         {% for item in applicationSummaryDetails %}
           <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">{{item.field}}</dt>
+            <dt class="govuk-summary-list__key">{{ item.field }}</dt>
             <dd class="govuk-summary-list__value">
-              <p>{{item.newValue}}</p>
+              <p>{{ item.newValue }}</p>
               {% if (item.oldValue) and (item.oldValue != "NA") %}
                 <details class="govuk-details">
                   <summary class="govuk-details__summary">
@@ -38,28 +38,24 @@
       </dl>
     </div>
   </div>
-  <div class="govuk-grid-row">
-    {% if claimsRowsTotal %}
+  {% if claimsTotal %}
+    <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
         <h3 class="govuk-heading-m">Claims by this business</h3>
-    {% endif %}
-  </div>
-  <div class="govuk-grid-column-full">
-    <div class="moj-scrollable-pane__wrapper">
-      {{ govukTable({
-        attributes: {
-            'data-module': 'moj-sortable-table'
-        },
-        firstCellIsHeader: false,
-        head: claimTable.header,
-        rows: claimTable.claims
-      }) }}
+      </div>
     </div>
-      {{ govukPagination({
-          previous: model.previous,
-          next: model.next,
-          items: model.pages
-        })
-      }}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <div class="moj-scrollable-pane__wrapper">
+          {{ govukTable({
+            attributes: {
+                'data-module': 'moj-sortable-table'
+            },
+            head: header,
+            rows: rows
+          }) }}
+        </div>
+      </div>
+  {% endif %}
   </div>
 {%endblock%}

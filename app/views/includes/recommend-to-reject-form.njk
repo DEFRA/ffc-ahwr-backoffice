@@ -1,0 +1,38 @@
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+<div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="recommend-to-reject">
+  <form method="post" action="/recommend-to-reject" class="ahwr-update-form">
+    {% if claimOrAgreement == 'agreement' %}
+      <a href="/view-agreement/{{ reference }}?page={{ page }}" class="govuk-link govuk-body">Back</a>
+    {% elif claimOrAgreement == 'claim' %}
+      <a href="/view-claim/{{ reference }}" class="govuk-link govuk-body">Back</a>
+    {% endif %}
+    {{ govukCheckboxes({
+      name: "confirm",
+      fieldset: {
+        legend: {
+          text: "Recommend to reject",
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--l"
+        }
+      },
+      items: [{
+        value: "checkedAgainstChecklist",
+        text: "I have checked the claim against the verification checklist and it has not passed. I recommend the claim is rejected."
+      },
+      {
+        value: "sentChecklist",
+        text: "I have sent the verification checklist to the authoriser explaining why it\'s failed."
+      }],
+      errorMessage: errorMessages.confirm
+    }) }}
+    {{ govukButton({
+      text: "Confirm and continue"
+    }) }}
+    <input type="hidden" name="claimOrAgreement" value="{{ claimOrAgreement }}" />
+    <input type="hidden" name="reference" value="{{ reference }}" />
+    <input type="hidden" name="page" value="{{ page }}" />
+    <input type="hidden" name="returnPage" value="{{ returnPage }}" />
+    <input type="hidden" name="crumb" value="{{ crumb }}"/>
+  </form>
+</div>

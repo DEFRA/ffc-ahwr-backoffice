@@ -3,17 +3,13 @@ const getCrumbs = require('../../../utils/get-crumbs')
 
 const applications = require('../../../../app/api/applications')
 jest.mock('../../../../app/api/applications')
-
-jest.mock('../../../../app/routes/utils/process-stage-actions')
-const processStageActions = require('../../../../app/routes/utils/process-stage-actions')
-
+jest.mock('../../../../app/api/claims')
 jest.mock('../../../../app/routes/utils/crumb-cache')
 const crumbCache = require('../../../../app/routes/utils/crumb-cache')
 
 const reference = 'AHWR-555A-FD4C'
 const url = '/recommend-to-reject'
-const encodedEmptyArray = 'W10%3D'
-const encodedErrors = 'W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI3BubC1yZWNvbW1lbmQtY29uZmlybWF0aW9uIn1d'
+const encodedErrors = 'W3sidGV4dCI6IlNlbGVjdCBhbGwgY2hlY2tib3hlcyIsImhyZWYiOiIjcmVjb21tZW5kLXRvLXJlamVjdCIsImtleSI6ImNvbmZpcm0ifV0%3D'
 
 applications.processApplicationClaim = jest.fn().mockResolvedValue(true)
 
@@ -46,7 +42,7 @@ describe('Recommended To Reject test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
-          claimOrApplication: 'application',
+          claimOrAgreement: 'agreement',
           page: 1,
           confirm: 'checkedAgainstChecklist',
           crumb
@@ -64,7 +60,7 @@ describe('Recommended To Reject test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
-          claimOrApplication: 'claim',
+          claimOrAgreement: 'claim',
           page: 1,
           returnPage: 'claims',
           confirm: 'checkedAgainstChecklist',
@@ -73,25 +69,7 @@ describe('Recommended To Reject test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-claim/${reference}?recommendToReject=true&returnPage=claims&errors=${encodedErrors}`)
-    })
-
-    test('returns 302 when validation fails - no page given', async () => {
-      const options = {
-        method: 'POST',
-        url,
-        auth,
-        headers: { cookie: `crumb=${crumb}` },
-        payload: {
-          reference,
-          claimOrApplication: 'application',
-          confirm: 'checkedAgainstChecklist',
-          crumb
-        }
-      }
-      const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-claim/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}&returnPage=claims`)
     })
 
     test.each([
@@ -99,11 +77,6 @@ describe('Recommended To Reject test', () => {
       [administrator, 'recommender']
     ])('Redirects correctly on successful validation for application', async (scope, role) => {
       auth = { strategy: 'session-auth', credentials: { scope: [scope], account: { homeAccountId: 'testId', name: 'admin' } } }
-      const response = [
-        { action: 'addStageExecution', data: { applicationReference: reference } },
-        { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
-      ]
-      processStageActions.mockResolvedValue(response)
       const options = {
         method: 'POST',
         url,
@@ -111,7 +84,7 @@ describe('Recommended To Reject test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
-          claimOrApplication: 'application',
+          claimOrAgreement: 'agreement',
           page: 1,
           confirm: ['checkedAgainstChecklist', 'sentChecklist'],
           crumb
@@ -119,7 +92,6 @@ describe('Recommended To Reject test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommend to reject', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
       expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
     })
@@ -128,19 +100,14 @@ describe('Recommended To Reject test', () => {
       [administrator, 'recommender']
     ])('Redirects correctly on successful validation for claim', async (scope, role) => {
       auth = { strategy: 'session-auth', credentials: { scope: [scope], account: { homeAccountId: 'testId', name: 'admin' } } }
-      const response = [
-        { action: 'addStageExecution', data: { applicationReference: reference } },
-        { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
-      ]
-      processStageActions.mockResolvedValue(response)
       const options = {
-        method: 'POST',
+        method: 'post',
         url,
         auth,
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
-          claimOrApplication: 'claim',
+          claimOrAgreement: 'claim',
           page: 1,
           returnPage: 'claims',
           confirm: ['checkedAgainstChecklist', 'sentChecklist'],
@@ -149,35 +116,8 @@ describe('Recommended To Reject test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommend to reject', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
-      expect(res.headers.location).toEqual(`/view-claim/${reference}?returnPage=claims`)
-    })
-    test.each([
-      [recommender, 'recommender'],
-      [administrator, 'recommender']
-    ])('Redirects correctly on successful validation for claim', async (scope, role) => {
-      auth = { strategy: 'session-auth', credentials: { scope: [], account: { homeAccountId: 'testId', name: 'admin' } } }
-      const response = [
-        { action: 'addStageExecution', data: { applicationReference: reference } },
-        { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
-      ]
-      processStageActions.mockResolvedValue(response)
-      const options = {
-        method: 'POST',
-        url,
-        auth,
-        headers: { cookie: `crumb=${crumb}` },
-        payload: {
-          reference,
-          claimOrApplication: 'claim',
-          page: 1,
-          confirm: ['checkedAgainstChecklist', 'sentChecklist'],
-          crumb
-        }
-      }
-      const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(500)
+      expect(res.headers.location).toEqual(`/view-claim/${reference}?page=1&returnPage=claims`)
     })
 
     test.each([
@@ -185,11 +125,6 @@ describe('Recommended To Reject test', () => {
       [administrator, 'recommender']
     ])('Redirects correctly on successful validation - no page given', async (scope, role) => {
       auth = { strategy: 'session-auth', credentials: { scope: [scope], account: { homeAccountId: 'testId', name: 'admin' } } }
-      const response = [
-        { action: 'addStageExecution', data: { applicationReference: reference } },
-        { action: 'updateStageExecution', data: [1, { applicationReference: reference }] }
-      ]
-      processStageActions.mockResolvedValue(response)
       const options = {
         method: 'POST',
         url,
@@ -197,19 +132,19 @@ describe('Recommended To Reject test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
-          claimOrApplication: 'application',
+          claimOrAgreement: 'agreement',
           confirm: ['checkedAgainstChecklist', 'sentChecklist'],
           crumb
         }
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(processStageActions).toHaveBeenCalledWith(expect.anything(), role, 'Claim Approve/Reject', 'Recommend to reject', false)
       expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1)
       expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
     })
 
     test('Returns 302 on wrong payload', async () => {
+      const errors = 'W3sidGV4dCI6IlwiY29uZmlybVwiIGRvZXMgbm90IGNvbnRhaW4gMSByZXF1aXJlZCB2YWx1ZShzKSIsImhyZWYiOiIjcmVjb21tZW5kLXRvLXJlamVjdCIsImtleSI6ImNvbmZpcm0ifV0%3D'
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {
         method: 'POST',
@@ -218,7 +153,7 @@ describe('Recommended To Reject test', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
-          claimOrApplication: 'application',
+          claimOrAgreement: 'agreement',
           page: 1,
           confirm: ['sentChecklist'],
           crumb
@@ -226,10 +161,11 @@ describe('Recommended To Reject test', () => {
       }
       const res = await global.__SERVER__.inject(options)
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&recommendToReject=true&errors=${errors}`)
     })
 
     test('Recommended to reject invalid reference', async () => {
+      const errors = 'W3sidGV4dCI6IlwiY29uZmlybVswXVwiIGRvZXMgbm90IG1hdGNoIGFueSBvZiB0aGUgYWxsb3dlZCB0eXBlcyIsImhyZWYiOiIjcmVjb21tZW5kLXRvLXJlamVjdCIsImtleSI6MH0seyJ0ZXh0IjoiXCJjb25maXJtXCIgZG9lcyBub3QgY29udGFpbiAxIHJlcXVpcmVkIHZhbHVlKHMpIiwiaHJlZiI6IiNyZWNvbW1lbmQtdG8tcmVqZWN0Iiwia2V5IjoiY29uZmlybSJ9LHsidGV4dCI6IlwicmVmZXJlbmNlXCIgbXVzdCBiZSBhIHN0cmluZyIsImhyZWYiOiIjcmVjb21tZW5kLXRvLXJlamVjdCIsImtleSI6InJlZmVyZW5jZSJ9XQ%3D%3D'
       auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {
         method: 'POST',
@@ -237,8 +173,9 @@ describe('Recommended To Reject test', () => {
         auth,
         headers: { cookie: `crumb=${crumb}` },
         payload: {
+          page: 1,
           reference: 123,
-          claimOrApplication: 'application',
+          claimOrAgreement: 'agreement',
           confirm: ['recommendToReject', 'sentChecklist'],
           crumb
         }
@@ -247,27 +184,7 @@ describe('Recommended To Reject test', () => {
       const res = await global.__SERVER__.inject(options)
 
       expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-agreement/123?page=1&recommendToReject=true&errors=${encodedEmptyArray}`)
-    })
-
-    test('Returns 500 on error when processing stage actions', async () => {
-      auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
-      processStageActions.mockRejectedValue(new Error('Error when processing stage actions'))
-      const options = {
-        method: 'POST',
-        url,
-        auth,
-        headers: { cookie: `crumb=${crumb}` },
-        payload: {
-          reference,
-          claimOrApplication: 'application',
-          page: 1,
-          confirm: ['checkedAgainstChecklist', 'sentChecklist'],
-          crumb
-        }
-      }
-      const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(500)
+      expect(res.headers.location).toEqual(`/view-agreement/123?page=1&recommendToReject=true&errors=${errors}`)
     })
   })
 })

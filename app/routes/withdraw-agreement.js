@@ -1,59 +1,52 @@
-const Joi = require('joi')
-const { Buffer } = require('buffer')
+const joi = require('joi')
 const getUser = require('../auth/get-user')
 const crumbCache = require('./utils/crumb-cache')
 const { administrator, authoriser } = require('../auth/permissions')
 const { updateApplicationStatus } = require('../api/applications')
-const applicationStatus = require('../constants/application-status')
+const { withdrawn } = require('../constants/application-status')
 const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
-const { endemics } = require('../config')
+const { encodeErrorsForUI } = require('./utils/encode-errors-for-ui')
 
 module.exports = {
-  method: 'POST',
+  method: 'post',
   path: '/withdraw-agreement',
   options: {
     pre: [{ method: preDoubleSubmitHandler }],
     auth: { scope: [administrator, authoriser] },
-    handler: async (request, h) => {
-      await crumbCache.generateNewCrumb(request, h)
-
-      const endemicsOffValidation = Joi.object({
-        withdrawConfirmation: Joi.string().valid('yes', 'no').required(),
-        reference: Joi.string().required(),
-        page: Joi.number().greater(0).default(1)
-      })
-      const endemicsOnValidation = Joi.object({
-        withdrawConfirmation: Joi.string().valid('yes', 'no').required(),
-        ...(endemics.enabled && {
-          confirm: Joi.array().items(
-            Joi.string().valid('SentCopyOfRequest').required(),
-            Joi.string().valid('attachedCopyOfCustomersRecord').required(),
-            Joi.string().valid('receivedCopyOfCustomersRequest').required()
-          ).required()
+    validate: {
+      payload: joi.object({
+        confirm: joi.array().items(
+          joi.string().valid('SentCopyOfRequest').required(),
+          joi.string().valid('attachedCopyOfCustomersRecord').required(),
+          joi.string().valid('receivedCopyOfCustomersRequest').required()
+        ).required().messages({
+          'any.required': 'Select all checkboxes',
+          'array.base': 'Select all checkboxes'
         }),
-        reference: Joi.string().required(),
-        page: Joi.number().greater(0).default(1)
-      })
+        reference: joi.string().required(),
+        page: joi.number().greater(0).default(1)
+      }),
+      failAction: async (request, h, err) => {
+        const { page, reference } = request.payload
 
-      const { error } = endemics.enabled ? endemicsOnValidation.validate(request.payload) : endemicsOffValidation.validate(request.payload)
+        const errors = encodeErrorsForUI(err.details, '#withdraw')
+        const query = new URLSearchParams({ page, withdraw: 'true', errors })
 
-      if (error) {
-        return h.redirect(`/view-agreement/${request.payload.reference}?page=${request?.payload?.page || 1}&withdraw=true&errors=${encodeURIComponent(Buffer.from(JSON.stringify([{ text: 'Select all checkboxes', href: '#pnl-withdraw-confirmation' }])).toString('base64'))}`).takeover()
+        return h
+          .redirect(`/view-agreement/${reference}?${query.toString()}`)
+          .takeover()
       }
+    },
+    handler: async (request, h) => {
+      const { page, reference } = request.payload
 
-      if (endemics.enabled) {
-        const userName = getUser(request).username
-        await updateApplicationStatus(request.payload.reference, userName, applicationStatus.withdrawn, request.logger)
+      const userName = getUser(request).username
 
-        return h.redirect(`/view-agreement/${request.payload.reference}?page=${request?.payload?.page}`)
-      } else {
-        if (request.payload.withdrawConfirmation === 'yes') {
-          const userName = getUser(request).username
-          await updateApplicationStatus(request.payload.reference, userName, applicationStatus.withdrawn)
-        }
+      await updateApplicationStatus(reference, userName, withdrawn, request.logger)
+      await crumbCache.generateNewCrumb(request, h)
+      const query = new URLSearchParams({ page })
 
-        return h.redirect(`/view-agreement/${request.payload.reference}?page=${request?.payload?.page}`)
-      }
+      return h.redirect(`/view-agreement/${reference}?${query.toString()}`)
     }
   }
 }

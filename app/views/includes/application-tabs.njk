@@ -1,0 +1,46 @@
+{% set applicationHtml %}
+  <h2 class="govuk-heading-l">Application Details</h2>
+  {{ govukSummaryList({ rows: applicationDetails }) }}
+{% endset -%}
+
+{% set claimHtml %}
+  <h2 class="govuk-heading-l">Claim Details</h2>
+  {{ govukSummaryList({
+    rows: applicationClaimDetails,
+    classes: "govuk-!-margin-bottom-0"
+  }) }}
+{% endset -%}
+
+{% set historyHtml %}
+  <h2 class="govuk-heading-l">History</h2>
+  {{ govukTable({
+    head: historyDetails.header,
+    rows: historyDetails.rows
+  }) }}
+{% endset -%}
+
+{{ govukTabs({
+  items: [
+    {
+      label: "Agreement",
+      id: "application",
+      panel: {
+        html: applicationHtml
+      }
+    },
+    {
+      label: "Claim",
+      id: "claim",
+      panel: {
+        html: claimHtml
+      }
+    },
+    {
+      label: "History",
+      id: "history",
+      panel: {
+        html: historyHtml
+      }
+    }
+  ]
+}) }}

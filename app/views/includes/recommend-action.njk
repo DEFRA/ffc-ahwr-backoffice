@@ -1,0 +1,9 @@
+<ul class="govuk-button-group govuk-list">
+  {% if claimOrAgreement == 'agreement' %}
+    <li><a class="govuk-button" href="/view-agreement/{{ reference }}?page={{ page }}&recommendToPay=true#recommend-to-pay" id="btn-recommend-to-pay">Recommend to pay</a></li>
+    <li><a class="govuk-button" href="/view-agreement/{{ reference }}?page={{ page }}&recommendToReject=true#recommend-to-reject" id="btn-recommend-to-reject">Recommend to reject</a></li>
+  {% elif claimOrAgreement == 'claim' %}
+    <li><a class="govuk-button" href="/view-claim/{{ reference }}?page={{ page }}&recommendToPay=true{{"&returnPage="+returnPage if returnPage}}#recommend-to-pay" id="btn-recommend-to-pay">Recommend to pay</a></li>
+    <li><a class="govuk-button" href="/view-claim/{{ reference }}?page={{ page }}&recommendToReject=true{{"&returnPage="+returnPage if returnPage}}#recommend-to-reject" id="btn-recommend-to-reject">Recommend to reject</a></li>
+  {% endif %}
+</ul>

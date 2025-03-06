@@ -5,15 +5,11 @@ describe('Authentication route tests', () => {
   const url = '/dev-auth'
 
   beforeEach(async () => {
-    jest.clearAllMocks()
     server = await createServer()
+    jest.clearAllMocks()
   })
 
-  afterEach(async () => {
-    await server.stop()
-  })
-
-  jest.mock('../../../../app/auth/azure-auth')
+  jest.mock('../../../../app/auth')
   const mockAzureAuth = require('../../../../app/auth')
 
   describe('Authenticate GET request', () => {

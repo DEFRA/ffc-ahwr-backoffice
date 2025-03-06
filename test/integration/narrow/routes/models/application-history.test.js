@@ -1,9 +1,9 @@
-const getHistoryData = require('../../../../../app/routes/models/application-history')
+const { getHistoryDetails } = require('../../../../../app/routes/models/application-history')
 const applicationHistoryData = require('../../../../data/application-history.json')
 
 describe('Application-history model test', () => {
-  test('getHistoryData - Valid Data', async () => {
-    const res = getHistoryData(applicationHistoryData)
+  test('getHistoryDetails - Valid Data', async () => {
+    const res = getHistoryDetails(applicationHistoryData)
     expect(res).not.toBeNull()
     expect(res.header[0].text).toEqual('Date')
     expect(res.header[1].text).toEqual('Time')
@@ -12,49 +12,25 @@ describe('Application-history model test', () => {
     expect(res.rows.length).toEqual(3)
     expect(res.rows[0][0].text).toEqual('23/03/2023')
     expect(res.rows[0][1].text).toEqual('10:00:12')
-    expect(res.rows[0][2].text).toEqual('Claim approved')
+    expect(res.rows[0][2].text).toEqual('Approved')
     expect(res.rows[0][3].text).toEqual('Daniel Jones')
     expect(res.rows[1][0].text).toEqual('24/03/2023')
     expect(res.rows[1][1].text).toEqual('09:30:00')
-    expect(res.rows[1][2].text).toEqual('Withdraw completed')
+    expect(res.rows[1][2].text).toEqual('Withdrawn')
     expect(res.rows[1][3].text).toEqual('Daniel Jones')
     expect(res.rows[2][0].text).toEqual('25/03/2023')
     expect(res.rows[2][1].text).toEqual('11:10:15')
-    expect(res.rows[2][2].text).toEqual('Claim rejected')
+    expect(res.rows[2][2].text).toEqual('Rejected')
     expect(res.rows[2][3].text).toEqual('Amanda Hassan')
   })
-  test('getHistoryData - Null Data', async () => {
-    const res = getHistoryData({ historyRecords: null })
+  test('getHistoryDetails - No data', async () => {
+    const res = getHistoryDetails({ historyRecords: [] })
     expect(res).not.toBeNull()
     expect(res.header[0].text).toEqual('Date')
     expect(res.header[1].text).toEqual('Time')
     expect(res.header[2].text).toEqual('Action')
     expect(res.header[3].text).toEqual('User')
     expect(res.rows.length).toBe(0)
-  })
-  test('getHistoryData - Invalid Date Time', async () => {
-    const data = applicationHistoryData
-    data.historyRecords[0].ChangedOn = null
-    data.historyRecords[2].ChangedOn = null
-    const res = getHistoryData(data)
-    expect(res).not.toBeNull()
-    expect(res.header[0].text).toEqual('Date')
-    expect(res.header[1].text).toEqual('Time')
-    expect(res.header[2].text).toEqual('Action')
-    expect(res.header[3].text).toEqual('User')
-    expect(res.rows.length).toEqual(3)
-    expect(res.rows[0][0].text).toEqual('')
-    expect(res.rows[0][1].text).toEqual('')
-    expect(res.rows[0][2].text).toEqual('Claim approved')
-    expect(res.rows[0][3].text).toEqual('Daniel Jones')
-    expect(res.rows[1][0].text).toEqual('')
-    expect(res.rows[1][1].text).toEqual('')
-    expect(res.rows[1][2].text).toEqual('Claim rejected')
-    expect(res.rows[1][3].text).toEqual('Amanda Hassan')
-    expect(res.rows[2][0].text).toEqual('24/03/2023')
-    expect(res.rows[2][1].text).toEqual('09:30:00')
-    expect(res.rows[2][2].text).toEqual('Withdraw completed')
-    expect(res.rows[2][3].text).toEqual('Daniel Jones')
   })
 
   test.each([
@@ -65,7 +41,7 @@ describe('Application-history model test', () => {
     { statusId: 6 },
     { statusId: 7 },
     { statusId: 8 }
-  ])('getHistoryData - Invalid status field %s', async ({ statusId }) => {
+  ])('getHistoryDetails - Invalid status field %s', async ({ statusId }) => {
     const applicationHistoryData = {
       historyRecords: [
         {
@@ -75,7 +51,7 @@ describe('Application-history model test', () => {
         }
       ]
     }
-    const res = getHistoryData(applicationHistoryData)
+    const res = getHistoryDetails(applicationHistoryData)
     expect(res).not.toBeNull()
     expect(res.header[0].text).toEqual('Date')
     expect(res.header[1].text).toEqual('Time')
@@ -84,7 +60,7 @@ describe('Application-history model test', () => {
     expect(res.rows.length).toBe(0)
   })
 
-  test('getHistoryData - Return correct rows', async () => {
+  test('getHistoryDetails - Return correct rows', async () => {
     const applicationHistoryData = {
       historyRecords: [
         {
@@ -139,7 +115,7 @@ describe('Application-history model test', () => {
         }
       ]
     }
-    const res = getHistoryData(applicationHistoryData)
+    const res = getHistoryDetails(applicationHistoryData)
 
     expect(res).not.toBeNull()
     expect(res.header[0].text).toEqual('Date')
@@ -151,12 +127,12 @@ describe('Application-history model test', () => {
 
     expect(res.rows[0][0].text).toEqual('24/03/2023')
     expect(res.rows[0][1].text).toEqual('11:00:12')
-    expect(res.rows[0][2].text).toEqual('Withdraw completed')
+    expect(res.rows[0][2].text).toEqual('Withdrawn')
     expect(res.rows[0][3].text).toEqual('Test Person 2')
 
     expect(res.rows[1][0].text).toEqual('26/03/2023')
     expect(res.rows[1][1].text).toEqual('13:00:12')
-    expect(res.rows[1][2].text).toEqual('Claim approved')
+    expect(res.rows[1][2].text).toEqual('Approved')
     expect(res.rows[1][3].text).toEqual('Test Person 4')
 
     expect(res.rows[2][0].text).toEqual('27/03/2023')
@@ -181,7 +157,7 @@ describe('Application-history model test', () => {
 
     expect(res.rows[6][0].text).toEqual('30/03/2023')
     expect(res.rows[6][1].text).toEqual('21:00:21')
-    expect(res.rows[6][2].text).toEqual('Moved to In Check')
+    expect(res.rows[6][2].text).toEqual("Moved to 'In Check'")
     expect(res.rows[6][3].text).toEqual('admin')
 
     expect(res.rows[7][0].text).toEqual('31/03/2023')

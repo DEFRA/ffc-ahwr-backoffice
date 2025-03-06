@@ -9,11 +9,9 @@ jest.mock('../../../../app/api/applications')
 
 const reference = 'AHWR-555A-FD4C'
 
-applications.updateApplicationStatus = jest.fn().mockResolvedValue(true)
-
 describe('Withdraw Application tests when endemics flag is On', () => {
   let crumb
-  const url = '/withdraw-agreement/'
+  const url = '/withdraw-agreement'
   jest.mock('../../../../app/auth')
 
   beforeEach(async () => {
@@ -42,7 +40,6 @@ describe('Withdraw Application tests when endemics flag is On', () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
-          withdrawConfirmation: 'yes',
           page: 1,
           crumb
         }
@@ -82,7 +79,6 @@ describe('Withdraw Application tests when endemics flag is On', () => {
         url,
         payload: {
           reference,
-          withdrawConfirmation: 'yes',
           confirm: ['SentCopyOfRequest', 'attachedCopyOfCustomersRecord', 'receivedCopyOfCustomersRequest'],
           page: 1,
           crumb
@@ -103,13 +99,12 @@ describe('Withdraw Application tests when endemics flag is On', () => {
       setEndemicsEnabled(true)
       const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {
-        method: 'POST',
+        method: 'post',
         url,
         auth,
         headers: { cookie: `crumb=${crumb}` },
         payload: {
           reference,
-          withdrawConfirmation: 'yes',
           confirm: ['SentCopyOfRequest', 'attachedCopyOfCustomersRecord', 'receivedCopyOfCustomersRequest'],
           page: 1,
           crumb
@@ -121,62 +116,24 @@ describe('Withdraw Application tests when endemics flag is On', () => {
       expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
     })
     test('Return error, when any of the check boxes are not checked', async () => {
+      const errors = 'W3sidGV4dCI6IlwiY29uZmlybVwiIGRvZXMgbm90IGNvbnRhaW4gMSByZXF1aXJlZCB2YWx1ZShzKSIsImhyZWYiOiIjd2l0aGRyYXciLCJrZXkiOiJjb25maXJtIn1d'
       setEndemicsEnabled(true)
       const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { homeAccountId: 'testId', name: 'admin' } } }
       const options = {
-        method: 'POST',
+        method: 'post',
         url,
         auth,
         headers: { cookie: `crumb=${crumb}` },
         payload: {
+          page: 1,
           reference,
-          withdrawConfirmation: 'yes',
           confirm: ['SentCopyOfRequest', 'attachedCopyOfCustomersRecord'],
           crumb
         }
       }
       const res = await global.__SERVER__.inject(options)
 
-      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&withdraw=true&errors=W3sidGV4dCI6IlNlbGVjdCBhbGwgY2hlY2tib3hlcyIsImhyZWYiOiIjcG5sLXdpdGhkcmF3LWNvbmZpcm1hdGlvbiJ9XQ%3D%3D`)
-    })
-    test('Approve withdraw application when endemics flag is Off', async () => {
-      setEndemicsEnabled(false)
-      const auth = { strategy: 'session-auth', credentials: { scope: [administrator, authoriser], account: { homeAccountId: 'testId', name: 'admin' } } }
-      const options = {
-        method: 'POST',
-        url,
-        auth,
-        headers: { cookie: `crumb=${crumb}` },
-        payload: {
-          reference,
-          withdrawConfirmation: 'yes',
-          page: 1,
-          crumb
-        }
-      }
-      const res = await global.__SERVER__.inject(options)
-      expect(applications.updateApplicationStatus).toHaveBeenCalledTimes(1)
-      expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
-    })
-    test('Go back when user clicked on No button when endemics flag is Off', async () => {
-      setEndemicsEnabled(false)
-      const auth = { strategy: 'session-auth', credentials: { scope: [administrator, authoriser], account: { homeAccountId: 'testId', name: 'admin' } } }
-      const options = {
-        method: 'POST',
-        url,
-        auth,
-        headers: { cookie: `crumb=${crumb}` },
-        payload: {
-          reference,
-          withdrawConfirmation: 'no',
-          page: 1,
-          crumb
-        }
-      }
-      const res = await global.__SERVER__.inject(options)
-      expect(res.statusCode).toBe(302)
-      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`)
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1&withdraw=true&errors=${errors}`)
     })
   })
 })

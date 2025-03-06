@@ -1,0 +1,38 @@
+<div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="authorise">
+  <form method="post" action="/approve-application-claim" class="ahwr-update-form">
+    {% if claimOrAgreement == 'agreement' %}
+      <a href="/view-agreement/{{ reference }}?page={{ page }}" class="govuk-link govuk-body">Back</a>
+    {% elif claimOrAgreement == 'claim' %}
+      <a href="/view-claim/{{ reference }}?page={{ page }}&returnPage={{ returnPage }}" class="govuk-link govuk-body">Back</a>
+    {% endif %}
+    {{ govukCheckboxes({
+      name: "confirm",
+      fieldset: {
+        legend: {
+          text: "Authorise payment",
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--l"
+        }
+      },
+      items: [
+        {
+          value: "approveClaim",
+          text: "I have reviewed the completed verification check and agree the claim has passed. I authorise the claim for payment."
+        },
+        {
+          value: "sentChecklist",
+          text: "I have updated the verification checklist and sent it back to the recommender to attach to the customer's record in the Customer Relationship Management system."
+        }
+      ],
+      errorMessage: errorMessages.confirm
+    }) }}
+    {{ govukButton({
+      text: "Confirm and continue"
+    }) }}
+    <input type="hidden" name="claimOrAgreement" value="{{ claimOrAgreement }}" />
+    <input type="hidden" name="reference" value="{{ reference }}" />
+    <input type="hidden" name="page" value="{{ page }}" />
+    <input type="hidden" name="returnPage" value="{{ returnPage }}" />
+    <input type="hidden" name="crumb" value="{{ crumb }}"/>
+  </form>
+</div>
