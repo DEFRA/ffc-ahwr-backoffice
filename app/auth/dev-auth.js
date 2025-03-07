@@ -13,7 +13,7 @@ const authenticate = async (_, cookieAuth) => {
   })
 }
 
-const refresh = async (_account, cookieAuth, _forceRefresh = true) => {
+const refresh = async (_account, cookieAuth) => {
   cookieAuth.set({
     scope: [administrator, processor, user, recommender, authoriser],
     account: devAccount
