@@ -15,7 +15,8 @@ describe('Dev auth test', () => {
     expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledTimes(1)
   })
   test('refresh test', async () => {
-    expect(await devAuth.refresh(expect.anything(), { set: MOCK_COOKIE_AUTH_SET }, false)).toEqual([administrator, processor, user, recommender, authoriser])
+    expect(await devAuth.refresh(expect.anything(), { set: MOCK_COOKIE_AUTH_SET }))
+      .toEqual([administrator, processor, user, recommender, authoriser])
     expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledTimes(1)
   })
   test('logout test', () => {

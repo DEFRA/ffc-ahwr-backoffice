@@ -25,11 +25,14 @@ const getAuthenticationUrl = () => {
   return msalClientApplication.getAuthCodeUrl(authCodeUrlParameters)
 }
 
-const authenticate = async (redirectCode, cookieAuth) => {
+const authenticate = async (redirectCode, cookieAuth, logger) => {
   const token = await msalClientApplication.acquireTokenByCode({
     code: redirectCode,
     redirectUri: config.auth.redirectUrl
   })
+
+  // TEMPORARY: remove this, do not allow it to progress to prod
+  logger.info({ token }, 'authenticate token')
 
   cookieAuth.set({
     scope: token.idTokenClaims.roles,
@@ -37,11 +40,14 @@ const authenticate = async (redirectCode, cookieAuth) => {
   })
 }
 
-const refresh = async (account, cookieAuth, forceRefresh = true) => {
+const refresh = async (account, cookieAuth, logger) => {
   const token = await msalClientApplication.acquireTokenSilent({
     account,
-    forceRefresh
+    forceRefresh: true
   })
+
+  // TEMPORARY: remove this, do not allow it to progress to prod
+  logger.info({ token }, 'refresh token')
 
   cookieAuth.set({
     scope: token.idTokenClaims.roles,
