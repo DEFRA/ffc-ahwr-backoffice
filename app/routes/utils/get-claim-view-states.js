@@ -85,12 +85,12 @@ const getClaimViewStates = (request, statusId, currentStatusEvent) => {
     name !== currentStatusEvent.ChangedBy
 
   const updateStatusAction =
-    (isAdministrator && isSuperAdmin) &&
+    isSuperAdmin &&
     updateStatus === false &&
     statusId !== status.READY_TO_PAY
 
   const updateStatusForm =
-    (isAdministrator && isSuperAdmin) &&
+    isSuperAdmin &&
     updateStatus === true &&
     statusId !== status.READY_TO_PAY
 
