@@ -1,21 +1,14 @@
-const getUser = require('../../auth/get-user')
 const { upperFirstLetter } = require('../../lib/display-helper')
 
 const getRows = (request) => {
-  const userName = getUser(request).username
+  const { name, username } = request.auth.credentials.account
   const roles = request.auth.credentials.scope.map(x => upperFirstLetter(x)).join(', ')
-  const rows = [
-    { key: { text: 'User' }, value: { text: userName } },
+
+  return [
+    { key: { text: 'User' }, value: { text: name } },
+    { key: { text: 'Username' }, value: { text: username } },
     { key: { text: 'Role' }, value: { text: roles } }
   ]
-
-  return rows
 }
 
-function ViewModel (request) {
-  this.model = {
-    userScopes: { rows: getRows(request) }
-  }
-}
-
-module.exports = ViewModel
+module.exports = { getRows }

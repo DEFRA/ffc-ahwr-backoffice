@@ -1,5 +1,4 @@
 const mapAuth = require('../../auth/map-auth')
-const getUser = require('../../auth/get-user')
 const { status } = require('../../constants/status')
 
 const getClaimViewStates = (request, statusId, currentStatusEvent) => {
@@ -12,13 +11,13 @@ const getClaimViewStates = (request, statusId, currentStatusEvent) => {
     reject,
     updateStatus
   } = request.query
-
-  const { username } = getUser(request)
+  const { name } = request.auth.credentials.account
 
   const {
     isAdministrator,
     isRecommender,
-    isAuthoriser
+    isAuthoriser,
+    isSuperAdmin
   } = mapAuth(request)
 
   const withdrawAction =
@@ -62,30 +61,38 @@ const getClaimViewStates = (request, statusId, currentStatusEvent) => {
     statusId === status.RECOMMENDED_TO_PAY &&
     approve === false &&
     currentStatusEvent &&
-    username !== currentStatusEvent.ChangedBy
+    name !== currentStatusEvent.ChangedBy
 
   const authoriseForm =
     (isAdministrator || isAuthoriser) &&
     statusId === status.RECOMMENDED_TO_PAY &&
     approve === true &&
     currentStatusEvent &&
-    username !== currentStatusEvent.ChangedBy
+    name !== currentStatusEvent.ChangedBy
 
   const rejectAction =
     (isAdministrator || isAuthoriser) &&
     statusId === status.RECOMMENDED_TO_REJECT &&
     reject === false &&
     currentStatusEvent &&
-    username !== currentStatusEvent.ChangedBy
+    name !== currentStatusEvent.ChangedBy
 
   const rejectForm =
     (isAdministrator || isAuthoriser) &&
     statusId === status.RECOMMENDED_TO_REJECT &&
     reject === true &&
     currentStatusEvent &&
-    username !== currentStatusEvent.ChangedBy
+    name !== currentStatusEvent.ChangedBy
 
-  const updateStatusForm = Boolean(isAdministrator && updateStatus)
+  const updateStatusAction =
+    (isAdministrator && isSuperAdmin) &&
+    updateStatus === false &&
+    statusId !== status.READY_TO_PAY
+
+  const updateStatusForm =
+    (isAdministrator && isSuperAdmin) &&
+    updateStatus === true &&
+    statusId !== status.READY_TO_PAY
 
   return {
     withdrawAction,
@@ -99,6 +106,7 @@ const getClaimViewStates = (request, statusId, currentStatusEvent) => {
     authoriseForm,
     rejectAction,
     rejectForm,
+    updateStatusAction,
     updateStatusForm
   }
 }

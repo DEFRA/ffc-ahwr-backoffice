@@ -1,5 +1,4 @@
 const joi = require('joi')
-const getUser = require('../auth/get-user')
 const crumbCache = require('./utils/crumb-cache')
 const { updateApplicationStatus } = require('../api/applications')
 const { updateClaimStatus } = require('../api/claims')
@@ -45,7 +44,7 @@ module.exports = {
     },
     handler: async (request, h) => {
       const { claimOrAgreement, page, reference, returnPage } = request.payload
-      const { username } = getUser(request)
+      const { name } = request.auth.credentials.account
 
       request.logger.setBindings({ reference })
 
@@ -54,9 +53,9 @@ module.exports = {
 
       if (claimOrAgreement === 'claim') {
         query.append('returnPage', returnPage)
-        await updateClaimStatus(reference, username, recommendToReject, request.logger)
+        await updateClaimStatus(reference, name, recommendToReject, request.logger)
       } else {
-        await updateApplicationStatus(reference, username, recommendToReject, request.logger)
+        await updateApplicationStatus(reference, name, recommendToReject, request.logger)
       }
 
       return h.redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`)

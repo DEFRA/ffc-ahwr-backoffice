@@ -1,58 +1,61 @@
-const Joi = require('joi')
+const joi = require('joi')
 const authConfig = require('./auth')
 
-const schema = Joi.object({
+const schema = joi.object({
   cache: {
-    expiresIn: Joi.number().default(1000 * 3600 * 24 * 3), // 3 days
+    expiresIn: joi.number().default(1000 * 3600 * 24 * 3), // 3 days
     options: {
-      host: Joi.string().default('redis-hostname.default'),
-      partition: Joi.string().default('ffc-ahwr-backoffice'),
-      password: Joi.string().allow(''),
-      port: Joi.number().default(6379),
-      tls: Joi.object()
+      host: joi.string().default('redis-hostname.default'),
+      partition: joi.string().default('ffc-ahwr-backoffice'),
+      password: joi.string().allow(''),
+      port: joi.number().default(6379),
+      tls: joi.object()
     }
   },
   cookie: {
-    cookieNameCookiePolicy: Joi.string().default('ffc_ahwr_backoffice_cookie_policy'),
-    cookieNameAuth: Joi.string().default('ffc_ahwr_backoffice_auth'),
-    cookieNameSession: Joi.string().default('ffc_ahwr_backoffice_session'),
-    isSameSite: Joi.string().default('Lax'),
-    isSecure: Joi.boolean().default(true),
-    password: Joi.string().min(32).required(),
-    ttl: Joi.number().default(1000 * 3600 * 24 * 3) // 3 days
+    cookieNameCookiePolicy: joi.string().default('ffc_ahwr_backoffice_cookie_policy'),
+    cookieNameAuth: joi.string().default('ffc_ahwr_backoffice_auth'),
+    cookieNameSession: joi.string().default('ffc_ahwr_backoffice_session'),
+    isSameSite: joi.string().default('Lax'),
+    isSecure: joi.boolean().default(true),
+    password: joi.string().min(32).required(),
+    ttl: joi.number().default(1000 * 3600 * 24 * 3) // 3 days
   },
   cookiePolicy: {
-    clearInvalid: Joi.bool().default(false),
-    encoding: Joi.string().valid('base64json').default('base64json'),
-    isSameSite: Joi.string().default('Lax'),
-    isSecure: Joi.bool().default(true),
-    password: Joi.string().min(32).required(),
-    path: Joi.string().default('/'),
-    ttl: Joi.number().default(1000 * 60 * 60 * 24 * 365) // 1 year
+    clearInvalid: joi.bool().default(false),
+    encoding: joi.string().valid('base64json').default('base64json'),
+    isSameSite: joi.string().default('Lax'),
+    isSecure: joi.bool().default(true),
+    password: joi.string().min(32).required(),
+    path: joi.string().default('/'),
+    ttl: joi.number().default(1000 * 60 * 60 * 24 * 365) // 1 year
   },
-  env: Joi.string().valid('development', 'test', 'production').default('development'),
-  isDev: Joi.boolean().default(false),
-  isProd: Joi.boolean().default(false),
-  port: Joi.number().default(3000),
-  serviceName: Joi.string().default('Administration of the health and welfare of your livestock'),
-  siteTitle: Joi.string().default('Administration'),
-  serviceUri: Joi.string().uri(),
-  useRedis: Joi.boolean().default(false),
-  applicationApiUri: Joi.string().uri(),
-  displayPageSize: Joi.number().default(20),
+  env: joi.string().valid('development', 'test', 'production').default('development'),
+  isDev: joi.boolean().default(false),
+  isProd: joi.boolean().default(false),
+  port: joi.number().default(3000),
+  serviceName: joi.string().default('Administration of the health and welfare of your livestock'),
+  siteTitle: joi.string().default('Administration'),
+  serviceUri: joi.string().uri(),
+  useRedis: joi.boolean().default(false),
+  applicationApiUri: joi.string().uri(),
+  displayPageSize: joi.number().default(20),
   dateOfTesting: {
-    enabled: Joi.bool().default(false)
+    enabled: joi.bool().default(false)
   },
   onHoldAppScheduler: {
-    enabled: Joi.bool().default(true),
-    schedule: Joi.string().default('0 18 * * 1-5')
+    enabled: joi.bool().default(true),
+    schedule: joi.string().default('0 18 * * 1-5')
   },
   endemics: {
-    enabled: Joi.bool().required()
+    enabled: joi.bool().required()
   },
   multiSpecies: {
-    enabled: Joi.bool().required()
-  }
+    enabled: joi.bool().required()
+  },
+  superAdmins: joi.array().items(joi.string()).required(),
+  developerName: joi.string(),
+  developerUsername: joi.string()
 })
 
 const config = {
@@ -97,9 +100,15 @@ const config = {
   },
   multiSpecies: {
     enabled: process.env.MULTI_SPECIES_ENABLED === 'true'
-  }
+  },
+  superAdmins: process.env.SUPER_ADMINS
+    ? process.env.SUPER_ADMINS
+        .split(',')
+        .map((user) => user.trim().toLowerCase())
+    : [],
+  developerName: process.env.DEVELOPER_NAME,
+  developerUsername: process.env.DEVELOPER_USERNAME
 }
-
 const { error, value } = schema.validate(config, { abortEarly: false })
 
 if (error) {

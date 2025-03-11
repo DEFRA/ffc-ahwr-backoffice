@@ -1,11 +1,11 @@
-const Joi = require('joi')
+const joi = require('joi')
 
-const schema = Joi.object({
-  enabled: Joi.boolean().default(false),
-  clientSecret: Joi.string().allow(''),
-  clientId: Joi.string().allow(''),
-  authority: Joi.string().allow(''),
-  redirectUrl: Joi.string()
+const schema = joi.object({
+  enabled: joi.boolean().default(false),
+  clientSecret: joi.string().allow(''),
+  clientId: joi.string().allow(''),
+  authority: joi.string().allow(''),
+  redirectUrl: joi.string()
 })
 
 const config = {

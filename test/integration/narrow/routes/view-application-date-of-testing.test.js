@@ -24,7 +24,7 @@ jest.mock('../../../../app/api/applications')
 describe('View Application test with Date of Testing enabled', () => {
   const url = `/view-agreement/${reference}`
   jest.mock('../../../../app/auth')
-  const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
+  const auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { username: '' } } }
 
   jest.mock('../../../../app/config', () => ({
     ...jest.requireActual('../../../../app/config'),

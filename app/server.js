@@ -71,7 +71,9 @@ async function createServer () {
     }
   })
 
-  await server.register(onHoldAppScheduler)
+  if (process.env.NODE_ENV !== 'test') {
+    await server.register(onHoldAppScheduler)
+  }
 
   return server
 }

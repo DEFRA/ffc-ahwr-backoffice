@@ -22,4 +22,5 @@ data:
   ON_HOLD_APP_PROCESS_SCHEDULE: {{ quote .Values.container.onHoldAppProcessSchedule }}
   ENDEMICS_ENABLED: {{ quote .Values.container.endemicsEnabled }}
   MULTI_SPECIES_ENABLED: {{ quote .Values.container.multiSpeciesEnabled }}
+  SUPER_ADMINS: {{ quote .Values.container.superAdmins }}
 {{- end -}}

@@ -18,7 +18,7 @@ describe('View claim test', () => {
   const url = '/view-claim'
   const auth = {
     strategy: 'session-auth',
-    credentials: { scope: [administrator], account: 'test user' }
+    credentials: { scope: [administrator], account: { username: 'test' } }
   }
   const application = {
     id: '787b407f-29da-4d75-889f-1c614d47e87e',

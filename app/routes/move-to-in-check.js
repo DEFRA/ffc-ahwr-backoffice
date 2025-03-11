@@ -1,7 +1,6 @@
 const joi = require('joi')
 const { updateApplicationStatus } = require('../api/applications')
 const { updateClaimStatus } = require('../api/claims')
-const getUser = require('../auth/get-user')
 const preDoubleSubmitHandler = require('./utils/pre-submission-handler')
 const crumbCache = require('./utils/crumb-cache')
 const { administrator, recommender, authoriser } = require('../auth/permissions')
@@ -47,7 +46,7 @@ module.exports = {
     },
     handler: async (request, h) => {
       const { claimOrAgreement, page, reference, returnPage } = request.payload
-      const { username } = getUser(request)
+      const { name } = request.auth.credentials.account
 
       request.logger.setBindings({ reference })
 
@@ -56,9 +55,9 @@ module.exports = {
 
       if (claimOrAgreement === 'claim') {
         query.append('returnPage', returnPage)
-        await updateClaimStatus(reference, username, inCheck, request.logger)
+        await updateClaimStatus(reference, name, inCheck, request.logger)
       } else {
-        await updateApplicationStatus(reference, username, inCheck, request.logger)
+        await updateApplicationStatus(reference, name, inCheck, request.logger)
       }
 
       return h.redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`)

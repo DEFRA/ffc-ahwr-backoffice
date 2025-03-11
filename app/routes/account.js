@@ -1,13 +1,11 @@
-const viewTemplate = 'account'
-const currentPath = `/${viewTemplate}`
-const ViewModel = require('./models/account')
+const { getRows } = require('./models/account')
 
 module.exports = {
   method: 'GET',
-  path: currentPath,
+  path: '/account',
   options: {
     handler: async (request, h) => {
-      return h.view(viewTemplate, new ViewModel(request))
+      return h.view('account', { rows: getRows(request) })
     }
   }
 }

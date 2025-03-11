@@ -1,6 +1,10 @@
 const { administrator, processor, user, recommender, authoriser } = require('./permissions')
-const { v4: uuidv4 } = require('uuid')
-const devAccount = { homeAccountId: uuidv4(), name: 'Developer' }
+const { developerName, developerUsername } = require('../config')
+
+const devAccount = {
+  name: developerName || 'Developer',
+  username: developerUsername || 'developer@defra.gov.uk'
+}
 
 const getAuthenticationUrl = () => {
   return '/dev-auth'
@@ -22,9 +26,7 @@ const refresh = async (_account, cookieAuth) => {
   return [administrator, processor, user, recommender, authoriser]
 }
 
-const logout = async (_account) => {
-  devAccount.homeAccountId = uuidv4()
-}
+const logout = async () => {}
 
 module.exports = {
   getAuthenticationUrl,

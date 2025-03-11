@@ -1,26 +1,28 @@
 const { getClaimViewStates } = require('../../../../app/routes/utils/get-claim-view-states')
 const { status } = require('../../../../app/constants/status')
-const mapAuth = require('../../../../app/auth/map-auth')
+const { administrator, recommender, authoriser, user } = require('../../../../app/auth/permissions')
+
+jest.mock('../../../../app/config', () => ({
+  ...jest.requireActual('../../../../app/config'),
+  superAdmins: ['currentuser@test']
+}))
 
 const currentUser = 'testUser'
-jest.mock('../../../../app/auth/get-user', () =>
-  jest.fn().mockImplementation(() => ({ username: currentUser }))
-)
-jest.mock('../../../../app/auth/map-auth')
 
-test('status: agreed, user: admin', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: true,
-    isRecommender: false,
-    isAuthoriser: false
-  })
-
+test('status: agreed, user: admin', () => {
   const request = {
     query: {
       withdraw: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [administrator]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.AGREED)
+  const state = getClaimViewStates(request, status.AGREED)
 
   expect(state).toEqual({
     withdrawAction: true,
@@ -34,23 +36,25 @@ test('status: agreed, user: admin', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: agreed, user: recommender', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: true,
-    isAuthoriser: false
-  })
-
+test('status: agreed, user: recommender', () => {
   const request = {
     query: {
       withdraw: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [recommender]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.AGREED)
+  const state = getClaimViewStates(request, status.AGREED)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -64,23 +68,25 @@ test('status: agreed, user: recommender', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: agreed, user: authoriser', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: false,
-    isAuthoriser: true
-  })
-
+test('status: agreed, user: authoriser', () => {
   const request = {
     query: {
       withdraw: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [authoriser]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.AGREED)
+  const state = getClaimViewStates(request, status.AGREED)
 
   expect(state).toEqual({
     withdrawAction: true,
@@ -94,23 +100,25 @@ test('status: agreed, user: authoriser', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: agreed, query: withdraw, user: admin', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: true,
-    isRecommender: false,
-    isAuthoriser: false
-  })
-
+test('status: agreed, query: withdraw, user: admin', () => {
   const request = {
     query: {
       withdraw: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [administrator]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.AGREED)
+  const state = getClaimViewStates(request, status.AGREED)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -124,23 +132,25 @@ test('status: agreed, query: withdraw, user: admin', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: agreed, query: withdraw, user: recommender', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: true,
-    isAuthoriser: false
-  })
-
+test('status: agreed, query: withdraw, user: recommender', () => {
   const request = {
     query: {
       withdraw: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [recommender]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.AGREED)
+  const state = getClaimViewStates(request, status.AGREED)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -154,23 +164,25 @@ test('status: agreed, query: withdraw, user: recommender', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: agreed, query: withdraw, user: authoriser', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: true,
-    isRecommender: false,
-    isAuthoriser: false
-  })
-
+test('status: agreed, query: withdraw, user: authoriser', () => {
   const request = {
     query: {
       withdraw: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [authoriser]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.AGREED)
+  const state = getClaimViewStates(request, status.AGREED)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -184,23 +196,25 @@ test('status: agreed, query: withdraw, user: authoriser', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: on hold, user: admin', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: true,
-    isRecommender: false,
-    isAuthoriser: false
-  })
-
+test('status: on hold, user: admin', () => {
   const request = {
     query: {
       moveToInCheck: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [administrator]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.ON_HOLD)
+  const state = getClaimViewStates(request, status.ON_HOLD)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -214,23 +228,25 @@ test('status: on hold, user: admin', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: on hold, user: recommender', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: true,
-    isAuthoriser: false
-  })
-
+test('status: on hold, user: recommender', () => {
   const request = {
     query: {
       moveToInCheck: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [recommender]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.ON_HOLD)
+  const state = getClaimViewStates(request, status.ON_HOLD)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -244,23 +260,25 @@ test('status: on hold, user: recommender', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: on hold, user: authoriser', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: false,
-    isAuthoriser: true
-  })
-
+test('status: on hold, user: authoriser', () => {
   const request = {
     query: {
       moveToInCheck: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [authoriser]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.ON_HOLD)
+  const state = getClaimViewStates(request, status.ON_HOLD)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -274,23 +292,25 @@ test('status: on hold, user: authoriser', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: on hold, user: user', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: false,
-    isAuthoriser: false
-  })
-
+test('status: on hold, user: user', () => {
   const request = {
     query: {
       moveToInCheck: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [user]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.ON_HOLD)
+  const state = getClaimViewStates(request, status.ON_HOLD)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -304,23 +324,25 @@ test('status: on hold, user: user', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: on hold, query: moveToInCheck, user: admin', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: true,
-    isRecommender: false,
-    isAuthoriser: false
-  })
-
+test('status: on hold, query: moveToInCheck, user: admin', () => {
   const request = {
     query: {
       moveToInCheck: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [administrator]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.ON_HOLD)
+  const state = getClaimViewStates(request, status.ON_HOLD)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -334,23 +356,25 @@ test('status: on hold, query: moveToInCheck, user: admin', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: on hold, query: moveToInCheck, user: recommender', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: true,
-    isAuthoriser: false
-  })
-
+test('status: on hold, query: moveToInCheck, user: recommender', () => {
   const request = {
     query: {
       moveToInCheck: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [recommender]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.ON_HOLD)
+  const state = getClaimViewStates(request, status.ON_HOLD)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -364,23 +388,25 @@ test('status: on hold, query: moveToInCheck, user: recommender', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: on hold, query: moveToInCheck, user: authoriser', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: false,
-    isAuthoriser: true
-  })
-
+test('status: on hold, query: moveToInCheck, user: authoriser', () => {
   const request = {
     query: {
       moveToInCheck: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [authoriser]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.ON_HOLD)
+  const state = getClaimViewStates(request, status.ON_HOLD)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -394,24 +420,26 @@ test('status: on hold, query: moveToInCheck, user: authoriser', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in check, user: admin', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: true,
-    isRecommender: false,
-    isAuthoriser: false
-  })
-
+test('status: in check, user: admin', () => {
   const request = {
     query: {
       recommendToPay: false,
       recommendToReject: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [administrator]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.IN_CHECK)
+  const state = getClaimViewStates(request, status.IN_CHECK)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -425,24 +453,26 @@ test('status: in check, user: admin', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in check, user: recommender', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: true,
-    isAuthoriser: false
-  })
-
+test('status: in check, user: recommender', () => {
   const request = {
     query: {
       recommendToPay: false,
       recommendToReject: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [recommender]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.IN_CHECK)
+  const state = getClaimViewStates(request, status.IN_CHECK)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -456,24 +486,26 @@ test('status: in check, user: recommender', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in check, user: authoriser', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: false,
-    isAuthoriser: true
-  })
-
+test('status: in check, user: authoriser', () => {
   const request = {
     query: {
       recommendToPay: false,
       recommendToReject: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [authoriser]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.IN_CHECK)
+  const state = getClaimViewStates(request, status.IN_CHECK)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -487,23 +519,25 @@ test('status: in check, user: authoriser', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in check, query: recommendToPay, user: admin', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: true,
-    isRecommender: false,
-    isAuthoriser: false
-  })
-
+test('status: in check, query: recommendToPay, user: admin', () => {
   const request = {
     query: {
       recommendToPay: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [administrator]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.IN_CHECK)
+  const state = getClaimViewStates(request, status.IN_CHECK)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -517,23 +551,25 @@ test('status: in check, query: recommendToPay, user: admin', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in check, query: recommendToPay, user: recommender', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: true,
-    isAuthoriser: false
-  })
-
+test('status: in check, query: recommendToPay, user: recommender', () => {
   const request = {
     query: {
       recommendToPay: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [recommender]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.IN_CHECK)
+  const state = getClaimViewStates(request, status.IN_CHECK)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -547,23 +583,25 @@ test('status: in check, query: recommendToPay, user: recommender', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in check, query: recommendToPay, user: authoriser', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: false,
-    isAuthoriser: true
-  })
-
+test('status: in check, query: recommendToPay, user: authoriser', () => {
   const request = {
     query: {
       recommendToPay: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [authoriser]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.IN_CHECK)
+  const state = getClaimViewStates(request, status.IN_CHECK)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -577,23 +615,25 @@ test('status: in check, query: recommendToPay, user: authoriser', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in check, query: recommendToReject, user: admin', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: true,
-    isRecommender: false,
-    isAuthoriser: false
-  })
-
+test('status: in check, query: recommendToReject, user: admin', () => {
   const request = {
     query: {
       recommendToReject: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [administrator]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.IN_CHECK)
+  const state = getClaimViewStates(request, status.IN_CHECK)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -607,23 +647,25 @@ test('status: in check, query: recommendToReject, user: admin', async () => {
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in check, query: recommendToReject, user: recommender', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: true,
-    isAuthoriser: false
-  })
-
+test('status: in check, query: recommendToReject, user: recommender', () => {
   const request = {
     query: {
       recommendToReject: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [recommender]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.IN_CHECK)
+  const state = getClaimViewStates(request, status.IN_CHECK)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -637,23 +679,25 @@ test('status: in check, query: recommendToReject, user: recommender', async () =
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in check, query: recommendToReject, user: authoriser', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: false,
-    isAuthoriser: true
-  })
-
+test('status: in check, query: recommendToReject, user: authoriser', () => {
   const request = {
     query: {
       recommendToReject: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [authoriser]
+      }
     }
   }
-  const state = await getClaimViewStates(request, status.IN_CHECK)
+  const state = getClaimViewStates(request, status.IN_CHECK)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -667,26 +711,28 @@ test('status: in check, query: recommendToReject, user: authoriser', async () =>
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in recommended to pay, user: admin, recommender: different person', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: true,
-    isRecommender: false,
-    isAuthoriser: false
-  })
-
+test('status: in recommended to pay, user: admin, recommender: different person', () => {
   const request = {
     query: {
       approve: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [administrator]
+      }
     }
   }
   const currentStatusEvent = {
     ChangedBy: 'someone else'
   }
-  const state = await getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent)
+  const state = getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -700,26 +746,28 @@ test('status: in recommended to pay, user: admin, recommender: different person'
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in recommended to pay, user: admin, recommender: same person', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: true,
-    isRecommender: false,
-    isAuthoriser: false
-  })
-
+test('status: in recommended to pay, user: admin, recommender: same person', () => {
   const request = {
     query: {
       approve: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [administrator]
+      }
     }
   }
   const currentStatusEvent = {
     ChangedBy: currentUser
   }
-  const state = await getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent)
+  const state = getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -733,26 +781,28 @@ test('status: in recommended to pay, user: admin, recommender: same person', asy
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in recommended to pay, user: recommender, recommender: different person', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: true,
-    isAuthoriser: false
-  })
-
+test('status: in recommended to pay, user: recommender, recommender: different person', () => {
   const request = {
     query: {
       approve: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [recommender]
+      }
     }
   }
   const currentStatusEvent = {
     ChangedBy: 'someone else'
   }
-  const state = await getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent)
+  const state = getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -766,26 +816,28 @@ test('status: in recommended to pay, user: recommender, recommender: different p
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in recommended to pay, user: authoriser, recommender: different person', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: false,
-    isAuthoriser: true
-  })
-
+test('status: in recommended to pay, user: authoriser, recommender: different person', () => {
   const request = {
     query: {
       approve: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [authoriser]
+      }
     }
   }
   const currentStatusEvent = {
     ChangedBy: 'someone else'
   }
-  const state = await getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent)
+  const state = getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -799,26 +851,28 @@ test('status: in recommended to pay, user: authoriser, recommender: different pe
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in recommended to pay, query: approve, user: admin, recommender: different person', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: true,
-    isRecommender: false,
-    isAuthoriser: false
-  })
-
+test('status: in recommended to pay, query: approve, user: admin, recommender: different person', () => {
   const request = {
     query: {
       approve: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [administrator]
+      }
     }
   }
   const currentStatusEvent = {
     ChangedBy: 'someone else'
   }
-  const state = await getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent)
+  const state = getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -832,26 +886,28 @@ test('status: in recommended to pay, query: approve, user: admin, recommender: d
     authoriseForm: true,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in recommended to pay, query: approve, user: recommender, recommender: different person', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: true,
-    isAuthoriser: false
-  })
-
+test('status: in recommended to pay, query: approve, user: recommender, recommender: different person', () => {
   const request = {
     query: {
       approve: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [recommender]
+      }
     }
   }
   const currentStatusEvent = {
     ChangedBy: 'someone else'
   }
-  const state = await getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent)
+  const state = getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -865,26 +921,28 @@ test('status: in recommended to pay, query: approve, user: recommender, recommen
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in recommended to pay, query: approve, user: authoriser, recommender: different person', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: false,
-    isAuthoriser: true
-  })
-
+test('status: in recommended to pay, query: approve, user: authoriser, recommender: different person', () => {
   const request = {
     query: {
       approve: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [authoriser]
+      }
     }
   }
   const currentStatusEvent = {
     ChangedBy: 'someone else'
   }
-  const state = await getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent)
+  const state = getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -898,26 +956,28 @@ test('status: in recommended to pay, query: approve, user: authoriser, recommend
     authoriseForm: true,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in recommended to reject, user: admin, recommender: different person', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: true,
-    isRecommender: false,
-    isAuthoriser: false
-  })
-
+test('status: in recommended to reject, user: admin, recommender: different person', () => {
   const request = {
     query: {
       reject: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [administrator]
+      }
     }
   }
   const currentStatusEvent = {
     ChangedBy: 'someone else'
   }
-  const state = await getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent)
+  const state = getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -931,26 +991,28 @@ test('status: in recommended to reject, user: admin, recommender: different pers
     authoriseForm: false,
     rejectAction: true,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in recommended to reject, user: admin, recommender: same person', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: true,
-    isRecommender: false,
-    isAuthoriser: false
-  })
-
+test('status: in recommended to reject, user: admin, recommender: same person', () => {
   const request = {
     query: {
       reject: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [administrator]
+      }
     }
   }
   const currentStatusEvent = {
     ChangedBy: currentUser
   }
-  const state = await getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent)
+  const state = getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -964,26 +1026,28 @@ test('status: in recommended to reject, user: admin, recommender: same person', 
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in recommended to reject, user: recommender, recommender: different person', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: true,
-    isAuthoriser: false
-  })
-
+test('status: in recommended to reject, user: recommender, recommender: different person', () => {
   const request = {
     query: {
       reject: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [recommender]
+      }
     }
   }
   const currentStatusEvent = {
     ChangedBy: 'someone else'
   }
-  const state = await getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent)
+  const state = getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -997,26 +1061,28 @@ test('status: in recommended to reject, user: recommender, recommender: differen
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in recommended to reject, user: authoriser, recommender: different person', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: false,
-    isAuthoriser: true
-  })
-
+test('status: in recommended to reject, user: authoriser, recommender: different person', () => {
   const request = {
     query: {
       reject: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [authoriser]
+      }
     }
   }
   const currentStatusEvent = {
     ChangedBy: 'someone else'
   }
-  const state = await getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent)
+  const state = getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -1030,26 +1096,28 @@ test('status: in recommended to reject, user: authoriser, recommender: different
     authoriseForm: false,
     rejectAction: true,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in recommended to reject, query: reject, user: admin, recommender: different person', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: true,
-    isRecommender: false,
-    isAuthoriser: false
-  })
-
+test('status: in recommended to reject, query: reject, user: admin, recommender: different person', () => {
   const request = {
     query: {
       reject: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [administrator]
+      }
     }
   }
   const currentStatusEvent = {
     ChangedBy: 'someone else'
   }
-  const state = await getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent)
+  const state = getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -1063,26 +1131,28 @@ test('status: in recommended to reject, query: reject, user: admin, recommender:
     authoriseForm: false,
     rejectAction: false,
     rejectForm: true,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in recommended to reject, query: reject, user: admin, recommender: same person', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: true,
-    isRecommender: false,
-    isAuthoriser: false
-  })
-
+test('status: in recommended to reject, query: reject, user: admin, recommender: same person', () => {
   const request = {
     query: {
       reject: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [administrator]
+      }
     }
   }
   const currentStatusEvent = {
     ChangedBy: currentUser
   }
-  const state = await getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent)
+  const state = getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -1096,26 +1166,28 @@ test('status: in recommended to reject, query: reject, user: admin, recommender:
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in recommended to reject, query: reject, user: recommender, recommender: different person', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: true,
-    isAuthoriser: false
-  })
-
+test('status: in recommended to reject, query: reject, user: recommender, recommender: different person', () => {
   const request = {
     query: {
       reject: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [recommender]
+      }
     }
   }
   const currentStatusEvent = {
     ChangedBy: 'someone else'
   }
-  const state = await getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent)
+  const state = getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -1129,26 +1201,28 @@ test('status: in recommended to reject, query: reject, user: recommender, recomm
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
 
-test('status: in recommended to reject, query: reject, user: authoriser, recommender: different person', async () => {
-  mapAuth.mockReturnValue({
-    isAdministrator: false,
-    isRecommender: false,
-    isAuthoriser: true
-  })
-
+test('status: in recommended to reject, query: reject, user: authoriser, recommender: different person', () => {
   const request = {
     query: {
       reject: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: '' },
+        scope: [authoriser]
+      }
     }
   }
   const currentStatusEvent = {
     ChangedBy: 'someone else'
   }
-  const state = await getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent)
+  const state = getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent)
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -1162,6 +1236,172 @@ test('status: in recommended to reject, query: reject, user: authoriser, recomme
     authoriseForm: false,
     rejectAction: false,
     rejectForm: true,
+    updateStatusAction: false,
+    updateStatusForm: false
+  })
+})
+
+test('statusUpdateAction, status: any, user: admin', () => {
+  const request = {
+    query: {
+      updateStatus: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: 'notSuperAdmin@test' },
+        scope: [administrator]
+      }
+    }
+  }
+
+  const state = getClaimViewStates(request, status.REJECTED)
+
+  expect(state).toEqual({
+    withdrawAction: false,
+    withdrawForm: false,
+    moveToInCheckAction: false,
+    moveToInCheckForm: false,
+    recommendAction: false,
+    recommendToPayForm: false,
+    recommendToRejectForm: false,
+    authoriseAction: false,
+    authoriseForm: false,
+    rejectAction: false,
+    rejectForm: false,
+    updateStatusAction: false,
+    updateStatusForm: false
+  })
+})
+
+test('statusUpdateAction, status: any, user: admin & super admin', () => {
+  const request = {
+    query: {
+      updateStatus: false
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: 'currentUser@test' },
+        scope: [administrator]
+      }
+    }
+  }
+
+  const state = getClaimViewStates(request, status.REJECTED)
+
+  expect(state).toEqual({
+    withdrawAction: false,
+    withdrawForm: false,
+    moveToInCheckAction: false,
+    moveToInCheckForm: false,
+    recommendAction: false,
+    recommendToPayForm: false,
+    recommendToRejectForm: false,
+    authoriseAction: false,
+    authoriseForm: false,
+    rejectAction: false,
+    rejectForm: false,
+    updateStatusAction: true,
+    updateStatusForm: false
+  })
+})
+
+test('statusUpdateForm, status: any, query: update, user: admin', () => {
+  const request = {
+    query: {
+      update: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: 'notSuperAdmin@test' },
+        scope: [administrator]
+      }
+    }
+  }
+
+  const state = getClaimViewStates(request, status.REJECTED)
+
+  expect(state).toEqual({
+    withdrawAction: false,
+    withdrawForm: false,
+    moveToInCheckAction: false,
+    moveToInCheckForm: false,
+    recommendAction: false,
+    recommendToPayForm: false,
+    recommendToRejectForm: false,
+    authoriseAction: false,
+    authoriseForm: false,
+    rejectAction: false,
+    rejectForm: false,
+    updateStatusAction: false,
+    updateStatusForm: false
+  })
+})
+
+test('statusUpdateForm, status: any, query: updateStatus, user: admin & super admin', () => {
+  const request = {
+    query: {
+      updateStatus: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: 'currentUser@test' },
+        scope: [administrator]
+      }
+    }
+  }
+
+  const state = getClaimViewStates(request, status.REJECTED)
+
+  expect(state).toEqual({
+    withdrawAction: false,
+    withdrawForm: false,
+    moveToInCheckAction: false,
+    moveToInCheckForm: false,
+    recommendAction: false,
+    recommendToPayForm: false,
+    recommendToRejectForm: false,
+    authoriseAction: false,
+    authoriseForm: false,
+    rejectAction: false,
+    rejectForm: false,
+    updateStatusAction: false,
+    updateStatusForm: true
+  })
+})
+
+test('statusUpdateForm, status: ready to pay, query: updateStatus, user: admin & super admin', () => {
+  const request = {
+    query: {
+      updateStatus: true
+    },
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: { name: currentUser, username: 'currentUser@test' },
+        scope: [administrator]
+      }
+    }
+  }
+
+  const state = getClaimViewStates(request, status.READY_TO_PAY)
+
+  expect(state).toEqual({
+    withdrawAction: false,
+    withdrawForm: false,
+    moveToInCheckAction: false,
+    moveToInCheckForm: false,
+    recommendAction: false,
+    recommendToPayForm: false,
+    recommendToRejectForm: false,
+    authoriseAction: false,
+    authoriseForm: false,
+    rejectAction: false,
+    rejectForm: false,
+    updateStatusAction: false,
     updateStatusForm: false
   })
 })
