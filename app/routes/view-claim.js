@@ -3,7 +3,7 @@ const joi = require('joi')
 const { getClaim } = require('../api/claims')
 const { getApplication, getApplicationHistory } = require('../api/applications')
 const { getHistoryDetails } = require('./models/application-history')
-const { getStyleClassByStatus, status: claimStatuses } = require('../constants/status')
+const { getStyleClassByStatus } = require('../constants/status')
 const { formatStatusId } = require('../lib/display-helper')
 const { livestockTypes } = require('../constants/claim')
 const { sheepPackages, sheepTestTypes, sheepTestResultsType } = require('../constants/sheep-test-types')
@@ -12,9 +12,9 @@ const { upperFirstLetter, formatedDateToUk } = require('../lib/display-helper')
 const { getCurrentStatusEvent } = require('./utils/get-current-status-event')
 const { getClaimViewStates } = require('./utils/get-claim-view-states')
 const { getErrorMessagesByKey } = require('./utils/get-error-messages-by-key')
+const { getStatusUpdateOptions } = require('./utils/get-status-update-options')
 const { getLivestockTypes } = require('../lib/get-livestock-types')
 const { getReviewType } = require('../lib/get-review-type')
-const mapAuth = require('../auth/map-auth')
 
 const backLink = (applicationReference, returnPage, page) => {
   return returnPage === 'agreement'
@@ -94,16 +94,9 @@ module.exports = {
         authoriseForm,
         rejectAction,
         rejectForm,
+        updateStatusAction,
         updateStatusForm
       } = getClaimViewStates(request, claim.statusId, currentStatusEvent)
-
-      const statusOptions = Object.entries(claimStatuses)
-        .filter(([_, value]) => value !== claimStatuses.WITHDRAWN)
-        .map(([key, value]) => ({
-          text: upperFirstLetter(key).replace(/_/, ' '),
-          value,
-          selected: value === statusId
-        }))
 
       const { isBeef, isDairy, isPigs, isSheep } = getLivestockTypes(data?.typeOfLivestock)
       const { isReview, isEndemicsFollowUp } = getReviewType(type)
@@ -136,8 +129,7 @@ module.exports = {
             })
           : [])
 
-      const { isAdministrator } = mapAuth(request)
-      const actions = isAdministrator
+      const actions = updateStatusAction
         ? {
             items: [{
               href: `/view-claim/${reference}?updateStatus=true&page=${page}&returnPage=${returnPage}#update-status`,
@@ -146,6 +138,7 @@ module.exports = {
             }]
           }
         : null
+      const statusOptions = getStatusUpdateOptions(statusId)
 
       const status = {
         key: { text: 'Status' },

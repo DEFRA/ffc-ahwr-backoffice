@@ -7,13 +7,16 @@ jest.mock('../../../../app/api/applications')
 jest.mock('../../../../app/api/claims')
 jest.mock('../../../../app/routes/utils/crumb-cache')
 jest.mock('../../../../app/auth')
-jest.mock('../../../../app/auth/get-user', () =>
-  jest.fn().mockReturnValue({ username: 'test user' })
-)
 
 test('success: update claim', async () => {
   const server = await createServer()
-  const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
+  const auth = {
+    strategy: 'session-auth',
+    credentials: {
+      account: {},
+      scope: [administrator]
+    }
+  }
   const crumb = await getCrumbs(server)
 
   const reference = 'FUSH-1010-2020'
@@ -44,7 +47,13 @@ test('success: update claim', async () => {
 
 test('success: update agreement', async () => {
   const server = await createServer()
-  const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
+  const auth = {
+    strategy: 'session-auth',
+    credentials: {
+      account: {},
+      scope: [administrator]
+    }
+  }
   const crumb = await getCrumbs(server)
 
   const reference = 'AHWR-1010-2020'
@@ -73,7 +82,13 @@ test('success: update agreement', async () => {
 
 test('success: authorise agreement', async () => {
   const server = await createServer()
-  const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
+  const auth = {
+    strategy: 'session-auth',
+    credentials: {
+      account: {},
+      scope: [administrator]
+    }
+  }
   const crumb = await getCrumbs(server)
 
   const reference = 'AHWR-1010-2020'
@@ -102,7 +117,13 @@ test('success: authorise agreement', async () => {
 
 test('failure: update claim, missing note', async () => {
   const server = await createServer()
-  const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
+  const auth = {
+    strategy: 'session-auth',
+    credentials: {
+      account: {},
+      scope: [administrator]
+    }
+  }
   const crumb = await getCrumbs(server)
 
   const reference = 'FUSH-1010-2020'
@@ -139,7 +160,13 @@ test('failure: update claim, missing note', async () => {
 
 test('failure: update agreement, missing note', async () => {
   const server = await createServer()
-  const auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
+  const auth = {
+    strategy: 'session-auth',
+    credentials: {
+      account: {},
+      scope: [administrator]
+    }
+  }
   const crumb = await getCrumbs(server)
 
   const reference = 'AJWR-3030-4040'

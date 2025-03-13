@@ -49,6 +49,7 @@ container:
   onHoldAppProcessSchedule:
   endemicsEnabled: 'true'
   multiSpeciesEnabled: 'false'
+  superAdmins: ''
 
 deployment:
   cpuThreshold: 40

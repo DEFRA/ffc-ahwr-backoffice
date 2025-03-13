@@ -1,13 +1,13 @@
 const { Buffer } = require('buffer')
 const joi = require('joi')
-const mapAuth = require('../auth/map-auth')
 const { getApplication, getApplicationHistory, getApplicationEvents } = require('../api/applications')
 const { administrator, processor, user, recommender, authoriser } = require('../auth/permissions')
-const { getStyleClassByStatus, status: claimStatuses } = require('../constants/status')
+const { getStyleClassByStatus } = require('../constants/status')
 const { getClaimViewStates } = require('./utils/get-claim-view-states')
 const { getCurrentStatusEvent } = require('./utils/get-current-status-event')
 const applicationStatus = require('../constants/application-status')
 const { getErrorMessagesByKey } = require('./utils/get-error-messages-by-key')
+const { getStatusUpdateOptions } = require('./utils/get-status-update-options')
 const { getContactHistory, displayContactHistory } = require('../api/contact-history')
 const { upperFirstLetter } = require('../lib/display-helper')
 const { getOrganisationDetails } = require('./models/organisation-details')
@@ -67,22 +67,15 @@ module.exports = {
         authoriseForm,
         rejectAction,
         rejectForm,
+        updateStatusAction,
         updateStatusForm
       } = getClaimViewStates(request, application.statusId, currentStatusEvent)
-
-      const statusOptions = Object.entries(claimStatuses)
-        .map(([key, value]) => ({
-          text: upperFirstLetter(key).replace(/_/, ' '),
-          value,
-          selected: value === application.statusId
-        }))
 
       const errors = request.query.errors
         ? JSON.parse(Buffer.from(request.query.errors, 'base64').toString('utf8'))
         : []
 
-      const { isAdministrator } = mapAuth(request)
-      const actions = isAdministrator
+      const actions = updateStatusAction
         ? {
             items: [{
               href: `/view-agreement/${application.reference}?updateStatus=true&page=${page}#update-status`,
@@ -91,6 +84,7 @@ module.exports = {
             }]
           }
         : null
+      const statusOptions = getStatusUpdateOptions(application.statusId)
 
       const statusRow = {
         key: { text: 'Status' },

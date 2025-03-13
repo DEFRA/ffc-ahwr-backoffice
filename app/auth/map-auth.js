@@ -1,15 +1,20 @@
-const isInRole = require('./is-in-role')
 const { administrator, processor, user, recommender, authoriser } = require('./permissions')
+const { superAdmins } = require('../config')
 
 const mapAuth = (request) => {
+  const { isAuthenticated, credentials } = request.auth
+  const { username } = credentials.account
+
   return {
-    isAuthenticated: request.auth.isAuthenticated,
-    isAnonymous: !request.auth.isAuthenticated,
-    isAdministrator: request.auth.isAuthenticated && isInRole(request.auth.credentials, administrator),
-    isProcessor: request.auth.isAuthenticated && isInRole(request.auth.credentials, processor),
-    isUser: request.auth.isAuthenticated && isInRole(request.auth.credentials, user),
-    isRecommender: request.auth.isAuthenticated && isInRole(request.auth.credentials, recommender),
-    isAuthoriser: request.auth.isAuthenticated && isInRole(request.auth.credentials, authoriser)
+    isAuthenticated,
+    isAdministrator: isAuthenticated && credentials.scope.includes(administrator),
+    isProcessor: isAuthenticated && credentials.scope.includes(processor),
+    isUser: isAuthenticated && credentials.scope.includes(user),
+    isRecommender: isAuthenticated && credentials.scope.includes(recommender),
+    isAuthoriser: isAuthenticated && credentials.scope.includes(authoriser),
+    isSuperAdmin: isAuthenticated &&
+      credentials.scope.includes(administrator) &&
+      superAdmins.includes(username.trim().toLowerCase())
   }
 }
 

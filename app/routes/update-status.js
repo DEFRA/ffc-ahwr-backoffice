@@ -3,7 +3,6 @@ const { administrator } = require('../auth/permissions')
 const { updateClaimStatus } = require('../api/claims')
 const { updateApplicationStatus } = require('../api/applications')
 const { processApplicationClaim } = require('../api/applications')
-const getUser = require('../auth/get-user')
 const crumbCache = require('./utils/crumb-cache')
 const { encodeErrorsForUI } = require('./utils/encode-errors-for-ui')
 const { readyToPay, rejected } = require('../constants/application-status')
@@ -44,7 +43,7 @@ module.exports = {
     },
     handler: async (request, h) => {
       const { claimOrAgreement, page, reference, returnPage, status, note } = request.payload
-      const { username } = getUser(request)
+      const { name } = request.auth.credentials.account
 
       request.logger.setBindings({ status, reference })
 
@@ -53,14 +52,14 @@ module.exports = {
 
       if (claimOrAgreement === 'claim') {
         query.append('returnPage', returnPage)
-        await updateClaimStatus(reference, username, status, request.logger, note)
+        await updateClaimStatus(reference, name, status, request.logger, note)
       }
 
       if (
         claimOrAgreement === 'agreement' &&
         status !== readyToPay && status !== rejected
       ) {
-        await updateApplicationStatus(reference, username, status, request.logger, note)
+        await updateApplicationStatus(reference, name, status, request.logger, note)
       }
 
       if (
@@ -68,7 +67,7 @@ module.exports = {
         (status === readyToPay || status === rejected)
       ) {
         const isClaimToBePaid = status === readyToPay
-        await processApplicationClaim(reference, username, isClaimToBePaid, request.logger, note)
+        await processApplicationClaim(reference, name, isClaimToBePaid, request.logger, note)
       }
 
       return h.redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`)

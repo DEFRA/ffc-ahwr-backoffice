@@ -71,7 +71,7 @@ jest.mock('@hapi/wreck', () => ({
 describe('View Application test', () => {
   const url = `/view-agreement/${reference}`
   jest.mock('../../../../app/auth')
-  let auth = { strategy: 'session-auth', credentials: { scope: [administrator] } }
+  let auth = { strategy: 'session-auth', credentials: { scope: [administrator], account: { username: 'test' } } }
 
   beforeAll(() => {
     jest.clearAllMocks()
@@ -118,7 +118,7 @@ describe('View Application test', () => {
       ['processor', false],
       ['user', false]
     ])('Withdrawl link feature flag enabled, link displayed as expected for role %s', async (authScope, isWithdrawLinkVisible) => {
-      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope], account: { username: 'test' } } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const options = {
@@ -352,7 +352,7 @@ describe('View Application test', () => {
       ['processor', false],
       ['user', false]
     ])('Withdraw link feature flag disabled, link not displayed for role %s', async (authScope, withdrawAction) => {
-      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope], account: { username: 'test' } } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       getClaimViewStates.getClaimViewStates.mockReturnValueOnce({
@@ -377,7 +377,7 @@ describe('View Application test', () => {
       ['user', false]
     ])('returns 200 application agreed - %s role', async (authScope, isWithdrawLinkVisible) => {
       const status = 'Agreed'
-      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope], account: { username: 'test' } } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const options = {
@@ -418,7 +418,7 @@ describe('View Application test', () => {
       ['user']
     ])('returns 200 application in check - %s role', async (authScope) => {
       const status = 'In check'
-      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope], account: { username: 'test' } } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const options = {
@@ -456,7 +456,7 @@ describe('View Application test', () => {
       ['user']
     ])('returns 200 application ready to pay - %s role', async (authScope) => {
       const status = 'Ready to pay'
-      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope], account: { username: 'test' } } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const options = {
@@ -479,7 +479,7 @@ describe('View Application test', () => {
       expectPhaseBanner.ok($)
     })
     test('withdraw link hidden and withdraw confirmation displayed when withdraw link selected by user', async () => {
-      auth = { strategy: 'session-auth', credentials: { scope: ['administrator'] } }
+      auth = { strategy: 'session-auth', credentials: { scope: ['administrator'], account: { username: 'test' } } }
       applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed)
       applications.getApplicationHistory.mockReturnValueOnce(applicationHistoryData)
       const url = `/view-agreement/${reference}?page=1&withdraw=${true}`
@@ -536,7 +536,7 @@ describe('View Application test', () => {
       ['Claim confirmation form not displayed - approve query string true', 'administrator', false, '?approve=true', false],
       ['Claim confirmation form not displayed - reject query string true', 'administrator', false, '?reject=true', false]
     ])('%s', async ({ testName, authScope, queryParam, exepectedResult }) => {
-      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope], account: { username: 'test' } } }
       jest.clearAllMocks()
       jest.mock('../../../../app/config', () => ({
         ...jest.requireActual('../../../../app/config'),
@@ -566,7 +566,7 @@ describe('View Application test', () => {
       ['Approve claim confirmation form not displayed - approve query string false', 'administrator', false, '?approve=false', false],
       ['Approve claim confirmation form not displayed - approve query string missing', 'administrator', false, '', false]
     ])('%s', async ({ testName, authScope, queryParam, exepectedResult }) => {
-      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope], account: { username: 'test' } } }
       jest.clearAllMocks()
       jest.mock('../../../../app/config', () => ({
         ...jest.requireActual('../../../../app/config'),
@@ -596,7 +596,7 @@ describe('View Application test', () => {
       ['Reject claim confirmation form not displayed - reject query string false', 'administrator', false, '?reject=false', false],
       ['Reject claim confirmation form not displayed - reject query string missing', 'administrator', false, '', false]
     ])('%s', async ({ testName, authScope, queryParam, exepectedResult }) => {
-      auth = { strategy: 'session-auth', credentials: { scope: [authScope] } }
+      auth = { strategy: 'session-auth', credentials: { scope: [authScope], account: { username: 'test' } } }
       jest.clearAllMocks()
       jest.mock('../../../../app/config', () => ({
         ...jest.requireActual('../../../../app/config'),

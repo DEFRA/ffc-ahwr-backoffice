@@ -1,24 +1,85 @@
 const mapAuth = require('../../../app/auth/map-auth')
 const { administrator, processor, user, recommender, authoriser } = require('../../../app/auth/permissions')
 
-describe('Map auth test', () => {
-  test.each([
-    [administrator, true, false, false, false, false],
-    [processor, false, true, false, false, false],
-    [user, false, false, true, false, false],
-    [recommender, false, false, false, true, false],
-    [authoriser, false, false, false, false, true]
-  ])('returns auth object - %s role', async (userRole, isAdministratorRole, isProcessorRole, isUserRole, isRecommenderRole, isAuthoriserRole) => {
-    const request = { auth: { isAuthenticated: true, credentials: { scope: [userRole] } } }
-    const res = mapAuth(request)
-    expect(res).toMatchObject({
+jest.mock('../../../app/config', () => ({
+  ...jest.requireActual('../../../app/config'),
+  superAdmins: ['superadmin@test']
+}))
+
+test('roles in scope', () => {
+  const request = {
+    auth: {
       isAuthenticated: true,
-      isAnonymous: false,
-      isAdministrator: isAdministratorRole,
-      isProcessor: isProcessorRole,
-      isUser: isUserRole,
-      isRecommender: isRecommenderRole,
-      isAuthoriser: isAuthoriserRole
-    })
+      credentials: {
+        account: {
+          username: 'notSuperAdmin@test'
+        },
+        scope: [
+          administrator,
+          processor,
+          user,
+          recommender,
+          authoriser
+        ]
+      }
+    }
+  }
+
+  expect(mapAuth(request)).toEqual({
+    isAuthenticated: true,
+    isAdministrator: true,
+    isProcessor: true,
+    isUser: true,
+    isRecommender: true,
+    isAuthoriser: true,
+    isSuperAdmin: false
+  })
+})
+
+test('empty scope', () => {
+  const request = {
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: {
+          username: 'notSuperAdmin@test'
+        },
+        scope: []
+      }
+    }
+  }
+
+  expect(mapAuth(request)).toEqual({
+    isAuthenticated: true,
+    isAdministrator: false,
+    isProcessor: false,
+    isUser: false,
+    isRecommender: false,
+    isAuthoriser: false,
+    isSuperAdmin: false
+  })
+})
+
+test('user is in superAdmin list', () => {
+  const request = {
+    auth: {
+      isAuthenticated: true,
+      credentials: {
+        account: {
+          username: 'superadmin@test'
+        },
+        scope: [administrator]
+      }
+    }
+  }
+
+  expect(mapAuth(request)).toEqual({
+    isAuthenticated: true,
+    isAdministrator: true,
+    isProcessor: false,
+    isUser: false,
+    isRecommender: false,
+    isAuthoriser: false,
+    isSuperAdmin: true
   })
 })

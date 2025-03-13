@@ -1,5 +1,4 @@
 const joi = require('joi')
-const getUser = require('../auth/get-user')
 const crumbCache = require('./utils/crumb-cache')
 const { administrator, authoriser } = require('../auth/permissions')
 const { updateApplicationStatus } = require('../api/applications')
@@ -39,10 +38,9 @@ module.exports = {
     },
     handler: async (request, h) => {
       const { page, reference } = request.payload
+      const { user } = request.auth.credentials.account
 
-      const userName = getUser(request).username
-
-      await updateApplicationStatus(reference, userName, withdrawn, request.logger)
+      await updateApplicationStatus(reference, user, withdrawn, request.logger)
       await crumbCache.generateNewCrumb(request, h)
       const query = new URLSearchParams({ page })
 

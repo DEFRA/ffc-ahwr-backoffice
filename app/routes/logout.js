@@ -9,7 +9,7 @@ module.exports = {
       request.cookieAuth.clear()
       return h.redirect('/login')
     } catch (err) {
-      request.setBindings({ err })
+      request.logger.setBindings({ err })
       throw err
     }
   }
