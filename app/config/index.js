@@ -54,8 +54,8 @@ const schema = joi.object({
     enabled: joi.bool().required()
   },
   superAdmins: joi.array().items(joi.string()).required(),
-  developerName: joi.string(),
-  developerUsername: joi.string()
+  developerName: joi.string().allow(''),
+  developerUsername: joi.string().allow('')
 })
 
 const config = {
