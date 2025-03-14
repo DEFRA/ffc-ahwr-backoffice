@@ -45,7 +45,7 @@ module.exports = {
     },
     handler: async (request, h) => {
       const { claimOrAgreement, page, reference, returnPage } = request.payload
-      const { user } = request.auth.credentials.account
+      const { name } = request.auth.credentials.account
 
       request.logger.setBindings({ reference })
 
@@ -54,9 +54,9 @@ module.exports = {
 
       if (claimOrAgreement === 'claim') {
         query.append('returnPage', returnPage)
-        await updateClaimStatus(reference, user, recommendToPay, request.logger)
+        await updateClaimStatus(reference, name, recommendToPay, request.logger)
       } else {
-        await updateApplicationStatus(reference, user, recommendToPay, request.logger)
+        await updateApplicationStatus(reference, name, recommendToPay, request.logger)
       }
 
       return h.redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`)
