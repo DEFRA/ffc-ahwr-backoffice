@@ -1,41 +1,30 @@
 module.exports = {
   collectCoverage: true,
-  collectCoverageFrom: [
-    '**/*.js',
-    '!**/*.test.js'
-  ],
-  coverageDirectory: 'test-output',
-  coverageReporters: [
-    'text-summary',
-    'lcov'
-  ],
+  collectCoverageFrom: ["**/*.js", "!**/*.test.js"],
+  coverageDirectory: "test-output",
+  coverageReporters: ["text-summary", "lcov"],
   coveragePathIgnorePatterns: [
-    '<rootDir>/app/frontend/',
-    '<rootDir>/node_modules/',
-    '<rootDir>/test-output/',
-    '<rootDir>/test/',
-    '<rootDir>/jest.config.js',
-    '<rootDir>/webpack.config.js'
+    "<rootDir>/app/frontend/",
+    "<rootDir>/node_modules/",
+    "<rootDir>/test-output/",
+    "<rootDir>/test/",
+    "<rootDir>/jest.config.js",
+    "<rootDir>/webpack.config.js",
   ],
-  modulePathIgnorePatterns: [
-    'node_modules'
-  ],
+  modulePathIgnorePatterns: ["node_modules"],
   reporters: [
-    'default',
+    "default",
     [
-      'jest-junit',
+      "jest-junit",
       {
-        suiteName: 'jest tests',
-        outputDirectory: 'test-output',
-        outputName: 'junit.xml'
-      }
-    ]
+        suiteName: "jest tests",
+        outputDirectory: "test-output",
+        outputName: "junit.xml",
+      },
+    ],
   ],
-  testEnvironment: 'node',
+  testEnvironment: "node",
   testPathIgnorePatterns: [],
   verbose: true,
-  setupFilesAfterEnv: [
-    '<rootDir>/test/setup.js',
-    '<rootDir>/test/teardown.js'
-  ]
-}
+  setupFilesAfterEnv: ["<rootDir>/test/setup.js", "<rootDir>/test/teardown.js"],
+};

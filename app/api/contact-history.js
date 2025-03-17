@@ -1,53 +1,59 @@
-const wreck = require('@hapi/wreck')
-const { applicationApiUri } = require('../config')
-const { fieldsNames, labels, notAvailable } = require('./../constants/contact-history')
+const wreck = require("@hapi/wreck");
+const { applicationApiUri } = require("../config");
+const {
+  fieldsNames,
+  labels,
+  notAvailable,
+} = require("./../constants/contact-history");
 
-async function getContactHistory (reference, logger) {
-  const endpoint = `${applicationApiUri}/application/contact-history/${reference}`
+async function getContactHistory(reference, logger) {
+  const endpoint = `${applicationApiUri}/application/contact-history/${reference}`;
   try {
-    const { payload } = await wreck.get(endpoint, { json: true })
+    const { payload } = await wreck.get(endpoint, { json: true });
 
-    return payload
+    return payload;
   } catch (err) {
-    logger.setBindings({ err, endpoint })
-    throw err
+    logger.setBindings({ err, endpoint });
+    throw err;
   }
 }
 
 const getContactFieldData = (contactHistoryData, field) => {
-  const filteredData = contactHistoryData.filter(contact => contact.data?.field === field)
+  const filteredData = contactHistoryData.filter(
+    (contact) => contact.data?.field === field,
+  );
 
   if (filteredData.length === 0) {
-    return 'NA'
+    return "NA";
   }
 
-  const [firstUpdate] = filteredData.sort((a, b) =>
-    new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-  )
+  const [firstUpdate] = filteredData.sort(
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+  );
 
-  return `${labels[field]} ${firstUpdate.data.oldValue}`
-}
+  return `${labels[field]} ${firstUpdate.data.oldValue}`;
+};
 
 const displayContactHistory = (contactHistory) => {
   if (contactHistory) {
-    const orgEmail = getContactFieldData(contactHistory, fieldsNames.orgEmail)
-    const email = getContactFieldData(contactHistory, fieldsNames.email)
-    const address = getContactFieldData(contactHistory, fieldsNames.address)
+    const orgEmail = getContactFieldData(contactHistory, fieldsNames.orgEmail);
+    const email = getContactFieldData(contactHistory, fieldsNames.email);
+    const address = getContactFieldData(contactHistory, fieldsNames.address);
     return {
       orgEmail,
       email,
-      address
-    }
+      address,
+    };
   } else {
     return {
       orgEmail: notAvailable,
       email: notAvailable,
-      address: notAvailable
-    }
+      address: notAvailable,
+    };
   }
-}
+};
 
 module.exports = {
   getContactHistory,
-  displayContactHistory
-}
+  displayContactHistory,
+};

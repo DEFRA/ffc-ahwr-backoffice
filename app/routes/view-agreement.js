@@ -1,28 +1,41 @@
-const { Buffer } = require('buffer')
-const joi = require('joi')
-const { getApplication, getApplicationHistory, getApplicationEvents } = require('../api/applications')
-const { administrator, processor, user, recommender, authoriser } = require('../auth/permissions')
-const { getStyleClassByStatus } = require('../constants/status')
-const { getClaimViewStates } = require('./utils/get-claim-view-states')
-const { getCurrentStatusEvent } = require('./utils/get-current-status-event')
-const applicationStatus = require('../constants/application-status')
-const { getErrorMessagesByKey } = require('./utils/get-error-messages-by-key')
-const { getStatusUpdateOptions } = require('./utils/get-status-update-options')
-const { getContactHistory, displayContactHistory } = require('../api/contact-history')
-const { upperFirstLetter } = require('../lib/display-helper')
-const { getOrganisationDetails } = require('./models/organisation-details')
-const { getApplicationDetails } = require('./models/application-details')
-const { getHistoryDetails } = require('./models/application-history')
-const { getApplicationClaimDetails } = require('./models/application-claim')
+const { Buffer } = require("buffer");
+const joi = require("joi");
+const {
+  getApplication,
+  getApplicationHistory,
+  getApplicationEvents,
+} = require("../api/applications");
+const {
+  administrator,
+  processor,
+  user,
+  recommender,
+  authoriser,
+} = require("../auth/permissions");
+const { getStyleClassByStatus } = require("../constants/status");
+const { getClaimViewStates } = require("./utils/get-claim-view-states");
+const { getCurrentStatusEvent } = require("./utils/get-current-status-event");
+const applicationStatus = require("../constants/application-status");
+const { getErrorMessagesByKey } = require("./utils/get-error-messages-by-key");
+const { getStatusUpdateOptions } = require("./utils/get-status-update-options");
+const {
+  getContactHistory,
+  displayContactHistory,
+} = require("../api/contact-history");
+const { upperFirstLetter } = require("../lib/display-helper");
+const { getOrganisationDetails } = require("./models/organisation-details");
+const { getApplicationDetails } = require("./models/application-details");
+const { getHistoryDetails } = require("./models/application-history");
+const { getApplicationClaimDetails } = require("./models/application-claim");
 
 module.exports = {
-  method: 'get',
-  path: '/view-agreement/{reference}',
+  method: "get",
+  path: "/view-agreement/{reference}",
   options: {
     auth: { scope: [administrator, processor, user, recommender, authoriser] },
     validate: {
       params: joi.object({
-        reference: joi.string()
+        reference: joi.string(),
       }),
       query: joi.object({
         page: joi.number().greater(0).default(1),
@@ -33,27 +46,43 @@ module.exports = {
         recommendToReject: joi.bool().default(false),
         approve: joi.bool().default(false),
         reject: joi.bool().default(false),
-        updateStatus: joi.bool().default(false)
-      })
+        updateStatus: joi.bool().default(false),
+      }),
     },
     handler: async (request, h) => {
-      const { page } = request.query
-      const application = await getApplication(request.params.reference, request.logger)
-      const applicationHistory = await getApplicationHistory(request.params.reference, request.logger)
-      const currentStatusEvent = getCurrentStatusEvent(application, applicationHistory)
+      const { page } = request.query;
+      const application = await getApplication(
+        request.params.reference,
+        request.logger,
+      );
+      const applicationHistory = await getApplicationHistory(
+        request.params.reference,
+        request.logger,
+      );
+      const currentStatusEvent = getCurrentStatusEvent(
+        application,
+        applicationHistory,
+      );
 
-      let applicationEvents
-      if ((application.claimed ||
-      application.statusId === applicationStatus.inCheck ||
-      application.statusId === applicationStatus.readyToPay ||
-      application.statusId === applicationStatus.rejected) &&
-      !application.data.dateOfClaim) {
-        applicationEvents = await getApplicationEvents(application?.data?.organisation.sbi, request.logger)
+      let applicationEvents;
+      if (
+        (application.claimed ||
+          application.statusId === applicationStatus.inCheck ||
+          application.statusId === applicationStatus.readyToPay ||
+          application.statusId === applicationStatus.rejected) &&
+        !application.data.dateOfClaim
+      ) {
+        applicationEvents = await getApplicationEvents(
+          application?.data?.organisation.sbi,
+          request.logger,
+        );
       }
 
-      const status = application.status.status.toUpperCase()
-      const statusLabel = upperFirstLetter(application.status.status.toLowerCase())
-      const statusClass = getStyleClassByStatus(application.status.status)
+      const status = application.status.status.toUpperCase();
+      const statusLabel = upperFirstLetter(
+        application.status.status.toLowerCase(),
+      );
+      const statusClass = getStyleClassByStatus(application.status.status);
 
       const {
         withdrawAction,
@@ -68,43 +97,59 @@ module.exports = {
         rejectAction,
         rejectForm,
         updateStatusAction,
-        updateStatusForm
-      } = getClaimViewStates(request, application.statusId, currentStatusEvent)
+        updateStatusForm,
+      } = getClaimViewStates(request, application.statusId, currentStatusEvent);
 
       const errors = request.query.errors
-        ? JSON.parse(Buffer.from(request.query.errors, 'base64').toString('utf8'))
-        : []
+        ? JSON.parse(
+            Buffer.from(request.query.errors, "base64").toString("utf8"),
+          )
+        : [];
 
       const actions = updateStatusAction
         ? {
-            items: [{
-              href: `/view-agreement/${application.reference}?updateStatus=true&page=${page}#update-status`,
-              text: 'Change',
-              visuallyHiddenText: 'status'
-            }]
+            items: [
+              {
+                href: `/view-agreement/${application.reference}?updateStatus=true&page=${page}#update-status`,
+                text: "Change",
+                visuallyHiddenText: "status",
+              },
+            ],
           }
-        : null
-      const statusOptions = getStatusUpdateOptions(application.statusId)
+        : null;
+      const statusOptions = getStatusUpdateOptions(application.statusId);
 
       const statusRow = {
-        key: { text: 'Status' },
-        value: { html: `<span class="govuk-tag app-long-tag ${statusClass}">${statusLabel}</span>` },
-        actions
-      }
+        key: { text: "Status" },
+        value: {
+          html: `<span class="govuk-tag app-long-tag ${statusClass}">${statusLabel}</span>`,
+        },
+        actions,
+      };
 
-      const contactHistory = await getContactHistory(request.params.reference, request.logger)
-      const contactHistoryDetails = displayContactHistory(contactHistory)
-      const { organisation } = application.data
-      const organisationDetails = getOrganisationDetails(organisation, contactHistoryDetails)
-      const applicationDetails = getApplicationDetails(application, statusRow)
-      const historyDetails = getHistoryDetails(applicationHistory)
-      const applicationClaimDetails = getApplicationClaimDetails(application, applicationEvents, statusRow)
-      const errorMessages = getErrorMessagesByKey(errors)
+      const contactHistory = await getContactHistory(
+        request.params.reference,
+        request.logger,
+      );
+      const contactHistoryDetails = displayContactHistory(contactHistory);
+      const { organisation } = application.data;
+      const organisationDetails = getOrganisationDetails(
+        organisation,
+        contactHistoryDetails,
+      );
+      const applicationDetails = getApplicationDetails(application, statusRow);
+      const historyDetails = getHistoryDetails(applicationHistory);
+      const applicationClaimDetails = getApplicationClaimDetails(
+        application,
+        applicationEvents,
+        statusRow,
+      );
+      const errorMessages = getErrorMessagesByKey(errors);
 
-      return h.view('view-agreement', {
+      return h.view("view-agreement", {
         page,
         reference: application.reference,
-        claimOrAgreement: 'agreement',
+        claimOrAgreement: "agreement",
         status,
         statusLabel,
         statusClass,
@@ -131,8 +176,8 @@ module.exports = {
         updateStatusForm,
         statusOptions,
         errorMessages,
-        errors
-      })
-    }
-  }
-}
+        errors,
+      });
+    },
+  },
+};

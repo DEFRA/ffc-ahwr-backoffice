@@ -1,19 +1,19 @@
-const Boom = require('@hapi/boom')
-const crumbCache = require('./crumb-cache')
+const Boom = require("@hapi/boom");
+const crumbCache = require("./crumb-cache");
 
 const preSubmissionHandler = async (request, h) => {
-  if (request.method === 'post') {
-    const lookupCrumb = await crumbCache.lookupSubmissionCrumb(request)
+  if (request.method === "post") {
+    const lookupCrumb = await crumbCache.lookupSubmissionCrumb(request);
     if (lookupCrumb?.crumb) {
-      request.logger.setBindings({ crumb: request.plugins.crumb })
-      return Boom.forbidden('Duplicate submission')
+      request.logger.setBindings({ crumb: request.plugins.crumb });
+      return Boom.forbidden("Duplicate submission");
     } else {
-      await crumbCache.cacheSubmissionCrumb(request)
-      return h.continue
+      await crumbCache.cacheSubmissionCrumb(request);
+      return h.continue;
     }
   } else {
-    return h.continue
+    return h.continue;
   }
-}
+};
 
-module.exports = preSubmissionHandler
+module.exports = preSubmissionHandler;

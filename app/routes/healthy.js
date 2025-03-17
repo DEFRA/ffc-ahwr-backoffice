@@ -1,13 +1,13 @@
 module.exports = {
-  method: 'GET',
-  path: '/healthy',
+  method: "GET",
+  path: "/healthy",
   options: {
     auth: false,
     plugins: {
-      yar: { skip: true }
+      yar: { skip: true },
     },
     handler: (_, h) => {
-      return h.response('ok').code(200)
-    }
-  }
-}
+      return h.response("ok").code(200);
+    },
+  },
+};

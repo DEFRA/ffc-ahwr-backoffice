@@ -1,4 +1,4 @@
 module.exports = {
-  claims: 'claims',
-  viewClaim: 'view-claim'
-}
+  claims: "claims",
+  viewClaim: "view-claim",
+};

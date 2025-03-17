@@ -1,14 +1,14 @@
 const regexChecker = (regex, str) => {
-  let isValid = true
-  let regexValue
+  let isValid = true;
+  let regexValue;
   try {
-    regexValue = new RegExp(regex)
+    regexValue = new RegExp(regex);
   } catch (error) {
-    isValid = false
-    return isValid
+    isValid = false;
+    return isValid;
   }
 
-  return regexValue.test(str)
-}
+  return regexValue.test(str);
+};
 
-module.exports = regexChecker
+module.exports = regexChecker;

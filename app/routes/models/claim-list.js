@@ -1,101 +1,118 @@
-const { serviceUri } = require('../../config')
-const { getStyleClassByStatus } = require('../../constants/status')
-const { formatTypeOfVisit, formatSpecies, formatedDateToUk, upperFirstLetter } = require('../../lib/display-helper')
+const { serviceUri } = require("../../config");
+const { getStyleClassByStatus } = require("../../constants/status");
+const {
+  formatTypeOfVisit,
+  formatSpecies,
+  formatedDateToUk,
+  upperFirstLetter,
+} = require("../../lib/display-helper");
 
-const getClaimTableHeader = (sortField, dataURLPrefix = '', showSBI = true) => {
-  const direction = sortField && sortField.direction === 'DESC' ? 'descending' : 'ascending'
+const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
+  const direction =
+    sortField && sortField.direction === "DESC" ? "descending" : "ascending";
 
-  return [{
-    text: 'Claim number',
-    attributes: {
-      'aria-sort': sortField && sortField.field === 'claim number' ? direction : 'none',
-      'data-url': `${dataURLPrefix}claims/sort/claim number`
-    }
-  },
-  {
-    text: 'Type of visit',
-    attributes: {
-      'aria-sort': sortField && sortField.field === 'type of visit' ? direction : 'none',
-      'data-url': 'claims/sort/type of visit'
-    }
-  },
-  (showSBI && {
-    text: 'SBI number',
-    attributes: {
-      'aria-sort': sortField && sortField.field === 'SBI' ? direction : 'none',
-      'data-url': '/claims/sort/SBI'
+  return [
+    {
+      text: "Claim number",
+      attributes: {
+        "aria-sort":
+          sortField && sortField.field === "claim number" ? direction : "none",
+        "data-url": `${dataURLPrefix}claims/sort/claim number`,
+      },
     },
-    format: 'numeric'
-  }),
-  {
-    text: 'Species',
-    attributes: {
-      'aria-sort': sortField && sortField.field === 'species' ? direction : 'none',
-      'data-url': 'claims/sort/species'
-    }
-  },
-  {
-    text: 'Claim date',
-    attributes: {
-      'aria-sort': sortField && sortField.field === 'claim date' ? direction : 'none',
-      'data-url': 'claims/sort/claim date'
+    {
+      text: "Type of visit",
+      attributes: {
+        "aria-sort":
+          sortField && sortField.field === "type of visit" ? direction : "none",
+        "data-url": "claims/sort/type of visit",
+      },
     },
-    format: 'date'
-  },
-  {
-    text: 'Status',
-    attributes: {
-      'aria-sort': sortField && sortField.field === 'status' ? direction : 'none',
-      'data-url': 'claims/sort/status'
-    }
-  },
-  {
-    text: 'Details'
-  }].filter(Boolean)
-}
+    showSBI && {
+      text: "SBI number",
+      attributes: {
+        "aria-sort":
+          sortField && sortField.field === "SBI" ? direction : "none",
+        "data-url": "/claims/sort/SBI",
+      },
+      format: "numeric",
+    },
+    {
+      text: "Species",
+      attributes: {
+        "aria-sort":
+          sortField && sortField.field === "species" ? direction : "none",
+        "data-url": "claims/sort/species",
+      },
+    },
+    {
+      text: "Claim date",
+      attributes: {
+        "aria-sort":
+          sortField && sortField.field === "claim date" ? direction : "none",
+        "data-url": "claims/sort/claim date",
+      },
+      format: "date",
+    },
+    {
+      text: "Status",
+      attributes: {
+        "aria-sort":
+          sortField && sortField.field === "status" ? direction : "none",
+        "data-url": "claims/sort/status",
+      },
+    },
+    {
+      text: "Details",
+    },
+  ].filter(Boolean);
+};
 
-const getClaimTableRows = (claims, page, returnPage, showSBI = true) => claims
-  .map((claim) => [
-    {
-      text: claim.reference,
-      attributes: {
-        'data-sort-value': claim.reference
-      }
-    },
-    {
-      text: formatTypeOfVisit(claim.type),
-      attributes: {
-        'data-sort-value': claim.type
-      }
-    },
-    (showSBI && {
-      text: claim.application.data?.organisation?.sbi,
-      format: 'numeric',
-      attributes: {
-        'data-sort-value': claim.application.data?.organisation?.sbi
-      }
-    }),
-    {
-      text: formatSpecies(claim.data?.typeOfLivestock),
-      attributes: {
-        'data-sort-value': claim.data?.typeOfLivestock
-      }
-    },
-    {
-      text: formatedDateToUk(claim.createdAt),
-      format: 'date',
-      attributes: {
-        'data-sort-value': claim.createdAt
-      }
-    },
-    {
-      html: `<span class="app-long-tag"><span class="govuk-tag ${getStyleClassByStatus(claim.status.status)}">${upperFirstLetter(claim.status.status.toLowerCase())}</span></span>`,
-      attributes: {
-        'data-sort-value': `${claim.status.status}`
-      }
-    },
-    { html: `<a href="${serviceUri}/view-claim/${claim.reference}?page=${page}&returnPage=${returnPage}">View claim</a>` }
-  ].filter(Boolean)
-  )
+const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
+  claims.map((claim) =>
+    [
+      {
+        text: claim.reference,
+        attributes: {
+          "data-sort-value": claim.reference,
+        },
+      },
+      {
+        text: formatTypeOfVisit(claim.type),
+        attributes: {
+          "data-sort-value": claim.type,
+        },
+      },
+      showSBI && {
+        text: claim.application.data?.organisation?.sbi,
+        format: "numeric",
+        attributes: {
+          "data-sort-value": claim.application.data?.organisation?.sbi,
+        },
+      },
+      {
+        text: formatSpecies(claim.data?.typeOfLivestock),
+        attributes: {
+          "data-sort-value": claim.data?.typeOfLivestock,
+        },
+      },
+      {
+        text: formatedDateToUk(claim.createdAt),
+        format: "date",
+        attributes: {
+          "data-sort-value": claim.createdAt,
+        },
+      },
+      {
+        html: `<span class="app-long-tag"><span class="govuk-tag ${getStyleClassByStatus(claim.status.status)}">${upperFirstLetter(claim.status.status.toLowerCase())}</span></span>`,
+        attributes: {
+          "data-sort-value": `${claim.status.status}`,
+        },
+      },
+      {
+        html: `<a href="${serviceUri}/view-claim/${claim.reference}?page=${page}&returnPage=${returnPage}">View claim</a>`,
+      },
+    ].filter(Boolean),
+  );
 
-module.exports = { getClaimTableHeader, getClaimTableRows }
+module.exports = { getClaimTableHeader, getClaimTableRows };

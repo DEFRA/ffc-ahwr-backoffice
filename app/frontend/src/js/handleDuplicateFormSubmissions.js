@@ -1,16 +1,17 @@
 window.onload = function () {
-  ['#approveClaimForm', '#rejectClaimForm', '#withdrawForm']
-    .forEach(form => preventDuplicateFormSubmission(document.querySelector(form)))
-}
+  ["#approveClaimForm", "#rejectClaimForm", "#withdrawForm"].forEach((form) =>
+    preventDuplicateFormSubmission(document.querySelector(form)),
+  );
+};
 
-function preventDuplicateFormSubmission (form) {
+function preventDuplicateFormSubmission(form) {
   if (form) {
-    form.addEventListener('submit', function (e) {
+    form.addEventListener("submit", function (e) {
       if (form.dataset.formSubmitted) {
-        e.preventDefault()
+        e.preventDefault();
       } else {
-        form.dataset.formSubmitted = true
+        form.dataset.formSubmitted = true;
       }
-    })
+    });
   }
 }

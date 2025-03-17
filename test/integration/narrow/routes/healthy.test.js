@@ -1,12 +1,12 @@
-describe('Healthy test', () => {
-  test('GET /healthy route returns 200', async () => {
+describe("Healthy test", () => {
+  test("GET /healthy route returns 200", async () => {
     const options = {
-      method: 'GET',
-      url: '/healthy'
-    }
+      method: "GET",
+      url: "/healthy",
+    };
 
-    const res = await global.__SERVER__.inject(options)
+    const res = await global.__SERVER__.inject(options);
 
-    expect(res.statusCode).toBe(200)
-  })
-})
+    expect(res.statusCode).toBe(200);
+  });
+});

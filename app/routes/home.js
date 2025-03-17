@@ -1,11 +1,17 @@
-const { administrator, processor, user, recommender, authoriser } = require('../auth/permissions')
+const {
+  administrator,
+  processor,
+  user,
+  recommender,
+  authoriser,
+} = require("../auth/permissions");
 module.exports = {
-  method: 'GET',
-  path: '/',
+  method: "GET",
+  path: "/",
   options: {
     auth: { scope: [administrator, processor, user, recommender, authoriser] },
     handler: async (_, h) => {
-      return h.redirect('/claims')
-    }
-  }
-}
+      return h.redirect("/claims");
+    },
+  },
+};
