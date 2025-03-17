@@ -1,5 +1,6 @@
 const path = require("path");
 const nunjucks = require("nunjucks");
+const getMOJFilters = require("@ministryofjustice/frontend/moj/filters/all");
 const { isLocal, serviceName, siteTitle } = require("../config");
 const { version } = require("../../package.json");
 
@@ -29,8 +30,8 @@ module.exports = {
           );
 
           // Add filters from MOJ Frontend
-          let mojFilters =
-            require("../../node_modules/@ministryofjustice/frontend/moj/filters/all")();
+          let mojFilters = getMOJFilters()
+
           mojFilters = Object.assign(mojFilters);
           Object.keys(mojFilters).forEach(function (filterName) {
             nunjucksAppEnv.addFilter(filterName, mojFilters[filterName]);
