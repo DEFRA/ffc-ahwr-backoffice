@@ -1,6 +1,6 @@
 {
   "name": "ffc-ahwr-backoffice",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "Back office of the health and welfare of your livestock",
   "homepage": "https://github.com/DEFRA/ffc-ahwr-backoffice",
   "main": "app/index.js",
@@ -77,10 +77,7 @@
       "browser"
     ],
     "ignore": [
-      "app/frontend/dist/**/*.js",
-      "test/acceptance/**/*.js",
-      "test/acceptance/**/*.mjs",
-      "test/acceptance/**/*.cjs"
+      "app/frontend/dist/**/*.js"
     ]
   },
   "nodemonConfig": {
