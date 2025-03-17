@@ -1,18 +1,18 @@
-const auth = require('../auth')
+const auth = require("../auth");
 
 module.exports = {
-  method: 'GET',
-  path: '/login',
+  method: "GET",
+  path: "/login",
   options: {
-    auth: false
+    auth: false,
   },
   handler: async (request, h) => {
     try {
-      const authUrl = await auth.getAuthenticationUrl()
-      return h.redirect(authUrl)
+      const authUrl = await auth.getAuthenticationUrl();
+      return h.redirect(authUrl);
     } catch (err) {
-      request.logger.setBindings({ err })
+      request.logger.setBindings({ err });
     }
-    return h.view('error-pages/500').code(500)
-  }
-}
+    return h.view("error-pages/500").code(500);
+  },
+};

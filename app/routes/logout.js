@@ -1,16 +1,17 @@
-const auth = require('../auth')
+const auth = require("../auth");
 
 module.exports = {
-  method: 'GET',
-  path: '/logout',
+  method: "GET",
+  path: "/logout",
   handler: async (request, h) => {
     try {
-      request.auth?.credentials?.account && await auth.logout(request.auth.credentials.account)
-      request.cookieAuth.clear()
-      return h.redirect('/login')
+      request.auth?.credentials?.account &&
+        (await auth.logout(request.auth.credentials.account));
+      request.cookieAuth.clear();
+      return h.redirect("/login");
     } catch (err) {
-      request.logger.setBindings({ err })
-      throw err
+      request.logger.setBindings({ err });
+      throw err;
     }
-  }
-}
+  },
+};

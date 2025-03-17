@@ -1,37 +1,37 @@
-describe('Logout test', () => {
-  const createServer = require('../../../../app/server')
-  let server
+describe("Logout test", () => {
+  const createServer = require("../../../../app/server");
+  let server;
 
-  jest.mock('../../../../app/auth/azure-auth')
+  jest.mock("../../../../app/auth/azure-auth");
 
   beforeEach(async () => {
-    server = await createServer()
-    await server.initialize()
-  })
+    server = await createServer();
+    await server.initialize();
+  });
 
   const auth = {
-    strategy: 'session-auth',
+    strategy: "session-auth",
     credentials: {
       account: {
-        name: 'A Farmer'
-      }
-    }
-  }
+        name: "A Farmer",
+      },
+    },
+  };
 
-  test('GET /logout route redirects to /login', async () => {
+  test("GET /logout route redirects to /login", async () => {
     const options = {
-      method: 'GET',
-      url: '/logout',
-      auth
-    }
+      method: "GET",
+      url: "/logout",
+      auth,
+    };
 
-    const response = await server.inject(options)
+    const response = await server.inject(options);
 
-    expect(response.statusCode).toBe(302)
-    expect(response.headers.location).toEqual('/login')
-  })
+    expect(response.statusCode).toBe(302);
+    expect(response.headers.location).toEqual("/login");
+  });
 
   afterEach(async () => {
-    await server.stop()
-  })
-})
+    await server.stop();
+  });
+});

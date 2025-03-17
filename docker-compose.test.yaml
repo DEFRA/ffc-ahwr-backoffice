@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 # This override file should be used when running automated tests so
 # that test output is saved to the host
@@ -9,7 +9,7 @@ services:
       target: development
     environment:
       NODE_ENV: test
-      AADAR_ENABLED: 'true'
+      AADAR_ENABLED: "true"
       AADAR_CLIENT_SECRET: itsasecretshhhhhhhh
       AADAR_CLIENT_ID: NCC-1701-D
       AADAR_REDIRECT_URL: http://thesearenotthedroidsyouarelookingfor

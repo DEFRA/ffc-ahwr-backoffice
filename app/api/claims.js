@@ -1,60 +1,68 @@
-const wreck = require('@hapi/wreck')
-const { applicationApiUri } = require('../config')
+const wreck = require("@hapi/wreck");
+const { applicationApiUri } = require("../config");
 
-async function getClaim (reference, logger) {
-  const endpoint = `${applicationApiUri}/claim/get-by-reference/${reference}`
+async function getClaim(reference, logger) {
+  const endpoint = `${applicationApiUri}/claim/get-by-reference/${reference}`;
   try {
-    const { payload } = await wreck.get(endpoint, { json: true })
-    return payload
+    const { payload } = await wreck.get(endpoint, { json: true });
+    return payload;
   } catch (err) {
-    logger.setBindings({ err, endpoint })
-    throw err
+    logger.setBindings({ err, endpoint });
+    throw err;
   }
 }
 
-async function getClaims (searchType, searchText, filter, limit, offset, sort, logger) {
-  const endpoint = `${applicationApiUri}/claim/search`
+async function getClaims(
+  searchType,
+  searchText,
+  filter,
+  limit,
+  offset,
+  sort,
+  logger,
+) {
+  const endpoint = `${applicationApiUri}/claim/search`;
   const options = {
     payload: {
       search: { text: searchText, type: searchType },
       filter,
       limit,
       offset,
-      sort
+      sort,
     },
-    json: true
-  }
+    json: true,
+  };
   try {
-    const { payload } = await wreck.post(endpoint, options)
-    return payload
+    const { payload } = await wreck.post(endpoint, options);
+    return payload;
   } catch (err) {
-    logger.setBindings({ err, endpoint })
-    throw err
+    logger.setBindings({ err, endpoint });
+    throw err;
   }
 }
 
-async function updateClaimStatus (reference, user, status, logger, note) {
-  const endpoint = `${applicationApiUri}/claim/update-by-reference`
+async function updateClaimStatus(reference, user, status, logger, note) {
+  const endpoint = `${applicationApiUri}/claim/update-by-reference`;
   const options = {
     payload: {
       reference,
       status,
       user,
-      note
+      note,
     },
-    json: true
-  }
+    json: true,
+  };
   try {
-    const { payload } = await wreck.put(endpoint, options)
-    return payload
+    const { payload } = await wreck.put(endpoint, options);
+    return payload;
   } catch (err) {
-    logger.setBindings({ err, endpoint })
-    throw err
+    logger.setBindings({ err, endpoint });
+    throw err;
   }
 }
 
 module.exports = {
   getClaim,
   getClaims,
-  updateClaimStatus
-}
+  updateClaimStatus,
+};

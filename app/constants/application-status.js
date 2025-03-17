@@ -11,5 +11,5 @@ module.exports = {
   rejected: 10,
   onHold: 11,
   recommendToPay: 12,
-  recommendToReject: 13
-}
+  recommendToReject: 13,
+};

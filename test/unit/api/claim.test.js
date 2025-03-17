@@ -1,109 +1,122 @@
-const wreck = require('@hapi/wreck')
-const claims = require('../../data/claims.json')
-const { status } = require('../../../app/constants/status')
-const { getClaim, getClaims, updateClaimStatus } = require('../../../app/api/claims')
+const wreck = require("@hapi/wreck");
+const claims = require("../../data/claims.json");
+const { status } = require("../../../app/constants/status");
+const {
+  getClaim,
+  getClaims,
+  updateClaimStatus,
+} = require("../../../app/api/claims");
 
-jest.mock('@hapi/wreck')
-jest.mock('../../../app/config')
+jest.mock("@hapi/wreck");
+jest.mock("../../../app/config");
 
-describe('Claims API', () => {
-  const applicationReference = 'AHWR-1234-APP1'
+describe("Claims API", () => {
+  const applicationReference = "AHWR-1234-APP1";
 
-  test('getClaim', async () => {
+  test("getClaim", async () => {
     const wreckResponse = {
       payload: claims[0],
       res: {
-        statusCode: 200
+        statusCode: 200,
       },
-      json: true
-    }
+      json: true,
+    };
 
-    wreck.get = jest.fn().mockResolvedValueOnce(wreckResponse)
+    wreck.get = jest.fn().mockResolvedValueOnce(wreckResponse);
 
-    const response = await getClaim('AHWR-1111-1111')
+    const response = await getClaim("AHWR-1111-1111");
 
-    expect(response).toEqual(wreckResponse.payload)
-  })
+    expect(response).toEqual(wreckResponse.payload);
+  });
 
-  test('getClaim error', async () => {
+  test("getClaim error", async () => {
     const wreckResponse = {
       res: {
-        statusCode: 404
+        statusCode: 404,
       },
-      json: true
-    }
+      json: true,
+    };
 
-    wreck.get = jest.fn().mockRejectedValueOnce(wreckResponse)
+    wreck.get = jest.fn().mockRejectedValueOnce(wreckResponse);
 
-    const logger = { setBindings: jest.fn() }
+    const logger = { setBindings: jest.fn() };
     expect(async () => {
-      await getClaim('AHWR-2222-2222', logger)
-    }).rejects.toEqual(wreckResponse)
-  })
+      await getClaim("AHWR-2222-2222", logger);
+    }).rejects.toEqual(wreckResponse);
+  });
 
-  test('getClaims (post)', async () => {
+  test("getClaims (post)", async () => {
     const wreckResponse = {
       payload: claims,
       res: {
-        statusCode: 200
+        statusCode: 200,
       },
-      json: true
-    }
+      json: true,
+    };
 
-    wreck.post = jest.fn().mockResolvedValueOnce(wreckResponse)
+    wreck.post = jest.fn().mockResolvedValueOnce(wreckResponse);
 
-    const response = await getClaims('sbi', '12345')
+    const response = await getClaims("sbi", "12345");
 
-    expect(response).toEqual(wreckResponse.payload)
-  })
+    expect(response).toEqual(wreckResponse.payload);
+  });
 
-  test('getClaims (post) error', async () => {
+  test("getClaims (post) error", async () => {
     const wreckResponse = {
       res: {
-        statusCode: 500
+        statusCode: 500,
       },
-      json: true
-    }
+      json: true,
+    };
 
-    wreck.post = jest.fn().mockRejectedValueOnce(wreckResponse)
+    wreck.post = jest.fn().mockRejectedValueOnce(wreckResponse);
 
-    const logger = { setBindings: jest.fn() }
-    const filter = { field: 'updatedAt', op: 'lte', value: '2025-01-17' }
+    const logger = { setBindings: jest.fn() };
+    const filter = { field: "updatedAt", op: "lte", value: "2025-01-17" };
     expect(async () => {
-      await getClaims('sbi', '1010', filter, 10, 10, 'ASC', logger)
-    }).rejects.toEqual(wreckResponse)
-  })
+      await getClaims("sbi", "1010", filter, 10, 10, "ASC", logger);
+    }).rejects.toEqual(wreckResponse);
+  });
 
-  test('updateClaimStatus', async () => {
+  test("updateClaimStatus", async () => {
     const wreckResponse = {
       payload: claims[0],
       res: {
-        statusCode: 200
+        statusCode: 200,
       },
-      json: true
-    }
+      json: true,
+    };
 
-    wreck.put = jest.fn().mockResolvedValueOnce(wreckResponse)
+    wreck.put = jest.fn().mockResolvedValueOnce(wreckResponse);
 
-    const response = await updateClaimStatus(applicationReference, 'Admin', status.IN_CHECK)
+    const response = await updateClaimStatus(
+      applicationReference,
+      "Admin",
+      status.IN_CHECK,
+    );
 
-    expect(response).toEqual(wreckResponse.payload)
-  })
+    expect(response).toEqual(wreckResponse.payload);
+  });
 
-  test('updateClaimStatus error', async () => {
+  test("updateClaimStatus error", async () => {
     const wreckResponse = {
       payload: claims[0],
       res: {
-        statusCode: 400
+        statusCode: 400,
       },
-      json: true
-    }
+      json: true,
+    };
 
-    wreck.put = jest.fn().mockRejectedValueOnce(wreckResponse)
-    const logger = { setBindings: jest.fn() }
+    wreck.put = jest.fn().mockRejectedValueOnce(wreckResponse);
+    const logger = { setBindings: jest.fn() };
 
     expect(async () => {
-      await updateClaimStatus(applicationReference, 'Admin', status.IN_CHECK, logger)
-    }).rejects.toEqual(wreckResponse)
-  })
-})
+      await updateClaimStatus(
+        applicationReference,
+        "Admin",
+        status.IN_CHECK,
+        logger,
+      );
+    }).rejects.toEqual(wreckResponse);
+  });
+});

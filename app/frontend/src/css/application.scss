@@ -4,7 +4,9 @@ $govuk-assets-path: "~govuk-frontend/dist/govuk/assets/";
 @import "./guidance-layout";
 @import "./update-form";
 
-.govuk-width-container, .moj-header__container, .moj-primary-navigation__container {
+.govuk-width-container,
+.moj-header__container,
+.moj-primary-navigation__container {
   max-width: 90% !important;
 }
 
@@ -38,7 +40,6 @@ $moj-assets-path: "~@ministryofjustice/frontend/moj/assets/";
 }
 
 .govuk-prose-scope {
-
   // @extend inheritance
 
   // Contextual heading and paragraph combinations are inherited
@@ -109,7 +110,7 @@ $moj-assets-path: "~@ministryofjustice/frontend/moj/assets/";
 /**
  * user search box
  */
- .user-search-box .govuk-form-group {
+.user-search-box .govuk-form-group {
   margin-left: 20px;
   margin-bottom: 10px;
 }
@@ -148,7 +149,8 @@ $moj-assets-path: "~@ministryofjustice/frontend/moj/assets/";
   box-shadow: none;
 }
 
-.user-search-box .search-button:hover, .user-search-box .search-button:focus,
+.user-search-box .search-button:hover,
+.user-search-box .search-button:focus,
 .user-search-box .search-button:active:hover,
 .user-search-box .search-button:active:focus {
   background-color: #003078;
@@ -163,7 +165,7 @@ $moj-assets-path: "~@ministryofjustice/frontend/moj/assets/";
 /**
  * pagination from: https://home-office-digital-patterns.herokuapp.com/components/pagination
  */
- .pagination {
+.pagination {
   font-family: "GDS Transport", arial, sans-serif;
   padding: 0;
   margin: 0;
@@ -179,7 +181,7 @@ $moj-assets-path: "~@ministryofjustice/frontend/moj/assets/";
   padding: 5px;
   text-decoration: none;
   font-size: 16px;
-  color: #005EA5;
+  color: #005ea5;
   display: inline-block;
   margin-right: 15px;
   background-color: transparent;
@@ -187,17 +189,19 @@ $moj-assets-path: "~@ministryofjustice/frontend/moj/assets/";
   cursor: pointer;
 }
 
-.pagination__link:hover, .pagination__link:focus {
-  background: #F8F8F8;
-  outline: 3px solid #FFBF47;
+.pagination__link:hover,
+.pagination__link:focus {
+  background: #f8f8f8;
+  outline: 3px solid #ffbf47;
 }
 
 .pagination__link.current {
   font-weight: 700;
 }
 
-.pagination__link.current, .pagination__link.disabled {
-  color: #0B0C0C;
+.pagination__link.current,
+.pagination__link.disabled {
+  color: #0b0c0c;
   border: none;
   pointer-events: none;
   cursor: default;
@@ -206,8 +210,8 @@ $moj-assets-path: "~@ministryofjustice/frontend/moj/assets/";
 
 a.pagination__link:hover,
 a.pagination__link:focus {
-  background: #F8F8F8;
-  outline: 3px solid #FFBF47;
+  background: #f8f8f8;
+  outline: 3px solid #ffbf47;
 }
 
 .pagination__summary {
@@ -234,6 +238,7 @@ a.pagination__link:focus {
   }
 }
 
-.app-long-tag, .app-long-tag .govuk-tag {
+.app-long-tag,
+.app-long-tag .govuk-tag {
   max-width: 300px;
 }

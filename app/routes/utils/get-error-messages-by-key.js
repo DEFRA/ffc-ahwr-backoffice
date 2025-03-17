@@ -2,8 +2,8 @@ const getErrorMessagesByKey = (errors) =>
   errors.reduce((obj, { key, text }) => {
     return {
       ...obj,
-      [key]: { text }
-    }
-  }, {})
+      [key]: { text },
+    };
+  }, {});
 
-module.exports = { getErrorMessagesByKey }
+module.exports = { getErrorMessagesByKey };

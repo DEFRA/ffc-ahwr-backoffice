@@ -8,6 +8,7 @@ Backoffice application for Animal Health and Welfare Review
 - Docker Compose
 
 Optional:
+
 - Kubernetes
 - Helm
 
@@ -22,7 +23,7 @@ The application is designed to run in containerised environments, using Docker C
 Container images are built using Docker Compose, with the same images used to run the service with either Docker Compose or Kubernetes.
 
 When using the Docker Compose files in development the local `app` folder will
-be mounted on top of the `app` folder within the Docker container, hiding the CSS files that were generated during the Docker build.  For the site to render correctly locally `npm run build` must be run on the host system.
+be mounted on top of the `app` folder within the Docker container, hiding the CSS files that were generated during the Docker build. For the site to render correctly locally `npm run build` must be run on the host system.
 
 By default, the start script will build (or rebuild) images so there will
 rarely be a need to build images manually. However, this can be achieved
