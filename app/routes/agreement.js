@@ -60,7 +60,7 @@ module.exports = [
           throw boom.badRequest();
         }
 
-        const organisation = application.data?.organisation;
+        const { organisation } = application.data;
         const summaryDetails = [
           {
             field: "Agreement number",
@@ -73,24 +73,24 @@ module.exports = [
             oldValue: null,
           },
           {
-            field: "Business name",
-            newValue: organisation?.name,
-            oldValue: null,
+            field: "Agreement holder",
+            newValue: organisation.farmerName,
+            oldValue: contactHistoryDetails.farmerName,
           },
           {
             field: "Agreement holder email",
-            newValue: organisation?.email,
+            newValue: organisation.email,
             oldValue: contactHistoryDetails.email,
           },
-          { field: "SBI number", newValue: organisation?.sbi, oldValue: null },
+          { field: "SBI number", newValue: organisation.sbi, oldValue: null },
           {
             field: "Address",
-            newValue: organisation?.address,
+            newValue: organisation.address,
             oldValue: contactHistoryDetails.address,
           },
           {
             field: "Business email",
-            newValue: organisation?.orgEmail,
+            newValue: organisation.orgEmail,
             oldValue: contactHistoryDetails.orgEmail,
           },
         ];

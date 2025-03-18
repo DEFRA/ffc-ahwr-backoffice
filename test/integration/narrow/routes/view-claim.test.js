@@ -219,7 +219,7 @@ describe("View claim test", () => {
       const content = [
         { key: "Agreement number", value: "AHWR-1234-APP1" },
         { key: "Agreement date", value: "22/03/2024" },
-        { key: "Business name", value: "Test Farm Lodge" },
+        { key: "Agreement holder", value: "Russell Paul Davies" },
         {
           key: "Agreement holder email",
           value: "russelldaviese@seivadllessurm.com.test",
@@ -228,7 +228,7 @@ describe("View claim test", () => {
         {
           key: "Address",
           value:
-            "Tesco Stores Ltd,Harwell,Betton,WHITE HOUSE FARM,VINCENT CLOSE,LEIGHTON BUZZARD,HR2 8AN,United Kingdom",
+            "Tesco Stores Ltd, Harwell, Betton, WHITE HOUSE FARM, VINCENT CLOSE, LEIGHTON BUZZARD, HR2 8AN, United Kingdom",
         },
         { key: "Business email", value: "orgEmail@gmail.com" },
         { key: "Status", value: "Paid" },
@@ -326,7 +326,7 @@ describe("View claim test", () => {
     test.each([
       { type: "R", rows: 7 },
       { type: undefined, rows: 7 },
-    ])("returns 200 whitout claim data", async ({ type, rows }) => {
+    ])("returns 200 whithout claim data", async ({ type, rows }) => {
       const options = {
         method: "GET",
         url: `${url}/AHWR-0000-4444`,
@@ -336,7 +336,7 @@ describe("View claim test", () => {
       getClaim.mockReturnValue({ ...claims[0], data: undefined, type });
       getApplication.mockReturnValue({
         ...application,
-        data: { ...application.data, organisation: {} },
+        data: { ...application.data, organisation: { address: "" } },
       });
 
       const res = await global.__SERVER__.inject(options);
@@ -368,7 +368,7 @@ describe("View claim test", () => {
       });
       getApplication.mockReturnValue({
         ...application,
-        data: { ...application.data, organisation: {} },
+        data: { ...application.data, organisation: { address: "" } },
       });
 
       const res = await global.__SERVER__.inject(options);

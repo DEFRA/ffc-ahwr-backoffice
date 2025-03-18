@@ -94,9 +94,11 @@ describe("View Application test with Date of Testing enabled", () => {
         $("#organisation-details .govuk-summary-list__row").length,
       ).toEqual(5);
       expect($(".govuk-summary-list__key").eq(0).text()).toMatch(
-        "Business name",
+        "Agreement holder",
       );
-      expect($(".govuk-summary-list__value").eq(0).text()).toMatch("My Farm");
+      expect($(".govuk-summary-list__value").eq(0).text()).toMatch(
+        "Farmer name",
+      );
 
       expect($(".govuk-summary-list__key").eq(1).text()).toMatch("SBI number");
       expect($(".govuk-summary-list__value").eq(1).text()).toMatch("333333333");
