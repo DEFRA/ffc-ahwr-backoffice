@@ -52,7 +52,7 @@ const gethistoryTableHeader = () => {
     { text: "Time" },
     { text: "Action" },
     { text: "User" },
-    { text: "Note" },
+    { text: "Note", classes: 'govuk-!-width-one-quarter' },
   ];
 };
 
