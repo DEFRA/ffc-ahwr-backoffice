@@ -54,6 +54,7 @@ describe("contact-history", () => {
       expect(result).toEqual({
         orgEmail: "NA",
         email: "NA",
+        farmerName: "NA",
         address: "NA",
       });
     });
@@ -96,6 +97,7 @@ describe("contact-history", () => {
         orgEmail:
           "Organisation email at start of agreement: original-org@example.com",
         email: "User email at start of agreement: original-test@example.com",
+        farmerName: "NA",
         address: "NA",
       });
     });
