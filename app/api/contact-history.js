@@ -38,16 +38,22 @@ const displayContactHistory = (contactHistory) => {
   if (contactHistory) {
     const orgEmail = getContactFieldData(contactHistory, fieldsNames.orgEmail);
     const email = getContactFieldData(contactHistory, fieldsNames.email);
+    const farmerName = getContactFieldData(
+      contactHistory,
+      fieldsNames.farmerName,
+    );
     const address = getContactFieldData(contactHistory, fieldsNames.address);
     return {
       orgEmail,
       email,
+      farmerName,
       address,
     };
   } else {
     return {
       orgEmail: notAvailable,
       email: notAvailable,
+      farmerName: notAvailable,
       address: notAvailable,
     };
   }

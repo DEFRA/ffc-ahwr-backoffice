@@ -103,13 +103,19 @@ module.exports = {
           key: { text: "Agreement date" },
           value: { text: formatedDateToUk(application.createdAt) },
         },
-        { key: { text: "Business name" }, value: { text: organisation.name } },
+        {
+          key: { text: "Agreement holder" },
+          value: { text: organisation.farmerName },
+        },
         {
           key: { text: "Agreement holder email" },
           value: { text: organisation.email },
         },
         { key: { text: "SBI number" }, value: { text: organisation.sbi } },
-        { key: { text: "Address" }, value: { text: organisation.address } },
+        {
+          key: { text: "Address" },
+          value: { text: organisation.address.split(",").join(", ") },
+        },
         {
           key: { text: "Business email" },
           value: { text: organisation.orgEmail },

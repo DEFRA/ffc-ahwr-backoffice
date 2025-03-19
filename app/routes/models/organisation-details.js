@@ -1,6 +1,10 @@
 const getOrganisationDetails = (organisation, contactHistoryDetails) => {
   return [
-    { field: "Business name", newValue: organisation.name, oldValue: null },
+    {
+      field: "Agreement holder",
+      newValue: organisation.farmerName,
+      oldValue: contactHistoryDetails.farmerName,
+    },
     { field: "SBI number", newValue: organisation.sbi, oldValue: null },
     {
       field: "Address",

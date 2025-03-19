@@ -30,7 +30,7 @@ module.exports = {
           );
 
           // Add filters from MOJ Frontend
-          let mojFilters = getMOJFilters()
+          let mojFilters = getMOJFilters();
 
           mojFilters = Object.assign(mojFilters);
           Object.keys(mojFilters).forEach(function (filterName) {
