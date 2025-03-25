@@ -12,20 +12,20 @@ const getDevAccount = (userId) => {
     return {
       name: `Developer-${userId}`,
       username: `developer+${userId}@defra.gov.uk`,
-    }
+    };
   }
 
   return {
     name: developerName || "Developer",
     username: developerUsername || "developer@defra.gov.uk",
-  }
+  };
 };
 
 const getAuthenticationUrl = (userId) => {
   if (userId) {
-    return `/dev-auth?userId=${userId}`
+    return `/dev-auth?userId=${userId}`;
   }
-  
+
   return "/dev-auth";
 };
 
