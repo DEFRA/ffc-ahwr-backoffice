@@ -8,7 +8,9 @@ module.exports = {
   },
   handler: async (request, h) => {
     try {
-      const authUrl = await auth.getAuthenticationUrl();
+      // This is only needed for the dev login, and wont affect real logins
+      const { userId } = request.query;
+      const authUrl = await auth.getAuthenticationUrl(userId);
       return h.redirect(authUrl);
     } catch (err) {
       request.logger.setBindings({ err });

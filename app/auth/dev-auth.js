@@ -7,26 +7,39 @@ const {
 } = require("./permissions");
 const { developerName, developerUsername } = require("../config");
 
-const devAccount = {
-  name: developerName || "Developer",
-  username: developerUsername || "developer@defra.gov.uk",
+const getDevAccount = (userId) => {
+  if (userId) {
+    return {
+      name: `Developer-${userId}`,
+      username: `developer+${userId}@defra.gov.uk`,
+    }
+  }
+
+  return {
+    name: developerName || "Developer",
+    username: developerUsername || "developer@defra.gov.uk",
+  }
 };
 
-const getAuthenticationUrl = () => {
+const getAuthenticationUrl = (userId) => {
+  if (userId) {
+    return `/dev-auth?userId=${userId}`
+  }
+  
   return "/dev-auth";
 };
 
-const authenticate = async (_, cookieAuth) => {
+const authenticate = async (userId, cookieAuth) => {
   cookieAuth.set({
     scope: [administrator, processor, user, recommender, authoriser],
-    account: devAccount,
+    account: getDevAccount(userId),
   });
 };
 
 const refresh = async (_account, cookieAuth) => {
   cookieAuth.set({
     scope: [administrator, processor, user, recommender, authoriser],
-    account: devAccount,
+    account: getDevAccount(),
   });
 
   return [administrator, processor, user, recommender, authoriser];

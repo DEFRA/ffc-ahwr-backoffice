@@ -132,6 +132,7 @@ module.exports = {
         reference,
         request.logger,
       );
+      console.log(claimHistory)
       const historyDetails = getHistoryDetails(claimHistory);
       const currentStatusEvent = getCurrentStatusEvent(claim, claimHistory);
 
