@@ -13,9 +13,6 @@ const getClaimViewStates = (request, statusId, currentStatusEvent) => {
   } = request.query;
   const { name } = request.auth.credentials.account;
 
-  console.log(name);
-  console.log(currentStatusEvent);
-
   const { isAdministrator, isRecommender, isAuthoriser, isSuperAdmin } =
     mapAuth(request);
 
