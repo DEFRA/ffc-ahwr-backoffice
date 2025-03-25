@@ -52,4 +52,5 @@ module.exports = {
   authenticate,
   refresh,
   logout,
+  getDevAccount,
 };
