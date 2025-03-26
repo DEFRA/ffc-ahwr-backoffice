@@ -5,10 +5,13 @@ const {
   recommender,
   authoriser,
 } = require("./permissions");
-const { developerName, developerUsername } = require("../config");
+
+let cachedUserId;
 
 const getDevAccount = (userId) => {
   if (userId) {
+    cachedUserId = userId;
+
     return {
       name: `Developer-${userId}`,
       username: `developer+${userId}@defra.gov.uk`,
@@ -16,8 +19,8 @@ const getDevAccount = (userId) => {
   }
 
   return {
-    name: developerName || "Developer",
-    username: developerUsername || "developer@defra.gov.uk",
+    name: "Developer",
+    username: "developer@defra.gov.uk",
   };
 };
 
@@ -39,7 +42,7 @@ const authenticate = async (userId, cookieAuth) => {
 const refresh = async (_account, cookieAuth) => {
   cookieAuth.set({
     scope: [administrator, processor, user, recommender, authoriser],
-    account: getDevAccount(),
+    account: getDevAccount(cachedUserId),
   });
 
   return [administrator, processor, user, recommender, authoriser];
