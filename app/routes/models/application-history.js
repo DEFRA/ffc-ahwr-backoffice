@@ -1,50 +1,28 @@
-const moment = require("moment");
-const applicationStatus = require("../../../app/constants/application-status");
+const { withdrawn, readyToPay, rejected, inCheck, onHold, recommendToPay, recommendToReject} = require("../../../app/constants/application-status");
 
-const formatDate = (
-  dateToFormat,
-  currentDateFormat = "YYYY-MM-DD",
-  dateFormat = "DD/MM/YYYY HH:mm",
-) => {
-  if (dateToFormat) {
-    return moment(dateToFormat, currentDateFormat).utc().format(dateFormat);
+const getAction = (updatedProperty, newValue, oldValue) => {
+  const statusIds = {
+    [withdrawn]: "Withdrawn",
+    [readyToPay]: "Approved",
+    [rejected]: "Rejected",
+    [inCheck]: "Moved to 'In Check'",
+    [onHold]: "Moved to 'On Hold'",
+    [recommendToPay]: "Recommended to Pay",
+    [recommendToReject]: "Recommended to Reject"
   }
-  return "";
-};
 
-const filterRecords = (applicationHistory) =>
-  applicationHistory.historyRecords.filter((apphr) =>
-    [
-      applicationStatus.withdrawn,
-      applicationStatus.readyToPay,
-      applicationStatus.rejected,
-      applicationStatus.onHold,
-      applicationStatus.inCheck,
-      applicationStatus.recommendToPay,
-      applicationStatus.recommendToReject,
-    ].includes(JSON.parse(apphr.Payload).statusId),
-  );
-
-const getStatusText = (status, subStatus) => {
-  switch (status) {
-    case applicationStatus.withdrawn:
-      return "Withdrawn";
-    case applicationStatus.readyToPay:
-      return subStatus || "Approved";
-    case applicationStatus.rejected:
-      return subStatus || "Rejected";
-    case applicationStatus.inCheck:
-      return subStatus === undefined ? "Moved to 'In Check'" : subStatus;
-    case applicationStatus.onHold:
-      return subStatus || "On Hold";
-    case applicationStatus.recommendToPay:
-      return "Moved to 'Recommended to Pay'";
-    case applicationStatus.recommendToReject:
-      return "Moved to 'Recommended to Reject'";
-    default:
-      return "";
+  if (updatedProperty === 'statusId') {
+    return statusIds[newValue]
   }
-};
+
+  const dataProperties = {
+    vetsName: `Vet updated from ${oldValue} to ${newValue}`,
+    vetRCVSNumber: `RCVS updated from ${oldValue} to ${newValue}`,
+    dateOfVisit: `Visit date updated from ${oldValue} to ${newValue}`
+  }
+
+  return dataProperties[updatedProperty]
+}
 
 const gethistoryTableHeader = () => {
   return [
@@ -52,31 +30,28 @@ const gethistoryTableHeader = () => {
     { text: "Time" },
     { text: "Action" },
     { text: "User" },
-    { text: "Note", classes: "govuk-!-width-one-quarter" },
-  ];
-};
+    { text: "Note", classes: "govuk-!-width-one-quarter" }
+  ]
+}
 
-const gethistoryTableRows = (applicationHistory) => {
-  const historyRecords = filterRecords(applicationHistory);
+const gethistoryTableRows = (historyRecords) => {
+  return historyRecords.map(({ updatedProperty, newValue, oldValue, updatedAt, updatedBy, note }) => {
 
-  return historyRecords.map(({ ChangedOn, ChangedBy, Payload }) => {
-    const { statusId, subStatus, note } = JSON.parse(Payload);
-
+    const action = getAction(updatedProperty, newValue, oldValue)
+    const updatedDate = new Date(updatedAt)
     return [
-      { text: formatDate(ChangedOn, moment.ISO_8601, "DD/MM/YYYY") },
-      { text: formatDate(ChangedOn, moment.ISO_8601, "HH:mm:ss") },
-      { text: getStatusText(statusId, subStatus) },
-      { text: ChangedBy },
-      { text: note },
+      { text: updatedDate.toLocaleString('en-GB', { day: 'numeric', month: 'numeric', year: 'numeric' }) },
+      { text: updatedDate.toLocaleString('en-GB', { hour: 'numeric', minute: 'numeric', second: 'numeric' }) },
+      { text: action },
+      { text: updatedBy },
+      { text: note }
     ];
   });
 };
 
-const getHistoryDetails = (applicationHistory) => {
-  return {
-    header: gethistoryTableHeader(),
-    rows: gethistoryTableRows(applicationHistory),
-  };
-};
+const getHistoryDetails = (historyRecords) => ({
+  header: gethistoryTableHeader(),
+  rows: gethistoryTableRows(historyRecords)
+})
 
-module.exports = { getHistoryDetails };
+module.exports = { getHistoryDetails }

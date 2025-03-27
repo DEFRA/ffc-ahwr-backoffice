@@ -53,6 +53,15 @@
       {% if updateStatusForm %}
         {% include "./includes/update-status-form.njk" %}
       {% endif %}
+      {% if updateVetsNameForm %}
+        {% include "./includes/update-vets-name-form.njk" %}
+      {% endif %}
+      {% if updateVetRCVSNumberForm %}
+        {% include "./includes/update-vet-rcvs-number-form.njk" %}
+      {% endif %}
+      {% if updateDateOfVisitForm %}
+        {% include "./includes/update-date-of-visit-form.njk" %}
+      {% endif %}
     </div>
     <div class="govuk-grid-column-full">
       {% set claimHTML %}
