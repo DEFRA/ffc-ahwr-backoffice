@@ -131,7 +131,7 @@ module.exports = [
 
         await crumbCache.generateNewCrumb(request, h);
         const query = new URLSearchParams({ page });
-        console.log(day && month && year);
+
         const dateOfVisit =
           day && month && year
             ? new Date(
@@ -146,6 +146,7 @@ module.exports = [
             vetRCVSNumber,
             dateOfVisit,
           };
+
           await updateClaimData(
             reference,
             claimData,
