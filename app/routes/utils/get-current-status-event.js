@@ -1,12 +1,11 @@
-const getCurrentStatusEvent = (application, applicationHistory) => {
-  const mostRecentStatusUpdate = applicationHistory.historyRecords.findLast(
-    ({ EventType }) => EventType === "status-updated",
+const getCurrentStatusEvent = (application, historyRecords) => {
+  const mostRecentStatusUpdate = historyRecords.findLast(
+    ({ eventType }) => eventType === "status-updated",
   );
 
   const isToCurrentStatus =
     mostRecentStatusUpdate &&
-    JSON.parse(mostRecentStatusUpdate.Payload).statusId ===
-      application.statusId;
+    mostRecentStatusUpdate.newValue === application.statusId;
 
   return isToCurrentStatus ? mostRecentStatusUpdate : null;
 };

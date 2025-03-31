@@ -45,6 +45,7 @@
         "farmerName": "Farmer name",
         "address": "Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC"
       },
+      "visitDate": "2023-03-23T10:00:12",
       "eligibleSpecies": "yes",
       "confirmCheckDetails": "yes"
     },

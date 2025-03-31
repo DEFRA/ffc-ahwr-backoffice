@@ -108,6 +108,21 @@ async function getApplicationEvents(reference, logger) {
   }
 }
 
+async function updateApplicationData(reference, data, note, name, logger) {
+  const endpoint = `${applicationApiUri}/applications/${reference}/data`;
+  logger.setBindings({ endpoint });
+  const options = {
+    payload: {
+      ...data,
+      note,
+      user: name,
+    },
+  };
+
+  const { payload } = await wreck.patch(endpoint, options);
+  return payload;
+}
+
 module.exports = {
   getApplications,
   getApplication,
@@ -115,4 +130,5 @@ module.exports = {
   getApplicationHistory,
   getApplicationEvents,
   updateApplicationStatus,
+  updateApplicationData,
 };

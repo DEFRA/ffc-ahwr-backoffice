@@ -10,6 +10,9 @@ const getClaimViewStates = (request, statusId, currentStatusEvent) => {
     approve,
     reject,
     updateStatus,
+    updateVetsName,
+    updateDateOfVisit,
+    updateVetRCVSNumber,
   } = request.query;
   const { name } = request.auth.credentials.account;
 
@@ -80,11 +83,19 @@ const getClaimViewStates = (request, statusId, currentStatusEvent) => {
     currentStatusEvent &&
     name !== currentStatusEvent.ChangedBy;
 
-  const updateStatusAction =
-    isSuperAdmin && updateStatus === false && statusId !== status.READY_TO_PAY;
+  const updateStatusAction = isSuperAdmin && statusId !== status.READY_TO_PAY;
 
   const updateStatusForm =
     isSuperAdmin && updateStatus === true && statusId !== status.READY_TO_PAY;
+
+  const updateVetsNameAction = isSuperAdmin;
+  const updateVetsNameForm = isSuperAdmin && updateVetsName === true;
+
+  const updateVetRCVSNumberAction = isSuperAdmin;
+  const updateVetRCVSNumberForm = isSuperAdmin && updateVetRCVSNumber === true;
+
+  const updateDateOfVisitAction = isSuperAdmin;
+  const updateDateOfVisitForm = isSuperAdmin && updateDateOfVisit === true;
 
   return {
     withdrawAction,
@@ -100,6 +111,12 @@ const getClaimViewStates = (request, statusId, currentStatusEvent) => {
     rejectForm,
     updateStatusAction,
     updateStatusForm,
+    updateVetsNameAction,
+    updateVetsNameForm,
+    updateVetRCVSNumberAction,
+    updateVetRCVSNumberForm,
+    updateDateOfVisitAction,
+    updateDateOfVisitForm,
   };
 };
 

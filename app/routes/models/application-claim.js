@@ -2,6 +2,7 @@ const {
   formatedDateToUk,
   upperFirstLetter,
 } = require("../../lib/display-helper");
+const { getStyleClassByStatus } = require("../../constants/status");
 const { parseData } = require("../utils/parse-data");
 
 const claimDataStatus = [
@@ -16,7 +17,10 @@ const claimDataStatus = [
 const getApplicationClaimDetails = (
   application,
   applicationEvents,
-  statusRow,
+  statusActions,
+  visitDateActions,
+  vetsNameActions,
+  vetRCVSNumberActions,
 ) => {
   if (
     !application.claimed &&
@@ -25,7 +29,7 @@ const getApplicationClaimDetails = (
     return null;
   }
 
-  const { data } = application;
+  const { data, status } = application;
   let formatedDate = "";
 
   if (data?.dateOfClaim) {
@@ -47,11 +51,21 @@ const getApplicationClaimDetails = (
     }
   }
 
+  const statusLabel = upperFirstLetter(status.status.toLowerCase());
+  const statusClass = getStyleClassByStatus(status.status);
+
   return [
-    statusRow,
+    {
+      key: { text: "Status" },
+      value: {
+        html: `<span class="govuk-tag app-long-tag ${statusClass}">${statusLabel}</span>`,
+      },
+      actions: statusActions,
+    },
     {
       key: { text: "Date of review" },
       value: { text: formatedDateToUk(data.visitDate) },
+      actions: visitDateActions,
     },
     {
       key: { text: "Date of testing" },
@@ -62,8 +76,16 @@ const getApplicationClaimDetails = (
       key: { text: "Review details confirmed" },
       value: { text: upperFirstLetter(data.confirmCheckDetails) },
     },
-    { key: { text: "Vet’s name" }, value: { text: data.vetName } },
-    { key: { text: "Vet’s RCVS number" }, value: { text: data.vetRcvs } },
+    {
+      key: { text: "Vet’s name" },
+      value: { text: data.vetName },
+      actions: vetsNameActions,
+    },
+    {
+      key: { text: "Vet’s RCVS number" },
+      value: { text: data.vetRcvs },
+      actions: vetRCVSNumberActions,
+    },
     {
       key: { text: "Test results unique reference number (URN)" },
       value: { text: data.urnResult },

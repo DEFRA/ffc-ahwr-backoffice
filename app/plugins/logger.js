@@ -42,11 +42,14 @@ module.exports = {
     formatters: {
       level: (level) => ({ level }),
     },
+    ignorePaths: ["/healthy", "/healthz"],
+    ignoreTags: ["assets"],
     serializers: {
       req,
       res,
       err,
     },
     ...(process.env.USE_PRETTY_PRINT === "true" && { transport }),
+    redact: ["payload.vetsName", "payload.vetRCVSNumber"],
   },
 };

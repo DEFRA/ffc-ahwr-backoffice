@@ -147,9 +147,9 @@ describe("View Application test", () => {
         applications.getApplication.mockReturnValueOnce(
           viewApplicationData.agreed,
         );
-        applications.getApplicationHistory.mockReturnValueOnce(
-          applicationHistoryData,
-        );
+        applications.getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistoryData,
+        });
         const options = {
           method: "GET",
           url,
@@ -169,9 +169,9 @@ describe("View Application test", () => {
         applications.getApplication.mockReturnValueOnce(
           viewApplicationData.incheck,
         );
-        applications.getApplicationHistory.mockReturnValueOnce(
-          applicationHistoryData,
-        );
+        applications.getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistoryData,
+        });
         getClaimViewStates.getClaimViewStates.mockReturnValueOnce({
           recommendAction: areRecommendButtonsVisible,
         });
@@ -193,9 +193,9 @@ describe("View Application test", () => {
         applications.getApplication.mockReturnValueOnce(
           viewApplicationData.readytopay,
         );
-        applications.getApplicationHistory.mockReturnValueOnce(
-          applicationHistoryData,
-        );
+        applications.getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistoryData,
+        });
         when(getClaimViewStates.getClaimViewStates).mockReturnValue({
           authoriseForm,
         });
@@ -222,9 +222,9 @@ describe("View Application test", () => {
         applications.getApplication.mockReturnValueOnce(
           viewApplicationData.readytopay,
         );
-        applications.getApplicationHistory.mockReturnValueOnce(
-          applicationHistoryData,
-        );
+        applications.getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistoryData,
+        });
         when(getClaimViewStates.getClaimViewStates).mockReturnValue({
           rejectForm,
         });
@@ -251,9 +251,9 @@ describe("View Application test", () => {
         applications.getApplication.mockReturnValueOnce(
           viewApplicationData.readytopay,
         );
-        applications.getApplicationHistory.mockReturnValueOnce(
-          applicationHistoryData,
-        );
+        applications.getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistoryData,
+        });
         when(getClaimViewStates.getClaimViewStates).mockReturnValue({
           authoriseForm,
         });
@@ -302,9 +302,9 @@ describe("View Application test", () => {
         applications.getApplication.mockReturnValueOnce(
           viewApplicationData.readytopay,
         );
-        applications.getApplicationHistory.mockReturnValueOnce(
-          applicationHistoryData,
-        );
+        applications.getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistoryData,
+        });
         getClaimViewStates.getClaimViewStates.mockReturnValueOnce({
           recommendToPayForm,
         });
@@ -356,9 +356,9 @@ describe("View Application test", () => {
         applications.getApplication.mockReturnValueOnce(
           viewApplicationData.readytopay,
         );
-        applications.getApplicationHistory.mockReturnValueOnce(
-          applicationHistoryData,
-        );
+        applications.getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistoryData,
+        });
         getClaimViewStates.getClaimViewStates.mockReturnValueOnce({
           rejectForm,
         });
@@ -407,9 +407,9 @@ describe("View Application test", () => {
         applications.getApplication.mockReturnValueOnce(
           viewApplicationData.readytopay,
         );
-        applications.getApplicationHistory.mockReturnValueOnce(
-          applicationHistoryData,
-        );
+        applications.getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistoryData,
+        });
         getClaimViewStates.getClaimViewStates.mockReturnValueOnce({
           recommendToRejectForm,
         });
@@ -475,9 +475,9 @@ describe("View Application test", () => {
         applications.getApplication.mockReturnValueOnce(
           viewApplicationData.agreed,
         );
-        applications.getApplicationHistory.mockReturnValueOnce(
-          applicationHistoryData,
-        );
+        applications.getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistoryData,
+        });
         getClaimViewStates.getClaimViewStates.mockReturnValueOnce({
           withdrawAction,
         });
@@ -510,9 +510,9 @@ describe("View Application test", () => {
         applications.getApplication.mockReturnValueOnce(
           viewApplicationData.agreed,
         );
-        applications.getApplicationHistory.mockReturnValueOnce(
-          applicationHistoryData,
-        );
+        applications.getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistoryData,
+        });
         const options = {
           method: "GET",
           url,
@@ -583,9 +583,9 @@ describe("View Application test", () => {
         applications.getApplication.mockReturnValueOnce(
           viewApplicationData.incheck,
         );
-        applications.getApplicationHistory.mockReturnValueOnce(
-          applicationHistoryData,
-        );
+        applications.getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistoryData,
+        });
         const options = {
           method: "GET",
           url,
@@ -649,9 +649,9 @@ describe("View Application test", () => {
         applications.getApplication.mockReturnValueOnce(
           viewApplicationData.readytopay,
         );
-        applications.getApplicationHistory.mockReturnValueOnce(
-          applicationHistoryData,
-        );
+        applications.getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistoryData,
+        });
         const options = {
           method: "GET",
           url,
@@ -685,9 +685,9 @@ describe("View Application test", () => {
       applications.getApplication.mockReturnValueOnce(
         viewApplicationData.agreed,
       );
-      applications.getApplicationHistory.mockReturnValueOnce(
-        applicationHistoryData,
-      );
+      applications.getApplicationHistory.mockReturnValueOnce({
+        historyRecords: applicationHistoryData,
+      });
       const url = `/view-agreement/${reference}?page=1&withdraw=${true}`;
       const options = {
         method: "GET",
@@ -707,9 +707,9 @@ describe("View Application test", () => {
       applications.getApplication.mockReturnValueOnce(
         viewApplicationData.notagreed,
       );
-      applications.getApplicationHistory.mockReturnValueOnce(
-        applicationHistoryData,
-      );
+      applications.getApplicationHistory.mockReturnValueOnce({
+        historyRecords: applicationHistoryData,
+      });
       const options = {
         method: "GET",
         url,
@@ -816,9 +816,9 @@ describe("View Application test", () => {
       applications.getApplication.mockReturnValueOnce(
         viewApplicationData.incheck,
       );
-      applications.getApplicationHistory.mockReturnValueOnce(
-        applicationHistoryData,
-      );
+      applications.getApplicationHistory.mockReturnValueOnce({
+        historyRecords: applicationHistoryData,
+      });
       const options = {
         method: "GET",
         url: `/view-agreement/${reference}/${queryParam}`,
@@ -886,9 +886,9 @@ describe("View Application test", () => {
       applications.getApplication.mockReturnValueOnce(
         viewApplicationData.incheck,
       );
-      applications.getApplicationHistory.mockReturnValueOnce(
-        applicationHistoryData,
-      );
+      applications.getApplicationHistory.mockReturnValueOnce({
+        historyRecords: applicationHistoryData,
+      });
       const options = {
         method: "GET",
         url: `/view-agreement/${reference}/${queryParam}`,
@@ -956,9 +956,9 @@ describe("View Application test", () => {
       applications.getApplication.mockReturnValueOnce(
         viewApplicationData.incheck,
       );
-      applications.getApplicationHistory.mockReturnValueOnce(
-        applicationHistoryData,
-      );
+      applications.getApplicationHistory.mockReturnValueOnce({
+        historyRecords: applicationHistoryData,
+      });
       const options = {
         method: "GET",
         url: `/view-agreement/${reference}/${queryParam}`,

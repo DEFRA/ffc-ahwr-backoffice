@@ -73,9 +73,9 @@ describe("View Application test with Date of Testing enabled", () => {
       applications.getApplication.mockReturnValueOnce(
         viewApplicationData.claim,
       );
-      applications.getApplicationHistory.mockReturnValueOnce(
-        applicationHistoryData,
-      );
+      applications.getApplicationHistory.mockReturnValueOnce({
+        historyRecords: applicationHistoryData,
+      });
 
       const options = {
         method: "GET",

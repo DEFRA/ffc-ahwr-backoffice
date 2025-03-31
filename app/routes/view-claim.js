@@ -67,6 +67,9 @@ module.exports = {
         approve: joi.bool().default(false),
         reject: joi.bool().default(false),
         updateStatus: joi.bool().default(false),
+        updateVetsName: joi.bool().default(false),
+        updateDateOfVisit: joi.bool().default(false),
+        updateVetRCVSNumber: joi.bool().default(false),
       }),
     },
     handler: async (request, h) => {
@@ -128,12 +131,12 @@ module.exports = {
           )
         : [];
 
-      const claimHistory = await getApplicationHistory(
+      const { historyRecords } = await getApplicationHistory(
         reference,
         request.logger,
       );
-      const historyDetails = getHistoryDetails(claimHistory);
-      const currentStatusEvent = getCurrentStatusEvent(claim, claimHistory);
+      const historyDetails = getHistoryDetails(historyRecords);
+      const currentStatusEvent = getCurrentStatusEvent(claim, historyRecords);
 
       const {
         moveToInCheckAction,
@@ -147,6 +150,12 @@ module.exports = {
         rejectForm,
         updateStatusAction,
         updateStatusForm,
+        updateVetsNameAction,
+        updateVetsNameForm,
+        updateVetRCVSNumberAction,
+        updateVetRCVSNumberForm,
+        updateDateOfVisitAction,
+        updateDateOfVisitForm,
       } = getClaimViewStates(request, claim.statusId, currentStatusEvent);
 
       const { isBeef, isDairy, isPigs, isSheep } = getLivestockTypes(
@@ -198,17 +207,36 @@ module.exports = {
             })
           : [];
 
-      const actions = updateStatusAction
-        ? {
-            items: [
-              {
-                href: `/view-claim/${reference}?updateStatus=true&page=${page}&returnPage=${returnPage}#update-status`,
-                text: "Change",
-                visuallyHiddenText: "status",
-              },
-            ],
-          }
+      const getAction = (query, visuallyHiddenText, id) => ({
+        items: [
+          {
+            href: `/view-claim/${reference}?${query}=true&page=${page}#${id}`,
+            text: "Change",
+            visuallyHiddenText,
+          },
+        ],
+      });
+      const statusActions = updateStatusAction
+        ? getAction("updateStatus", "status", "update-status")
         : null;
+      const dateOfVisitActions = updateDateOfVisitAction
+        ? getAction(
+            "updateDateOfVisit",
+            "date of review",
+            "update-date-of-visit",
+          )
+        : null;
+      const vetsNameActions = updateVetsNameAction
+        ? getAction("updateVetsName", "vet's name", "update-vets-name")
+        : null;
+      const vetRCVSNumberActions = updateVetRCVSNumberAction
+        ? getAction(
+            "updateVetRCVSNumber",
+            "RCVS number",
+            "update-vet-rcvs-number",
+          )
+        : null;
+
       const statusOptions = getStatusUpdateOptions(statusId);
 
       const status = {
@@ -216,7 +244,7 @@ module.exports = {
         value: {
           html: `<span class='app-long-tag'><span class='govuk-tag ${getStyleClassByStatus(formatStatusId(statusId))}'> ${upperFirstLetter(claimStatus?.status.toLowerCase())} </span></span>`,
         },
-        actions,
+        actions: statusActions,
       };
       const claimDate = {
         key: { text: "Claim date" },
@@ -249,6 +277,7 @@ module.exports = {
       const dateOfVisit = {
         key: { text: "Date of visit" },
         value: { html: formatedDateToUk(data?.dateOfVisit) },
+        actions: dateOfVisitActions,
       };
       const dateOfSampling = {
         key: { text: "Date of sampling" },
@@ -263,10 +292,12 @@ module.exports = {
       const vetName = {
         key: { text: "Vet's name" },
         value: { html: upperFirstLetter(data?.vetsName) },
+        actions: vetsNameActions,
       };
       const vetRCVSNumber = {
         key: { text: "Vet's RCVS number" },
         value: { html: data?.vetRCVSNumber },
+        actions: vetRCVSNumberActions,
       };
       const piHunt = {
         key: { text: "PI hunt" },
@@ -466,6 +497,10 @@ module.exports = {
         authoriseAction,
         authoriseForm,
         updateStatusForm,
+        updateVetsNameForm,
+        updateVetRCVSNumberForm,
+        updateDateOfVisitForm,
+        dataUpdatePath: "claims",
         statusOptions,
         errorMessages,
         errors,

@@ -2,14 +2,24 @@ const {
   formatedDateToUk,
   upperFirstLetter,
 } = require("../../lib/display-helper");
+const { getStyleClassByStatus } = require("../../constants/status");
 const speciesNumbers = require("../../constants/species-numbers");
 
-const getApplicationDetails = (application, statusRow) => {
+const getApplicationDetails = (application, statusActions) => {
   const { data, createdAt, status } = application;
   const formatedDate = formatedDateToUk(createdAt);
 
+  const statusLabel = upperFirstLetter(status.status.toLowerCase());
+  const statusClass = getStyleClassByStatus(status.status);
+
   return [
-    statusRow,
+    {
+      key: { text: "Status" },
+      value: {
+        html: `<span class="govuk-tag app-long-tag ${statusClass}">${statusLabel}</span>`,
+      },
+      actions: statusActions,
+    },
     {
       key: {
         text:

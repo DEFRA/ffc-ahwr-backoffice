@@ -22,6 +22,7 @@ const routes = [].concat(
   require("../routes/recommend-to-reject"),
   require("../routes/move-to-in-check"),
   require("../routes/update-status"),
+  require("../routes/claims-data"),
 );
 
 module.exports = {
