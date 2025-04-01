@@ -266,7 +266,9 @@ describe("Claims data tests", () => {
       const res = await global.__SERVER__.inject(options);
       expect(res.statusCode).toBe(302);
 
-      expect(res.headers.location).toMatch(/view-claim\/AAAA\?page=1&updateVetRCVSNumber=true&errors=.+&returnPage=claims/);
+      expect(res.headers.location).toMatch(
+        /view-claim\/AAAA\?page=1&updateVetRCVSNumber=true&errors=.+&returnPage=claims/,
+      );
       expect(applications.updateApplicationData).toHaveBeenCalledTimes(0);
     });
   });
