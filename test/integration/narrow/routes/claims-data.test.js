@@ -26,28 +26,33 @@ pagination.getPagingData = jest.fn().mockReturnValue({
 });
 claims.getClaims = jest.fn().mockReturnValue(claimData);
 
-describe("Claims tests", () => {
-  const url = "/claims";
+describe("Claims data tests", () => {
+  const getUrl = (reference) => `/claims/${reference}/data`;
+
   jest.mock("../../../../app/auth");
   const auth = {
     strategy: "session-auth",
     credentials: { scope: [administrator], account: "test user" },
   };
 
-  describe(`GET ${url} route`, () => {
+  describe(`POST /claims/{reference}/data route`, () => {
     test("returns 302 no auth", async () => {
       const options = {
-        method: "GET",
-        url,
+        method: "POST",
+        url: getUrl('AAA'),
       };
       const res = await global.__SERVER__.inject(options);
       expect(res.statusCode).toBe(302);
     });
+
     test("returns 200", async () => {
       const options = {
-        method: "GET",
-        url: `${url}?page=1`,
+        method: "POST",
+        url: getUrl(),
         auth,
+        payload: {
+
+        }
       };
       const res = await global.__SERVER__.inject(options);
       expect(res.statusCode).toBe(200);
@@ -56,43 +61,6 @@ describe("Claims tests", () => {
       expect($("title").text()).toContain("AHWR Claims");
       expect(sessionMock.getClaimSearch).toHaveBeenCalledTimes(2);
       expectPhaseBanner.ok($);
-    });
-    test("returns 200 with query parameter", async () => {
-      const options = {
-        method: "GET",
-        url: `${url}/sort/claim number/descending`,
-        auth,
-      };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
-      expect(sessionMock.setClaimSearch).toHaveBeenCalledTimes(1);
-    });
-  });
-  describe(`POST ${url} route`, () => {
-    let crumb;
-    beforeEach(async () => {
-      crumb = await getCrumbs(global.__SERVER__);
-      jest.clearAllMocks();
-    });
-    test("returns 302 no auth", async () => {
-      const options = {
-        method: "POST",
-        url,
-      };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
-    });
-    test("returns 200", async () => {
-      const options = {
-        method: "POST",
-        payload: { crumb, searchText: "test" },
-        headers: { cookie: `crumb=${crumb}` },
-        url,
-        auth,
-      };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
-      expect(sessionMock.setClaimSearch).toHaveBeenCalledTimes(1);
     });
   });
 });
