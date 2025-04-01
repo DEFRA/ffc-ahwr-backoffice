@@ -1,4 +1,9 @@
-const devAuth = require("../../../app/auth/dev-auth");
+const {
+  getAuthenticationUrl,
+  authenticate,
+  refresh,
+  logout,
+} = require("../../../app/auth/dev-auth");
 const {
   administrator,
   processor,
@@ -13,22 +18,62 @@ describe("Dev auth test", () => {
     jest.clearAllMocks();
   });
 
-  test("getAuthenticationUrl test", () => {
-    expect(devAuth.getAuthenticationUrl()).toBe("/dev-auth");
+  test("getAuthenticationUrl without any arguments", () => {
+    expect(getAuthenticationUrl()).toBe("/dev-auth");
   });
-  test("authenticate test", async () => {
-    await devAuth.authenticate(expect.anything(), {
+
+  test("getAuthenticationUrl with a userId", () => {
+    expect(getAuthenticationUrl("abc123")).toBe("/dev-auth?userId=abc123");
+  });
+
+  test("authenticate test with no userId argument", async () => {
+    await authenticate(undefined, {
       set: MOCK_COOKIE_AUTH_SET,
     });
     expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledTimes(1);
+    expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledWith({
+      account: {
+        name: "Developer",
+        username: "developer@defra.gov.uk",
+      },
+      scope: [
+        "administrator",
+        "processor",
+        "user",
+        "recommender",
+        "authoriser",
+      ],
+    });
   });
+
+  test("authenticate test with userId provided", async () => {
+    await authenticate("abc123", {
+      set: MOCK_COOKIE_AUTH_SET,
+    });
+    expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledTimes(1);
+    expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledWith({
+      account: {
+        name: "Developer-abc123",
+        username: "developer+abc123@defra.gov.uk",
+      },
+      scope: [
+        "administrator",
+        "processor",
+        "user",
+        "recommender",
+        "authoriser",
+      ],
+    });
+  });
+
   test("refresh test", async () => {
     expect(
-      await devAuth.refresh(expect.anything(), { set: MOCK_COOKIE_AUTH_SET }),
+      await refresh(expect.anything(), { set: MOCK_COOKIE_AUTH_SET }),
     ).toEqual([administrator, processor, user, recommender, authoriser]);
     expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledTimes(1);
   });
+
   test("logout test", () => {
-    expect(devAuth.logout).toBeDefined();
+    expect(logout).toBeDefined();
   });
 });

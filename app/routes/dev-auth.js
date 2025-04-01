@@ -8,7 +8,8 @@ module.exports = {
   },
   handler: async (request, h) => {
     try {
-      await auth.authenticate(undefined, request.cookieAuth);
+      const { userId } = request.query;
+      await auth.authenticate(userId, request.cookieAuth);
       return h.redirect("/");
     } catch (err) {
       request.logger.setBindings({ err });

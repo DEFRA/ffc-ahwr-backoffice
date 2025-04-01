@@ -113,8 +113,6 @@ const config = {
         user.trim().toLowerCase(),
       )
     : [],
-  developerName: process.env.DEVELOPER_NAME,
-  developerUsername: process.env.DEVELOPER_USERNAME,
 };
 const { error, value } = schema.validate(config, { abortEarly: false });
 
