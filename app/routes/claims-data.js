@@ -137,7 +137,7 @@ module.exports = [
             ? new Date(
                 `${year}/${month.toString().padStart(2, 0)}/${day.toString().padStart(2, 0)}`,
               ).toISOString()
-            : null;
+            : undefined;
 
         if (claimOrAgreement === "claim") {
           query.append("returnPage", returnPage);

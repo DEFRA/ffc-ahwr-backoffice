@@ -11,6 +11,7 @@ services:
     container_name: ffc-ahwr-backoffice-development
     environment:
       USE_PRETTY_PRINT: ${USE_PRETTY_PRINT:-true}
+      SUPER_ADMINS: ${SUPER_ADMINS:-developer@defra.gov.uk}
     ports:
       - "3002:3000"
       - "9231:9229"

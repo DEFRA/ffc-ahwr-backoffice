@@ -31,14 +31,14 @@ const getAction = (updatedProperty, newValue, oldValue) => {
     vetName: `Vet updated from ${oldValue} to ${newValue}`,
     vetRCVSNumber: `RCVS updated from ${oldValue} to ${newValue}`,
     vetRcvs: `RCVS updated from ${oldValue} to ${newValue}`,
-    dateOfVisit: `Visit date updated from ${formatedDateToUk(oldValue)} to ${formatedDateToUk(newValue)}`,
-    visitDate: `Visit date updated from ${formatedDateToUk(oldValue)} to ${formatedDateToUk(newValue)}`,
+    dateOfVisit: `Date of visit updated from ${formatedDateToUk(oldValue)} to ${formatedDateToUk(newValue)}`,
+    visitDate: `Date of review updated from ${formatedDateToUk(oldValue)} to ${formatedDateToUk(newValue)}`,
   };
 
   return dataProperties[updatedProperty];
 };
 
-const gethistoryTableHeader = () => [
+const getHistoryTableHeader = () => [
   { text: "Date" },
   { text: "Time" },
   { text: "Action" },
@@ -46,7 +46,7 @@ const gethistoryTableHeader = () => [
   { text: "Note", classes: "govuk-!-width-one-quarter" },
 ];
 
-const gethistoryTableRows = (historyRecords) =>
+const getHistoryTableRows = (historyRecords) =>
   historyRecords.map(
     ({ updatedProperty, newValue, oldValue, updatedAt, updatedBy, note }) => {
       const action = getAction(updatedProperty, newValue, oldValue);
@@ -75,8 +75,8 @@ const gethistoryTableRows = (historyRecords) =>
   );
 
 const getHistoryDetails = (historyRecords) => ({
-  header: gethistoryTableHeader(),
-  rows: gethistoryTableRows(historyRecords),
+  header: getHistoryTableHeader(),
+  rows: getHistoryTableRows(historyRecords),
 });
 
 module.exports = { getHistoryDetails };
