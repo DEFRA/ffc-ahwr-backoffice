@@ -204,7 +204,6 @@ module.exports = {
         updateDateOfVisitForm,
         updateVetsNameForm,
         updateVetRCVSNumberForm,
-        dataUpdatePath: "applications",
         statusOptions,
         errorMessages,
         errors,

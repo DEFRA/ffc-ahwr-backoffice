@@ -67,7 +67,7 @@ compose() {
   cd "${projectRoot}"
 
   if [ "${fix_lint}" = "true" ]; then
-    npm run test:lint-fix
+    npm run lint:fix
   fi
 
   # Guarantee clean environment

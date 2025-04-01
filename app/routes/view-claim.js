@@ -500,7 +500,6 @@ module.exports = {
         updateVetsNameForm,
         updateVetRCVSNumberForm,
         updateDateOfVisitForm,
-        dataUpdatePath: "claims",
         statusOptions,
         errorMessages,
         errors,

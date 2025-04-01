@@ -83,6 +83,55 @@ const getClaimViewStates = (request, statusId, currentStatusEvent) => {
     currentStatusEvent &&
     name !== currentStatusEvent.ChangedBy;
 
+  const {
+    updateStatusAction,
+    updateStatusForm,
+    updateVetsNameAction,
+    updateVetsNameForm,
+    updateVetRCVSNumberAction,
+    updateVetRCVSNumberForm,
+    updateDateOfVisitAction,
+    updateDateOfVisitForm,
+  } = superAdminActions(
+    isSuperAdmin,
+    statusId,
+    updateStatus,
+    updateVetsName,
+    updateVetRCVSNumber,
+    updateDateOfVisit,
+  );
+
+  return {
+    withdrawAction,
+    withdrawForm,
+    moveToInCheckAction,
+    moveToInCheckForm,
+    recommendAction,
+    recommendToPayForm,
+    recommendToRejectForm,
+    authoriseAction,
+    authoriseForm,
+    rejectAction,
+    rejectForm,
+    updateStatusAction,
+    updateStatusForm,
+    updateVetsNameAction,
+    updateVetsNameForm,
+    updateVetRCVSNumberAction,
+    updateVetRCVSNumberForm,
+    updateDateOfVisitAction,
+    updateDateOfVisitForm,
+  };
+};
+
+const superAdminActions = (
+  isSuperAdmin,
+  statusId,
+  updateStatus,
+  updateVetsName,
+  updateVetRCVSNumber,
+  updateDateOfVisit,
+) => {
   const updateStatusAction = isSuperAdmin && statusId !== status.READY_TO_PAY;
 
   const updateStatusForm =
@@ -98,17 +147,6 @@ const getClaimViewStates = (request, statusId, currentStatusEvent) => {
   const updateDateOfVisitForm = isSuperAdmin && updateDateOfVisit === true;
 
   return {
-    withdrawAction,
-    withdrawForm,
-    moveToInCheckAction,
-    moveToInCheckForm,
-    recommendAction,
-    recommendToPayForm,
-    recommendToRejectForm,
-    authoriseAction,
-    authoriseForm,
-    rejectAction,
-    rejectForm,
     updateStatusAction,
     updateStatusForm,
     updateVetsNameAction,

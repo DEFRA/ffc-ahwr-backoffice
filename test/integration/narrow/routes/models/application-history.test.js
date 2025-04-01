@@ -74,7 +74,7 @@ test("renders table", () => {
       [
         { text: "28/03/2025" },
         { text: "14:54:18" },
-        { text: "Visit date updated from 03/01/2025 to 02/03/2025" },
+        { text: "Date of review updated from 03/01/2025 to 02/03/2025" },
         { text: "Tested, Bin" },
         { text: "Oops" },
       ],
