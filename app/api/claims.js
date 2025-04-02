@@ -61,8 +61,25 @@ async function updateClaimStatus(reference, user, status, logger, note) {
   }
 }
 
+async function updateClaimData(reference, data, note, name, logger) {
+  const endpoint = `${applicationApiUri}/claims/${reference}/data`;
+  logger.setBindings({ endpoint });
+
+  const options = {
+    payload: {
+      ...data,
+      note,
+      user: name,
+    },
+  };
+
+  const { payload } = await wreck.patch(endpoint, options);
+  return payload;
+}
+
 module.exports = {
   getClaim,
   getClaims,
+  updateClaimData,
   updateClaimStatus,
 };

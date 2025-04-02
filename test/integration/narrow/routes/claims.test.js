@@ -26,7 +26,7 @@ pagination.getPagingData = jest.fn().mockReturnValue({
 });
 claims.getClaims = jest.fn().mockReturnValue(claimData);
 
-describe("Applications test", () => {
+describe("Claims tests", () => {
   const url = "/claims";
   jest.mock("../../../../app/auth");
   const auth = {

@@ -14,6 +14,7 @@ const {
   processApplicationClaim,
   getApplicationHistory,
   getApplicationEvents,
+  updateApplicationData,
 } = require("../../../app/api/applications");
 describe("Application API", () => {
   afterEach(() => {
@@ -134,7 +135,7 @@ describe("Application API", () => {
     );
   });
 
-  it("GetApplication should throw errors", async () => {
+  it("getApplication should throw errors", async () => {
     jest.mock("@hapi/wreck");
     const options = { json: true };
     wreck.get = jest.fn().mockRejectedValueOnce("getApplication boom");
@@ -199,6 +200,60 @@ describe("Application API", () => {
       `${applicationApiUri}/application/${appRef}`,
       options,
     );
+  });
+
+  test("updateApplicationData", async () => {
+    const wreckResponse = {
+      payload: {},
+      res: {
+        statusCode: 204,
+      },
+      json: true,
+    };
+    const logger = { setBindings: jest.fn() };
+
+    wreck.patch = jest.fn().mockResolvedValueOnce(wreckResponse);
+
+    const response = await updateApplicationData(
+      appRef,
+      {
+        vetName: "John Doe",
+        visitDate: "2025-01-17",
+        vetRcvs: "123456",
+      },
+      "my note",
+      "Admin",
+      logger,
+    );
+
+    expect(response).toEqual(wreckResponse.payload);
+  });
+
+  test("updateApplicationData error", async () => {
+    const wreckResponse = {
+      payload: {},
+      res: {
+        statusCode: 400,
+      },
+      json: true,
+    };
+
+    wreck.patch = jest.fn().mockRejectedValueOnce(wreckResponse);
+    const logger = { setBindings: jest.fn() };
+
+    expect(async () => {
+      await updateApplicationData(
+        appRef,
+        {
+          vetName: "John Doe",
+          visitDate: "2025-01-17",
+          vetRcvs: "123456",
+        },
+        "my note",
+        "Admin",
+        logger,
+      );
+    }).rejects.toEqual(wreckResponse);
   });
 
   it("processApplicationClaim should throw errors", async () => {

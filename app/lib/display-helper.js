@@ -25,6 +25,7 @@ function formatStatusId(statusId) {
   return {
     1: "AGREED",
     2: "WITHDRAWN",
+    4: "CLAIMED",
     5: "IN CHECK",
     6: "ACCEPTED",
     7: "NOT AGREED",

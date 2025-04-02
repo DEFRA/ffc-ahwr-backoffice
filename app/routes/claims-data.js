@@ -1,0 +1,180 @@
+const joi = require("joi");
+const { administrator } = require("../auth/permissions");
+const { encodeErrorsForUI } = require("./utils/encode-errors-for-ui");
+const crumbCache = require("./utils/crumb-cache");
+const { updateClaimData } = require("../api/claims");
+const { updateApplicationData } = require("../api/applications");
+
+module.exports = [
+  {
+    method: "post",
+    path: "/claims/{reference}/data",
+    options: {
+      auth: { scope: [administrator] },
+      validate: {
+        params: joi.object({
+          reference: joi.string(),
+        }),
+        payload: joi
+          .object({
+            claimOrAgreement: joi
+              .string()
+              .valid("claim", "agreement")
+              .required(),
+            vetsName: joi.alternatives().conditional("form", {
+              is: "updateVetsName",
+              then: joi.string().required(),
+            }),
+            day: joi
+              .alternatives()
+              .conditional("form", {
+                is: "updateDateOfVisit",
+                then: joi.number().min(1).max(31).required(),
+              })
+              .messages({
+                "number.base": "Enter day",
+                "number.min": "Enter valid day",
+                "number.max": "Enter valid day",
+              }),
+            month: joi
+              .alternatives()
+              .conditional("form", {
+                is: "updateDateOfVisit",
+                then: joi.number().min(1).max(12).required(),
+              })
+              .messages({
+                "number.base": "Enter month",
+                "number.min": "Enter valid month",
+                "number.max": "Enter valid month",
+              }),
+            year: joi
+              .alternatives()
+              .conditional("form", {
+                is: "updateDateOfVisit",
+                then: joi.number().min(2020).max(2030).required(),
+              })
+              .messages({
+                "number.base": "Enter year",
+                "number.min": "Enter valid year",
+                "number.max": "Enter valid year",
+              }),
+            vetRCVSNumber: joi.alternatives().conditional("form", {
+              is: "updateVetRCVSNumber",
+              then: joi
+                .string()
+                .pattern(/^\d{6}[\dX]$/i)
+                .required(),
+            }),
+            note: joi.string().required().messages({
+              "any.required": "Enter note",
+              "string.empty": "Enter note",
+            }),
+            page: joi.number().greater(0).default(1),
+            form: joi
+              .string()
+              .required()
+              .valid(
+                "updateVetsName",
+                "updateDateOfVisit",
+                "updateVetRCVSNumber",
+              ),
+            panelID: joi.string().required(),
+            returnPage: joi
+              .string()
+              .optional()
+              .allow("")
+              .valid("agreement", "claims"),
+          })
+          .required(),
+        failAction: async (request, h, err) => {
+          const { reference } = request.params;
+          const { claimOrAgreement, form, page, panelID, returnPage } =
+            request.payload;
+
+          request.logger.setBindings({ err, form });
+
+          const errors = encodeErrorsForUI(err.details, panelID);
+          const query = new URLSearchParams({
+            page,
+            [form]: "true",
+            errors,
+          });
+
+          if (claimOrAgreement === "claim") {
+            query.append("returnPage", returnPage);
+          }
+
+          return h
+            .redirect(
+              `/view-${claimOrAgreement}/${reference}?${query.toString()}`,
+            )
+            .takeover();
+        },
+      },
+      handler: async (request, h) => {
+        const { name } = request.auth.credentials.account;
+        const { reference } = request.params;
+        const {
+          claimOrAgreement,
+          form,
+          page,
+          note,
+          returnPage,
+          vetsName,
+          vetRCVSNumber,
+          day,
+          month,
+          year,
+        } = request.payload;
+
+        request.logger.setBindings({ form });
+
+        await crumbCache.generateNewCrumb(request, h);
+        const query = new URLSearchParams({ page });
+
+        const dateOfVisit =
+          day && month && year
+            ? new Date(
+                `${year}/${month.toString().padStart(2, 0)}/${day.toString().padStart(2, 0)}`,
+              ).toISOString()
+            : undefined;
+
+        if (claimOrAgreement === "claim") {
+          query.append("returnPage", returnPage);
+          const claimData = {
+            vetsName,
+            vetRCVSNumber,
+            dateOfVisit,
+          };
+
+          await updateClaimData(
+            reference,
+            claimData,
+            note,
+            name,
+            request.logger,
+          );
+        }
+
+        if (claimOrAgreement === "agreement") {
+          const agreementData = {
+            vetName: vetsName,
+            vetRcvs: vetRCVSNumber,
+            visitDate: dateOfVisit,
+          };
+          await updateApplicationData(
+            reference,
+            agreementData,
+            note,
+            name,
+            request.logger,
+          );
+        }
+
+        return h.redirect(
+          `/view-${claimOrAgreement}/${reference}?${query.toString()}`,
+        );
+      },
+    },
+  },
+];

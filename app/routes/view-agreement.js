@@ -47,6 +47,9 @@ module.exports = {
         approve: joi.bool().default(false),
         reject: joi.bool().default(false),
         updateStatus: joi.bool().default(false),
+        updateVetsName: joi.bool().default(false),
+        updateDateOfVisit: joi.bool().default(false),
+        updateVetRCVSNumber: joi.bool().default(false),
       }),
     },
     handler: async (request, h) => {
@@ -55,13 +58,14 @@ module.exports = {
         request.params.reference,
         request.logger,
       );
-      const applicationHistory = await getApplicationHistory(
+      const { historyRecords } = await getApplicationHistory(
         request.params.reference,
         request.logger,
       );
+
       const currentStatusEvent = getCurrentStatusEvent(
         application,
-        applicationHistory,
+        historyRecords,
       );
 
       let applicationEvents;
@@ -98,6 +102,12 @@ module.exports = {
         rejectForm,
         updateStatusAction,
         updateStatusForm,
+        updateVetsNameAction,
+        updateVetsNameForm,
+        updateVetRCVSNumberAction,
+        updateVetRCVSNumberForm,
+        updateDateOfVisitAction,
+        updateDateOfVisitForm,
       } = getClaimViewStates(request, application.statusId, currentStatusEvent);
 
       const errors = request.query.errors
@@ -106,26 +116,37 @@ module.exports = {
           )
         : [];
 
-      const actions = updateStatusAction
-        ? {
-            items: [
-              {
-                href: `/view-agreement/${application.reference}?updateStatus=true&page=${page}#update-status`,
-                text: "Change",
-                visuallyHiddenText: "status",
-              },
-            ],
-          }
-        : null;
       const statusOptions = getStatusUpdateOptions(application.statusId);
 
-      const statusRow = {
-        key: { text: "Status" },
-        value: {
-          html: `<span class="govuk-tag app-long-tag ${statusClass}">${statusLabel}</span>`,
-        },
-        actions,
-      };
+      const getAction = (query, visuallyHiddenText, id) => ({
+        items: [
+          {
+            href: `/view-agreement/${application.reference}?${query}=true&page=${page}#${id}`,
+            text: "Change",
+            visuallyHiddenText,
+          },
+        ],
+      });
+      const statusActions = updateStatusAction
+        ? getAction("updateStatus", "status", "update-status")
+        : null;
+      const dateOfVisitActions = updateDateOfVisitAction
+        ? getAction(
+            "updateDateOfVisit",
+            "date of review",
+            "update-date-of-visit",
+          )
+        : null;
+      const vetsNameActions = updateVetsNameAction
+        ? getAction("updateVetsName", "vet's name", "update-vets-name")
+        : null;
+      const vetRCVSNumberActions = updateVetRCVSNumberAction
+        ? getAction(
+            "updateVetRCVSNumber",
+            "RCVS number",
+            "update-vet-rcvs-number",
+          )
+        : null;
 
       const contactHistory = await getContactHistory(
         request.params.reference,
@@ -137,12 +158,18 @@ module.exports = {
         organisation,
         contactHistoryDetails,
       );
-      const applicationDetails = getApplicationDetails(application, statusRow);
-      const historyDetails = getHistoryDetails(applicationHistory);
+      const applicationDetails = getApplicationDetails(
+        application,
+        statusActions,
+      );
+      const historyDetails = getHistoryDetails(historyRecords);
       const applicationClaimDetails = getApplicationClaimDetails(
         application,
         applicationEvents,
-        statusRow,
+        statusActions,
+        dateOfVisitActions,
+        vetsNameActions,
+        vetRCVSNumberActions,
       );
       const errorMessages = getErrorMessagesByKey(errors);
 
@@ -174,6 +201,9 @@ module.exports = {
         rejectAction,
         rejectForm,
         updateStatusForm,
+        updateDateOfVisitForm,
+        updateVetsNameForm,
+        updateVetRCVSNumberForm,
         statusOptions,
         errorMessages,
         errors,

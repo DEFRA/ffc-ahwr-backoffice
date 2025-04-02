@@ -45,6 +45,12 @@ test("status: agreed, user: admin", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -77,6 +83,12 @@ test("status: agreed, user: recommender", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -109,6 +121,12 @@ test("status: agreed, user: authoriser", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -141,6 +159,12 @@ test("status: agreed, query: withdraw, user: admin", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -173,6 +197,12 @@ test("status: agreed, query: withdraw, user: recommender", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -205,6 +235,12 @@ test("status: agreed, query: withdraw, user: authoriser", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -237,6 +273,12 @@ test("status: on hold, user: admin", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -269,6 +311,12 @@ test("status: on hold, user: recommender", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -301,6 +349,12 @@ test("status: on hold, user: authoriser", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -333,6 +387,12 @@ test("status: on hold, user: user", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -365,6 +425,12 @@ test("status: on hold, query: moveToInCheck, user: admin", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -397,6 +463,12 @@ test("status: on hold, query: moveToInCheck, user: recommender", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -429,6 +501,12 @@ test("status: on hold, query: moveToInCheck, user: authoriser", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -462,6 +540,12 @@ test("status: in check, user: admin", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -495,6 +579,12 @@ test("status: in check, user: recommender", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -528,6 +618,12 @@ test("status: in check, user: authoriser", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -560,6 +656,12 @@ test("status: in check, query: recommendToPay, user: admin", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -592,6 +694,12 @@ test("status: in check, query: recommendToPay, user: recommender", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -624,6 +732,12 @@ test("status: in check, query: recommendToPay, user: authoriser", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -656,6 +770,12 @@ test("status: in check, query: recommendToReject, user: admin", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -688,6 +808,12 @@ test("status: in check, query: recommendToReject, user: recommender", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -720,6 +846,12 @@ test("status: in check, query: recommendToReject, user: authoriser", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -759,6 +891,12 @@ test("status: in recommended to pay, user: admin, recommender: different person"
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -798,6 +936,12 @@ test("status: in recommended to pay, user: admin, recommender: same person", () 
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -837,6 +981,12 @@ test("status: in recommended to pay, user: recommender, recommender: different p
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -876,6 +1026,12 @@ test("status: in recommended to pay, user: authoriser, recommender: different pe
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -915,6 +1071,12 @@ test("status: in recommended to pay, query: approve, user: admin, recommender: d
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -954,6 +1116,12 @@ test("status: in recommended to pay, query: approve, user: recommender, recommen
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -993,6 +1161,12 @@ test("status: in recommended to pay, query: approve, user: authoriser, recommend
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -1032,6 +1206,12 @@ test("status: in recommended to reject, user: admin, recommender: different pers
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -1071,6 +1251,12 @@ test("status: in recommended to reject, user: admin, recommender: same person", 
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -1110,6 +1296,12 @@ test("status: in recommended to reject, user: recommender, recommender: differen
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -1149,6 +1341,12 @@ test("status: in recommended to reject, user: authoriser, recommender: different
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -1188,6 +1386,12 @@ test("status: in recommended to reject, query: reject, user: admin, recommender:
     rejectForm: true,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -1227,6 +1431,12 @@ test("status: in recommended to reject, query: reject, user: admin, recommender:
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -1266,6 +1476,12 @@ test("status: in recommended to reject, query: reject, user: recommender, recomm
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -1305,6 +1521,12 @@ test("status: in recommended to reject, query: reject, user: authoriser, recomme
     rejectForm: true,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -1338,6 +1560,12 @@ test("statusUpdateAction, status: any, user: admin", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -1371,6 +1599,12 @@ test("statusUpdateAction, status: any, user: admin & super admin", () => {
     rejectForm: false,
     updateStatusAction: true,
     updateStatusForm: false,
+    updateDateOfVisitAction: true,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: true,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: true,
+    updateVetsNameForm: false,
   });
 });
 
@@ -1404,6 +1638,12 @@ test("statusUpdateForm, status: any, query: update, user: admin", () => {
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: false,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: false,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: false,
+    updateVetsNameForm: false,
   });
 });
 
@@ -1435,8 +1675,14 @@ test("statusUpdateForm, status: any, query: updateStatus, user: admin & super ad
     authoriseForm: false,
     rejectAction: false,
     rejectForm: false,
-    updateStatusAction: false,
+    updateStatusAction: true,
     updateStatusForm: true,
+    updateDateOfVisitAction: true,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: true,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: true,
+    updateVetsNameForm: false,
   });
 });
 
@@ -1470,5 +1716,11 @@ test("statusUpdateForm, status: ready to pay, query: updateStatus, user: admin &
     rejectForm: false,
     updateStatusAction: false,
     updateStatusForm: false,
+    updateDateOfVisitAction: true,
+    updateDateOfVisitForm: false,
+    updateVetRCVSNumberAction: true,
+    updateVetRCVSNumberForm: false,
+    updateVetsNameAction: true,
+    updateVetsNameForm: false,
   });
 });

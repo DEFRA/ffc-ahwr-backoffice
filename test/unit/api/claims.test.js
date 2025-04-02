@@ -5,6 +5,7 @@ const {
   getClaim,
   getClaims,
   updateClaimStatus,
+  updateClaimData,
 } = require("../../../app/api/claims");
 
 jest.mock("@hapi/wreck");
@@ -115,6 +116,59 @@ describe("Claims API", () => {
         applicationReference,
         "Admin",
         status.IN_CHECK,
+        logger,
+      );
+    }).rejects.toEqual(wreckResponse);
+  });
+  test("updateClaimData", async () => {
+    const wreckResponse = {
+      payload: {},
+      res: {
+        statusCode: 204,
+      },
+      json: true,
+    };
+    const logger = { setBindings: jest.fn() };
+
+    wreck.patch = jest.fn().mockResolvedValueOnce(wreckResponse);
+
+    const response = await updateClaimData(
+      applicationReference,
+      {
+        vetsName: "John Doe",
+        dateOfVisit: "2025-01-17",
+        vetRCVSNumber: "123456",
+      },
+      "my note",
+      "Admin",
+      logger,
+    );
+
+    expect(response).toEqual(wreckResponse.payload);
+  });
+
+  test("updateClaimData error", async () => {
+    const wreckResponse = {
+      payload: {},
+      res: {
+        statusCode: 400,
+      },
+      json: true,
+    };
+
+    wreck.patch = jest.fn().mockRejectedValueOnce(wreckResponse);
+    const logger = { setBindings: jest.fn() };
+
+    expect(async () => {
+      await updateClaimData(
+        applicationReference,
+        {
+          vetsName: "John Doe",
+          dateOfVisit: "2025-01-17",
+          vetRCVSNumber: "123456",
+        },
+        "my note",
+        "Admin",
         logger,
       );
     }).rejects.toEqual(wreckResponse);

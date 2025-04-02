@@ -6,20 +6,45 @@ const applicationEventData = require("../../../../data/application-events.json")
 
 describe("Application-claim model", () => {
   test("getClaimData - Valid Data with date of claim in application data", async () => {
+    const statusActions = { items: [{ test: "change status" }] };
+    const visitDateActions = { items: [{ test: "change visit date" }] };
+    const vetsNameActions = { items: [{ test: "change vets name" }] };
+    const vetRCVSActions = { items: [{ test: "change RCVS" }] };
     const res = getApplicationClaimDetails(
       viewApplicationData.claim,
       [],
-      "statusRow",
+      statusActions,
+      visitDateActions,
+      vetsNameActions,
+      vetRCVSActions,
     );
 
     expect(res).toEqual([
-      "statusRow",
-      { key: { text: "Date of review" }, value: { text: "07/11/2022" } },
+      {
+        key: { text: "Status" },
+        value: {
+          html: '<span class="govuk-tag app-long-tag govuk-tag--blue">Claimed</span>',
+        },
+        actions: statusActions,
+      },
+      {
+        key: { text: "Date of review" },
+        value: { text: "07/11/2022" },
+        actions: visitDateActions,
+      },
       { key: { text: "Date of testing" }, value: { text: "08/11/2022" } },
       { key: { text: "Date of claim" }, value: { text: "09/11/2022" } },
       { key: { text: "Review details confirmed" }, value: { text: "Yes" } },
-      { key: { text: "Vet’s name" }, value: { text: "testVet" } },
-      { key: { text: "Vet’s RCVS number" }, value: { text: "1234234" } },
+      {
+        key: { text: "Vet’s name" },
+        value: { text: "testVet" },
+        actions: vetsNameActions,
+      },
+      {
+        key: { text: "Vet’s RCVS number" },
+        value: { text: "1234234" },
+        actions: vetRCVSActions,
+      },
       {
         key: { text: "Test results unique reference number (URN)" },
         value: { text: "134242" },
@@ -28,20 +53,45 @@ describe("Application-claim model", () => {
   });
 
   test("getClaimData - Valid Data with date of claim in events data", async () => {
+    const statusActions = { items: [{ test: "change status" }] };
+    const visitDateActions = { items: [{ test: "change visit date" }] };
+    const vetsNameActions = { items: [{ test: "change vets name" }] };
+    const vetRCVSActions = { items: [{ test: "change RCVS" }] };
     const res = getApplicationClaimDetails(
       viewApplicationData.claimWithNoClaimDate,
       applicationEventData,
-      "statusRow",
+      statusActions,
+      visitDateActions,
+      vetsNameActions,
+      vetRCVSActions,
     );
 
     expect(res).toEqual([
-      "statusRow",
-      { key: { text: "Date of review" }, value: { text: "07/11/2022" } },
+      {
+        key: { text: "Status" },
+        value: {
+          html: '<span class="govuk-tag app-long-tag govuk-tag--blue">Claimed</span>',
+        },
+        actions: statusActions,
+      },
+      {
+        key: { text: "Date of review" },
+        value: { text: "07/11/2022" },
+        actions: visitDateActions,
+      },
       { key: { text: "Date of testing" }, value: { text: "08/11/2022" } },
       { key: { text: "Date of claim" }, value: { text: "09/11/2022" } },
       { key: { text: "Review details confirmed" }, value: { text: "Yes" } },
-      { key: { text: "Vet’s name" }, value: { text: "testVet" } },
-      { key: { text: "Vet’s RCVS number" }, value: { text: "1234234" } },
+      {
+        key: { text: "Vet’s name" },
+        value: { text: "testVet" },
+        actions: vetsNameActions,
+      },
+      {
+        key: { text: "Vet’s RCVS number" },
+        value: { text: "1234234" },
+        actions: vetRCVSActions,
+      },
       {
         key: { text: "Test results unique reference number (URN)" },
         value: { text: "134242" },
@@ -50,19 +100,44 @@ describe("Application-claim model", () => {
   });
 
   test("getClaimData - Valid Data with no date of claim", async () => {
+    const statusActions = { items: [{ test: "change status" }] };
+    const visitDateActions = { items: [{ test: "change visit date" }] };
+    const vetsNameActions = { items: [{ test: "change vets name" }] };
+    const vetRCVSActions = { items: [{ test: "change RCVS" }] };
     const res = getApplicationClaimDetails(
       viewApplicationData.claimWithNoClaimDate,
       [],
-      "statusRow",
+      statusActions,
+      visitDateActions,
+      vetsNameActions,
+      vetRCVSActions,
     );
     expect(res).toEqual([
-      "statusRow",
-      { key: { text: "Date of review" }, value: { text: "07/11/2022" } },
+      {
+        key: { text: "Status" },
+        value: {
+          html: '<span class="govuk-tag app-long-tag govuk-tag--blue">Claimed</span>',
+        },
+        actions: statusActions,
+      },
+      {
+        key: { text: "Date of review" },
+        value: { text: "07/11/2022" },
+        actions: visitDateActions,
+      },
       { key: { text: "Date of testing" }, value: { text: "08/11/2022" } },
       { key: { text: "Date of claim" }, value: { text: "" } },
       { key: { text: "Review details confirmed" }, value: { text: "Yes" } },
-      { key: { text: "Vet’s name" }, value: { text: "testVet" } },
-      { key: { text: "Vet’s RCVS number" }, value: { text: "1234234" } },
+      {
+        key: { text: "Vet’s name" },
+        value: { text: "testVet" },
+        actions: vetsNameActions,
+      },
+      {
+        key: { text: "Vet’s RCVS number" },
+        value: { text: "1234234" },
+        actions: vetRCVSActions,
+      },
       {
         key: { text: "Test results unique reference number (URN)" },
         value: { text: "134242" },
@@ -71,20 +146,45 @@ describe("Application-claim model", () => {
   });
 
   test("getClaimData - Valid Data with no date of testing", async () => {
+    const statusActions = { items: [{ test: "change status" }] };
+    const visitDateActions = { items: [{ test: "change visit date" }] };
+    const vetsNameActions = { items: [{ test: "change vets name" }] };
+    const vetRCVSActions = { items: [{ test: "change RCVS" }] };
     const res = getApplicationClaimDetails(
       viewApplicationData.claimWithNoDateOfTesting,
       [],
-      "statusRow",
+      statusActions,
+      visitDateActions,
+      vetsNameActions,
+      vetRCVSActions,
     );
 
     expect(res).toEqual([
-      "statusRow",
-      { key: { text: "Date of review" }, value: { text: "07/11/2022" } },
+      {
+        key: { text: "Status" },
+        value: {
+          html: '<span class="govuk-tag app-long-tag govuk-tag--blue">Claimed</span>',
+        },
+        actions: statusActions,
+      },
+      {
+        key: { text: "Date of review" },
+        value: { text: "07/11/2022" },
+        actions: visitDateActions,
+      },
       { key: { text: "Date of testing" }, value: { text: "Invalid Date" } },
       { key: { text: "Date of claim" }, value: { text: "" } },
       { key: { text: "Review details confirmed" }, value: { text: "Yes" } },
-      { key: { text: "Vet’s name" }, value: { text: "testVet" } },
-      { key: { text: "Vet’s RCVS number" }, value: { text: "1234234" } },
+      {
+        key: { text: "Vet’s name" },
+        value: { text: "testVet" },
+        actions: vetsNameActions,
+      },
+      {
+        key: { text: "Vet’s RCVS number" },
+        value: { text: "1234234" },
+        actions: vetRCVSActions,
+      },
       {
         key: { text: "Test results unique reference number (URN)" },
         value: { text: "134242" },
@@ -93,6 +193,10 @@ describe("Application-claim model", () => {
   });
 
   test("getClaimData - Valid Data with no claim-claimed event", async () => {
+    const statusActions = { items: [{ test: "change status" }] };
+    const visitDateActions = { items: [{ test: "change visit date" }] };
+    const vetsNameActions = { items: [{ test: "change vets name" }] };
+    const vetRCVSActions = { items: [{ test: "change RCVS" }] };
     const res = getApplicationClaimDetails(
       viewApplicationData.claimWithNoClaimDate,
       {
@@ -103,17 +207,38 @@ describe("Application-claim model", () => {
           },
         ],
       },
-      "statusRow",
+      statusActions,
+      visitDateActions,
+      vetsNameActions,
+      vetRCVSActions,
     );
 
     expect(res).toEqual([
-      "statusRow",
-      { key: { text: "Date of review" }, value: { text: "07/11/2022" } },
+      {
+        key: { text: "Status" },
+        value: {
+          html: '<span class="govuk-tag app-long-tag govuk-tag--blue">Claimed</span>',
+        },
+        actions: statusActions,
+      },
+      {
+        key: { text: "Date of review" },
+        value: { text: "07/11/2022" },
+        actions: visitDateActions,
+      },
       { key: { text: "Date of testing" }, value: { text: "08/11/2022" } },
       { key: { text: "Date of claim" }, value: { text: "" } },
       { key: { text: "Review details confirmed" }, value: { text: "Yes" } },
-      { key: { text: "Vet’s name" }, value: { text: "testVet" } },
-      { key: { text: "Vet’s RCVS number" }, value: { text: "1234234" } },
+      {
+        key: { text: "Vet’s name" },
+        value: { text: "testVet" },
+        actions: vetsNameActions,
+      },
+      {
+        key: { text: "Vet’s RCVS number" },
+        value: { text: "1234234" },
+        actions: vetRCVSActions,
+      },
       {
         key: { text: "Test results unique reference number (URN)" },
         value: { text: "134242" },
