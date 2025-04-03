@@ -212,7 +212,7 @@ describe("Application API", () => {
     };
     const logger = { setBindings: jest.fn() };
 
-    wreck.patch = jest.fn().mockResolvedValueOnce(wreckResponse);
+    wreck.put = jest.fn().mockResolvedValueOnce(wreckResponse);
 
     const response = await updateApplicationData(
       appRef,
@@ -238,7 +238,7 @@ describe("Application API", () => {
       json: true,
     };
 
-    wreck.patch = jest.fn().mockRejectedValueOnce(wreckResponse);
+    wreck.put = jest.fn().mockRejectedValueOnce(wreckResponse);
     const logger = { setBindings: jest.fn() };
 
     expect(async () => {

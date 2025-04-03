@@ -73,7 +73,7 @@ async function updateClaimData(reference, data, note, name, logger) {
     },
   };
 
-  const { payload } = await wreck.patch(endpoint, options);
+  const { payload } = await wreck.put(endpoint, options);
   return payload;
 }
 
