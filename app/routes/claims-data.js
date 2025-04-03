@@ -8,13 +8,10 @@ const { updateApplicationData } = require("../api/applications");
 module.exports = [
   {
     method: "post",
-    path: "/claims/{reference}/data",
+    path: "/claims/data",
     options: {
       auth: { scope: [administrator] },
       validate: {
-        params: joi.object({
-          reference: joi.string(),
-        }),
         payload: joi
           .object({
             claimOrAgreement: joi
@@ -84,12 +81,18 @@ module.exports = [
               .optional()
               .allow("")
               .valid("agreement", "claims"),
+            reference: joi.string().required(),
           })
           .required(),
         failAction: async (request, h, err) => {
-          const { reference } = request.params;
-          const { claimOrAgreement, form, page, panelID, returnPage } =
-            request.payload;
+          const {
+            claimOrAgreement,
+            form,
+            page,
+            panelID,
+            reference,
+            returnPage,
+          } = request.payload;
 
           request.logger.setBindings({ err, form });
 
@@ -113,7 +116,6 @@ module.exports = [
       },
       handler: async (request, h) => {
         const { name } = request.auth.credentials.account;
-        const { reference } = request.params;
         const {
           claimOrAgreement,
           form,
@@ -125,6 +127,7 @@ module.exports = [
           day,
           month,
           year,
+          reference,
         } = request.payload;
 
         request.logger.setBindings({ form });

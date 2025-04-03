@@ -26,8 +26,6 @@ pagination.getPagingData = jest.fn().mockReturnValue({
 claims.getClaims = jest.fn().mockReturnValue(claimData);
 
 describe("Claims data tests", () => {
-  const getUrl = (reference) => `/claims/${reference}/data`;
-
   jest.mock("../../../../app/auth");
   const auth = {
     strategy: "session-auth",
@@ -44,7 +42,7 @@ describe("Claims data tests", () => {
     test("returns 302 no auth", async () => {
       const options = {
         method: "POST",
-        url: getUrl("AAA"),
+        url: "/claims/data",
       };
       const res = await global.__SERVER__.inject(options);
       expect(res.statusCode).toBe(302);
@@ -53,7 +51,7 @@ describe("Claims data tests", () => {
     test("returns 302 after calling update claim data for vetsName", async () => {
       const options = {
         method: "POST",
-        url: getUrl("AAAA"),
+        url: "/claims/data",
         auth,
         headers: { cookie: `crumb=${crumb}` },
         payload: {
@@ -63,6 +61,7 @@ describe("Claims data tests", () => {
           vetsName: "Barry",
           note: "Updated value",
           panelID: "#update-vets-name",
+          reference: "AAAA",
           returnPage: "claims",
         },
       };
@@ -84,7 +83,7 @@ describe("Claims data tests", () => {
     test("returns 302 after calling update claim data for visitDate", async () => {
       const options = {
         method: "POST",
-        url: getUrl("AAAA"),
+        url: "/claims/data",
         auth,
         headers: { cookie: `crumb=${crumb}` },
         payload: {
@@ -96,6 +95,7 @@ describe("Claims data tests", () => {
           year: 2028,
           note: "Updated value",
           panelID: "#update-date-of-visit",
+          reference: "AAAA",
           returnPage: "claims",
         },
       };
@@ -121,7 +121,7 @@ describe("Claims data tests", () => {
     test("returns 302 after calling update claim data for rcvs number", async () => {
       const options = {
         method: "POST",
-        url: getUrl("AAAA"),
+        url: "/claims/data",
         auth,
         headers: { cookie: `crumb=${crumb}` },
         payload: {
@@ -131,6 +131,7 @@ describe("Claims data tests", () => {
           vetRCVSNumber: "1234567",
           note: "Updated value",
           panelID: "#update-vet-rcvs-number",
+          reference: "AAAA",
           returnPage: "claims",
         },
       };
@@ -156,7 +157,7 @@ describe("Claims data tests", () => {
     test("returns 302 after calling update agreement data for vetsName", async () => {
       const options = {
         method: "POST",
-        url: getUrl("AAAA"),
+        url: "/claims/data",
         auth,
         headers: { cookie: `crumb=${crumb}` },
         payload: {
@@ -166,6 +167,7 @@ describe("Claims data tests", () => {
           vetsName: "Barry",
           note: "Updated value",
           panelID: "#update-vets-name",
+          reference: "AAAA",
           returnPage: "agreement",
         },
       };
@@ -185,7 +187,7 @@ describe("Claims data tests", () => {
     test("returns 302 after calling update agreement data for visitDate", async () => {
       const options = {
         method: "POST",
-        url: getUrl("AAAA"),
+        url: "/claims/data",
         auth,
         headers: { cookie: `crumb=${crumb}` },
         payload: {
@@ -197,6 +199,7 @@ describe("Claims data tests", () => {
           year: 2028,
           note: "Updated value",
           panelID: "#update-date-of-visit",
+          reference: "AAAA",
           returnPage: "agreement",
         },
       };
@@ -220,7 +223,7 @@ describe("Claims data tests", () => {
     test("returns 302 after calling update agreement data for rcvs number", async () => {
       const options = {
         method: "POST",
-        url: getUrl("AAAA"),
+        url: "/claims/data",
         auth,
         headers: { cookie: `crumb=${crumb}` },
         payload: {
@@ -230,6 +233,7 @@ describe("Claims data tests", () => {
           vetRCVSNumber: "1234567",
           note: "Updated value",
           panelID: "#update-vet-rcvs-number",
+          reference: "AAAA",
           returnPage: "agreement",
         },
       };
@@ -249,7 +253,7 @@ describe("Claims data tests", () => {
     test("returns 302 with an error message for an invalid rcvs", async () => {
       const options = {
         method: "POST",
-        url: getUrl("AAAA"),
+        url: "/claims/data",
         auth,
         headers: { cookie: `crumb=${crumb}` },
         payload: {
@@ -260,6 +264,7 @@ describe("Claims data tests", () => {
           page: 1,
           note: "Updated value",
           panelID: "#update-vet-rcvs-number",
+          reference: "AAAA",
           returnPage: "claims",
         },
       };

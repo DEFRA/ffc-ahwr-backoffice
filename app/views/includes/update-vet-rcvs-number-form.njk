@@ -1,7 +1,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
 <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="update-vet-rcvs-number">
-  <form method="post" action="/claims/{{ reference }}/data" class="ahwr-update-form">
+  <form method="post" action="/claims/data" class="ahwr-update-form">
     {% if claimOrAgreement == 'agreement' %}
       <a href="/view-agreement/{{ reference }}?page={{ page }}" class="govuk-link govuk-body">Back</a>
     {% elif claimOrAgreement == 'claim' %}
@@ -36,6 +36,7 @@
     }}
     <input type="hidden" name="claimOrAgreement" value="{{ claimOrAgreement }}" />
     <input type="hidden" name="panelID" value="#update-vet-rcvs-number" />
+    <input type="hidden" name="reference" value="{{ reference }}" />
     <input type="hidden" name="form" value="updateVetRCVSNumber" />
     <input type="hidden" name="page" value="{{ page }}" />
     <input type="hidden" name="returnPage" value="{{ returnPage }}" />
