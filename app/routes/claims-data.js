@@ -5,6 +5,16 @@ const crumbCache = require("./utils/crumb-cache");
 const { updateClaimData } = require("../api/claims");
 const { updateApplicationData } = require("../api/applications");
 
+const panelIdGivenFormName = (formName) => {
+  if (formName === "updateVetsName") {
+    return "#update-vets-name";
+  } else if (formName === "updateDateOfVisit") {
+    return "#update-date-of-visit";
+  } else {
+    return "#update-vet-rcvs-number";
+  }
+};
+
 module.exports = [
   {
     method: "post",
@@ -75,7 +85,6 @@ module.exports = [
                 "updateDateOfVisit",
                 "updateVetRCVSNumber",
               ),
-            panelID: joi.string().required(),
             returnPage: joi
               .string()
               .optional()
@@ -85,16 +94,12 @@ module.exports = [
           })
           .required(),
         failAction: async (request, h, err) => {
-          const {
-            claimOrAgreement,
-            form,
-            page,
-            panelID,
-            reference,
-            returnPage,
-          } = request.payload;
+          const { claimOrAgreement, form, page, reference, returnPage } =
+            request.payload;
 
           request.logger.setBindings({ err, form });
+
+          const panelID = panelIdGivenFormName(form);
 
           const errors = encodeErrorsForUI(err.details, panelID);
           const query = new URLSearchParams({
