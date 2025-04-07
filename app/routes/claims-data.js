@@ -9,12 +9,12 @@ const panelIdGivenFormName = (formName) => {
   if (formName === "updateVetsName") {
     return "#update-vets-name";
   }
-  
+
   if (formName === "updateDateOfVisit") {
     return "#update-date-of-visit";
   }
-  
-   return "#update-vet-rcvs-number";
+
+  return "#update-vet-rcvs-number";
 };
 
 module.exports = [
