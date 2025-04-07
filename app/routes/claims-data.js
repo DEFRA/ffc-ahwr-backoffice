@@ -8,11 +8,13 @@ const { updateApplicationData } = require("../api/applications");
 const panelIdGivenFormName = (formName) => {
   if (formName === "updateVetsName") {
     return "#update-vets-name";
-  } else if (formName === "updateDateOfVisit") {
-    return "#update-date-of-visit";
-  } else {
-    return "#update-vet-rcvs-number";
   }
+  
+  if (formName === "updateDateOfVisit") {
+    return "#update-date-of-visit";
+  }
+  
+   return "#update-vet-rcvs-number";
 };
 
 module.exports = [
