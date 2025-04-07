@@ -869,7 +869,7 @@ test("status: in recommended to pay, user: admin, recommender: different person"
     },
   };
   const currentStatusEvent = {
-    ChangedBy: "someone else",
+    updatedBy: "someone else",
   };
   const state = getClaimViewStates(
     request,
@@ -914,7 +914,7 @@ test("status: in recommended to pay, user: admin, recommender: same person", () 
     },
   };
   const currentStatusEvent = {
-    ChangedBy: currentUser,
+    updatedBy: currentUser,
   };
   const state = getClaimViewStates(
     request,
@@ -959,7 +959,7 @@ test("status: in recommended to pay, user: recommender, recommender: different p
     },
   };
   const currentStatusEvent = {
-    ChangedBy: "someone else",
+    updatedBy: "someone else",
   };
   const state = getClaimViewStates(
     request,
@@ -1004,7 +1004,7 @@ test("status: in recommended to pay, user: authoriser, recommender: different pe
     },
   };
   const currentStatusEvent = {
-    ChangedBy: "someone else",
+    updatedBy: "someone else",
   };
   const state = getClaimViewStates(
     request,
@@ -1049,7 +1049,7 @@ test("status: in recommended to pay, query: approve, user: admin, recommender: d
     },
   };
   const currentStatusEvent = {
-    ChangedBy: "someone else",
+    updatedBy: "someone else",
   };
   const state = getClaimViewStates(
     request,
@@ -1094,7 +1094,7 @@ test("status: in recommended to pay, query: approve, user: recommender, recommen
     },
   };
   const currentStatusEvent = {
-    ChangedBy: "someone else",
+    updatedBy: "someone else",
   };
   const state = getClaimViewStates(
     request,
@@ -1139,7 +1139,7 @@ test("status: in recommended to pay, query: approve, user: authoriser, recommend
     },
   };
   const currentStatusEvent = {
-    ChangedBy: "someone else",
+    updatedBy: "someone else",
   };
   const state = getClaimViewStates(
     request,
@@ -1184,7 +1184,7 @@ test("status: in recommended to reject, user: admin, recommender: different pers
     },
   };
   const currentStatusEvent = {
-    ChangedBy: "someone else",
+    updatedBy: "someone else",
   };
   const state = getClaimViewStates(
     request,
@@ -1229,7 +1229,7 @@ test("status: in recommended to reject, user: admin, recommender: same person", 
     },
   };
   const currentStatusEvent = {
-    ChangedBy: currentUser,
+    updatedBy: currentUser,
   };
   const state = getClaimViewStates(
     request,
@@ -1274,7 +1274,7 @@ test("status: in recommended to reject, user: recommender, recommender: differen
     },
   };
   const currentStatusEvent = {
-    ChangedBy: "someone else",
+    updatedBy: "someone else",
   };
   const state = getClaimViewStates(
     request,
@@ -1319,7 +1319,7 @@ test("status: in recommended to reject, user: authoriser, recommender: different
     },
   };
   const currentStatusEvent = {
-    ChangedBy: "someone else",
+    updatedBy: "someone else",
   };
   const state = getClaimViewStates(
     request,
@@ -1364,7 +1364,7 @@ test("status: in recommended to reject, query: reject, user: admin, recommender:
     },
   };
   const currentStatusEvent = {
-    ChangedBy: "someone else",
+    updatedBy: "someone else",
   };
   const state = getClaimViewStates(
     request,
@@ -1409,7 +1409,7 @@ test("status: in recommended to reject, query: reject, user: admin, recommender:
     },
   };
   const currentStatusEvent = {
-    ChangedBy: currentUser,
+    updatedBy: currentUser,
   };
   const state = getClaimViewStates(
     request,
@@ -1454,7 +1454,7 @@ test("status: in recommended to reject, query: reject, user: recommender, recomm
     },
   };
   const currentStatusEvent = {
-    ChangedBy: "someone else",
+    updatedBy: "someone else",
   };
   const state = getClaimViewStates(
     request,
@@ -1499,7 +1499,7 @@ test("status: in recommended to reject, query: reject, user: authoriser, recomme
     },
   };
   const currentStatusEvent = {
-    ChangedBy: "someone else",
+    updatedBy: "someone else",
   };
   const state = getClaimViewStates(
     request,

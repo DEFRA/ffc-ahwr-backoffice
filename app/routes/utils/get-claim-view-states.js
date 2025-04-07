@@ -59,29 +59,25 @@ const getClaimViewStates = (request, statusId, currentStatusEvent) => {
     (isAdministrator || isAuthoriser) &&
     statusId === status.RECOMMENDED_TO_PAY &&
     approve === false &&
-    currentStatusEvent &&
-    name !== currentStatusEvent.ChangedBy;
+    statusWasSetByAnotherUser(currentStatusEvent, name);
 
   const authoriseForm =
     (isAdministrator || isAuthoriser) &&
     statusId === status.RECOMMENDED_TO_PAY &&
     approve === true &&
-    currentStatusEvent &&
-    name !== currentStatusEvent.ChangedBy;
+    statusWasSetByAnotherUser(currentStatusEvent, name);
 
   const rejectAction =
     (isAdministrator || isAuthoriser) &&
     statusId === status.RECOMMENDED_TO_REJECT &&
     reject === false &&
-    currentStatusEvent &&
-    name !== currentStatusEvent.ChangedBy;
+    statusWasSetByAnotherUser(currentStatusEvent, name);
 
   const rejectForm =
     (isAdministrator || isAuthoriser) &&
     statusId === status.RECOMMENDED_TO_REJECT &&
     reject === true &&
-    currentStatusEvent &&
-    name !== currentStatusEvent.ChangedBy;
+    statusWasSetByAnotherUser(currentStatusEvent, name);
 
   const {
     updateStatusAction,
@@ -122,6 +118,10 @@ const getClaimViewStates = (request, statusId, currentStatusEvent) => {
     updateDateOfVisitAction,
     updateDateOfVisitForm,
   };
+};
+
+const statusWasSetByAnotherUser = (currentStatusEvent, name) => {
+  return currentStatusEvent && name !== currentStatusEvent.updatedBy;
 };
 
 const superAdminActions = (
