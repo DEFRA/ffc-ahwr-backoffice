@@ -68,6 +68,7 @@ compose() {
 
   if [ "${fix_lint}" = "true" ]; then
     npm run lint:fix
+    npm run prettier:fix
   fi
 
   # Guarantee clean environment

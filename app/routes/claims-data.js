@@ -64,16 +64,23 @@ module.exports = [
               })
               .messages({
                 "number.base": "Enter year",
-                "number.min": "Enter valid year",
-                "number.max": "Enter valid year",
+                "number.min": "Enter valid year between 2020 and 2030",
+                "number.max": "Enter valid year between 2020 and 2030",
               }),
-            vetRCVSNumber: joi.alternatives().conditional("form", {
-              is: "updateVetRCVSNumber",
-              then: joi
-                .string()
-                .pattern(/^\d{6}[\dX]$/i)
-                .required(),
-            }),
+            vetRCVSNumber: joi
+              .alternatives()
+              .conditional("form", {
+                is: "updateVetRCVSNumber",
+                then: joi
+                  .string()
+                  .pattern(/^\d{6}[\dX]$/i)
+                  .required(),
+              })
+              .messages({
+                "string.empty": "Enter Vet's RCVS number",
+                "string.pattern.base":
+                  "Vet's RCVS number should be a 7 digit number or 6 digit number ending with a letter",
+              }),
             note: joi.string().required().messages({
               "any.required": "Enter note",
               "string.empty": "Enter note",
