@@ -13,12 +13,6 @@ describe("regexChecker", () => {
     const result = regexChecker(regex, str);
     expect(result).toBe(true);
   });
-  test("should return true if the string matches the regex", () => {
-    const regex = /^AHWR-[A-Z0-9]{4}-[A-Z0-9]{4}$/i;
-    const str = "AHWR-1234-5678";
-    const result = regexChecker(regex, str);
-    expect(result).toBe(true);
-  });
 
   test("should return false if the string does not match the regex", () => {
     const regex = /^AHWR-[\da-f]{4}-[\da-f]{4}$/i;
@@ -27,17 +21,10 @@ describe("regexChecker", () => {
     expect(result).toBe(false);
   });
 
-  test("should handle invalid regex", () => {
+  test("should handle invalid regex and return false", () => {
     const regex = "[";
     const str = "12345";
     const result = regexChecker(regex, str);
     expect(result).toBe(false);
-  });
-  test("should show error if regex is invalid", () => {
-    const regex = "[";
-    const str = "12345";
-    regexChecker(regex, str);
-
-    expect(regexChecker(regex, str)).toBe(false);
   });
 });

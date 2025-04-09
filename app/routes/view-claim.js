@@ -210,7 +210,7 @@ module.exports = {
       const getAction = (query, visuallyHiddenText, id) => ({
         items: [
           {
-            href: `/view-claim/${reference}?${query}=true&page=${page}#${id}`,
+            href: `/view-claim/${reference}?${query}=true&page=${page}&returnPage=${returnPage}#${id}`,
             text: "Change",
             visuallyHiddenText,
           },
@@ -477,9 +477,7 @@ module.exports = {
         claimOrAgreement: "claim",
         title: upperFirstLetter(application.data.organisation.name),
         claimSummaryDetails: rowsWithData,
-        contactPerson: currentStatusEvent?.ChangedBy,
         status: {
-          capitalisedtype: formatStatusId(claim.statusId),
           normalType: upperFirstLetter(
             formatStatusId(claim.statusId).toLowerCase(),
           ),
