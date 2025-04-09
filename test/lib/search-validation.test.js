@@ -1,6 +1,6 @@
 const setSearchParams = require("../../app/lib/search-validation");
 
-describe("Set sesrch params test", () => {
+describe("Set search params test", () => {
   test.each([
     { type: "ref", text: "AHWR-5446-5EF4" },
     { type: "ref", text: "IAHW-1234-5678" },

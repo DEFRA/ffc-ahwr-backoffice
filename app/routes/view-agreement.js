@@ -188,7 +188,6 @@ module.exports = {
         applicationDetails,
         historyDetails,
         applicationClaimDetails,
-        contactPerson: currentStatusEvent?.ChangedBy,
         withdrawAction,
         withdrawForm,
         moveToInCheckAction,

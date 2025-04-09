@@ -30,10 +30,16 @@ module.exports = [
               .string()
               .valid("claim", "agreement")
               .required(),
-            vetsName: joi.alternatives().conditional("form", {
-              is: "updateVetsName",
-              then: joi.string().required(),
-            }),
+            vetsName: joi
+              .alternatives()
+              .conditional("form", {
+                is: "updateVetsName",
+                then: joi.string().required(),
+              })
+              .messages({
+                "any.required": "Enter vet's name",
+                "string.empty": "Enter vet's name",
+              }),
             day: joi
               .alternatives()
               .conditional("form", {
