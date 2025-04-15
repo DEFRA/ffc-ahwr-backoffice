@@ -5,7 +5,7 @@
 {% block content %}
   <form method="POST" action="/agreements">
     <div class="govuk-grid-row">
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-7">Claims and agreements</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-7">{{model.pageHeader}}</h1>
         <div class="govuk-grid-column-full">
           <div class="moj-scrollable-pane">
             <div class="moj-scrollable-pane__wrapper">
@@ -21,13 +21,20 @@
                       Agreements
                     </span>
                   </li>
+                  {% if model.showFlagsTab %}
+                    <a class="govuk-tabs__list-item govuk-body" href="/flags">
+                      <span class="govuk-tabs__tab">
+                        Flags
+                      </span>
+                    </a>
+                  {% endif %}
                 </ul>
-                <div class="govuk-tabs__panel govuk-!-margin-bottom-6" id="claims">
+                <div class="govuk-tabs__panel govuk-!-margin-bottom-6" id="agreements">
                   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
                     <h1 class="govuk-heading-l">Agreements</h1>
                     <div class="user-search-box">
                       <label class="govuk-label govuk-label--s" for="searchText">Find an agreement</label>
-                      <div id="claimSearch-hint" class="govuk-hint">Search by agreement number, business, SBI, agreement date or status.</div>
+                      <div id="agreementSearch-hint" class="govuk-hint">Search by agreement number, business, SBI, agreement date or status.</div>
                       <input type="hidden" name="crumb" value="{{crumb}}"/>
                       <input class="govuk-input" id="searchText" name="searchText" type="text" value="{{model.searchText}}" spellcheck="false">
                       <button class="search-button" data-module="govuk-button" name="submit" value="search">

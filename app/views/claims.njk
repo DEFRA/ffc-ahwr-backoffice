@@ -5,7 +5,7 @@
 {% block content %}
   <form method="POST" action="/claims">
     <div class="govuk-grid-row">
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-7">Claims and agreements</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-7">{{pageHeader}}</h1>
         <div class="govuk-grid-column-full">
           <div class="moj-scrollable-pane">
             <div class="moj-scrollable-pane__wrapper">
@@ -21,6 +21,13 @@
                       Agreements
                     </span>
                   </a>
+                  {% if showFlagsTab %}
+                    <a class="govuk-tabs__list-item govuk-body" href="/flags">
+                      <span class="govuk-tabs__tab">
+                        Flags
+                      </span>
+                    </a>
+                  {% endif %}
                 </ul>
                 <div class="govuk-tabs__panel govuk-!-margin-bottom-6" id="claims">
                   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">

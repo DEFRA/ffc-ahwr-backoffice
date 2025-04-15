@@ -1,0 +1,62 @@
+{% extends './layouts/layout.njk' %}
+{% block pageTitle %}
+  {{ siteTitle }}: AHWR Flags
+{% endblock %}
+{% block content %}
+    <div class="govuk-grid-row">
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-7">Claims, Agreements and Flags</h1>
+        {% if model.flagIdToDelete %}
+            {% include "./includes/delete-flag.njk" %}
+        {% endif %}
+        {% if model.createFlag %}
+            {% include "./includes/create-flag.njk" %}
+        {% endif %}
+        <div class="govuk-grid-column-full">
+          <div class="moj-scrollable-pane">
+            <div class="moj-scrollable-pane__wrapper">
+              <div class="govuk-tabs" data-module="govuk-tabs">
+                <ul class="govuk-tabs__list">
+                  <a class="govuk-tabs__list-item govuk-body" href="/claims">
+                    <span class="govuk-tabs__tab">
+                      Claims
+                    </span>
+                  </a>
+                  <a class="govuk-tabs__list-item govuk-body" href="/agreements">
+                    <span class="govuk-tabs__tab">
+                      Agreements
+                    </span>
+                  </a>
+                  <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+                    <span class="govuk-tabs__tab">
+                      Flags
+                    </span>
+                  </li>
+                </ul>
+                <div class="govuk-tabs__panel govuk-!-margin-bottom-6 govuk-!-padding-left-7" id="flags">
+                    <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-two-thirds">
+                          <h1 class="govuk-heading-l">Flags</h1>
+                        </div>
+                        <div class="govuk-grid-column-one-third">
+                            {{ govukButton({
+                                text: "Create new agreement flag",
+                                href: model.createFlagUrl
+                              }) }}
+                        </div>
+                      </div>
+                    {{ govukTable({
+                        attributes: {
+                          'data-module': 'moj-sortable-table'
+                        },
+                        firstCellIsHeader: false,
+                        head: model.header,
+                        rows: model.rows
+                      }) 
+                    }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+{% endblock %}

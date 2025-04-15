@@ -23,6 +23,7 @@ const routes = [].concat(
   require("../routes/move-to-in-check"),
   require("../routes/update-status"),
   require("../routes/claims-data"),
+  require("../routes/flags"),
 );
 
 module.exports = {

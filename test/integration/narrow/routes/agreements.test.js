@@ -32,7 +32,7 @@ describe("Applications test", () => {
   jest.mock("../../../../app/auth");
   const auth = {
     strategy: "session-auth",
-    credentials: { scope: [administrator], account: "test user" },
+    credentials: { scope: [administrator], account: { username: "test user" } },
   };
 
   beforeAll(() => {
