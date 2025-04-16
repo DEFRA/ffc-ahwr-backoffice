@@ -150,7 +150,6 @@ const createFlagHandler = {
         return h.view("flags", await createFlagsTableData(request.logger)); // NOSONAR
       } catch (err) {
         request.logger.setBindings({ err });
-
         let formattedErrors = [];
 
         if (err.data.res.statusCode === 404) {
@@ -160,7 +159,7 @@ const createFlagHandler = {
               path: [],
               type: "string.empty",
               context: {
-                key: "",
+                key: "appRef",
               },
             },
           ];
@@ -173,7 +172,7 @@ const createFlagHandler = {
               path: [],
               type: "string.empty",
               context: {
-                key: "",
+                key: "appRef",
               },
             },
           ];
