@@ -2,7 +2,10 @@ const Joi = require("joi");
 const { administrator } = require("../auth/permissions");
 const crumbCache = require("./utils/crumb-cache");
 const { createFlagsTableData } = require("./models/flags-list");
-const { deleteFlag: deleteFlagAPICall, createFlag: createFlagAPICall } = require("../api/flags");
+const {
+  deleteFlag: deleteFlagAPICall,
+  createFlag: createFlagAPICall,
+} = require("../api/flags");
 const { encodeErrorsForUI } = require("./utils/encode-errors-for-ui");
 const { StatusCodes } = require("http-status-codes");
 
