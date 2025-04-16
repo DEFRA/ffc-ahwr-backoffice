@@ -54,8 +54,6 @@ describe("Flags tests", () => {
       crumb = await getCrumbs(global.__SERVER__);
     });
 
-    flags.deleteFlag.mockResolvedValueOnce(null);
-
     test("returns 302 when there is no auth", async () => {
       const flagId = "abc123";
       const options = {
@@ -66,7 +64,29 @@ describe("Flags tests", () => {
       expect(res.statusCode).toBe(302);
     });
 
+    test("returns a 400 if the delete API call fails and redirects user back to flags page", async () => {
+      flags.deleteFlag.mockImplementationOnce(() => {
+        throw new Error("deletion failed");
+      });
+      const flagId = "abc123";
+      const options = {
+        method: "POST",
+        url: `/flags/${flagId}/delete`,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: { crumb },
+      };
+      const res = await global.__SERVER__.inject(options);
+
+      expect(res.statusCode).toBe(400);
+      const $ = cheerio.load(res.payload);
+      expect($("h1.govuk-heading-l").text()).toEqual("Flags");
+      expect($("title").text()).toContain("AHWR Flags");
+      expectPhaseBanner.ok($);
+    });
+
     test("returns the user to the flags page when the flag has happily been deleted", async () => {
+      flags.deleteFlag.mockResolvedValueOnce(null);
       const flagId = "abc123";
       const options = {
         method: "POST",

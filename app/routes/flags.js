@@ -2,8 +2,12 @@ const Joi = require("joi");
 const { administrator } = require("../auth/permissions");
 const crumbCache = require("./utils/crumb-cache");
 const { createFlagsTableData } = require("./models/flags-list");
-const { deleteFlag, createFlag } = require("../api/flags");
+const { deleteFlag: deleteFlagAPICall, createFlag: createFlagAPICall } = require("../api/flags");
 const { encodeErrorsForUI } = require("./utils/encode-errors-for-ui");
+const { StatusCodes } = require("http-status-codes");
+
+const MIN_APPLICATION_REFERENCE_LENGTH = 14;
+const MIN_NOTE_LENGTH = 1;
 
 const getFlagsHandler = {
   method: "GET",
@@ -30,7 +34,7 @@ const getFlagsHandler = {
       return h.view("flags", {
         ...(await createFlagsTableData(request.logger, deleteFlag, createFlag)),
         errors: parsedErrors,
-      }); // NOSONAR
+      });
     },
   },
 };
@@ -51,13 +55,13 @@ const deleteFlagHandler = {
       try {
         const { flagId } = request.params;
         const { name: user } = request.auth.credentials.account;
-        await deleteFlag(flagId, user, request.logger);
+        await deleteFlagAPICall(flagId, user, request.logger);
 
-        return h.view("flags", await createFlagsTableData(request.logger)); // NOSONAR
+        return h.view("flags", await createFlagsTableData(request.logger));
       } catch (err) {
         return h
           .view("flags", { ...request.payload, error: err })
-          .code(400)
+          .code(StatusCodes.BAD_REQUEST)
           .takeover();
       }
     },
@@ -73,8 +77,8 @@ const createFlagHandler = {
     },
     validate: {
       payload: Joi.object({
-        appRef: Joi.string().min(14).required(),
-        note: Joi.string().min(1).required(),
+        appRef: Joi.string().min(MIN_APPLICATION_REFERENCE_LENGTH).required(),
+        note: Joi.string().min(MIN_NOTE_LENGTH).required(),
         appliesToMh: Joi.string().valid("yes", "no").required(),
       }),
       failAction: async (request, h, err) => {
@@ -128,18 +132,18 @@ const createFlagHandler = {
           appliesToMh: appliesToMh === "yes",
         };
 
-        const { res } = await createFlag(
+        const { res } = await createFlagAPICall(
           payload,
           appRef.trim(),
           request.logger,
         );
 
-        if (res.statusCode === 204) {
+        if (res.statusCode === StatusCodes.NO_CONTENT) {
           let error = new Error("Flag already exists.");
           error = {
             data: {
               res: {
-                statusCode: 204,
+                statusCode: StatusCodes.NO_CONTENT,
               },
             },
             message: error.message,
@@ -147,12 +151,12 @@ const createFlagHandler = {
           throw error;
         }
 
-        return h.view("flags", await createFlagsTableData(request.logger)); // NOSONAR
+        return h.view("flags", await createFlagsTableData(request.logger));
       } catch (err) {
         request.logger.setBindings({ err });
         let formattedErrors = [];
 
-        if (err.data.res.statusCode === 404) {
+        if (err.data.res.statusCode === StatusCodes.NOT_FOUND) {
           formattedErrors = [
             {
               message: "Agreement reference does not exist.",
@@ -165,7 +169,7 @@ const createFlagHandler = {
           ];
         }
 
-        if (err.data.res.statusCode === 204) {
+        if (err.data.res.statusCode === StatusCodes.NO_CONTENT) {
           formattedErrors = [
             {
               message: `Flag not created - agreement flag with the same "Flag applies to MH T&C's" value already exists.`,
@@ -193,7 +197,7 @@ const createFlagHandler = {
 
         return h
           .view("flags", await createFlagsTableData(request.logger))
-          .code(400)
+          .code(StatusCodes.BAD_REQUEST)
           .takeover();
       }
     },

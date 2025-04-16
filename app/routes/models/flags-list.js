@@ -62,8 +62,7 @@ const createFlagsTableData = async (logger, flagIdToDelete, createFlag) => {
         text: flag.appliesToMh === true ? "Yes" : "No",
       },
       {
-        html: `<a class="govuk-button govuk-button--warning" data-module="govuk-button" href="${serviceUri}/flags?deleteFlag=${flag.id}">
-        Delete flag </a>`,
+        html: `<a class="govuk-button govuk-button--warning" data-module="govuk-button" href="${serviceUri}/flags?deleteFlag=${flag.id}">Delete flag</a>`,
       },
     ];
   });
