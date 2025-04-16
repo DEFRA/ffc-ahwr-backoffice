@@ -9,6 +9,7 @@ const { getApplications } = require("../../../../../app/api/applications");
 jest.mock("../../../../../app/api/applications");
 
 const { setEndemicsEnabled } = require("../../../../mocks/config");
+const { administrator } = require("../../../../../app/auth/permissions");
 
 describe("Application-list model test", () => {
   describe("endemics enable true", () => {
@@ -74,7 +75,17 @@ describe("Application-list createModel", () => {
   });
 
   test("createModel should return view claims when type EE", async () => {
-    const request = { yar: { get: jest.fn() }, query: {} };
+    const request = {
+      yar: { get: jest.fn() },
+      query: {},
+      auth: {
+        isAuthenticated: true,
+        credentials: {
+          scope: [administrator],
+          account: { username: "unit-tester" },
+        },
+      },
+    };
     const result = await createModel(request, 1);
     expect(result.applications[0][5].html).toContain("View claims");
   });

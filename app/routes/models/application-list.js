@@ -5,6 +5,7 @@ const { getStyleClassByStatus } = require("../../constants/status");
 const keys = require("../../session/keys");
 const { serviceUri, endemics } = require("../../config");
 const { upperFirstLetter } = require("../../lib/display-helper");
+const mapAuth = require("../../auth/map-auth");
 
 const viewModel = (request, page) => {
   return (async () => {
@@ -100,6 +101,12 @@ async function createModel(request, page) {
     request.logger,
   );
 
+  const { isAdministrator } = mapAuth(request);
+  const pageHeader = isAdministrator
+    ? "Claims, Agreements and Flags"
+    : "Claims and Agreements";
+  const showFlagsTab = isAdministrator;
+
   if (apps.total > 0) {
     let statusClass;
     const applications = apps.applications.map((n) => {
@@ -160,6 +167,7 @@ async function createModel(request, page) {
         selected: filterStatus.filter((f) => f === s.status).length > 0,
       };
     });
+
     return {
       applications,
       header: getApplicationTableHeader(
@@ -185,6 +193,8 @@ async function createModel(request, page) {
           styleClass: s.styleClass,
         };
       }),
+      pageHeader,
+      showFlagsTab,
     };
   } else {
     return {
@@ -194,6 +204,8 @@ async function createModel(request, page) {
       availableStatus: [],
       selectedStatus: [],
       filterStatus: [],
+      pageHeader,
+      showFlagsTab,
     };
   }
 }

@@ -17,6 +17,7 @@ const {
   recommender,
   user,
 } = require("../auth/permissions");
+const mapAuth = require("../auth/map-auth");
 
 const viewTemplate = "claims";
 const currentPath = `/${viewTemplate}`;
@@ -43,6 +44,12 @@ const getViewData = async (request) => {
   const { previous, next, pages } = getPagingData(total, limit, request.query);
   const error = total === 0 ? "no claims found" : null;
 
+  const { isAdministrator } = mapAuth(request);
+  const pageHeader = isAdministrator
+    ? "Claims, Agreements and Flags"
+    : "Claims and Agreements";
+  const showFlagsTab = isAdministrator;
+
   return {
     searchText,
     header,
@@ -51,6 +58,8 @@ const getViewData = async (request) => {
     next,
     pages,
     error,
+    pageHeader,
+    showFlagsTab,
   };
 };
 

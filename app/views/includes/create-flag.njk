@@ -1,0 +1,75 @@
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+<div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="recommend-to-reject">
+    <form method="POST" action="/flags/create" class="ahwr-update-form">
+      <a href="/flags" class="govuk-link govuk-body">Back</a>
+      <h1 class="govuk-heading-xl govuk-!-margin-top-2 govuk-!-margin-bottom-2">Create flag</h1>
+      <span class="govuk-caption-xl govuk-!-margin-bottom-7">An agreement can have a maximum of 2 flags; one for Multiple Herds T&C's and one for any other reason.</span>
+
+      {% if errors.length %}
+        {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: errors
+        }) }}
+      {% endif %}
+
+      {{ govukInsetText({
+        text: "If an agreement is flagged for not agreeing to Multiple Herds T&C's, when the owner of that agreement makes a claim they will not see the Multiple Herds pages and will not be able to claim for multiple herds."
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "What is the reference of the agreement you want to flag?",
+          classes: "govuk-label--m",
+          isPageHeading: false
+        },
+        classes: "govuk-input--width-10",
+        id: "agreement-reference",
+        name: "appRef",
+        hint: {
+            text: "Copy and paste the agreement reference from the agreements tab."
+          }
+      }) }}
+
+      {{ govukTextarea({
+        name: "note",
+        id: "note",
+        label: {
+          text: "Note",
+          classes: "govuk-label--m",
+          isPageHeading: false
+        },
+        hint: {
+          text: "Provide some details as to why the agreement has been flagged."
+        }
+      }) }}
+
+      {{ govukRadios({
+        name: "appliesToMh",
+        fieldset: {
+          legend: {
+            text: "Is the flag because the owner of the agreement didn't agree to Multiple Herds T&C's?",
+            isPageHeading: false,
+            classes: "govuk-fieldset__legend--m"
+          }
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes"
+          },
+          {
+            value: "no",
+            text: "No"
+          }
+        ]
+      }) }}
+  
+    {{ govukButton({
+      text: "Create flag"
+    }) }}
+    <input type="hidden" name="crumb" value="{{ crumb }}"/>
+  </form>
+</div>

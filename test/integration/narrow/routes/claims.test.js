@@ -31,7 +31,7 @@ describe("Claims tests", () => {
   jest.mock("../../../../app/auth");
   const auth = {
     strategy: "session-auth",
-    credentials: { scope: [administrator], account: "test user" },
+    credentials: { scope: [administrator], account: { username: "test user" } },
   };
 
   describe(`GET ${url} route`, () => {

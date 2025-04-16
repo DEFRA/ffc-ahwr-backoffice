@@ -35,7 +35,7 @@ describe("Applications Filter test", () => {
   jest.mock("../../../../app/auth");
   const auth = {
     strategy: "session-auth",
-    credentials: { scope: [administrator] },
+    credentials: { scope: [administrator], account: { username: "test user" } },
   };
   const method = "GET";
 
