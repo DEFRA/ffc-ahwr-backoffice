@@ -16,7 +16,7 @@ const getFlagsHandler = {
       query: Joi.object({
         createFlag: Joi.bool(),
         deleteFlag: Joi.string(),
-        errors: Joi.any(),
+        errors: Joi.string(),
       }),
     },
     handler: async (request, h) => {
@@ -73,8 +73,8 @@ const createFlagHandler = {
     },
     validate: {
       payload: Joi.object({
-        appRef: Joi.string().required(),
-        note: Joi.string().required(),
+        appRef: Joi.string().min(14).required(),
+        note: Joi.string().min(1).required(),
         appliesToMh: Joi.string().valid("yes", "no").required(),
       }),
       failAction: async (request, h, err) => {
