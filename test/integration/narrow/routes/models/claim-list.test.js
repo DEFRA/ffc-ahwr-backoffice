@@ -12,16 +12,16 @@ describe("Application-list model test", () => {
     test.each([
       { n: 0, field: "claim number", direction: "DESC" },
       { n: 0, field: "claim number", direction: "ASC" },
-      { n: 1, field: "type of visit", direction: "DESC" },
-      { n: 1, field: "type of visit", direction: "ASC" },
-      { n: 2, field: "SBI", direction: "DESC" },
-      { n: 2, field: "SBI", direction: "ASC" },
-      { n: 3, field: "species", direction: "DESC" },
-      { n: 3, field: "species", direction: "ASC" },
-      { n: 4, field: "claim date", direction: "DESC" },
-      { n: 4, field: "claim date", direction: "ASC" },
-      { n: 5, field: "status", direction: "DESC" },
-      { n: 5, field: "status", direction: "ASC" },
+      { n: 2, field: "type of visit", direction: "DESC" },
+      { n: 2, field: "type of visit", direction: "ASC" },
+      { n: 3, field: "SBI", direction: "DESC" },
+      { n: 3, field: "SBI", direction: "ASC" },
+      { n: 4, field: "species", direction: "DESC" },
+      { n: 4, field: "species", direction: "ASC" },
+      { n: 5, field: "claim date", direction: "DESC" },
+      { n: 5, field: "claim date", direction: "ASC" },
+      { n: 6, field: "status", direction: "DESC" },
+      { n: 6, field: "status", direction: "ASC" },
     ])(
       "getClaimTableHeader $field $direction",
       async ({ n, field, direction }) => {
@@ -67,6 +67,7 @@ describe("Application-list createModel", () => {
           },
         },
       },
+      flags: [],
     },
   ];
 
@@ -78,6 +79,14 @@ describe("Application-list createModel", () => {
     const page = 1;
     const returnPage = "claim";
     const rows = getClaimTableRows(claims, page, returnPage);
+
+    expect(rows[0][0].text).toBe("AHWR-1111-1111");
+  });
+  test("getClaimTableRows with a flagged claim", async () => {
+    const page = 1;
+    const returnPage = "claim";
+    const flaggedClaims = [{ ...claims[0], flags: [{ appliesToMh: true }] }];
+    const rows = getClaimTableRows(flaggedClaims, page, returnPage);
 
     expect(rows[0][0].text).toBe("AHWR-1111-1111");
   });

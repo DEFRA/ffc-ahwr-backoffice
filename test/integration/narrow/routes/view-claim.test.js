@@ -51,6 +51,7 @@ describe("View claim test", () => {
     statusId: 1,
     type: "EE",
     status: { status: "AGREED" },
+    flags: [],
   };
   const claims = [
     {
@@ -76,6 +77,7 @@ describe("View claim test", () => {
       createdBy: "sql query",
       updatedBy: null,
       status: { status: "PAID" },
+      flags: [],
     },
     {
       id: "5e8558ee-31d7-454b-a061-b8c97bb91d56",
@@ -126,6 +128,7 @@ describe("View claim test", () => {
       createdBy: "sql query",
       updatedBy: null,
       status: { status: "Recommended to Pay" },
+      flags: [],
     },
     {
       id: "58b297c9-c983-475c-8bdb-db5746899cec",
@@ -157,6 +160,7 @@ describe("View claim test", () => {
       createdBy: "sql query",
       updatedBy: null,
       status: { status: "PAID" },
+      flags: [],
     },
     {
       id: "58b297c9-c983-475c-8bdb-db5746899cec",
@@ -184,6 +188,7 @@ describe("View claim test", () => {
       createdBy: "sql query",
       updatedBy: null,
       status: { status: "PAID" },
+      flags: [],
     },
   ];
   getApplicationHistory.mockReturnValue({ historyRecords: [] });
@@ -231,6 +236,7 @@ describe("View claim test", () => {
             "Tesco Stores Ltd, Harwell, Betton, WHITE HOUSE FARM, VINCENT CLOSE, LEIGHTON BUZZARD, HR2 8AN, United Kingdom",
         },
         { key: "Business email", value: "orgEmail@gmail.com" },
+        { key: "Flagged", value: "No" },
         { key: "Status", value: "Paid" },
         { key: "Claim date", value: "25/03/2024" },
         { key: "Business name", value: "Test Farm Lodge" },
@@ -246,7 +252,7 @@ describe("View claim test", () => {
         { key: "URN", value: "123456" },
       ];
       // Summary list rows expect
-      expect($(".govuk-summary-list__row").length).toEqual(20);
+      expect($(".govuk-summary-list__row").length).toEqual(21);
       // Application summary details expects
       for (let i = 0; i < 6; i++) {
         expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
@@ -289,6 +295,7 @@ describe("View claim test", () => {
         null,
         null,
         null,
+        { key: "Flagged", value: "No" },
         { key: "Status", value: "Recommended to pay" },
         { key: "Claim date", value: "20/03/2024" },
         { key: "Business name", value: "Test Farm Lodge" },
@@ -312,7 +319,7 @@ describe("View claim test", () => {
       ];
 
       // Summary list rows expect
-      expect($(".govuk-summary-list__row").length).toEqual(24);
+      expect($(".govuk-summary-list__row").length).toEqual(25);
       // Claim summary details expects
       for (let i = 7; i < 24; i++) {
         expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
@@ -324,8 +331,8 @@ describe("View claim test", () => {
       }
     });
     test.each([
-      { type: "R", rows: 7 },
-      { type: undefined, rows: 7 },
+      { type: "R", rows: 8 },
+      { type: undefined, rows: 8 },
     ])("returns 200 without claim data", async ({ type, rows }) => {
       const options = {
         method: "GET",
@@ -376,7 +383,7 @@ describe("View claim test", () => {
 
       expect(res.statusCode).toBe(200);
 
-      expect($(".govuk-summary-list__row").length).toEqual(7);
+      expect($(".govuk-summary-list__row").length).toEqual(8);
     });
     test("returns 200 with endemics claim and pigs species", async () => {
       const options = {
@@ -393,7 +400,7 @@ describe("View claim test", () => {
 
       expect(res.statusCode).toBe(200);
       // Summary list rows expect
-      expect($(".govuk-summary-list__row").length).toEqual(24);
+      expect($(".govuk-summary-list__row").length).toEqual(25);
       // Claim summary details expects
       const content = [
         null,
@@ -415,6 +422,7 @@ describe("View claim test", () => {
         null,
         null,
         null,
+        { key: "Review test result", value: "Positive" },
         { key: "Herd vaccination status", value: "Vaccinated" },
         { key: "URN", value: "123456" },
         { key: "Samples tested", value: "6" },

@@ -19,14 +19,14 @@ describe("Application-list model test", () => {
     test.each([
       { n: 0, field: "Reference", direction: "DESC" },
       { n: 0, field: "Reference", direction: "ASC" },
-      { n: 1, field: "Organisation", direction: "DESC" },
-      { n: 1, field: "Organisation", direction: "ASC" },
-      { n: 2, field: "SBI", direction: "DESC" },
-      { n: 2, field: "SBI", direction: "ASC" },
-      { n: 3, field: "Apply date", direction: "DESC" },
-      { n: 3, field: "Apply date", direction: "ASC" },
-      { n: 4, field: "Status", direction: "DESC" },
-      { n: 4, field: "Status", direction: "ASC" },
+      { n: 2, field: "Organisation", direction: "DESC" },
+      { n: 2, field: "Organisation", direction: "ASC" },
+      { n: 3, field: "SBI", direction: "DESC" },
+      { n: 3, field: "SBI", direction: "ASC" },
+      { n: 4, field: "Apply date", direction: "DESC" },
+      { n: 4, field: "Apply date", direction: "ASC" },
+      { n: 5, field: "Status", direction: "DESC" },
+      { n: 5, field: "Status", direction: "ASC" },
     ])(
       "getApplicationTableHeader $field $direction",
       async ({ n, field, direction }) => {
@@ -45,14 +45,14 @@ describe("Application-list model test", () => {
     test.each([
       { n: 0, field: "Reference", direction: "DESC" },
       { n: 0, field: "Reference", direction: "ASC" },
-      { n: 1, field: "Organisation", direction: "DESC" },
-      { n: 1, field: "Organisation", direction: "ASC" },
-      { n: 2, field: "SBI", direction: "DESC" },
-      { n: 2, field: "SBI", direction: "ASC" },
-      { n: 3, field: "Apply date", direction: "DESC" },
-      { n: 3, field: "Apply date", direction: "ASC" },
-      { n: 4, field: "Status", direction: "DESC" },
-      { n: 4, field: "Status", direction: "ASC" },
+      { n: 2, field: "Organisation", direction: "DESC" },
+      { n: 2, field: "Organisation", direction: "ASC" },
+      { n: 3, field: "SBI", direction: "DESC" },
+      { n: 3, field: "SBI", direction: "ASC" },
+      { n: 4, field: "Apply date", direction: "DESC" },
+      { n: 4, field: "Apply date", direction: "ASC" },
+      { n: 5, field: "Status", direction: "DESC" },
+      { n: 5, field: "Status", direction: "ASC" },
     ])(
       "getApplicationTableHeader $field $direction",
       async ({ n, field, direction }) => {
@@ -87,6 +87,6 @@ describe("Application-list createModel", () => {
       },
     };
     const result = await createModel(request, 1);
-    expect(result.applications[0][5].html).toContain("View claims");
+    expect(result.applications[0][6].html).toContain("View claims");
   });
 });

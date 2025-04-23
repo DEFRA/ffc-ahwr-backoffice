@@ -1,4 +1,3 @@
+const FLAG_EMOJI = "🚩";
 
-const FLAG_EMOJI = '🚩';
-
-module.exports = { FLAG_EMOJI }
+module.exports = { FLAG_EMOJI };

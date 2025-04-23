@@ -66,9 +66,9 @@ module.exports = [
         const summaryDetails = [
           {
             field: "Agreement number",
-            newValue: `${request.params.reference}${isFlagged ? ` ${FLAG_EMOJI}` : ''}`,
+            newValue: `${request.params.reference}${isFlagged ? ` ${FLAG_EMOJI}` : ""}`,
             oldValue: null,
-            flagged: isFlagged
+            flagged: isFlagged,
           },
           {
             field: "Agreement date",
@@ -98,7 +98,7 @@ module.exports = [
           },
           {
             field: "Flagged",
-            newValue: application.flags.length > 0 ? 'Yes' : 'No',
+            newValue: application.flags.length > 0 ? "Yes" : "No",
             oldValue: null,
           },
         ];

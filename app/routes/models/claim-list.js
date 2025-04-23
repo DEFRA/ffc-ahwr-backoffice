@@ -72,7 +72,7 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
   ].filter(Boolean);
 };
 
-const getClaimTableRows = (claims, page, returnPage, showSBI = true) => 
+const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
   claims.map((claim) => {
     const row = [
       {
@@ -82,7 +82,9 @@ const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
         },
       },
       {
-        html: claim.flags.length ? `<span aria-hidden="true" role="img">Yes ${FLAG_EMOJI}</span>` : ''
+        html: claim.flags.length
+          ? `<span aria-hidden="true" role="img">Yes ${FLAG_EMOJI}</span>`
+          : "",
       },
       {
         text: formatTypeOfVisit(claim.type),
@@ -124,10 +126,11 @@ const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
     if (claim.flags.length) {
       return row.map((rowItem) => ({
         ...rowItem,
-        classes: 'flagged-item'
-      }))
+        classes: "flagged-item",
+      }));
     }
-  }
-  );
+
+    return row;
+  });
 
 module.exports = { getClaimTableHeader, getClaimTableRows };

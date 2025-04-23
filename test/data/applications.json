@@ -4,7 +4,9 @@
     {
       "id": "555afd4c-b095-4ce4-b492-800466b53393",
       "reference": "AHWR-555A-FD4C",
-      "status": { "status": "AGREED" },
+      "status": {
+        "status": "AGREED"
+      },
       "data": {
         "declaration": true,
         "whichReview": "sheep",
@@ -23,12 +25,27 @@
       "createdAt": "2022-06-06T14:27:51.251Z",
       "updatedAt": "2022-06-06T14:27:51.775Z",
       "createdBy": "admin",
-      "type": "EE"
+      "type": "EE",
+      "flags": [
+        {
+          "id": "333c18ef-fb26-4beb-ac87-c483fc886fea",
+          "applicationReference": "AHWR-555A-FD4C",
+          "sbi": "123456789",
+          "note": "Flag this please",
+          "createdBy": "Tom",
+          "createdAt": "2025-04-09T11: 59: 54.075Z",
+          "appliesToMh": false,
+          "deletedAt": null,
+          "deletedBy": null
+        }
+      ]
     },
     {
       "id": "555afd4c-b095-4ce4-b492-800466b54493",
       "reference": "AHWR-555A-FD4D",
-      "status": { "status": "REJECTED" },
+      "status": {
+        "status": "REJECTED"
+      },
       "data": {
         "declaration": true,
         "whichReview": "sheep",
@@ -46,12 +63,15 @@
       "claimed": false,
       "createdAt": "2022-06-06T14:27:51.251Z",
       "updatedAt": "2022-06-06T14:27:51.775Z",
-      "createdBy": "admin"
+      "createdBy": "admin",
+      "flags": []
     },
     {
       "id": "555afd4c-b095-4ce4-b492-800466b55593",
       "reference": "AHWR-555A-FD5D",
-      "status": { "status": "DATA INPUTTED" },
+      "status": {
+        "status": "DATA INPUTTED"
+      },
       "data": {
         "declaration": true,
         "whichReview": "sheep",
@@ -69,12 +89,15 @@
       "claimed": false,
       "createdAt": "2022-06-06T14:27:51.251Z",
       "updatedAt": "2022-06-06T14:27:51.775Z",
-      "createdBy": "admin"
+      "createdBy": "admin",
+      "flags": []
     },
     {
       "id": "555afd4c-b095-4ce4-b492-800466b66693",
       "reference": "AHWR-555A-FD6E",
-      "status": { "status": "WITHDRAWN" },
+      "status": {
+        "status": "WITHDRAWN"
+      },
       "data": {
         "declaration": true,
         "whichReview": "sheep",
@@ -92,12 +115,15 @@
       "claimed": false,
       "createdAt": "2022-06-06T14:27:51.251Z",
       "updatedAt": "2022-06-06T14:27:51.775Z",
-      "createdBy": "admin"
+      "createdBy": "admin",
+      "flags": []
     },
     {
       "id": "555afd4c-b095-4ce4-b492-800466b66693",
       "reference": "AHWR-666A-FD6E",
-      "status": { "status": "ACCEPTED" },
+      "status": {
+        "status": "ACCEPTED"
+      },
       "data": {
         "declaration": true,
         "whichReview": "sheep",
@@ -115,12 +141,15 @@
       "claimed": false,
       "createdAt": "2022-06-06T14:27:51.251Z",
       "updatedAt": "2022-06-06T14:27:51.775Z",
-      "createdBy": "admin"
+      "createdBy": "admin",
+      "flags": []
     },
     {
       "id": "555afd4c-b095-4ce4-b492-800466b78693",
       "reference": "AHWR-666A-FD7E",
-      "status": { "status": "CHECK" },
+      "status": {
+        "status": "CHECK"
+      },
       "data": {
         "declaration": true,
         "whichReview": "sheep",
@@ -138,12 +167,15 @@
       "claimed": false,
       "createdAt": "2022-06-06T14:27:51.251Z",
       "updatedAt": "2022-06-06T14:27:51.775Z",
-      "createdBy": "admin"
+      "createdBy": "admin",
+      "flags": []
     },
     {
       "id": "555afd4c-b095-4ce4-b492-800466b88893",
       "reference": "AHWR-666A-AB6E",
-      "status": { "status": "CLAIMED" },
+      "status": {
+        "status": "CLAIMED"
+      },
       "data": {
         "declaration": true,
         "whichReview": "sheep",
@@ -161,12 +193,15 @@
       "claimed": false,
       "createdAt": "2022-06-06T14:27:51.251Z",
       "updatedAt": "2022-06-06T14:27:51.775Z",
-      "createdBy": "admin"
+      "createdBy": "admin",
+      "flags": []
     },
     {
       "id": "555afd4c-b095-4ce4-b492-800466b90993",
       "reference": "AHWR-666A-RG6E",
-      "status": { "status": "PAID" },
+      "status": {
+        "status": "PAID"
+      },
       "data": {
         "declaration": true,
         "whichReview": "sheep",
@@ -184,12 +219,15 @@
       "claimed": false,
       "createdAt": "2022-06-06T14:27:51.251Z",
       "updatedAt": "2022-06-06T14:27:51.775Z",
-      "createdBy": "admin"
+      "createdBy": "admin",
+      "flags": []
     },
     {
       "id": "555afd4c-b095-4ce4-b492-800466b10993",
       "reference": "AHWR-666A-RG7E",
-      "status": { "status": "ACCEPTED" },
+      "status": {
+        "status": "ACCEPTED"
+      },
       "data": {
         "declaration": true,
         "whichReview": "sheep",
@@ -207,7 +245,8 @@
       "claimed": false,
       "createdAt": "2022-06-06T14:27:51.251Z",
       "updatedAt": "2022-06-06T14:27:51.775Z",
-      "createdBy": "admin"
+      "createdBy": "admin",
+      "flags": []
     }
   ],
   "applicationStatus": [

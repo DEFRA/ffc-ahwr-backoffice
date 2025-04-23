@@ -39,7 +39,7 @@ const getApplicationTableHeader = (sortField) => {
         },
       },
       {
-        html: `<span aria-hidden="true" role="img">Flagged ${FLAG_EMOJI}</span>`
+        html: `<span aria-hidden="true" role="img">Flagged ${FLAG_EMOJI}</span>`,
       },
       {
         text: "Organisation",
@@ -121,7 +121,10 @@ async function createModel(request, page) {
           attributes: { "data-sort-value": `${app.reference}` },
         },
         {
-          html: app.flags.length > 0 ? `<span aria-hidden="true" role="img">Yes ${FLAG_EMOJI}</span>` : ""
+          html:
+            app.flags.length > 0
+              ? `<span aria-hidden="true" role="img">Yes ${FLAG_EMOJI}</span>`
+              : "",
         },
         {
           text: app.data?.organisation?.name,
@@ -160,8 +163,8 @@ async function createModel(request, page) {
       if (app.flags.length) {
         return row.map((rowItem) => ({
           ...rowItem,
-          classes: 'flagged-item'
-        }))
+          classes: "flagged-item",
+        }));
       }
 
       return row;
