@@ -201,7 +201,7 @@ describe("Flags tests", () => {
         {
           href: "#",
           key: "appliesToMh",
-          text: "Select if the flag is because the user declined Multiple Herds T&C's.",
+          text: "Select if the flag is because the user declined multiple herds T&C's.",
         },
       ]);
     });

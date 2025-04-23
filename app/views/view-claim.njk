@@ -14,7 +14,9 @@
   <hr class="govuk-!-margin-0">
   <div class="govuk-grid-row govuk-!-padding-top-3 govuk-!-padding-bottom-4">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">Claim number: {{ reference }}</h1>
+      <h1 class="govuk-heading-l{% if isFlagged %} flagged-item{% endif %}">
+        Claim number: {{ reference }}{% if isFlagged %} 🚩{% endif %}
+      </h1>
       <h1 class="govuk-caption-l">Claim by <a class="govuk-link" href="/agreement/{{ applicationReference }}/claims?page={{ page }}&returnPage=view-claim&reference={{ reference }}">{{ title }}</a></h1>
     </div>
     <div class="govuk-grid-column-one-third govuk-!-text-align-right">

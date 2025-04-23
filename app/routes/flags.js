@@ -108,7 +108,7 @@ const createFlagHandler = {
               return {
                 ...error,
                 message:
-                  "Select if the flag is because the user declined Multiple Herds T&C's.",
+                  "Select if the flag is because the user declined multiple herds T&C's.",
               };
             }
 

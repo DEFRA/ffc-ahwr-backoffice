@@ -34,7 +34,7 @@ const createFlagsTableData = async (logger, flagIdToDelete, createFlag) => {
       text: "Created at",
     },
     {
-      text: "Flagged due to Multiple Herds",
+      text: "Flagged due to multiple herds",
     },
     {
       text: "",
@@ -73,7 +73,7 @@ const createFlagsTableData = async (logger, flagIdToDelete, createFlag) => {
   const flagIsForMh = flagIdToDelete
     ? flags.find((flag) => flag.id === flagIdToDelete).appliesToMh
     : undefined;
-  const appliesToMh = flagIsForMh ? "Multiple Herds T&C's" : "non-MH";
+  const appliesToMh = flagIsForMh ? "multiple herds T&C's" : "non-MH";
 
   return {
     model: {

@@ -21,6 +21,7 @@ const {
   getClaimTableHeader,
   getClaimTableRows,
 } = require("./models/claim-list");
+const { FLAG_EMOJI } = require("./utils/ui-constants");
 
 const pageUrl = "/agreement/{reference}/claims";
 const getBackLink = (page, claimReference, returnPage) => {
@@ -61,11 +62,13 @@ module.exports = [
         }
 
         const { organisation } = application.data;
+        const isFlagged = application.flags.length > 0;
         const summaryDetails = [
           {
             field: "Agreement number",
-            newValue: request.params.reference,
+            newValue: `${request.params.reference}${isFlagged ? ` ${FLAG_EMOJI}` : ''}`,
             oldValue: null,
+            flagged: isFlagged
           },
           {
             field: "Agreement date",
@@ -92,6 +95,11 @@ module.exports = [
             field: "Business email",
             newValue: organisation.orgEmail,
             oldValue: contactHistoryDetails.orgEmail,
+          },
+          {
+            field: "Flagged",
+            newValue: application.flags.length > 0 ? 'Yes' : 'No',
+            oldValue: null,
           },
         ];
 

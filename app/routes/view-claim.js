@@ -123,6 +123,10 @@ module.exports = {
           key: { text: "Business email" },
           value: { text: organisation.orgEmail },
         },
+        {
+          key: { text: "Flagged" },
+          value: { text: application.flags.length > 0 ? "Yes" : "No" },
+        },
       ];
 
       const errors = request.query.errors
@@ -468,10 +472,13 @@ module.exports = {
 
       const errorMessages = getErrorMessagesByKey(errors);
 
+      const isFlagged = application.flags.length;
+
       return h.view("view-claim", {
         page,
         backLink: backLink(applicationReference, returnPage, page),
         returnPage,
+        isFlagged,
         reference,
         applicationReference,
         claimOrAgreement: "claim",

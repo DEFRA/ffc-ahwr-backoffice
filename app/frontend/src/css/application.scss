@@ -3,6 +3,7 @@ $govuk-assets-path: "~govuk-frontend/dist/govuk/assets/";
 @import "./app-task-list";
 @import "./guidance-layout";
 @import "./update-form";
+@import "./flagged-item";
 
 .govuk-width-container,
 .moj-header__container,

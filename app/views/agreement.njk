@@ -19,8 +19,8 @@
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         {% for item in applicationSummaryDetails %}
           <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">{{ item.field }}</dt>
-            <dd class="govuk-summary-list__value">
+            <dt class="govuk-summary-list__key {% if item.flagged %} flagged-item{% endif %}">{{ item.field }}</dt>
+            <dd class="govuk-summary-list__value{% if item.flagged %} flagged-item{% endif %}">
               <p>{{ item.newValue }}</p>
               {% if (item.oldValue) and (item.oldValue != "NA") %}
                 <details class="govuk-details">

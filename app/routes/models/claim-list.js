@@ -6,6 +6,7 @@ const {
   formatedDateToUk,
   upperFirstLetter,
 } = require("../../lib/display-helper");
+const { FLAG_EMOJI } = require("../utils/ui-constants");
 
 const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
   const direction =
@@ -19,6 +20,9 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
           sortField && sortField.field === "claim number" ? direction : "none",
         "data-url": `${dataURLPrefix}claims/sort/claim number`,
       },
+    },
+    {
+      html: `<span aria-hidden="true" role="img">Flagged ${FLAG_EMOJI}</span>`,
     },
     {
       text: "Type of visit",
@@ -68,14 +72,17 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
   ].filter(Boolean);
 };
 
-const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
-  claims.map((claim) =>
-    [
+const getClaimTableRows = (claims, page, returnPage, showSBI = true) => 
+  claims.map((claim) => {
+    const row = [
       {
         text: claim.reference,
         attributes: {
           "data-sort-value": claim.reference,
         },
+      },
+      {
+        html: claim.flags.length ? `<span aria-hidden="true" role="img">Yes ${FLAG_EMOJI}</span>` : ''
       },
       {
         text: formatTypeOfVisit(claim.type),
@@ -112,7 +119,15 @@ const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
       {
         html: `<a href="${serviceUri}/view-claim/${claim.reference}?page=${page}&returnPage=${returnPage}">View claim</a>`,
       },
-    ].filter(Boolean),
+    ];
+
+    if (claim.flags.length) {
+      return row.map((rowItem) => ({
+        ...rowItem,
+        classes: 'flagged-item'
+      }))
+    }
+  }
   );
 
 module.exports = { getClaimTableHeader, getClaimTableRows };
