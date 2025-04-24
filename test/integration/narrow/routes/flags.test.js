@@ -318,7 +318,7 @@ describe("Flags tests", () => {
         {
           href: "#agreement-reference",
           key: "appRef",
-          text: 'Flag not created - agreement flag with the same "Flag applies to MH T&C\'s" value already exists.',
+          text: 'Flag not created - agreement flag with the same "Flag applies to multiple herds T&C\'s" value already exists.',
         },
       ]);
     });
