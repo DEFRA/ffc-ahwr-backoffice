@@ -63,10 +63,11 @@ module.exports = [
 
         const { organisation } = application.data;
         const isFlagged = application.flags.length > 0;
+        const flaggedText = isFlagged ? ` ${FLAG_EMOJI}` : "";
         const summaryDetails = [
           {
             field: "Agreement number",
-            newValue: `${request.params.reference}${isFlagged ? ` ${FLAG_EMOJI}` : ""}`,
+            newValue: `${request.params.reference}${flaggedText}`,
             oldValue: null,
             flagged: isFlagged,
           },
