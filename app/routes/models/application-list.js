@@ -105,11 +105,11 @@ async function createModel(request, page) {
     request.logger,
   );
 
-  const { isSuperAdmin } = mapAuth(request);
-  const pageHeader = isSuperAdmin
+  const { isAdministrator } = mapAuth(request);
+  const pageHeader = isAdministrator
     ? "Claims, Agreements and Flags"
     : "Claims and Agreements";
-  const showFlagsTab = isSuperAdmin;
+  const showFlagsTab = isAdministrator;
 
   if (apps.total > 0) {
     let statusClass;
