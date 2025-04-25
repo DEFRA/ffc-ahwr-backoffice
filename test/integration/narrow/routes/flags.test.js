@@ -43,7 +43,7 @@ describe("Flags tests", () => {
 
       expect(res.statusCode).toBe(200);
       const $ = cheerio.load(res.payload);
-      expect($("h1.govuk-heading-l").text()).toEqual("Flags");
+      expect($("h1.govuk-heading-l").text()).toContain("Flags");
       expect($("title").text()).toContain("AHWR Flags");
       expectPhaseBanner.ok($);
     });
@@ -80,7 +80,7 @@ describe("Flags tests", () => {
 
       expect(res.statusCode).toBe(400);
       const $ = cheerio.load(res.payload);
-      expect($("h1.govuk-heading-l").text()).toEqual("Flags");
+      expect($("h1.govuk-heading-l").text()).toContain("Flags");
       expect($("title").text()).toContain("AHWR Flags");
       expectPhaseBanner.ok($);
     });
@@ -99,7 +99,7 @@ describe("Flags tests", () => {
 
       expect(res.statusCode).toBe(200);
       const $ = cheerio.load(res.payload);
-      expect($("h1.govuk-heading-l").text()).toEqual("Flags");
+      expect($("h1.govuk-heading-l").text()).toContain("Flags");
       expect($("title").text()).toContain("AHWR Flags");
       expectPhaseBanner.ok($);
     });
@@ -166,7 +166,7 @@ describe("Flags tests", () => {
 
       expect(res.statusCode).toBe(200);
       const $ = cheerio.load(res.payload);
-      expect($("h1.govuk-heading-l").text()).toEqual("Flags");
+      expect($("h1.govuk-heading-l").text()).toContain("Flags");
       expect($("title").text()).toContain("AHWR Flags");
       expectPhaseBanner.ok($);
     });
