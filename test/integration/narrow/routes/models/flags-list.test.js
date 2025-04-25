@@ -30,7 +30,7 @@ describe("createFlagsTableData", () => {
           { text: "Note" },
           { text: "Created by" },
           { text: "Created at" },
-          { text: "Flagged due to Multiple Herds" },
+          { text: "Flagged due to multiple herds" },
           { text: "" },
         ],
         rows: [
@@ -77,7 +77,7 @@ describe("createFlagsTableData", () => {
           { text: "Note" },
           { text: "Created by" },
           { text: "Created at" },
-          { text: "Flagged due to Multiple Herds" },
+          { text: "Flagged due to multiple herds" },
           { text: "" },
         ],
         rows: [
@@ -124,7 +124,7 @@ describe("createFlagsTableData", () => {
           { text: "Note" },
           { text: "Created by" },
           { text: "Created at" },
-          { text: "Flagged due to Multiple Herds" },
+          { text: "Flagged due to multiple herds" },
           { text: "" },
         ],
         rows: [
@@ -155,13 +155,13 @@ describe("createFlagsTableData", () => {
     });
   });
 
-  it("creates the table data from the getAllFlags API call data when a flagId to delete is passed and it is a flag which applies to Multiple Herds", async () => {
+  it("creates the table data from the getAllFlags API call data when a flagId to delete is passed and it is a flag which applies to multiple herds", async () => {
     const result = await createFlagsTableData(mockLogger, mockFlags[1].id);
 
     expect(result).toEqual({
       model: {
         applicationRefOfFlagToDelete: mockFlags[1].applicationReference,
-        appliesToMh: "Multiple Herds T&C's",
+        appliesToMh: "multiple herds T&C's",
         createFlag: undefined,
         createFlagUrl: `${serviceUri}/flags?createFlag=true`,
         flagIdToDelete: mockFlags[1].id,
@@ -171,7 +171,7 @@ describe("createFlagsTableData", () => {
           { text: "Note" },
           { text: "Created by" },
           { text: "Created at" },
-          { text: "Flagged due to Multiple Herds" },
+          { text: "Flagged due to multiple herds" },
           { text: "" },
         ],
         rows: [

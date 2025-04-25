@@ -6,6 +6,7 @@ const keys = require("../../session/keys");
 const { serviceUri, endemics } = require("../../config");
 const { upperFirstLetter } = require("../../lib/display-helper");
 const mapAuth = require("../../auth/map-auth");
+const { FLAG_EMOJI } = require("../utils/ui-constants");
 
 const viewModel = (request, page) => {
   return (async () => {
@@ -36,6 +37,9 @@ const getApplicationTableHeader = (sortField) => {
             sortField && sortField.field === "Reference" ? direction : "none",
           "data-url": "/agreements/sort/Reference",
         },
+      },
+      {
+        html: `<span aria-hidden="true" role="img">Flagged ${FLAG_EMOJI}</span>`,
       },
       {
         text: "Organisation",
@@ -109,54 +113,61 @@ async function createModel(request, page) {
 
   if (apps.total > 0) {
     let statusClass;
-    const applications = apps.applications.map((n) => {
-      statusClass = getStyleClassByStatus(n.status.status);
-      const output = [
+    const applications = apps.applications.map((app) => {
+      statusClass = getStyleClassByStatus(app.status.status);
+      const row = [
         {
-          text: n.reference,
+          text: app.reference,
+          attributes: { "data-sort-value": `${app.reference}` },
         },
         {
-          text: n.data?.organisation?.name,
+          html:
+            app.flags.length > 0
+              ? `<span aria-hidden="true" role="img">Yes ${FLAG_EMOJI}</span>`
+              : "",
         },
         {
-          text: n.data?.organisation?.sbi,
+          text: app.data?.organisation?.name,
+          attributes: {
+            "data-sort-value": `${app.data?.organisation?.name}`,
+          },
+        },
+        {
+          text: app.data?.organisation?.sbi,
           format: "numeric",
           attributes: {
-            "data-sort-value": n.data?.organisation?.sbi,
+            "data-sort-value": app.data?.organisation?.sbi,
           },
         },
         {
-          text: new Date(n.createdAt).toLocaleDateString("en-GB"),
+          text: new Date(app.createdAt).toLocaleDateString("en-GB"),
           format: "date",
           attributes: {
-            "data-sort-value": n.createdAt,
+            "data-sort-value": app.createdAt,
           },
         },
         {
-          html: `<span class="app-long-tag"><span class="govuk-tag ${statusClass}">${upperFirstLetter(n.status.status.toLowerCase())}</span></span>`,
+          html: `<span class="app-long-tag"><span class="govuk-tag ${statusClass}">${upperFirstLetter(app.status.status.toLowerCase())}</span></span>`,
           attributes: {
-            "data-sort-value": `${n.status.status}`,
+            "data-sort-value": `${app.status.status}`,
           },
         },
         {
-          html: `<a href="${serviceUri}/view-agreements/${n.reference}?page=${page}">View details</a>`,
+          html:
+            app.type === "EE"
+              ? `<a href="${serviceUri}/agreement/${app.reference}/claims?page=${page}">View claims</a>`
+              : `<a href="${serviceUri}/view-agreement/${app.reference}?page=${page}">View details</a>`,
         },
       ];
 
-      if (endemics.enabled) {
-        output[0].attributes = { "data-sort-value": `${n.reference}` };
-        output[1].attributes = {
-          "data-sort-value": `${n.data?.organisation?.name}`,
-        };
-        output[5] = {
-          html:
-            n.type === "EE"
-              ? `<a href="${serviceUri}/agreement/${n.reference}/claims?page=${page}">View claims</a>`
-              : `<a href="${serviceUri}/view-agreement/${n.reference}?page=${page}">View details</a>`,
-        };
+      if (app.flags.length) {
+        return row.map((rowItem) => ({
+          ...rowItem,
+          classes: "flagged-item",
+        }));
       }
 
-      return output;
+      return row;
     });
     const pagingData = getPagingData(apps.total ?? 0, limit, request.query);
     const groupByStatus = apps.applicationStatus.map((s) => {

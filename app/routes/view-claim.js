@@ -97,6 +97,9 @@ module.exports = {
 
       request.logger.setBindings({ sbi: organisation.sbi });
 
+      const isFlagged = application.flags.length > 0;
+      const flaggedText = isFlagged ? "Yes" : "No";
+
       const applicationSummaryDetails = [
         {
           key: { text: "Agreement number" },
@@ -122,6 +125,10 @@ module.exports = {
         {
           key: { text: "Business email" },
           value: { text: organisation.orgEmail },
+        },
+        {
+          key: { text: "Flagged" },
+          value: { text: flaggedText },
         },
       ];
 
@@ -207,36 +214,45 @@ module.exports = {
             })
           : [];
 
-      const getAction = (query, visuallyHiddenText, id) => ({
-        items: [
-          {
-            href: `/view-claim/${reference}?${query}=true&page=${page}&returnPage=${returnPage}#${id}`,
-            text: "Change",
-            visuallyHiddenText,
-          },
-        ],
-      });
-      const statusActions = updateStatusAction
-        ? getAction("updateStatus", "status", "update-status")
-        : null;
-      const dateOfVisitActions = updateDateOfVisitAction
-        ? getAction(
-            "updateDateOfVisit",
-            "date of review",
-            "update-date-of-visit",
-          )
-        : null;
-      const vetsNameActions = updateVetsNameAction
-        ? getAction("updateVetsName", "vet's name", "update-vets-name")
-        : null;
-      const vetRCVSNumberActions = updateVetRCVSNumberAction
-        ? getAction(
-            "updateVetRCVSNumber",
-            "RCVS number",
-            "update-vet-rcvs-number",
-          )
-        : null;
+      const getAction = (createItems, query, visuallyHiddenText, id) => {
+        if (!createItems) {
+          return null;
+        }
 
+        return {
+          items: [
+            {
+              href: `/view-claim/${reference}?${query}=true&page=${page}&returnPage=${returnPage}#${id}`,
+              text: "Change",
+              visuallyHiddenText,
+            },
+          ],
+        };
+      };
+      const statusActions = getAction(
+        updateStatusAction,
+        "updateStatus",
+        "status",
+        "update-status",
+      );
+      const dateOfVisitActions = getAction(
+        updateDateOfVisitAction,
+        "updateDateOfVisit",
+        "date of review",
+        "update-date-of-visit",
+      );
+      const vetsNameActions = getAction(
+        updateVetsNameAction,
+        "updateVetsName",
+        "vet's name",
+        "update-vets-name",
+      );
+      const vetRCVSNumberActions = getAction(
+        updateVetRCVSNumberAction,
+        "updateVetRCVSNumber",
+        "RCVS number",
+        "update-vet-rcvs-number",
+      );
       const statusOptions = getStatusUpdateOptions(statusId);
 
       const status = {
@@ -472,6 +488,7 @@ module.exports = {
         page,
         backLink: backLink(applicationReference, returnPage, page),
         returnPage,
+        isFlagged,
         reference,
         applicationReference,
         claimOrAgreement: "claim",

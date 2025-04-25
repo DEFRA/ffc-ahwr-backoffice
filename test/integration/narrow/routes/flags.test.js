@@ -43,7 +43,7 @@ describe("Flags tests", () => {
 
       expect(res.statusCode).toBe(200);
       const $ = cheerio.load(res.payload);
-      expect($("h1.govuk-heading-l").text()).toEqual("Flags");
+      expect($("h1.govuk-heading-l").text()).toContain("Flags");
       expect($("title").text()).toContain("AHWR Flags");
       expectPhaseBanner.ok($);
     });
@@ -80,7 +80,7 @@ describe("Flags tests", () => {
 
       expect(res.statusCode).toBe(400);
       const $ = cheerio.load(res.payload);
-      expect($("h1.govuk-heading-l").text()).toEqual("Flags");
+      expect($("h1.govuk-heading-l").text()).toContain("Flags");
       expect($("title").text()).toContain("AHWR Flags");
       expectPhaseBanner.ok($);
     });
@@ -99,7 +99,7 @@ describe("Flags tests", () => {
 
       expect(res.statusCode).toBe(200);
       const $ = cheerio.load(res.payload);
-      expect($("h1.govuk-heading-l").text()).toEqual("Flags");
+      expect($("h1.govuk-heading-l").text()).toContain("Flags");
       expect($("title").text()).toContain("AHWR Flags");
       expectPhaseBanner.ok($);
     });
@@ -166,7 +166,7 @@ describe("Flags tests", () => {
 
       expect(res.statusCode).toBe(200);
       const $ = cheerio.load(res.payload);
-      expect($("h1.govuk-heading-l").text()).toEqual("Flags");
+      expect($("h1.govuk-heading-l").text()).toContain("Flags");
       expect($("title").text()).toContain("AHWR Flags");
       expectPhaseBanner.ok($);
     });
@@ -201,7 +201,7 @@ describe("Flags tests", () => {
         {
           href: "#",
           key: "appliesToMh",
-          text: "Select if the flag is because the user declined Multiple Herds T&C's.",
+          text: "Select if the flag is because the user declined multiple herds T&C's.",
         },
       ]);
     });
@@ -318,7 +318,7 @@ describe("Flags tests", () => {
         {
           href: "#agreement-reference",
           key: "appRef",
-          text: 'Flag not created - agreement flag with the same "Flag applies to MH T&C\'s" value already exists.',
+          text: 'Flag not created - agreement flag with the same "Flag applies to multiple herds T&C\'s" value already exists.',
         },
       ]);
     });

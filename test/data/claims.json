@@ -38,7 +38,8 @@
         },
         "confirmCheckDetails": "yes"
       }
-    }
+    },
+    "flags": []
   },
   {
     "id": "605df3c4-518c-48e0-adcf-4b0ec02aa53b",
@@ -79,6 +80,7 @@
         },
         "confirmCheckDetails": "yes"
       }
-    }
+    },
+    "flags": []
   }
 ]

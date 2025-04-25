@@ -108,7 +108,7 @@ const createFlagHandler = {
               return {
                 ...error,
                 message:
-                  "Select if the flag is because the user declined Multiple Herds T&C's.",
+                  "Select if the flag is because the user declined multiple herds T&C's.",
               };
             }
 
@@ -175,7 +175,7 @@ const createFlagHandler = {
         if (err.data.res.statusCode === StatusCodes.NO_CONTENT) {
           formattedErrors = [
             {
-              message: `Flag not created - agreement flag with the same "Flag applies to MH T&C's" value already exists.`,
+              message: `Flag not created - agreement flag with the same "Flag applies to multiple herds T&C's" value already exists.`,
               path: [],
               type: "string.empty",
               context: {
