@@ -63,8 +63,9 @@ describe("Flags API", () => {
 
       const username = "Tom the deleter";
       const flagId = "abc123";
+      const deletedNote = "Remove flag";
 
-      await deleteFlag(flagId, username, mockLogger);
+      await deleteFlag({ flagId, deletedNote }, username, mockLogger);
 
       expect(wreck.patch).toHaveBeenCalledWith(
         `${applicationApiUri}/application/flag/${flagId}/delete`,
@@ -72,6 +73,7 @@ describe("Flags API", () => {
           json: true,
           payload: {
             user: username,
+            deletedNote,
           },
         },
       );

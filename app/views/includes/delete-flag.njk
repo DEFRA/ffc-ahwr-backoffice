@@ -1,8 +1,30 @@
-<div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="recommend-to-reject">
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+<div class="govuk-panel govuk-grid-column-two-thirds govuk-panel--confirmation govuk-!-text-align-left" id="recommend-to-reject">
     <form method="POST" action="/flags/{{model.flagIdToDelete}}/delete" class="ahwr-update-form">
       <a href="/flags" class="govuk-link govuk-body">Back</a>
       <h1 class="govuk-heading-xl govuk-!-margin-top-2">Delete flag</h1>
+      {% if errors.length %}
+        {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: errors
+        }) }}
+      {% endif %}
       <p class="govuk-body govuk-!-margin-bottom-7">Are you sure you want to delete the {{ model.appliesToMh }} flag from agreement {{ model.applicationRefOfFlagToDelete }}?</p>
+
+      {{ govukTextarea({
+        name: "deletedNote",
+        id: "deletedNote",
+        label: {
+          text: "Reason for deleting flag",
+          classes: "govuk-label--m",
+          isPageHeading: false
+        },
+        hint: {
+          text: "Provide some details as to why the agreement is no longer flagged"
+        }
+      }) }}
   
     {{ govukButton({
       text: "Delete flag",

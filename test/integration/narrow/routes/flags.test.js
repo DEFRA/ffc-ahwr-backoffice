@@ -4,6 +4,7 @@ const getCrumbs = require("../../../utils/get-crumbs");
 const { administrator } = require("../../../../app/auth/permissions");
 const flags = require("../../../../app/api/flags");
 const mockFlags = require("../../../data/flags.json");
+const { StatusCodes } = require("http-status-codes");
 
 jest.mock("../../../../app/api/flags");
 
@@ -29,7 +30,7 @@ describe("Flags tests", () => {
         url: "/flags",
       };
       const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
 
     test("returns 200", async () => {
@@ -41,7 +42,7 @@ describe("Flags tests", () => {
       };
       const res = await global.__SERVER__.inject(options);
 
-      expect(res.statusCode).toBe(200);
+      expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($("h1.govuk-heading-l").text()).toContain("Flags");
       expect($("title").text()).toContain("AHWR Flags");
@@ -61,7 +62,7 @@ describe("Flags tests", () => {
         url: `/flags/${flagId}/delete`,
       };
       const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
 
     test("returns a 400 if the delete API call fails and redirects user back to flags page", async () => {
@@ -74,18 +75,18 @@ describe("Flags tests", () => {
         url: `/flags/${flagId}/delete`,
         auth,
         headers: { cookie: `crumb=${crumb}` },
-        payload: { crumb },
+        payload: { crumb, deletedNote: "Flag deleted" },
       };
       const res = await global.__SERVER__.inject(options);
 
-      expect(res.statusCode).toBe(400);
+      expect(res.statusCode).toBe(StatusCodes.BAD_REQUEST);
       const $ = cheerio.load(res.payload);
       expect($("h1.govuk-heading-l").text()).toContain("Flags");
       expect($("title").text()).toContain("AHWR Flags");
       expectPhaseBanner.ok($);
     });
 
-    test("returns the user to the flags page when the flag has happily been deleted", async () => {
+    test("redirects the user to the flags page when the flag has happily been deleted", async () => {
       flags.deleteFlag.mockResolvedValueOnce(null);
       const flagId = "abc123";
       const options = {
@@ -93,15 +94,12 @@ describe("Flags tests", () => {
         url: `/flags/${flagId}/delete`,
         auth,
         headers: { cookie: `crumb=${crumb}` },
-        payload: { crumb },
+        payload: { crumb, deletedNote: "Flag deleted" },
       };
       const res = await global.__SERVER__.inject(options);
 
-      expect(res.statusCode).toBe(200);
-      const $ = cheerio.load(res.payload);
-      expect($("h1.govuk-heading-l").text()).toContain("Flags");
-      expect($("title").text()).toContain("AHWR Flags");
-      expectPhaseBanner.ok($);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+      expect(res.headers.location).toBe("/flags");
     });
   });
 
@@ -116,7 +114,7 @@ describe("Flags tests", () => {
         url: "/flags/create",
       };
       const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
 
     test("returns 400 when the create flag API call fails", async () => {
@@ -145,7 +143,7 @@ describe("Flags tests", () => {
         },
       };
       const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(400);
+      expect(res.statusCode).toBe(StatusCodes.BAD_REQUEST);
     });
 
     test("returns the user to the flags page when the flag has been created", async () => {
@@ -164,11 +162,8 @@ describe("Flags tests", () => {
       };
       const res = await global.__SERVER__.inject(options);
 
-      expect(res.statusCode).toBe(200);
-      const $ = cheerio.load(res.payload);
-      expect($("h1.govuk-heading-l").text()).toContain("Flags");
-      expect($("title").text()).toContain("AHWR Flags");
-      expectPhaseBanner.ok($);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+      expect(res.headers.location).toBe("/flags");
     });
 
     test("renders errors when the user has not provided the proper appliesToMh value", async () => {
@@ -186,7 +181,7 @@ describe("Flags tests", () => {
       };
       const res = await global.__SERVER__.inject(options);
 
-      expect(res.statusCode).toBe(302);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
       const redirectedLocation = res.headers.location;
       expect(redirectedLocation).toContain("flags?createFlag=true&errors=");
@@ -221,7 +216,7 @@ describe("Flags tests", () => {
       };
       const res = await global.__SERVER__.inject(options);
 
-      expect(res.statusCode).toBe(302);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
       const redirectedLocation = res.headers.location;
       expect(redirectedLocation).toContain("flags?createFlag=true&errors=");
@@ -256,7 +251,7 @@ describe("Flags tests", () => {
       };
       const res = await global.__SERVER__.inject(options);
 
-      expect(res.statusCode).toBe(302);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
       const redirectedLocation = res.headers.location;
       expect(redirectedLocation).toContain("flags?createFlag=true&errors=");
@@ -303,7 +298,7 @@ describe("Flags tests", () => {
       };
       const res = await global.__SERVER__.inject(options);
 
-      expect(res.statusCode).toBe(302);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
       const redirectedLocation = res.headers.location;
       expect(redirectedLocation).toContain("flags?createFlag=true&errors=");
@@ -350,7 +345,7 @@ describe("Flags tests", () => {
       };
       const res = await global.__SERVER__.inject(options);
 
-      expect(res.statusCode).toBe(302);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
       const redirectedLocation = res.headers.location;
       expect(redirectedLocation).toContain("flags?createFlag=true&errors=");
