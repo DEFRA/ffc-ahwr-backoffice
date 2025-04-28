@@ -101,6 +101,77 @@ describe("Flags tests", () => {
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       expect(res.headers.location).toBe("/flags");
     });
+
+    test("renders errors when the user has not provided a deleted note value", async () => {
+      const flagId = "abc123";
+      const options = {
+        method: "POST",
+        url: `/flags/${flagId}/delete`,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          crumb,
+        },
+      };
+      const res = await global.__SERVER__.inject(options);
+
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+
+      const redirectedLocation = res.headers.location;
+      expect(redirectedLocation).toContain(
+        `flags?deleteFlag=${flagId}&errors=`,
+      );
+
+      const base64EncodedErrors = redirectedLocation
+        .split("errors=")[1]
+        .replace("%3D%3D", "");
+      const parsedErrors = JSON.parse(
+        Buffer.from(base64EncodedErrors, "base64").toString("utf8"),
+      );
+      expect(parsedErrors).toEqual([
+        {
+          href: "#deletedNote",
+          key: "deletedNote",
+          text: "Enter a note to explain the reason for removing this flag",
+        },
+      ]);
+    });
+
+    test("renders errors when the user has not provided a long enough deleted note value", async () => {
+      const flagId = "abc123";
+      const options = {
+        method: "POST",
+        url: `/flags/${flagId}/delete`,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          crumb,
+          deletedNote: "a",
+        },
+      };
+      const res = await global.__SERVER__.inject(options);
+
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+
+      const redirectedLocation = res.headers.location;
+      expect(redirectedLocation).toContain(
+        `flags?deleteFlag=${flagId}&errors=`,
+      );
+
+      const base64EncodedErrors = redirectedLocation
+        .split("errors=")[1]
+        .replace("%3D%3D", "");
+      const parsedErrors = JSON.parse(
+        Buffer.from(base64EncodedErrors, "base64").toString("utf8"),
+      );
+      expect(parsedErrors).toEqual([
+        {
+          href: "#deletedNote",
+          key: "deletedNote",
+          text: "Enter a note of at least 2 characters in length",
+        },
+      ]);
+    });
   });
 
   describe(`POST /flags/create route`, () => {
