@@ -82,9 +82,7 @@ const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
         },
       },
       {
-        html: claim.flags.length
-          ? `<span>Yes ${FLAG_EMOJI}</span>`
-          : "",
+        html: claim.flags.length ? `<span>Yes ${FLAG_EMOJI}</span>` : "",
       },
       {
         text: formatTypeOfVisit(claim.type),

@@ -121,10 +121,7 @@ async function createModel(request, page) {
           attributes: { "data-sort-value": `${app.reference}` },
         },
         {
-          html:
-            app.flags.length > 0
-              ? `<span>Yes ${FLAG_EMOJI}</span>`
-              : "",
+          html: app.flags.length > 0 ? `<span>Yes ${FLAG_EMOJI}</span>` : "",
         },
         {
           text: app.data?.organisation?.name,
