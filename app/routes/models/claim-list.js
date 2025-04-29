@@ -22,7 +22,7 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
       },
     },
     {
-      html: `<span role="img">Flagged ${FLAG_EMOJI}</span>`,
+      html: `<span>Flagged ${FLAG_EMOJI}</span>`,
     },
     {
       text: "Type of visit",
@@ -83,7 +83,7 @@ const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
       },
       {
         html: claim.flags.length
-          ? `<span role="img">Yes ${FLAG_EMOJI}</span>`
+          ? `<span>Yes ${FLAG_EMOJI}</span>`
           : "",
       },
       {
