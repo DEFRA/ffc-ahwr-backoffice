@@ -53,14 +53,48 @@ const deleteFlagHandler = {
       params: Joi.object({
         flagId: Joi.string().required(),
       }),
+      payload: Joi.object({
+        deletedNote: Joi.string().min(2).required(),
+      }),
+      failAction: async (request, h, err) => {
+        request.logger.setBindings({ err });
+
+        const joiError = err.details[0];
+
+        let errorMessageToBeRendered = "";
+
+        if (
+          joiError.message.includes("length must be at least 2 characters long")
+        ) {
+          errorMessageToBeRendered =
+            "Enter a note of at least 2 characters in length";
+        } else {
+          errorMessageToBeRendered =
+            "Enter a note to explain the reason for removing this flag";
+        }
+
+        const formattedError = {
+          ...joiError,
+          message: errorMessageToBeRendered,
+        };
+
+        const errors = encodeErrorsForUI([formattedError], "#deletedNote");
+        const query = new URLSearchParams({
+          deleteFlag: request.params.flagId,
+          errors,
+        });
+
+        return h.redirect(`/flags?${query.toString()}`).takeover();
+      },
     },
     handler: async (request, h) => {
       try {
         const { flagId } = request.params;
+        const { deletedNote } = request.payload;
         const { name: user } = request.auth.credentials.account;
-        await deleteFlagAPICall(flagId, user, request.logger);
+        await deleteFlagAPICall({ flagId, deletedNote }, user, request.logger);
 
-        return h.view("flags", await createFlagsTableData(request.logger));
+        return h.redirect("/flags").takeover();
       } catch (err) {
         return h
           .view("flags", { ...request.payload, error: err })
@@ -154,7 +188,7 @@ const createFlagHandler = {
           throw error;
         }
 
-        return h.view("flags", await createFlagsTableData(request.logger));
+        return h.redirect("/flags").takeover();
       } catch (err) {
         request.logger.setBindings({ err });
         let formattedErrors = [];

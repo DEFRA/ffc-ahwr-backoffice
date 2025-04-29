@@ -92,13 +92,17 @@ const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
           "data-sort-value": claim.type,
         },
       },
-      showSBI && {
-        text: claim.application.data?.organisation?.sbi,
-        format: "numeric",
-        attributes: {
-          "data-sort-value": claim.application.data?.organisation?.sbi,
-        },
-      },
+      ...(showSBI
+        ? [
+            {
+              text: claim.application.data?.organisation?.sbi,
+              format: "numeric",
+              attributes: {
+                "data-sort-value": claim.application.data?.organisation?.sbi,
+              },
+            },
+          ]
+        : []),
       {
         text: formatSpecies(claim.data?.typeOfLivestock),
         attributes: {

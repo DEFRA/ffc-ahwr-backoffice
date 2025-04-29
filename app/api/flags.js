@@ -12,10 +12,10 @@ async function getAllFlags(logger) {
   }
 }
 
-async function deleteFlag(flagId, user, logger) {
+async function deleteFlag({ flagId, deletedNote }, user, logger) {
   const endpoint = `${applicationApiUri}/application/flag/${flagId}/delete`;
   try {
-    await wreck.patch(endpoint, { json: true, payload: { user } });
+    await wreck.patch(endpoint, { json: true, payload: { user, deletedNote } });
   } catch (err) {
     logger.setBindings({ err, endpoint });
     throw err;
