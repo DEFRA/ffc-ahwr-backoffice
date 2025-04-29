@@ -39,7 +39,7 @@ const getApplicationTableHeader = (sortField) => {
         },
       },
       {
-        html: `<span aria-hidden="true" role="img">Flagged ${FLAG_EMOJI}</span>`,
+        html: `<span role="img">Flagged ${FLAG_EMOJI}</span>`,
       },
       {
         text: "Organisation",
@@ -123,7 +123,7 @@ async function createModel(request, page) {
         {
           html:
             app.flags.length > 0
-              ? `<span aria-hidden="true" role="img">Yes ${FLAG_EMOJI}</span>`
+              ? `<span role="img">Yes ${FLAG_EMOJI}</span>`
               : "",
         },
         {
