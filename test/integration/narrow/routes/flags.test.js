@@ -5,9 +5,12 @@ const { administrator } = require("../../../../app/auth/permissions");
 const flags = require("../../../../app/api/flags");
 const mockFlags = require("../../../data/flags.json");
 const { StatusCodes } = require("http-status-codes");
+const mapAuth = require("../../../../app/auth/map-auth");
 
 jest.mock("../../../../app/api/flags");
+jest.mock("../../../../app/auth/map-auth");
 
+mapAuth.mockResolvedValue({ isAdministrator: true });
 flags.getAllFlags.mockResolvedValue(mockFlags);
 
 describe("Flags tests", () => {

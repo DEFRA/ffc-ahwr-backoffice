@@ -15,7 +15,12 @@ const formatDate = (dateInput) => {
   });
 };
 
-const createFlagsTableData = async (logger, flagIdToDelete, createFlag) => {
+const createFlagsTableData = async ({
+  logger,
+  flagIdToDelete,
+  createFlag,
+  isAdmin,
+}) => {
   const flags = await getAllFlags(logger);
   const header = [
     {
@@ -36,10 +41,14 @@ const createFlagsTableData = async (logger, flagIdToDelete, createFlag) => {
     {
       text: "Flagged due to multiple herds",
     },
-    {
-      text: "",
-    },
-  ];
+    ...(isAdmin
+      ? [
+          {
+            text: "Action",
+          },
+        ]
+      : [{}]),
+  ].filter((item) => Object.keys(item).length > 0);
 
   const rows = flags.map((flag) => {
     return [
@@ -61,10 +70,14 @@ const createFlagsTableData = async (logger, flagIdToDelete, createFlag) => {
       {
         text: flag.appliesToMh === true ? "Yes" : "No",
       },
-      {
-        html: `<a class="govuk-button govuk-button--warning" data-module="govuk-button" href="${serviceUri}/flags?deleteFlag=${flag.id}">Delete flag</a>`,
-      },
-    ];
+      ...(isAdmin
+        ? [
+            {
+              html: `<a class="govuk-button govuk-button--warning" data-module="govuk-button" href="${serviceUri}/flags?deleteFlag=${flag.id}">Delete flag</a>`,
+            },
+          ]
+        : [{}]),
+    ].filter((item) => Object.keys(item).length > 0);
   });
 
   const applicationRefOfFlagToDelete = flagIdToDelete
