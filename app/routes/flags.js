@@ -8,6 +8,7 @@ const {
 } = require("../api/flags");
 const { encodeErrorsForUI } = require("./utils/encode-errors-for-ui");
 const { StatusCodes } = require("http-status-codes");
+const mapAuth = require("../auth/map-auth");
 
 const MIN_APPLICATION_REFERENCE_LENGTH = 14;
 const MIN_NOTE_LENGTH = 1;
@@ -34,9 +35,17 @@ const getFlagsHandler = {
         ? JSON.parse(Buffer.from(errors, "base64").toString("utf8"))
         : [];
 
+      const { isAdministrator } = mapAuth(request);
+
       return h.view("flags", {
-        ...(await createFlagsTableData(request.logger, deleteFlag, createFlag)),
+        ...(await createFlagsTableData({
+          logger: request.logger,
+          flagIdToDelete: deleteFlag,
+          createFlag,
+          isAdmin: isAdministrator,
+        })),
         errors: parsedErrors,
+        isAdmin: isAdministrator,
       });
     },
   },
@@ -233,7 +242,7 @@ const createFlagHandler = {
         }
 
         return h
-          .view("flags", await createFlagsTableData(request.logger))
+          .view("flags", await createFlagsTableData({ logger: request.logger }))
           .code(StatusCodes.BAD_REQUEST)
           .takeover();
       }

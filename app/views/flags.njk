@@ -37,12 +37,14 @@
                         <div class="govuk-grid-column-two-thirds">
                           <h1 class="govuk-heading-l">Flags 🚩</h1>
                         </div>
-                        <div class="govuk-grid-column-one-third">
-                            {{ govukButton({
-                                text: "Create new agreement flag",
-                                href: model.createFlagUrl
-                              }) }}
-                        </div>
+                        {% if isAdmin %}
+                          <div class="govuk-grid-column-one-third">
+                              {{ govukButton({
+                                  text: "Create new agreement flag",
+                                  href: model.createFlagUrl
+                                }) }}
+                          </div>
+                        {% endif %}
                       </div>
                     {{ govukTable({
                         attributes: {
