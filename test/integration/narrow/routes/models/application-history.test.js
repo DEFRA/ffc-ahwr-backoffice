@@ -39,6 +39,15 @@ test("renders table", () => {
       updatedBy: "Tested, Bin",
       updatedAt: "2025-03-28T14:54:18.927Z",
     },
+    {
+      eventType: "Agreement flagged (non-Multiple Herds)",
+      newValue: "Flagged (non-Multiple Herds)",
+      note: "Flag this please",
+      oldValue: "Unflagged",
+      updatedAt: "2025-04-09T11:59:54.075Z",
+      updatedBy: "Tom",
+      updatedProperty: "agreementFlag",
+    },
   ];
 
   const expected = {
@@ -77,6 +86,15 @@ test("renders table", () => {
         { text: "Date of review updated from 03/01/2025 to 02/03/2025" },
         { text: "Tested, Bin" },
         { text: "Oops" },
+      ],
+      [
+        { text: "09/04/2025" },
+        { text: "12:59:54" },
+        {
+          text: "Agreement was moved from Unflagged to Flagged (non-Multiple Herds)",
+        },
+        { text: "Tom" },
+        { text: "Flag this please" },
       ],
     ],
   };
