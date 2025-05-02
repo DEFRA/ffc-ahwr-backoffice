@@ -44,7 +44,7 @@ test("renders table", () => {
       newValue: "Flagged (non-Multiple Herds)",
       note: "Flag this please",
       oldValue: "Unflagged",
-      updatedAt: "2025-04-09T11:59:54.075Z",
+      updatedAt: "2025-03-28T14:54:18.927Z",
       updatedBy: "Tom",
       updatedProperty: "agreementFlag",
     },
@@ -88,8 +88,8 @@ test("renders table", () => {
         { text: "Oops" },
       ],
       [
-        { text: "09/04/2025" },
-        { text: "12:59:54" },
+        { text: "28/03/2025" },
+        { text: "14:54:18" },
         {
           text: "Agreement was moved from Unflagged to Flagged (non-Multiple Herds)",
         },
