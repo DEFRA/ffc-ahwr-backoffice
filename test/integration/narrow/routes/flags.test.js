@@ -201,6 +201,7 @@ describe("Flags tests", () => {
   describe(`POST /flags/create route`, () => {
     beforeEach(async () => {
       crumb = await getCrumbs(global.__SERVER__);
+      jest.clearAllMocks();
     });
 
     test("returns 302 when there is no auth", async () => {
@@ -257,6 +258,11 @@ describe("Flags tests", () => {
       };
       const res = await global.__SERVER__.inject(options);
 
+      expect(flags.createFlag).toHaveBeenCalledWith(
+        { appliesToMh: true, note: "Test flag", user: "test admin" },
+        "IAHW-TEST-REF1",
+        expect.any(Object),
+      );
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       expect(res.headers.location).toBe("/flags");
     });
