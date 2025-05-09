@@ -179,7 +179,7 @@ const createFlagHandler = {
         const { name: userName } = request.auth.credentials.account;
         const { note, appliesToMh, appRef } = request.payload;
         const payload = {
-          userName,
+          user: userName,
           note: note.trim(),
           appliesToMh: appliesToMh === "yes",
         };
