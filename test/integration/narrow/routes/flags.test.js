@@ -1,7 +1,7 @@
 const cheerio = require("cheerio");
 const expectPhaseBanner = require("../../../utils/phase-banner-expect");
 const getCrumbs = require("../../../utils/get-crumbs");
-const { administrator } = require("../../../../app/auth/permissions");
+const { administrator, user } = require("../../../../app/auth/permissions");
 const flags = require("../../../../app/api/flags");
 const mockFlags = require("../../../data/flags.json");
 const { StatusCodes } = require("http-status-codes");
@@ -17,7 +17,7 @@ describe("Flags tests", () => {
   jest.mock("../../../../app/auth");
   const auth = {
     strategy: "session-auth",
-    credentials: { scope: [administrator], account: { name: "test user" } },
+    credentials: { scope: [administrator], account: { name: "test admin" } },
   };
 
   let crumb;
@@ -37,6 +37,27 @@ describe("Flags tests", () => {
     });
 
     test("returns 200", async () => {
+      const options = {
+        method: "GET",
+        url: "/flags",
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+      };
+      const res = await global.__SERVER__.inject(options);
+
+      expect(res.statusCode).toBe(StatusCodes.OK);
+      const $ = cheerio.load(res.payload);
+      expect($("h1.govuk-heading-l").text()).toContain("Flags");
+      expect($("title").text()).toContain("AHWR Flags");
+      expectPhaseBanner.ok($);
+    });
+
+    test("returns 200 when user is not an admin", async () => {
+      const auth = {
+        strategy: "session-auth",
+        credentials: { scope: [user], account: { name: "test user" } },
+      };
+
       const options = {
         method: "GET",
         url: "/flags",
@@ -180,6 +201,7 @@ describe("Flags tests", () => {
   describe(`POST /flags/create route`, () => {
     beforeEach(async () => {
       crumb = await getCrumbs(global.__SERVER__);
+      jest.clearAllMocks();
     });
 
     test("returns 302 when there is no auth", async () => {
@@ -236,6 +258,11 @@ describe("Flags tests", () => {
       };
       const res = await global.__SERVER__.inject(options);
 
+      expect(flags.createFlag).toHaveBeenCalledWith(
+        { appliesToMh: true, note: "Test flag", user: "test admin" },
+        "IAHW-TEST-REF1",
+        expect.any(Object),
+      );
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       expect(res.headers.location).toBe("/flags");
     });
