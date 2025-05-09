@@ -106,8 +106,8 @@ const deleteFlagHandler = {
       try {
         const { flagId } = request.params;
         const { deletedNote } = request.payload;
-        const { name: user } = request.auth.credentials.account;
-        await deleteFlagAPICall({ flagId, deletedNote }, user, request.logger);
+        const { name: userName } = request.auth.credentials.account;
+        await deleteFlagAPICall({ flagId, deletedNote }, userName, request.logger);
 
         return h.redirect("/flags").takeover();
       } catch (err) {
@@ -176,10 +176,10 @@ const createFlagHandler = {
     },
     handler: async (request, h) => {
       try {
-        const { name: user } = request.auth.credentials.account;
+        const { name: userName } = request.auth.credentials.account;
         const { note, appliesToMh, appRef } = request.payload;
         const payload = {
-          user,
+          userName,
           note: note.trim(),
           appliesToMh: appliesToMh === "yes",
         };
