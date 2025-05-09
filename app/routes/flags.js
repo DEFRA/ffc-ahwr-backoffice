@@ -1,5 +1,11 @@
 const Joi = require("joi");
-const { administrator } = require("../auth/permissions");
+const {
+  administrator,
+  processor,
+  user,
+  recommender,
+  authoriser,
+} = require("../auth/permissions");
 const crumbCache = require("./utils/crumb-cache");
 const { createFlagsTableData } = require("./models/flags-list");
 const {
@@ -18,7 +24,7 @@ const getFlagsHandler = {
   path: "/flags",
   options: {
     auth: {
-      scope: [administrator],
+      scope: [administrator, processor, user, recommender, authoriser],
     },
     validate: {
       query: Joi.object({
