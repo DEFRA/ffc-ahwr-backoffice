@@ -44,11 +44,8 @@ container:
   serviceUri:
   applicationApiUri:
   displayPageSize: 20
-  dateOfTestingEnabled:
   onHoldAppProcessEnabled:
   onHoldAppProcessSchedule:
-  endemicsEnabled: 'true'
-  multiSpeciesEnabled: 'false'
   superAdmins: ''
 
 deployment:

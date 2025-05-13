@@ -31,13 +31,6 @@ describe("View Application test with Date of Testing enabled", () => {
     credentials: { scope: [administrator], account: { username: "" } },
   };
 
-  jest.mock("../../../../app/config", () => ({
-    ...jest.requireActual("../../../../app/config"),
-    dateOfTesting: {
-      enabled: true,
-    },
-  }));
-
   jest.mock("@hapi/wreck", () => ({
     get: jest.fn().mockResolvedValue({ payload: [] }),
   }));

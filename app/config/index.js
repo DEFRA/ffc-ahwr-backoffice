@@ -47,18 +47,9 @@ const schema = joi.object({
   useRedis: joi.boolean().default(false),
   applicationApiUri: joi.string().uri(),
   displayPageSize: joi.number().default(20),
-  dateOfTesting: {
-    enabled: joi.bool().default(false),
-  },
   onHoldAppScheduler: {
     enabled: joi.bool().default(true),
     schedule: joi.string().default("0 18 * * 1-5"),
-  },
-  endemics: {
-    enabled: joi.bool().required(),
-  },
-  multiSpecies: {
-    enabled: joi.bool().required(),
   },
   superAdmins: joi.array().items(joi.string()).required(),
   developerName: joi.string().allow(""),
@@ -101,12 +92,6 @@ const config = {
   onHoldAppScheduler: {
     enabled: process.env.ON_HOLD_APP_PROCESS_ENABLED,
     schedule: process.env.ON_HOLD_APP_PROCESS_SCHEDULE,
-  },
-  endemics: {
-    enabled: process.env.ENDEMICS_ENABLED === "true",
-  },
-  multiSpecies: {
-    enabled: process.env.MULTI_SPECIES_ENABLED === "true",
   },
   superAdmins: process.env.SUPER_ADMINS
     ? process.env.SUPER_ADMINS.split(",").map((user) =>

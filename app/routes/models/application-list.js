@@ -3,7 +3,7 @@ const { getPagination, getPagingData } = require("../../pagination");
 const { getAppSearch } = require("../../session");
 const { getStyleClassByStatus } = require("../../constants/status");
 const keys = require("../../session/keys");
-const { serviceUri, endemics } = require("../../config");
+const { serviceUri } = require("../../config");
 const { upperFirstLetter } = require("../../lib/display-helper");
 const mapAuth = require("../../auth/map-auth");
 const { FLAG_EMOJI } = require("../utils/ui-constants");
@@ -17,71 +17,57 @@ const viewModel = (request, page) => {
 const getApplicationTableHeader = (sortField) => {
   const direction =
     sortField && sortField.direction === "DESC" ? "descending" : "ascending";
-  let agreementDateTitle = "Apply date";
-  let headerColumns = [
+  const agreementDateTitle = "Agreement date";
+  const headerColumns = [
     {
       text: "Agreement number",
+      attributes: {
+        "aria-sort":
+          sortField && sortField.field === "Reference" ? direction : "none",
+        "data-url": "/agreements/sort/Reference",
+      },
+    },
+    {
+      html: `<span aria-hidden="true" role="img">Flagged ${FLAG_EMOJI}</span>`,
     },
     {
       text: "Organisation",
+      attributes: {
+        "aria-sort":
+          sortField && sortField.field === "Organisation" ? direction : "none",
+        "data-url": "/agreements/sort/Organisation",
+      },
+    },
+    {
+      text: "SBI number",
+      attributes: {
+        "aria-sort":
+          sortField && sortField.field === "SBI" ? direction : "none",
+        "data-url": "/agreements/sort/SBI",
+      },
+      format: "numeric",
+    },
+    {
+      text: agreementDateTitle,
+      attributes: {
+        "aria-sort":
+          sortField && sortField.field === "Apply date" ? direction : "none",
+        "data-url": "/agreements/sort/Apply date",
+      },
+      format: "date",
+    },
+    {
+      text: "Status",
+      attributes: {
+        "aria-sort":
+          sortField && sortField.field === "Status" ? direction : "none",
+        "data-url": "/agreements/sort/Status",
+      },
+    },
+    {
+      text: "Details",
     },
   ];
-
-  if (endemics.enabled) {
-    agreementDateTitle = "Agreement date";
-    headerColumns = [
-      {
-        text: "Agreement number",
-        attributes: {
-          "aria-sort":
-            sortField && sortField.field === "Reference" ? direction : "none",
-          "data-url": "/agreements/sort/Reference",
-        },
-      },
-      {
-        html: `<span aria-hidden="true" role="img">Flagged ${FLAG_EMOJI}</span>`,
-      },
-      {
-        text: "Organisation",
-        attributes: {
-          "aria-sort":
-            sortField && sortField.field === "Organisation"
-              ? direction
-              : "none",
-          "data-url": "/agreements/sort/Organisation",
-        },
-      },
-    ];
-  }
-
-  headerColumns.push({
-    text: "SBI number",
-    attributes: {
-      "aria-sort": sortField && sortField.field === "SBI" ? direction : "none",
-      "data-url": "/agreements/sort/SBI",
-    },
-    format: "numeric",
-  });
-  headerColumns.push({
-    text: agreementDateTitle,
-    attributes: {
-      "aria-sort":
-        sortField && sortField.field === "Apply date" ? direction : "none",
-      "data-url": "/agreements/sort/Apply date",
-    },
-    format: "date",
-  });
-  headerColumns.push({
-    text: "Status",
-    attributes: {
-      "aria-sort":
-        sortField && sortField.field === "Status" ? direction : "none",
-      "data-url": "/agreements/sort/Status",
-    },
-  });
-  headerColumns.push({
-    text: "Details",
-  });
 
   return headerColumns;
 };

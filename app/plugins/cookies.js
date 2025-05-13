@@ -1,5 +1,3 @@
-const { endemics } = require("../config");
-
 module.exports = {
   plugin: {
     name: "cookies",
@@ -14,8 +12,6 @@ module.exports = {
         ) {
           request.response.source.manager._context.user =
             request.auth?.credentials?.account;
-          request.response.source.manager._context.endemicsEnabled =
-            endemics.enabled;
           request.response.source.manager._context.currentPath = request.path;
         }
         return h.continue;
