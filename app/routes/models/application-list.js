@@ -5,7 +5,6 @@ const { getStyleClassByStatus } = require("../../constants/status");
 const keys = require("../../session/keys");
 const { serviceUri } = require("../../config");
 const { upperFirstLetter } = require("../../lib/display-helper");
-const mapAuth = require("../../auth/map-auth");
 const { FLAG_EMOJI } = require("../utils/ui-constants");
 
 const viewModel = (request, page) => {
@@ -28,7 +27,7 @@ const getApplicationTableHeader = (sortField) => {
       },
     },
     {
-      html: `<span aria-hidden="true" role="img">Flagged ${FLAG_EMOJI}</span>`,
+      html: `<span>Flagged ${FLAG_EMOJI}</span>`,
     },
     {
       text: "Organisation",
@@ -91,12 +90,6 @@ async function createModel(request, page) {
     request.logger,
   );
 
-  const { isAdministrator } = mapAuth(request);
-  const pageHeader = isAdministrator
-    ? "Claims, Agreements and Flags"
-    : "Claims and Agreements";
-  const showFlagsTab = isAdministrator;
-
   if (apps.total > 0) {
     let statusClass;
     const applications = apps.applications.map((app) => {
@@ -107,10 +100,7 @@ async function createModel(request, page) {
           attributes: { "data-sort-value": `${app.reference}` },
         },
         {
-          html:
-            app.flags.length > 0
-              ? `<span aria-hidden="true" role="img">Yes ${FLAG_EMOJI}</span>`
-              : "",
+          html: app.flags.length > 0 ? `<span>Yes ${FLAG_EMOJI}</span>` : "",
         },
         {
           text: app.data?.organisation?.name,
@@ -190,8 +180,6 @@ async function createModel(request, page) {
           styleClass: s.styleClass,
         };
       }),
-      pageHeader,
-      showFlagsTab,
     };
   } else {
     return {
@@ -201,8 +189,6 @@ async function createModel(request, page) {
       availableStatus: [],
       selectedStatus: [],
       filterStatus: [],
-      pageHeader,
-      showFlagsTab,
     };
   }
 }

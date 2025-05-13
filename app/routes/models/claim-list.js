@@ -22,7 +22,7 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
       },
     },
     {
-      html: `<span aria-hidden="true" role="img">Flagged ${FLAG_EMOJI}</span>`,
+      html: `<span>Flagged ${FLAG_EMOJI}</span>`,
     },
     {
       text: "Type of visit",
@@ -82,9 +82,7 @@ const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
         },
       },
       {
-        html: claim.flags.length
-          ? `<span aria-hidden="true" role="img">Yes ${FLAG_EMOJI}</span>`
-          : "",
+        html: claim.flags.length ? `<span>Yes ${FLAG_EMOJI}</span>` : "",
       },
       {
         text: formatTypeOfVisit(claim.type),
@@ -92,13 +90,17 @@ const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
           "data-sort-value": claim.type,
         },
       },
-      showSBI && {
-        text: claim.application.data?.organisation?.sbi,
-        format: "numeric",
-        attributes: {
-          "data-sort-value": claim.application.data?.organisation?.sbi,
-        },
-      },
+      ...(showSBI
+        ? [
+            {
+              text: claim.application.data?.organisation?.sbi,
+              format: "numeric",
+              attributes: {
+                "data-sort-value": claim.application.data?.organisation?.sbi,
+              },
+            },
+          ]
+        : []),
       {
         text: formatSpecies(claim.data?.typeOfLivestock),
         attributes: {

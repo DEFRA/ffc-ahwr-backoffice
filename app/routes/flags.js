@@ -1,5 +1,11 @@
 const Joi = require("joi");
-const { administrator } = require("../auth/permissions");
+const {
+  administrator,
+  processor,
+  user,
+  recommender,
+  authoriser,
+} = require("../auth/permissions");
 const crumbCache = require("./utils/crumb-cache");
 const { createFlagsTableData } = require("./models/flags-list");
 const {
@@ -8,6 +14,7 @@ const {
 } = require("../api/flags");
 const { encodeErrorsForUI } = require("./utils/encode-errors-for-ui");
 const { StatusCodes } = require("http-status-codes");
+const mapAuth = require("../auth/map-auth");
 
 const MIN_APPLICATION_REFERENCE_LENGTH = 14;
 const MIN_NOTE_LENGTH = 1;
@@ -17,7 +24,7 @@ const getFlagsHandler = {
   path: "/flags",
   options: {
     auth: {
-      scope: [administrator],
+      scope: [administrator, processor, user, recommender, authoriser],
     },
     validate: {
       query: Joi.object({
@@ -34,9 +41,17 @@ const getFlagsHandler = {
         ? JSON.parse(Buffer.from(errors, "base64").toString("utf8"))
         : [];
 
+      const { isAdministrator } = mapAuth(request);
+
       return h.view("flags", {
-        ...(await createFlagsTableData(request.logger, deleteFlag, createFlag)),
+        ...(await createFlagsTableData({
+          logger: request.logger,
+          flagIdToDelete: deleteFlag,
+          createFlag,
+          isAdmin: isAdministrator,
+        })),
         errors: parsedErrors,
+        isAdmin: isAdministrator,
       });
     },
   },
@@ -53,14 +68,52 @@ const deleteFlagHandler = {
       params: Joi.object({
         flagId: Joi.string().required(),
       }),
+      payload: Joi.object({
+        deletedNote: Joi.string().min(2).required(),
+      }),
+      failAction: async (request, h, err) => {
+        request.logger.setBindings({ err });
+
+        const joiError = err.details[0];
+
+        let errorMessageToBeRendered = "";
+
+        if (
+          joiError.message.includes("length must be at least 2 characters long")
+        ) {
+          errorMessageToBeRendered =
+            "Enter a note of at least 2 characters in length";
+        } else {
+          errorMessageToBeRendered =
+            "Enter a note to explain the reason for removing this flag";
+        }
+
+        const formattedError = {
+          ...joiError,
+          message: errorMessageToBeRendered,
+        };
+
+        const errors = encodeErrorsForUI([formattedError], "#deletedNote");
+        const query = new URLSearchParams({
+          deleteFlag: request.params.flagId,
+          errors,
+        });
+
+        return h.redirect(`/flags?${query.toString()}`).takeover();
+      },
     },
     handler: async (request, h) => {
       try {
         const { flagId } = request.params;
-        const { name: user } = request.auth.credentials.account;
-        await deleteFlagAPICall(flagId, user, request.logger);
+        const { deletedNote } = request.payload;
+        const { name: userName } = request.auth.credentials.account;
+        await deleteFlagAPICall(
+          { flagId, deletedNote },
+          userName,
+          request.logger,
+        );
 
-        return h.view("flags", await createFlagsTableData(request.logger));
+        return h.redirect("/flags").takeover();
       } catch (err) {
         return h
           .view("flags", { ...request.payload, error: err })
@@ -127,10 +180,10 @@ const createFlagHandler = {
     },
     handler: async (request, h) => {
       try {
-        const { name: user } = request.auth.credentials.account;
+        const { name: userName } = request.auth.credentials.account;
         const { note, appliesToMh, appRef } = request.payload;
         const payload = {
-          user,
+          user: userName,
           note: note.trim(),
           appliesToMh: appliesToMh === "yes",
         };
@@ -154,7 +207,7 @@ const createFlagHandler = {
           throw error;
         }
 
-        return h.view("flags", await createFlagsTableData(request.logger));
+        return h.redirect("/flags").takeover();
       } catch (err) {
         request.logger.setBindings({ err });
         let formattedErrors = [];
@@ -199,7 +252,7 @@ const createFlagHandler = {
         }
 
         return h
-          .view("flags", await createFlagsTableData(request.logger))
+          .view("flags", await createFlagsTableData({ logger: request.logger }))
           .code(StatusCodes.BAD_REQUEST)
           .takeover();
       }

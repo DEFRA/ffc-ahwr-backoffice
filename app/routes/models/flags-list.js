@@ -15,33 +15,8 @@ const formatDate = (dateInput) => {
   });
 };
 
-const createFlagsTableData = async (logger, flagIdToDelete, createFlag) => {
-  const flags = await getAllFlags(logger);
-  const header = [
-    {
-      text: "Agreement number",
-    },
-    {
-      text: "SBI",
-    },
-    {
-      text: "Note",
-    },
-    {
-      text: "Created by",
-    },
-    {
-      text: "Created at",
-    },
-    {
-      text: "Flagged due to multiple herds",
-    },
-    {
-      text: "",
-    },
-  ];
-
-  const rows = flags.map((flag) => {
+const createRows = (flags, isAdmin) => {
+  return flags.map((flag) => {
     return [
       {
         text: flag.applicationReference,
@@ -61,11 +36,54 @@ const createFlagsTableData = async (logger, flagIdToDelete, createFlag) => {
       {
         text: flag.appliesToMh === true ? "Yes" : "No",
       },
-      {
-        html: `<a class="govuk-button govuk-button--warning" data-module="govuk-button" href="${serviceUri}/flags?deleteFlag=${flag.id}">Delete flag</a>`,
-      },
-    ];
+      ...(isAdmin
+        ? [
+            {
+              html: `<a class="govuk-button govuk-button--warning" data-module="govuk-button" href="${serviceUri}/flags?deleteFlag=${flag.id}">Delete flag</a>`,
+            },
+          ]
+        : [{}]),
+    ].filter((item) => Object.keys(item).length > 0);
   });
+};
+
+const createTableHeader = (isAdmin) => {
+  return [
+    {
+      text: "Agreement number",
+    },
+    {
+      text: "SBI",
+    },
+    {
+      text: "Note",
+    },
+    {
+      text: "Created by",
+    },
+    {
+      text: "Created at",
+    },
+    {
+      text: "Flagged due to multiple herds",
+    },
+    ...(isAdmin
+      ? [
+          {
+            text: "Action",
+          },
+        ]
+      : [{}]),
+  ].filter((item) => Object.keys(item).length > 0);
+};
+
+const createFlagsTableData = async ({
+  logger,
+  flagIdToDelete,
+  createFlag,
+  isAdmin,
+}) => {
+  const flags = await getAllFlags(logger);
 
   const applicationRefOfFlagToDelete = flagIdToDelete
     ? flags.find((flag) => flag.id === flagIdToDelete).applicationReference
@@ -77,8 +95,8 @@ const createFlagsTableData = async (logger, flagIdToDelete, createFlag) => {
 
   return {
     model: {
-      header,
-      rows,
+      header: createTableHeader(isAdmin),
+      rows: createRows(flags, isAdmin),
       flagIdToDelete,
       applicationRefOfFlagToDelete,
       appliesToMh,
