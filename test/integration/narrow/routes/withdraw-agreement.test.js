@@ -8,14 +8,13 @@ const {
   authoriser,
 } = require("../../../../app/auth/permissions");
 const getCrumbs = require("../../../utils/get-crumbs");
-const { setEndemicsEnabled } = require("../../../mocks/config");
 
 const applications = require("../../../../app/api/applications");
 jest.mock("../../../../app/api/applications");
 
 const reference = "AHWR-555A-FD4C";
 
-describe("Withdraw Application tests when endemics flag is On", () => {
+describe("Withdraw Application tests", () => {
   let crumb;
   const url = "/withdraw-agreement";
   jest.mock("../../../../app/auth");
@@ -27,7 +26,6 @@ describe("Withdraw Application tests when endemics flag is On", () => {
 
   describe(`POST ${url} route`, () => {
     test("returns 302 no auth", async () => {
-      setEndemicsEnabled(true);
       const options = {
         method: "POST",
         url,
@@ -37,7 +35,6 @@ describe("Withdraw Application tests when endemics flag is On", () => {
     });
 
     test("returns 403 when scope is not administrator, recommender or authoriser", async () => {
-      setEndemicsEnabled(true);
       const auth = {
         strategy: "session-auth",
         credentials: { scope: [processor, user] },
@@ -61,7 +58,6 @@ describe("Withdraw Application tests when endemics flag is On", () => {
     });
 
     test("returns 403", async () => {
-      setEndemicsEnabled(true);
       const auth = {
         strategy: "session-auth",
         credentials: { scope: [processor, user, recommender, authoriser] },
@@ -82,7 +78,6 @@ describe("Withdraw Application tests when endemics flag is On", () => {
     });
 
     test("returns 403 when duplicate submission - $crumb", async () => {
-      setEndemicsEnabled(true);
       const auth = {
         strategy: "session-auth",
         credentials: {
@@ -118,7 +113,6 @@ describe("Withdraw Application tests when endemics flag is On", () => {
     });
 
     test("Approve withdraw application", async () => {
-      setEndemicsEnabled(true);
       const auth = {
         strategy: "session-auth",
         credentials: {
@@ -152,7 +146,6 @@ describe("Withdraw Application tests when endemics flag is On", () => {
     test("Return error, when any of the check boxes are not checked", async () => {
       const errors =
         "W3sidGV4dCI6IlwiY29uZmlybVwiIGRvZXMgbm90IGNvbnRhaW4gMSByZXF1aXJlZCB2YWx1ZShzKSIsImhyZWYiOiIjd2l0aGRyYXciLCJrZXkiOiJjb25maXJtIn1d";
-      setEndemicsEnabled(true);
       const auth = {
         strategy: "session-auth",
         credentials: {

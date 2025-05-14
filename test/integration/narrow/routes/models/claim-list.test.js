@@ -2,37 +2,31 @@ const {
   getClaimTableHeader,
   getClaimTableRows,
 } = require("../../../../../app/routes/models/claim-list");
-const { setEndemicsEnabled } = require("../../../../mocks/config");
 
 describe("Application-list model test", () => {
-  describe("endemics enable true", () => {
-    beforeEach(() => {
-      setEndemicsEnabled(true);
-    });
-    test.each([
-      { n: 0, field: "claim number", direction: "DESC" },
-      { n: 0, field: "claim number", direction: "ASC" },
-      { n: 2, field: "type of visit", direction: "DESC" },
-      { n: 2, field: "type of visit", direction: "ASC" },
-      { n: 3, field: "SBI", direction: "DESC" },
-      { n: 3, field: "SBI", direction: "ASC" },
-      { n: 4, field: "species", direction: "DESC" },
-      { n: 4, field: "species", direction: "ASC" },
-      { n: 5, field: "claim date", direction: "DESC" },
-      { n: 5, field: "claim date", direction: "ASC" },
-      { n: 6, field: "status", direction: "DESC" },
-      { n: 6, field: "status", direction: "ASC" },
-    ])(
-      "getClaimTableHeader $field $direction",
-      async ({ n, field, direction }) => {
-        const sortField = { field, direction };
-        const ariaSort = direction === "DESC" ? "descending" : "ascending";
-        const res = getClaimTableHeader(sortField);
-        expect(res).not.toBeNull();
-        expect(res[n].attributes["aria-sort"]).toEqual(ariaSort);
-      },
-    );
-  });
+  test.each([
+    { n: 0, field: "claim number", direction: "DESC" },
+    { n: 0, field: "claim number", direction: "ASC" },
+    { n: 2, field: "type of visit", direction: "DESC" },
+    { n: 2, field: "type of visit", direction: "ASC" },
+    { n: 3, field: "SBI", direction: "DESC" },
+    { n: 3, field: "SBI", direction: "ASC" },
+    { n: 4, field: "species", direction: "DESC" },
+    { n: 4, field: "species", direction: "ASC" },
+    { n: 5, field: "claim date", direction: "DESC" },
+    { n: 5, field: "claim date", direction: "ASC" },
+    { n: 6, field: "status", direction: "DESC" },
+    { n: 6, field: "status", direction: "ASC" },
+  ])(
+    "getClaimTableHeader $field $direction",
+    async ({ n, field, direction }) => {
+      const sortField = { field, direction };
+      const ariaSort = direction === "DESC" ? "descending" : "ascending";
+      const res = getClaimTableHeader(sortField);
+      expect(res).not.toBeNull();
+      expect(res[n].attributes["aria-sort"]).toEqual(ariaSort);
+    },
+  );
 });
 
 describe("Application-list createModel", () => {
@@ -70,10 +64,6 @@ describe("Application-list createModel", () => {
       flags: [],
     },
   ];
-
-  beforeAll(() => {
-    setEndemicsEnabled(true);
-  });
 
   test("getClaimTableRows", async () => {
     const page = 1;

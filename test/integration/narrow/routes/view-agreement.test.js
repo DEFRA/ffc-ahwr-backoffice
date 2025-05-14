@@ -95,16 +95,6 @@ describe("View Application test", () => {
 
   beforeAll(() => {
     jest.clearAllMocks();
-
-    jest.mock("../../../../app/config", () => ({
-      ...jest.requireActual("../../../../app/config"),
-      dateOfTesting: {
-        enabled: false,
-      },
-      endemics: {
-        enabled: true,
-      },
-    }));
     jest.mock("../../../../app/routes/utils/get-claim-view-states");
     getClaimViewStates = require("../../../../app/routes/utils/get-claim-view-states");
 

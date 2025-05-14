@@ -11,9 +11,6 @@ jest.mock("../../../../app/api/applications");
 const pagination = require("../../../../app/pagination");
 jest.mock("../../../../app/pagination");
 
-const { setEndemicsEnabled } = require("../../../mocks/config");
-const { endemicsOriginal } = require("../../../../app/config").endemics.enabled;
-
 pagination.getPagination = jest.fn().mockReturnValue({
   limit: 10,
   offset: 0,
@@ -34,14 +31,6 @@ describe("Applications test", () => {
     strategy: "session-auth",
     credentials: { scope: [administrator], account: { username: "test user" } },
   };
-
-  beforeAll(() => {
-    setEndemicsEnabled(true);
-  });
-
-  afterAll(() => {
-    setEndemicsEnabled(endemicsOriginal);
-  });
 
   describe(`GET ${url} route`, () => {
     test("returns 302 no auth", async () => {
@@ -99,8 +88,7 @@ describe("Applications test", () => {
       });
       expectPhaseBanner.ok($);
     });
-    test("should head column agreement date when endemics enable  true", async () => {
-      setEndemicsEnabled(true);
+    test("should head column agreement date", async () => {
       const options = {
         method: "GET",
         url: `${url}?page=1`,
@@ -110,20 +98,6 @@ describe("Applications test", () => {
       expect(res.statusCode).toBe(200);
       const $ = cheerio.load(res.payload);
       expect($('th[aria-sort="none"]').text()).toContain("Agreement date");
-      setEndemicsEnabled(endemicsOriginal);
-    });
-    test("should head column agreement date when endemics enable  true", async () => {
-      setEndemicsEnabled(false);
-      const options = {
-        method: "GET",
-        url: `${url}?page=1`,
-        auth,
-      };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
-      const $ = cheerio.load(res.payload);
-      expect($('th[aria-sort="none"]').text()).toContain("Apply date");
-      setEndemicsEnabled(endemicsOriginal);
     });
     test("", async () => {
       let options = {
@@ -153,7 +127,6 @@ describe("Applications test", () => {
       expectPhaseBanner.ok($);
     });
     test("returns 200 without query parameter", async () => {
-      setEndemicsEnabled(false);
       const options = {
         method: "GET",
         url: `${url}`,
@@ -177,11 +150,9 @@ describe("Applications test", () => {
       expect(pagination.getPagination).toBeCalled();
       expect(pagination.getPagingData).toBeCalled();
       expectPhaseBanner.ok($);
-      setEndemicsEnabled(endemicsOriginal);
     });
 
-    test("returns correct content for endemics enabled", async () => {
-      setEndemicsEnabled(true);
+    test("returns correct content", async () => {
       const options = {
         method: "GET",
         url: `${url}`,
@@ -205,10 +176,8 @@ describe("Applications test", () => {
       expect(pagination.getPagination).toBeCalled();
       expect(pagination.getPagingData).toBeCalled();
       expectPhaseBanner.ok($);
-      setEndemicsEnabled(endemicsOriginal);
     });
     test("returns 200 clear", async () => {
-      setEndemicsEnabled(true);
       const options = {
         method: "GET",
         url: `${url}/clear`,
@@ -218,7 +187,6 @@ describe("Applications test", () => {
       expect(res.statusCode).toBe(200);
     });
     test("returns 200 remove status", async () => {
-      setEndemicsEnabled(true);
       sessionMock.getAppSearch.mockReturnValueOnce(["AGREED"]);
       const options = {
         method: "GET",
