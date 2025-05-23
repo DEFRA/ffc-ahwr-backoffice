@@ -8,6 +8,9 @@ const {
 } = require("../../lib/display-helper");
 const { FLAG_EMOJI } = require("../utils/ui-constants");
 
+const respText = "responsive-text";
+const col6RespText = `col-6 ${respText}`;
+
 const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
   const direction =
     sortField && sortField.direction === "DESC" ? "descending" : "ascending";
@@ -24,7 +27,7 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
     },
     {
       html: `<span>Flagged ${FLAG_EMOJI}</span>`,
-      classes: "col-6 responsive-text",
+      classes: col6RespText,
     },
     {
       text: "Species",
@@ -33,7 +36,7 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
           sortField && sortField.field === "species" ? direction : "none",
         "data-url": "claims/sort/species",
       },
-      classes: "col-6 responsive-text",
+      classes: col6RespText,
     },
     {
       text: "Herd name",
@@ -41,7 +44,7 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
     },
     {
       text: "Herd CPH",
-      classes: "col-6 responsive-text",
+      classes: col6RespText,
     },
     showSBI && {
       text: "SBI number",
@@ -70,7 +73,7 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
           sortField && sortField.field === "status" ? direction : "none",
         "data-url": "claims/sort/status",
       },
-      classes: "col-6 responsive-text",
+      classes: col6RespText,
     },
   ].filter(Boolean);
 };
@@ -93,15 +96,15 @@ const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
         attributes: {
           "data-sort-value": claim.data?.typeOfLivestock,
         },
-        classes: "responsive-text",
+        classes: respText,
       },
       {
         text: claim.herd?.herdName || "Unnamed herd",
-        classes: "responsive-text",
+        classes: respText,
       },
       {
         text: claim.herd?.cph || "-",
-        classes: "responsive-text",
+        classes: respText,
       },
       ...(showSBI
         ? [
