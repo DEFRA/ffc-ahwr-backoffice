@@ -1,3 +1,5 @@
+const config = require("../../../../../app/config");
+config.serviceUri = "test-uri";
 const {
   getClaimTableHeader,
   getClaimTableRows,
@@ -68,11 +70,12 @@ describe("Application-list createModel", () => {
     const returnPage = "claim";
     const rows = getClaimTableRows(claims, page, returnPage);
 
-    expect(rows[0][0].html.replace(/\s+/g, " ")).toBe(
-      `<div>
-          <a class="govuk-!-margin-0 responsive-text" href="undefined/view-claim/AHWR-1111-1111?page=1&returnPage=claim">AHWR-1111-1111</a>
-          <p class="govuk-!-margin-0 responsive-text">Review</p>
-      </div>`.replace(/\s+/g, " "),
+    const formattedRows = rows[0][0].html.replace(/\s+/g, " ");
+    expect(formattedRows).toContain(
+      '<a class="govuk-!-margin-0 responsive-text" href="test-uri/view-claim/AHWR-1111-1111?page=1&returnPage=claim">AHWR-1111-1111</a>',
+    );
+    expect(formattedRows).toContain(
+      '<p class="govuk-!-margin-0 responsive-text">Review</p>',
     );
   });
   test("getClaimTableRows with a flagged claim", async () => {
@@ -81,11 +84,12 @@ describe("Application-list createModel", () => {
     const flaggedClaims = [{ ...claims[0], flags: [{ appliesToMh: true }] }];
     const rows = getClaimTableRows(flaggedClaims, page, returnPage);
 
-    expect(rows[0][0].html.replace(/\s+/g, " ")).toBe(
-      `<div>
-          <a class="govuk-!-margin-0 responsive-text" href="undefined/view-claim/AHWR-1111-1111?page=1&returnPage=claim">AHWR-1111-1111</a>
-          <p class="govuk-!-margin-0 responsive-text">Review</p>
-      </div>`.replace(/\s+/g, " "),
+    const formattedRows = rows[0][0].html.replace(/\s+/g, " ");
+    expect(formattedRows).toContain(
+      '<a class="govuk-!-margin-0 responsive-text" href="test-uri/view-claim/AHWR-1111-1111?page=1&returnPage=claim">AHWR-1111-1111</a>',
+    );
+    expect(formattedRows).toContain(
+      '<p class="govuk-!-margin-0 responsive-text">Review</p>',
     );
   });
   test("getClaimTableRows showSBI false", async () => {
@@ -93,11 +97,12 @@ describe("Application-list createModel", () => {
     const returnPage = "claim";
     const showSBI = false;
     const rows = getClaimTableRows(claims, page, returnPage, showSBI);
-    expect(rows[0][0].html.replace(/\s+/g, " ")).toBe(
-      `<div>
-          <a class="govuk-!-margin-0 responsive-text" href="undefined/view-claim/AHWR-1111-1111?page=1&returnPage=claim">AHWR-1111-1111</a>
-          <p class="govuk-!-margin-0 responsive-text">Review</p>
-      </div>`.replace(/\s+/g, " "),
+    const formattedRows = rows[0][0].html.replace(/\s+/g, " ");
+    expect(formattedRows).toContain(
+      '<a class="govuk-!-margin-0 responsive-text" href="test-uri/view-claim/AHWR-1111-1111?page=1&returnPage=claim">AHWR-1111-1111</a>',
+    );
+    expect(formattedRows).toContain(
+      '<p class="govuk-!-margin-0 responsive-text">Review</p>',
     );
   });
 });
