@@ -7,16 +7,14 @@ describe("Application-list model test", () => {
   test.each([
     { n: 0, field: "claim number", direction: "DESC" },
     { n: 0, field: "claim number", direction: "ASC" },
-    { n: 2, field: "type of visit", direction: "DESC" },
-    { n: 2, field: "type of visit", direction: "ASC" },
-    { n: 3, field: "SBI", direction: "DESC" },
-    { n: 3, field: "SBI", direction: "ASC" },
-    { n: 4, field: "species", direction: "DESC" },
-    { n: 4, field: "species", direction: "ASC" },
-    { n: 5, field: "claim date", direction: "DESC" },
-    { n: 5, field: "claim date", direction: "ASC" },
-    { n: 6, field: "status", direction: "DESC" },
-    { n: 6, field: "status", direction: "ASC" },
+    { n: 5, field: "SBI", direction: "DESC" },
+    { n: 5, field: "SBI", direction: "ASC" },
+    { n: 2, field: "species", direction: "DESC" },
+    { n: 2, field: "species", direction: "ASC" },
+    { n: 6, field: "claim date", direction: "DESC" },
+    { n: 6, field: "claim date", direction: "ASC" },
+    { n: 7, field: "status", direction: "DESC" },
+    { n: 7, field: "status", direction: "ASC" },
   ])(
     "getClaimTableHeader $field $direction",
     async ({ n, field, direction }) => {
@@ -70,7 +68,12 @@ describe("Application-list createModel", () => {
     const returnPage = "claim";
     const rows = getClaimTableRows(claims, page, returnPage);
 
-    expect(rows[0][0].text).toBe("AHWR-1111-1111");
+    expect(rows[0][0].html.replace(/\s+/g, " ")).toBe(
+      `<div>
+          <a class="govuk-!-margin-0 responsive-text" href="undefined/view-claim/AHWR-1111-1111?page=1&returnPage=claim">AHWR-1111-1111</a>
+          <p class="govuk-!-margin-0 responsive-text">Review</p>
+      </div>`.replace(/\s+/g, " "),
+    );
   });
   test("getClaimTableRows with a flagged claim", async () => {
     const page = 1;
@@ -78,14 +81,23 @@ describe("Application-list createModel", () => {
     const flaggedClaims = [{ ...claims[0], flags: [{ appliesToMh: true }] }];
     const rows = getClaimTableRows(flaggedClaims, page, returnPage);
 
-    expect(rows[0][0].text).toBe("AHWR-1111-1111");
+    expect(rows[0][0].html.replace(/\s+/g, " ")).toBe(
+      `<div>
+          <a class="govuk-!-margin-0 responsive-text" href="undefined/view-claim/AHWR-1111-1111?page=1&returnPage=claim">AHWR-1111-1111</a>
+          <p class="govuk-!-margin-0 responsive-text">Review</p>
+      </div>`.replace(/\s+/g, " "),
+    );
   });
   test("getClaimTableRows showSBI false", async () => {
     const page = 1;
     const returnPage = "claim";
     const showSBI = false;
     const rows = getClaimTableRows(claims, page, returnPage, showSBI);
-
-    expect(rows[0][0].text).toBe("AHWR-1111-1111");
+    expect(rows[0][0].html.replace(/\s+/g, " ")).toBe(
+      `<div>
+          <a class="govuk-!-margin-0 responsive-text" href="undefined/view-claim/AHWR-1111-1111?page=1&returnPage=claim">AHWR-1111-1111</a>
+          <p class="govuk-!-margin-0 responsive-text">Review</p>
+      </div>`.replace(/\s+/g, " "),
+    );
   });
 });

@@ -243,3 +243,36 @@ a.pagination__link:focus {
 .app-long-tag .govuk-tag {
   max-width: 300px;
 }
+
+.fixed-layout-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.col-12 {
+  width: 12%;
+}
+
+.col-6 {
+  width: 6%;
+}
+
+.col-25 {
+  width: 25%;
+}
+
+.align-left {
+  text-align: start;
+}
+
+@media (max-width: 1575px) {
+  .responsive-text {
+    font-size: 16px !important;
+  }
+}
+
+@media (max-width: 1310px) {
+  .responsive-text {
+    font-size: 14px !important;
+  }
+}

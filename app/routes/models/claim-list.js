@@ -14,23 +14,34 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
 
   return [
     {
-      text: "Claim number",
+      text: "Claim number & Type",
       attributes: {
         "aria-sort":
           sortField && sortField.field === "claim number" ? direction : "none",
         "data-url": `${dataURLPrefix}claims/sort/claim number`,
       },
+      classes: "col-12 responsive-text",
     },
     {
       html: `<span>Flagged ${FLAG_EMOJI}</span>`,
+      classes: "col-6 responsive-text",
     },
     {
-      text: "Type of visit",
+      text: "Species",
       attributes: {
         "aria-sort":
-          sortField && sortField.field === "type of visit" ? direction : "none",
-        "data-url": "claims/sort/type of visit",
+          sortField && sortField.field === "species" ? direction : "none",
+        "data-url": "claims/sort/species",
       },
+      classes: "col-6 responsive-text",
+    },
+    {
+      text: "Herd name",
+      classes: "col-25 responsive-text",
+    },
+    {
+      text: "Herd CPH",
+      classes: "col-6 responsive-text",
     },
     showSBI && {
       text: "SBI number",
@@ -40,14 +51,7 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
         "data-url": "/claims/sort/SBI",
       },
       format: "numeric",
-    },
-    {
-      text: "Species",
-      attributes: {
-        "aria-sort":
-          sortField && sortField.field === "species" ? direction : "none",
-        "data-url": "claims/sort/species",
-      },
+      classes: "col-6 align-left responsive-text",
     },
     {
       text: "Claim date",
@@ -57,6 +61,7 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
         "data-url": "claims/sort/claim date",
       },
       format: "date",
+      classes: "col-6 align-left responsive-text",
     },
     {
       text: "Status",
@@ -65,9 +70,7 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
           sortField && sortField.field === "status" ? direction : "none",
         "data-url": "claims/sort/status",
       },
-    },
-    {
-      text: "Details",
+      classes: "col-6 responsive-text",
     },
   ].filter(Boolean);
 };
@@ -76,19 +79,29 @@ const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
   claims.map((claim) => {
     const row = [
       {
-        text: claim.reference,
-        attributes: {
-          "data-sort-value": claim.reference,
-        },
+        html: `<div>
+                <a class="govuk-!-margin-0 responsive-text" href="${serviceUri}/view-claim/${claim.reference}?page=${page}&returnPage=${returnPage}">${claim.reference}</a>
+                <p class="govuk-!-margin-0 responsive-text">${formatTypeOfVisit(claim.type)}</p>
+              </div>`,
       },
       {
         html: claim.flags.length ? `<span>Yes ${FLAG_EMOJI}</span>` : "",
+        classes: "reponsive-text",
       },
       {
-        text: formatTypeOfVisit(claim.type),
+        text: formatSpecies(claim.data?.typeOfLivestock),
         attributes: {
-          "data-sort-value": claim.type,
+          "data-sort-value": claim.data?.typeOfLivestock,
         },
+        classes: "responsive-text",
+      },
+      {
+        text: claim.herd?.herdName || "Unnamed herd",
+        classes: "responsive-text",
+      },
+      {
+        text: claim.herd?.cph || "-",
+        classes: "responsive-text",
       },
       ...(showSBI
         ? [
@@ -98,30 +111,23 @@ const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
               attributes: {
                 "data-sort-value": claim.application.data?.organisation?.sbi,
               },
+              classes: "responsive-text align-left",
             },
           ]
         : []),
-      {
-        text: formatSpecies(claim.data?.typeOfLivestock),
-        attributes: {
-          "data-sort-value": claim.data?.typeOfLivestock,
-        },
-      },
       {
         text: formatedDateToUk(claim.createdAt),
         format: "date",
         attributes: {
           "data-sort-value": claim.createdAt,
         },
+        classes: "responsive-text align-left",
       },
       {
-        html: `<span class="app-long-tag"><span class="govuk-tag ${getStyleClassByStatus(claim.status.status)}">${upperFirstLetter(claim.status.status.toLowerCase())}</span></span>`,
+        html: `<span class="app-long-tag"><span class="govuk-tag responsive-text ${getStyleClassByStatus(claim.status.status)}">${upperFirstLetter(claim.status.status.toLowerCase())}</span></span>`,
         attributes: {
           "data-sort-value": `${claim.status.status}`,
         },
-      },
-      {
-        html: `<a href="${serviceUri}/view-claim/${claim.reference}?page=${page}&returnPage=${returnPage}">View claim</a>`,
       },
     ];
 

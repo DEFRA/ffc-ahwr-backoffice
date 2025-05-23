@@ -258,7 +258,7 @@ module.exports = {
       const status = {
         key: { text: "Status" },
         value: {
-          html: `<span class='app-long-tag'><span class='govuk-tag ${getStyleClassByStatus(formatStatusId(statusId))}'> ${upperFirstLetter(claimStatus?.status.toLowerCase())} </span></span>`,
+          html: `<span class='app-long-tag'><span class='govuk-tag responsive-text ${getStyleClassByStatus(formatStatusId(statusId))}'> ${upperFirstLetter(claimStatus?.status.toLowerCase())} </span></span>`,
         },
         actions: statusActions,
       };
