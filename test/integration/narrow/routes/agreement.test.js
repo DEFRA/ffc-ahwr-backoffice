@@ -100,14 +100,16 @@ describe("Claims test", () => {
       );
       expect($("th[aria-sort]")[1].attribs["aria-sort"]).toEqual("none");
       expect($("th[aria-sort]")[1].attribs["data-url"]).toContain(
-        "type of visit",
+        "claims/sort/species",
       );
       expect($("th[aria-sort]")[2].attribs["aria-sort"]).toEqual("none");
-      expect($("th[aria-sort]")[2].attribs["data-url"]).toContain("species");
+      expect($("th[aria-sort]")[2].attribs["data-url"]).toContain(
+        "claims/sort/claim date",
+      );
       expect($("th[aria-sort]")[3].attribs["aria-sort"]).toEqual("none");
-      expect($("th[aria-sort]")[3].attribs["data-url"]).toContain("claim date");
-      expect($("th[aria-sort]")[4].attribs["aria-sort"]).toEqual("none");
-      expect($("th[aria-sort]")[4].attribs["data-url"]).toContain("status");
+      expect($("th[aria-sort]")[3].attribs["data-url"]).toContain(
+        "claims/sort/status",
+      );
     });
 
     test("returns table in correct sort order", async () => {
@@ -134,14 +136,16 @@ describe("Claims test", () => {
       );
       expect($("th[aria-sort]")[1].attribs["aria-sort"]).toEqual("none");
       expect($("th[aria-sort]")[1].attribs["data-url"]).toContain(
-        "type of visit",
+        "claims/sort/species",
       );
       expect($("th[aria-sort]")[2].attribs["aria-sort"]).toEqual("none");
-      expect($("th[aria-sort]")[2].attribs["data-url"]).toContain("species");
+      expect($("th[aria-sort]")[2].attribs["data-url"]).toContain(
+        "claims/sort/claim date",
+      );
       expect($("th[aria-sort]")[3].attribs["aria-sort"]).toEqual("none");
-      expect($("th[aria-sort]")[3].attribs["data-url"]).toContain("claim date");
-      expect($("th[aria-sort]")[4].attribs["aria-sort"]).toEqual("none");
-      expect($("th[aria-sort]")[4].attribs["data-url"]).toContain("status");
+      expect($("th[aria-sort]")[3].attribs["data-url"]).toContain(
+        "claims/sort/status",
+      );
     });
 
     test.each([
