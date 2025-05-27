@@ -8,6 +8,7 @@ const {
   getApplication,
   getApplicationHistory,
 } = require("../../../../app/api/applications");
+const config = require("../../../../app/config/index");
 
 jest.mock("../../../../app/auth");
 jest.mock("../../../../app/session");
@@ -18,6 +19,7 @@ jest.mock("@hapi/wreck", () => ({
 }));
 
 describe("View claim test", () => {
+  config.multiHerdsEnabled = false;
   const url = "/view-claim";
   const auth = {
     strategy: "session-auth",
