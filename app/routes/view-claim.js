@@ -1,6 +1,6 @@
 const { Buffer } = require("buffer");
 const joi = require("joi");
-const { getClaim } = require("../api/claims");
+const { getClaim, getClaims } = require("../api/claims");
 const {
   getApplication,
   getApplicationHistory,
@@ -28,6 +28,9 @@ const { getErrorMessagesByKey } = require("./utils/get-error-messages-by-key");
 const { getStatusUpdateOptions } = require("./utils/get-status-update-options");
 const { getLivestockTypes } = require("../lib/get-livestock-types");
 const { getReviewType } = require("../lib/get-review-type");
+const { getHerdBreakdown } = require("../lib/get-herd-breakdown");
+const { getHerdReasonsText } = require("../lib/get-herd-reasons-text");
+const { multiHerdsEnabled } = require("../config");
 
 const backLink = (applicationReference, returnPage, page) => {
   return returnPage === "agreement"
@@ -43,6 +46,42 @@ const speciesEligibleNumber = {
 };
 
 const returnClaimDetailIfExist = (property, value) => property && value;
+
+const getHerdRowData = async (herd, isSheep) => {
+  if (!multiHerdsEnabled) {
+    return [];
+  }
+
+  const herdInfo = herd ?? {
+    herdName: `Unnamed ${isSheep ? "flock" : "herd"}`,
+    cph: "-",
+    herdReasons: undefined,
+  };
+  const isOnlyHerd = herdInfo.herdReasons?.includes("onlyHerd") ? "Yes" : "No";
+  const reasonText = await getHerdReasonsText(herdInfo.herdReasons);
+  const herdName = {
+    key: { text: isSheep ? "Flock name" : "Herd name" },
+    value: {
+      html: herdInfo.herdName ?? `Unnamed ${isSheep ? "flock" : "herd"}`,
+    },
+  };
+  const herdCph = {
+    key: { text: isSheep ? "Flock CPH" : "Herd CPH" },
+    value: { html: herdInfo.cph },
+  };
+  const otherHerdsOnSbi = {
+    key: { text: `Other ${isSheep ? "flocks" : "herds"} on this SBI` },
+    value: { html: herdInfo.herdReasons ? isOnlyHerd : "-" },
+  };
+  const reasonsForHerd = {
+    key: { text: `Reasons the ${isSheep ? "flock" : "herd"} is separate` },
+    value: {
+      html: reasonText,
+    },
+  };
+
+  return [herdName, herdCph, otherHerdsOnSbi, reasonsForHerd];
+};
 
 module.exports = {
   method: "get",
@@ -84,6 +123,7 @@ module.exports = {
         status: claimStatus,
         statusId,
         createdAt,
+        herd,
       } = claim;
 
       request.logger.setBindings({ applicationReference, reference });
@@ -385,6 +425,7 @@ module.exports = {
         typeOfVisit,
         reviewTestResults,
         dateOfVisit,
+        ...(await getHerdRowData(herd, isSheep)),
         isReview && dateOfSampling,
         typeOfLivestock,
         vetName,
@@ -406,6 +447,7 @@ module.exports = {
         typeOfVisit,
         reviewTestResults,
         dateOfVisit,
+        ...(await getHerdRowData(herd, isSheep)),
         isReview && dateOfSampling,
         typeOfLivestock,
         vetName,
@@ -426,6 +468,7 @@ module.exports = {
         livestock,
         typeOfVisit,
         dateOfVisit,
+        ...(await getHerdRowData(herd, isSheep)),
         dateOfSampling,
         typeOfLivestock,
         vetName,
@@ -449,6 +492,7 @@ module.exports = {
         livestock,
         typeOfVisit,
         dateOfVisit,
+        ...(await getHerdRowData(herd, isSheep)),
         dateOfSampling,
         typeOfLivestock,
         numberOfOralFluidSamples,
@@ -484,6 +528,21 @@ module.exports = {
 
       const errorMessages = getErrorMessagesByKey(errors);
 
+      const searchText = applicationReference;
+      const searchType = "appRef";
+      const filter = undefined;
+      const limit = 30;
+      const offset = 0;
+      const { claims } = await getClaims(
+        searchType,
+        searchText,
+        filter,
+        limit,
+        offset,
+        undefined,
+        request.logger,
+      );
+
       return h.view("view-claim", {
         page,
         backLink: backLink(applicationReference, returnPage, page),
@@ -518,6 +577,7 @@ module.exports = {
         statusOptions,
         errorMessages,
         errors,
+        ...getHerdBreakdown(claims),
       });
     },
   },

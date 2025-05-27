@@ -54,6 +54,7 @@ const schema = joi.object({
   superAdmins: joi.array().items(joi.string()).required(),
   developerName: joi.string().allow(""),
   developerUsername: joi.string().allow(""),
+  multiHerdsEnabled: joi.boolean().required(),
 });
 
 const config = {
@@ -98,6 +99,7 @@ const config = {
         user.trim().toLowerCase(),
       )
     : [],
+  multiHerdsEnabled: process.env.MULTI_HERDS_ENABLED === "true",
 };
 const { error, value } = schema.validate(config, { abortEarly: false });
 

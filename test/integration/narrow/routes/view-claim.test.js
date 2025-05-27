@@ -1,5 +1,5 @@
 const cheerio = require("cheerio");
-const { getClaim } = require("../../../../app/api/claims");
+const { getClaim, getClaims } = require("../../../../app/api/claims");
 const {
   administrator,
   recommender,
@@ -214,6 +214,7 @@ describe("View claim test", () => {
       };
 
       getClaim.mockReturnValue(claims[0]);
+      getClaims.mockReturnValue(claims);
       getApplication.mockReturnValue(application);
 
       const res = await global.__SERVER__.inject(options);
@@ -280,6 +281,7 @@ describe("View claim test", () => {
       };
 
       getClaim.mockReturnValue(claims[1]);
+      getClaims.mockReturnValue(claims);
       getApplication.mockReturnValue(application);
 
       const res = await global.__SERVER__.inject(options);
@@ -341,6 +343,7 @@ describe("View claim test", () => {
       };
 
       getClaim.mockReturnValue({ ...claims[0], data: undefined, type });
+      getClaims.mockReturnValue(claims);
       getApplication.mockReturnValue({
         ...application,
         data: { ...application.data, organisation: { address: "" } },
@@ -373,6 +376,7 @@ describe("View claim test", () => {
         data: undefined,
         type: "R",
       });
+      getClaims.mockReturnValue(claims);
       getApplication.mockReturnValue({
         ...application,
         data: { ...application.data, organisation: { address: "" } },
@@ -393,6 +397,7 @@ describe("View claim test", () => {
       };
 
       getClaim.mockReturnValue(claims[2]);
+      getClaims.mockReturnValue(claims);
       getApplication.mockReturnValue(application);
 
       const res = await global.__SERVER__.inject(options);
@@ -450,6 +455,7 @@ describe("View claim test", () => {
       };
 
       getClaim.mockReturnValue(claims[0]);
+      getClaims.mockReturnValue(claims);
       getApplication.mockReturnValue(application);
 
       const res = await global.__SERVER__.inject(options);
@@ -468,6 +474,7 @@ describe("View claim test", () => {
       };
 
       getClaim.mockReturnValue(claims[0]);
+      getClaims.mockReturnValue(claims);
       getApplication.mockReturnValue(application);
 
       const res = await global.__SERVER__.inject(options);

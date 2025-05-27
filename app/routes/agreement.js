@@ -22,6 +22,7 @@ const {
   getClaimTableRows,
 } = require("./models/claim-list");
 const { FLAG_EMOJI } = require("./utils/ui-constants");
+const { getHerdBreakdown } = require("../lib/get-herd-breakdown");
 
 const pageUrl = "/agreement/{reference}/claims";
 const getBackLink = (page, claimReference, returnPage) => {
@@ -50,12 +51,11 @@ module.exports = [
       },
       handler: async (request, h) => {
         const { page, reference, returnPage } = request.query;
+        const { reference: applicationReference } = request.params;
 
         await crumbCache.generateNewCrumb(request, h);
-        const application = await getApplication(request.params.reference);
-        const contactHistory = await getContactHistory(
-          request.params.reference,
-        );
+        const application = await getApplication(applicationReference);
+        const contactHistory = await getContactHistory(applicationReference);
         const contactHistoryDetails = displayContactHistory(contactHistory);
         if (!application) {
           throw boom.badRequest();
@@ -67,7 +67,7 @@ module.exports = [
         const summaryDetails = [
           {
             field: "Agreement number",
-            newValue: `${request.params.reference}${flaggedText}`,
+            newValue: `${applicationReference}${flaggedText}`,
             oldValue: null,
             flagged: isFlagged,
           },
@@ -111,10 +111,10 @@ module.exports = [
         const sortField =
           getClaimSearch(request, claimSearch.sort) ?? undefined;
         const showSBI = false;
-        const dataURLPrefix = `/agreement/${request.params.reference}/`;
+        const dataURLPrefix = `/agreement/${applicationReference}/`;
         const header = getClaimTableHeader(sortField, dataURLPrefix, showSBI);
 
-        const searchText = request.params.reference;
+        const searchText = applicationReference;
         const searchType = "appRef";
         const filter = undefined;
         const limit = 30;
@@ -138,6 +138,7 @@ module.exports = [
           claimsTotal: total,
           header,
           rows,
+          ...getHerdBreakdown(claims),
         });
       },
     },

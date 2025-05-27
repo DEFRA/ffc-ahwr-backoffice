@@ -33,10 +33,55 @@
           errorList: errors
         }) }}
       {% endif %}
-      {{ govukSummaryList({
-        rows: applicationSummaryDetails,
-        classes: "govuk-!-margin-bottom-9"
-      }) }}
+      <dl class="govuk-summary-list">
+        {% for item in applicationSummaryDetails %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key {% if item.flagged %} flagged-item{% endif %}">{{ item.key.text }}</dt>
+              <dd class="govuk-summary-list__value{% if item.flagged %} flagged-item{% endif %}">{{ item.value.text }}</dd>
+            </div>
+        {% endfor %}
+        {% if herdBreakdown %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Number of herds and flocks
+            </dt>
+            <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Beef cattle
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {{ herdBreakdown.beef }}
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Dairy cattle
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {{ herdBreakdown.dairy }}
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Sheep
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {{ herdBreakdown.sheep }}
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row no-line-break">
+                <dt class="govuk-summary-list__key">
+                  Pigs
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {{ herdBreakdown.pigs }}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        {% endif %}
+      </dl>
       {% if moveToInCheckForm %}
         {% include "./includes/move-to-in-check-form.njk" %}
       {% endif %}
