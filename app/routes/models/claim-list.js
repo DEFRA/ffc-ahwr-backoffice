@@ -89,7 +89,7 @@ const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
       },
       {
         html: claim.flags.length ? `<span>Yes ${FLAG_EMOJI}</span>` : "",
-        classes: "reponsive-text",
+        classes: "responsive-text",
       },
       {
         text: formatSpecies(claim.data?.typeOfLivestock),
@@ -99,7 +99,11 @@ const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
         classes: respText,
       },
       {
-        text: claim.herd?.herdName || "Unnamed herd",
+        text:
+          claim.herd?.herdName ??
+          (claim.data.typeOfLivestock === "sheep"
+            ? "Unnamed flock"
+            : "Unnamed herd"),
         classes: respText,
       },
       {
