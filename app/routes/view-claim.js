@@ -380,15 +380,25 @@ module.exports = {
         value: { html: upperFirstLetter(data?.piHuntAllAnimals) },
       };
 
-      const beefRows = [
+      // There are more common rows than this, but the ordering matters and things get more complicated after these
+      const commonRows = [
         status,
         claimDate,
         organisationName,
         livestock,
         typeOfVisit,
-        reviewTestResults,
         dateOfVisit,
         ...getHerdRowData(herd, isSheep),
+      ];
+
+      const commonCowRows = [
+        ...commonRows.slice(0, 5),
+        reviewTestResults,
+        ...commonRows.slice(5),
+      ];
+
+      const beefRows = [
+        ...commonCowRows,
         isReview && dateOfSampling,
         typeOfLivestock,
         vetName,
@@ -403,14 +413,7 @@ module.exports = {
       ];
 
       const dairyRows = [
-        status,
-        claimDate,
-        organisationName,
-        livestock,
-        typeOfVisit,
-        reviewTestResults,
-        dateOfVisit,
-        ...getHerdRowData(herd, isSheep),
+        ...commonCowRows,
         isReview && dateOfSampling,
         typeOfLivestock,
         vetName,
@@ -425,13 +428,7 @@ module.exports = {
       ];
 
       const sheepRows = [
-        status,
-        claimDate,
-        organisationName,
-        livestock,
-        typeOfVisit,
-        dateOfVisit,
-        ...getHerdRowData(herd, isSheep),
+        ...commonRows,
         dateOfSampling,
         typeOfLivestock,
         vetName,
@@ -449,13 +446,7 @@ module.exports = {
       ];
 
       const pigRows = [
-        status,
-        claimDate,
-        organisationName,
-        livestock,
-        typeOfVisit,
-        dateOfVisit,
-        ...getHerdRowData(herd, isSheep),
+        ...commonRows,
         dateOfSampling,
         typeOfLivestock,
         numberOfOralFluidSamples,
@@ -488,9 +479,7 @@ module.exports = {
 
       const rows = [...speciesRows()];
       const rowsWithData = rows.filter((row) => row?.value?.html);
-
       const errorMessages = getErrorMessagesByKey(errors);
-
       const searchText = applicationReference;
       const searchType = "appRef";
       const limit = 30;
