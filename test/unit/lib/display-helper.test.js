@@ -1,6 +1,6 @@
 const {
   upperFirstLetter,
-  formatedDateToUk,
+  formattedDateToUk,
   formatSpecies,
   formatTypeOfVisit,
   formatStatusId,
@@ -19,8 +19,8 @@ describe("display-helper tests", () => {
   test.each([
     { input: "2024-12-15", expected: "15/12/2024" },
     { input: "1-1-2024", expected: "01/01/2024" },
-  ])("formatedDateToUk with $input", async ({ input, expected }) => {
-    expect(formatedDateToUk(input)).toEqual(expected);
+  ])("formattedDateToUk with $input", async ({ input, expected }) => {
+    expect(formattedDateToUk(input)).toEqual(expected);
   });
 
   test.each([

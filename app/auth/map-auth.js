@@ -1,10 +1,4 @@
-const {
-  administrator,
-  processor,
-  user,
-  recommender,
-  authoriser,
-} = require("./permissions");
+const { administrator, processor, user, recommender, authoriser } = require("./permissions");
 const { superAdmins } = require("../config");
 
 const mapAuth = (request) => {
@@ -13,8 +7,7 @@ const mapAuth = (request) => {
 
   return {
     isAuthenticated,
-    isAdministrator:
-      isAuthenticated && credentials.scope.includes(administrator),
+    isAdministrator: isAuthenticated && credentials.scope.includes(administrator),
     isProcessor: isAuthenticated && credentials.scope.includes(processor),
     isUser: isAuthenticated && credentials.scope.includes(user),
     isRecommender: isAuthenticated && credentials.scope.includes(recommender),

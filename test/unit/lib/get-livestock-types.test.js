@@ -4,8 +4,7 @@ describe("getLivestockTypes", () => {
   let typeOfLivestock;
   test("returns correct value for beef", () => {
     typeOfLivestock = "beef";
-    const { isBeef, isDairy, isPigs, isSheep } =
-      getLivestockTypes(typeOfLivestock);
+    const { isBeef, isDairy, isPigs, isSheep } = getLivestockTypes(typeOfLivestock);
 
     expect(isBeef).toBe(true);
     expect(isDairy).toBe(false);
@@ -15,8 +14,7 @@ describe("getLivestockTypes", () => {
 
   test("returns correct value for dairy", () => {
     typeOfLivestock = "dairy";
-    const { isBeef, isDairy, isPigs, isSheep } =
-      getLivestockTypes(typeOfLivestock);
+    const { isBeef, isDairy, isPigs, isSheep } = getLivestockTypes(typeOfLivestock);
 
     expect(isBeef).toBe(false);
     expect(isDairy).toBe(true);
@@ -26,8 +24,7 @@ describe("getLivestockTypes", () => {
 
   test("returns correct value for pigs", () => {
     typeOfLivestock = "pigs";
-    const { isBeef, isDairy, isPigs, isSheep } =
-      getLivestockTypes(typeOfLivestock);
+    const { isBeef, isDairy, isPigs, isSheep } = getLivestockTypes(typeOfLivestock);
 
     expect(isBeef).toBe(false);
     expect(isDairy).toBe(false);
@@ -37,8 +34,7 @@ describe("getLivestockTypes", () => {
 
   test("returns correct value for sheep", () => {
     typeOfLivestock = "sheep";
-    const { isBeef, isDairy, isPigs, isSheep } =
-      getLivestockTypes(typeOfLivestock);
+    const { isBeef, isDairy, isPigs, isSheep } = getLivestockTypes(typeOfLivestock);
 
     expect(isBeef).toBe(false);
     expect(isDairy).toBe(false);

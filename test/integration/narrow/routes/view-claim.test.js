@@ -1,13 +1,7 @@
 const cheerio = require("cheerio");
 const { getClaim, getClaims } = require("../../../../app/api/claims");
-const {
-  administrator,
-  recommender,
-} = require("../../../../app/auth/permissions");
-const {
-  getApplication,
-  getApplicationHistory,
-} = require("../../../../app/api/applications");
+const { administrator, recommender } = require("../../../../app/auth/permissions");
+const { getApplication, getApplicationHistory } = require("../../../../app/api/applications");
 const config = require("../../../../app/config/index");
 
 jest.mock("../../../../app/auth");
@@ -258,21 +252,13 @@ describe("View claim test", () => {
       expect($(".govuk-summary-list__row").length).toEqual(21);
       // Application summary details expects
       for (let i = 0; i < 6; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
       // Claim summary details expects
       for (let i = 6; i < 20; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
     });
     test("returns 200 with endemics claim and sheep species", async () => {
@@ -326,12 +312,8 @@ describe("View claim test", () => {
       expect($(".govuk-summary-list__row").length).toEqual(25);
       // Claim summary details expects
       for (let i = 7; i < 24; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
     });
     test.each([
@@ -440,12 +422,8 @@ describe("View claim test", () => {
         },
       ];
       for (let i = 19; i < 24; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
     });
 
@@ -464,9 +442,7 @@ describe("View claim test", () => {
       const $ = cheerio.load(res.payload);
 
       expect(res.statusCode).toBe(200);
-      expect($(".govuk-back-link").attr("href")).toEqual(
-        "/agreement/AHWR-1234-APP1/claims",
-      );
+      expect($(".govuk-back-link").attr("href")).toEqual("/agreement/AHWR-1234-APP1/claims");
     });
     test("the back link should go to all claims main tab if the user is coming from all claims main tab", async () => {
       const options = {
@@ -554,21 +530,13 @@ describe("View claim test", () => {
       expect($(".govuk-summary-list__row").length).toEqual(25);
       // Application summary details expects
       for (let i = 0; i < 6; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
       // Claim summary details expects
       for (let i = 6; i < 20; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
     });
 
@@ -628,21 +596,13 @@ describe("View claim test", () => {
       expect($(".govuk-summary-list__row").length).toEqual(25);
       // Application summary details expects
       for (let i = 0; i < 6; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
       // Claim summary details expects
       for (let i = 6; i < 20; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
     });
 
@@ -718,21 +678,13 @@ describe("View claim test", () => {
       expect($(".govuk-summary-list__row").length).toEqual(25);
       // Application summary details expects
       for (let i = 0; i < 6; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
       // Claim summary details expects
       for (let i = 6; i < 20; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
     });
   });

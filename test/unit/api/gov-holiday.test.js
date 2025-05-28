@@ -31,10 +31,9 @@ describe("Holiday Functions", () => {
       });
 
       expect(await holidays.getHolidayCalendarForEngland()).toEqual(mockEvents);
-      expect(wreckGetSpy).toHaveBeenCalledWith(
-        "https://www.gov.uk/bank-holidays.json",
-        { json: true },
-      );
+      expect(wreckGetSpy).toHaveBeenCalledWith("https://www.gov.uk/bank-holidays.json", {
+        json: true,
+      });
     });
 
     it("should throw errors", async () => {
@@ -101,9 +100,7 @@ describe("Holiday Functions", () => {
       // Mock today's date and the API response
       const today = new Date().toISOString().split("T")[0];
       const mockEvents = [{ date: today, title: "Mock Holiday" }];
-      holidays.getHolidayCalendarForEngland = jest
-        .fn()
-        .mockResolvedValue(mockEvents);
+      holidays.getHolidayCalendarForEngland = jest.fn().mockResolvedValue(mockEvents);
       holidays.isTodayCustomHoliday = jest.fn().mockResolvedValue(false);
 
       expect(await holidays.isTodayHoliday()).toBeTruthy();
@@ -117,9 +114,7 @@ describe("Holiday Functions", () => {
         .toISOString()
         .split("T")[0];
       const mockEvents = [{ date: tomorrow, title: "Mock Holiday" }];
-      holidays.getHolidayCalendarForEngland = jest
-        .fn()
-        .mockResolvedValue(mockEvents);
+      holidays.getHolidayCalendarForEngland = jest.fn().mockResolvedValue(mockEvents);
       holidays.isTodayCustomHoliday = jest.fn().mockResolvedValue(false);
 
       expect(await holidays.isTodayHoliday()).toBeFalsy();
@@ -129,9 +124,7 @@ describe("Holiday Functions", () => {
 
     it("when Events NULL should return false if today is not a holiday", async () => {
       const mockEvents = null;
-      holidays.getHolidayCalendarForEngland = jest
-        .fn()
-        .mockResolvedValue(mockEvents);
+      holidays.getHolidayCalendarForEngland = jest.fn().mockResolvedValue(mockEvents);
       holidays.isTodayCustomHoliday = jest.fn().mockResolvedValue(false);
 
       expect(await holidays.isTodayHoliday()).toBeFalsy();

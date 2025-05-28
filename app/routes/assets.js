@@ -6,10 +6,7 @@ module.exports = {
     tags: ["assets"],
     handler: {
       directory: {
-        path: [
-          "app/frontend/dist",
-          "node_modules/govuk-frontend/dist/govuk/assets",
-        ],
+        path: ["app/frontend/dist", "node_modules/govuk-frontend/dist/govuk/assets"],
       },
     },
     cache: {

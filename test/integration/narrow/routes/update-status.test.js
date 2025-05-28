@@ -1,10 +1,7 @@
 const createServer = require("../../../../app/server");
 const { administrator } = require("../../../../app/auth/permissions");
 const getCrumbs = require("../../../utils/get-crumbs");
-const {
-  inCheck,
-  readyToPay,
-} = require("../../../../app/constants/application-status");
+const { inCheck, readyToPay } = require("../../../../app/constants/application-status");
 
 jest.mock("../../../../app/api/applications");
 jest.mock("../../../../app/api/claims");
@@ -80,9 +77,7 @@ test("success: update agreement", async () => {
   });
 
   expect(res.statusCode).toBe(302);
-  expect(res.headers.location).toBe(
-    `/view-${claimOrAgreement}/${reference}?page=${page}`,
-  );
+  expect(res.headers.location).toBe(`/view-${claimOrAgreement}/${reference}?page=${page}`);
 });
 
 test("success: authorise agreement", async () => {
@@ -116,9 +111,7 @@ test("success: authorise agreement", async () => {
   });
 
   expect(res.statusCode).toBe(302);
-  expect(res.headers.location).toBe(
-    `/view-${claimOrAgreement}/${reference}?page=${page}`,
-  );
+  expect(res.headers.location).toBe(`/view-${claimOrAgreement}/${reference}?page=${page}`);
 });
 
 test("failure: update claim, missing note", async () => {

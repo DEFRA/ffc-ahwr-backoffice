@@ -1,10 +1,8 @@
 function upperFirstLetter(str) {
-  return typeof str === "string"
-    ? str.charAt(0).toUpperCase() + str.slice(1)
-    : "";
+  return typeof str === "string" ? str.charAt(0).toUpperCase() + str.slice(1) : "";
 }
 
-function formatedDateToUk(date) {
+function formattedDateToUk(date) {
   return new Date(date).toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "2-digit",
@@ -49,7 +47,7 @@ function formatTypeOfVisit(typeOfVisit) {
 
 module.exports = {
   upperFirstLetter,
-  formatedDateToUk,
+  formattedDateToUk,
   formatSpecies,
   formatTypeOfVisit,
   formatStatusId,

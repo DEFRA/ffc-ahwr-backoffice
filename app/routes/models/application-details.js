@@ -1,13 +1,10 @@
-const {
-  formatedDateToUk,
-  upperFirstLetter,
-} = require("../../lib/display-helper");
+const { formattedDateToUk, upperFirstLetter } = require("../../lib/display-helper");
 const { getStyleClassByStatus } = require("../../constants/status");
 const speciesNumbers = require("../../constants/species-numbers");
 
 const getApplicationDetails = (application, statusActions) => {
   const { data, createdAt, status } = application;
-  const formatedDate = formatedDateToUk(createdAt);
+  const formatedDate = formattedDateToUk(createdAt);
 
   const statusLabel = upperFirstLetter(status.status.toLowerCase());
   const statusClass = getStyleClassByStatus(status.status);
@@ -22,10 +19,7 @@ const getApplicationDetails = (application, statusActions) => {
     },
     {
       key: {
-        text:
-          status.status === "NOT AGREED"
-            ? "Date agreement rejected"
-            : "Date of agreement",
+        text: status.status === "NOT AGREED" ? "Date agreement rejected" : "Date of agreement",
       },
       value: { text: formatedDate },
     },

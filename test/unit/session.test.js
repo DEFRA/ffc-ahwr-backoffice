@@ -25,82 +25,66 @@ describe("session", () => {
   describe.each(getFunctionsToTest)(
     '"$func" retrieves value from "$expectedSectionKey" based on key value',
     ({ func, expectedSectionKey }) => {
-      test.each(keysAndValuesToTest)(
-        "key value - $key",
-        async ({ key, value }) => {
-          let sectionKey;
-          const requestGetMock = {
-            yar: {
-              get: (entryKey) => {
-                sectionKey = entryKey;
-                return objectValue;
-              },
+      test.each(keysAndValuesToTest)("key value - $key", async ({ key, value }) => {
+        let sectionKey;
+        const requestGetMock = {
+          yar: {
+            get: (entryKey) => {
+              sectionKey = entryKey;
+              return objectValue;
             },
-          };
+          },
+        };
 
-          const AppSearch = session[func](requestGetMock, key);
+        const AppSearch = session[func](requestGetMock, key);
 
-          expect(AppSearch).toEqual(value);
-          expect(sectionKey).toEqual(expectedSectionKey);
-        },
-      );
+        expect(AppSearch).toEqual(value);
+        expect(sectionKey).toEqual(expectedSectionKey);
+      });
     },
   );
 
   describe.each(setFunctionsToTest)(
     '"$func" sets value in "$expectedSectionKey" based on key value when no value exists in "$expectedSectionKey"',
     ({ func, expectedSectionKey }) => {
-      test.each(keysAndValuesToTest)(
-        "key value - $key",
-        async ({ key, value }) => {
-          const yarMock = {
-            get: jest.fn(),
-            set: jest.fn(),
-          };
-          const requestSetMock = { yar: yarMock };
+      test.each(keysAndValuesToTest)("key value - $key", async ({ key, value }) => {
+        const yarMock = {
+          get: jest.fn(),
+          set: jest.fn(),
+        };
+        const requestSetMock = { yar: yarMock };
 
-          session[func](requestSetMock, key, value);
+        session[func](requestSetMock, key, value);
 
-          expect(requestSetMock.yar.get).toHaveBeenCalledTimes(1);
-          expect(requestSetMock.yar.get).toHaveBeenCalledWith(
-            expectedSectionKey,
-          );
-          expect(requestSetMock.yar.set).toHaveBeenCalledTimes(1);
-          expect(requestSetMock.yar.set).toHaveBeenCalledWith(
-            expectedSectionKey,
-            { [key]: value },
-          );
-        },
-      );
+        expect(requestSetMock.yar.get).toHaveBeenCalledTimes(1);
+        expect(requestSetMock.yar.get).toHaveBeenCalledWith(expectedSectionKey);
+        expect(requestSetMock.yar.set).toHaveBeenCalledTimes(1);
+        expect(requestSetMock.yar.set).toHaveBeenCalledWith(expectedSectionKey, { [key]: value });
+      });
     },
   );
 
   describe.each(setFunctionsToTest)(
     '"$func" sets value in "$expectedSectionKey" based on key when a value already exists in "$expectedSectionKey"',
     ({ func, expectedSectionKey }) => {
-      test.each(keysAndValuesToTest)(
-        "key value - $key",
-        async ({ key, value }) => {
-          const existingValue = { existingKey: "existing-value" };
-          const yarMock = {
-            get: jest.fn(() => existingValue),
-            set: jest.fn(),
-          };
-          const requestSetMock = { yar: yarMock };
+      test.each(keysAndValuesToTest)("key value - $key", async ({ key, value }) => {
+        const existingValue = { existingKey: "existing-value" };
+        const yarMock = {
+          get: jest.fn(() => existingValue),
+          set: jest.fn(),
+        };
+        const requestSetMock = { yar: yarMock };
 
-          session[func](requestSetMock, key, value);
+        session[func](requestSetMock, key, value);
 
-          expect(requestSetMock.yar.get).toHaveBeenCalledTimes(1);
-          expect(requestSetMock.yar.get).toHaveBeenCalledWith(
-            expectedSectionKey,
-          );
-          expect(requestSetMock.yar.set).toHaveBeenCalledTimes(1);
-          expect(requestSetMock.yar.set).toHaveBeenCalledWith(
-            expectedSectionKey,
-            { ...{ [key]: value }, ...existingValue },
-          );
-        },
-      );
+        expect(requestSetMock.yar.get).toHaveBeenCalledTimes(1);
+        expect(requestSetMock.yar.get).toHaveBeenCalledWith(expectedSectionKey);
+        expect(requestSetMock.yar.set).toHaveBeenCalledTimes(1);
+        expect(requestSetMock.yar.set).toHaveBeenCalledWith(expectedSectionKey, {
+          ...{ [key]: value },
+          ...existingValue,
+        });
+      });
     },
   );
 

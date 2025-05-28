@@ -2,9 +2,7 @@ const { upperFirstLetter } = require("../../lib/display-helper");
 
 const getRows = (request) => {
   const { name, username } = request.auth.credentials.account;
-  const roles = request.auth.credentials.scope
-    .map((x) => upperFirstLetter(x))
-    .join(", ");
+  const roles = request.auth.credentials.scope.map((x) => upperFirstLetter(x)).join(", ");
 
   return [
     { key: { text: "User" }, value: { text: name } },
