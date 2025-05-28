@@ -29,8 +29,7 @@ const { getStatusUpdateOptions } = require("./utils/get-status-update-options");
 const { getLivestockTypes } = require("../lib/get-livestock-types");
 const { getReviewType } = require("../lib/get-review-type");
 const { getHerdBreakdown } = require("../lib/get-herd-breakdown");
-const { getHerdReasonsText } = require("../lib/get-herd-reasons-text");
-const config = require("../config");
+const { getHerdRowData } = require("../lib/get-herd-row-data");
 
 const backLink = (applicationReference, returnPage, page) => {
   return returnPage === "agreement"
@@ -46,42 +45,6 @@ const speciesEligibleNumber = {
 };
 
 const returnClaimDetailIfExist = (property, value) => property && value;
-
-const getHerdRowData = (herd, isSheep) => {
-  if (!config.multiHerdsEnabled) {
-    return [];
-  }
-
-  const herdInfo = herd ?? {
-    herdName: `Unnamed ${isSheep ? "flock" : "herd"}`,
-    cph: "-",
-    herdReasons: undefined,
-  };
-  const isOnlyHerd = herdInfo.herdReasons?.includes("onlyHerd") ? "Yes" : "No";
-  const reasonText = getHerdReasonsText(herdInfo.herdReasons);
-  const herdName = {
-    key: { text: isSheep ? "Flock name" : "Herd name" },
-    value: {
-      html: herdInfo.herdName ?? `Unnamed ${isSheep ? "flock" : "herd"}`,
-    },
-  };
-  const herdCph = {
-    key: { text: isSheep ? "Flock CPH" : "Herd CPH" },
-    value: { html: herdInfo.cph },
-  };
-  const otherHerdsOnSbi = {
-    key: { text: `Other ${isSheep ? "flocks" : "herds"} on this SBI` },
-    value: { html: herdInfo.herdReasons ? isOnlyHerd : "-" },
-  };
-  const reasonsForHerd = {
-    key: { text: `Reasons the ${isSheep ? "flock" : "herd"} is separate` },
-    value: {
-      html: reasonText,
-    },
-  };
-
-  return [herdName, herdCph, otherHerdsOnSbi, reasonsForHerd];
-};
 
 module.exports = {
   method: "get",
@@ -530,13 +493,12 @@ module.exports = {
 
       const searchText = applicationReference;
       const searchType = "appRef";
-      const filter = undefined;
       const limit = 30;
       const offset = 0;
       const { claims } = await getClaims(
         searchType,
         searchText,
-        filter,
+        undefined,
         limit,
         offset,
         undefined,
