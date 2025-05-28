@@ -30,7 +30,7 @@ const { getLivestockTypes } = require("../lib/get-livestock-types");
 const { getReviewType } = require("../lib/get-review-type");
 const { getHerdBreakdown } = require("../lib/get-herd-breakdown");
 const { getHerdReasonsText } = require("../lib/get-herd-reasons-text");
-const { multiHerdsEnabled } = require("../config");
+const config = require("../config");
 
 const backLink = (applicationReference, returnPage, page) => {
   return returnPage === "agreement"
@@ -39,16 +39,16 @@ const backLink = (applicationReference, returnPage, page) => {
 };
 
 const speciesEligibleNumber = {
-  beef: "11 or more beef cattle ",
-  dairy: "11 or more dairy cattle ",
+  beef: "11 or more beef cattle",
+  dairy: "11 or more dairy cattle",
   pigs: "51 or more pigs",
   sheep: "21 or more sheep",
 };
 
 const returnClaimDetailIfExist = (property, value) => property && value;
 
-const getHerdRowData = async (herd, isSheep) => {
-  if (!multiHerdsEnabled) {
+const getHerdRowData = (herd, isSheep) => {
+  if (!config.multiHerdsEnabled) {
     return [];
   }
 
@@ -58,7 +58,7 @@ const getHerdRowData = async (herd, isSheep) => {
     herdReasons: undefined,
   };
   const isOnlyHerd = herdInfo.herdReasons?.includes("onlyHerd") ? "Yes" : "No";
-  const reasonText = await getHerdReasonsText(herdInfo.herdReasons);
+  const reasonText = getHerdReasonsText(herdInfo.herdReasons);
   const herdName = {
     key: { text: isSheep ? "Flock name" : "Herd name" },
     value: {
@@ -425,7 +425,7 @@ module.exports = {
         typeOfVisit,
         reviewTestResults,
         dateOfVisit,
-        ...(await getHerdRowData(herd, isSheep)),
+        ...getHerdRowData(herd, isSheep),
         isReview && dateOfSampling,
         typeOfLivestock,
         vetName,
@@ -447,7 +447,7 @@ module.exports = {
         typeOfVisit,
         reviewTestResults,
         dateOfVisit,
-        ...(await getHerdRowData(herd, isSheep)),
+        ...getHerdRowData(herd, isSheep),
         isReview && dateOfSampling,
         typeOfLivestock,
         vetName,
@@ -468,7 +468,7 @@ module.exports = {
         livestock,
         typeOfVisit,
         dateOfVisit,
-        ...(await getHerdRowData(herd, isSheep)),
+        ...getHerdRowData(herd, isSheep),
         dateOfSampling,
         typeOfLivestock,
         vetName,
@@ -492,7 +492,7 @@ module.exports = {
         livestock,
         typeOfVisit,
         dateOfVisit,
-        ...(await getHerdRowData(herd, isSheep)),
+        ...getHerdRowData(herd, isSheep),
         dateOfSampling,
         typeOfLivestock,
         numberOfOralFluidSamples,
