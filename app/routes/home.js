@@ -1,4 +1,10 @@
-const { administrator, processor, user, recommender, authoriser } = require("../auth/permissions");
+const {
+  administrator,
+  processor,
+  user,
+  recommender,
+  authoriser,
+} = require("../auth/permissions");
 module.exports = {
   method: "GET",
   path: "/",

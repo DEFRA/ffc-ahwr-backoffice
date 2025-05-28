@@ -12,7 +12,13 @@ describe("getHerdReasonsText", () => {
   });
 
   test("it returns bullet point html when provided with an array of multiple reasons", async () => {
-    expect(getHerdReasonsText(["differentBreed", "differentPurpose", "keptSeparate"])).toEqual(
+    expect(
+      getHerdReasonsText([
+        "differentBreed",
+        "differentPurpose",
+        "keptSeparate",
+      ]),
+    ).toEqual(
       `<ul class="govuk-list govuk-list--bullet"><li>They are a different breed</li>
 <li>They are used for another purpose (e.g. breeding)</li>
 <li>They have been kept completely separate</li></ul>`,

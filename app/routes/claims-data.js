@@ -26,7 +26,10 @@ module.exports = [
       validate: {
         payload: joi
           .object({
-            claimOrAgreement: joi.string().valid("claim", "agreement").required(),
+            claimOrAgreement: joi
+              .string()
+              .valid("claim", "agreement")
+              .required(),
             vetsName: joi
               .alternatives()
               .conditional("form", {
@@ -92,13 +95,22 @@ module.exports = [
             form: joi
               .string()
               .required()
-              .valid("updateVetsName", "updateDateOfVisit", "updateVetRCVSNumber"),
-            returnPage: joi.string().optional().allow("").valid("agreement", "claims"),
+              .valid(
+                "updateVetsName",
+                "updateDateOfVisit",
+                "updateVetRCVSNumber",
+              ),
+            returnPage: joi
+              .string()
+              .optional()
+              .allow("")
+              .valid("agreement", "claims"),
             reference: joi.string().required(),
           })
           .required(),
         failAction: async (request, h, err) => {
-          const { claimOrAgreement, form, page, reference, returnPage } = request.payload;
+          const { claimOrAgreement, form, page, reference, returnPage } =
+            request.payload;
 
           request.logger.setBindings({ err, form });
 
@@ -116,7 +128,9 @@ module.exports = [
           }
 
           return h
-            .redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`)
+            .redirect(
+              `/view-${claimOrAgreement}/${reference}?${query.toString()}`,
+            )
             .takeover();
         },
       },
@@ -156,7 +170,13 @@ module.exports = [
             dateOfVisit,
           };
 
-          await updateClaimData(reference, claimData, note, name, request.logger);
+          await updateClaimData(
+            reference,
+            claimData,
+            note,
+            name,
+            request.logger,
+          );
         }
 
         if (claimOrAgreement === "agreement") {
@@ -165,10 +185,18 @@ module.exports = [
             vetRcvs: vetRCVSNumber,
             visitDate: dateOfVisit,
           };
-          await updateApplicationData(reference, agreementData, note, name, request.logger);
+          await updateApplicationData(
+            reference,
+            agreementData,
+            note,
+            name,
+            request.logger,
+          );
         }
 
-        return h.redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`);
+        return h.redirect(
+          `/view-${claimOrAgreement}/${reference}?${query.toString()}`,
+        );
       },
     },
   },

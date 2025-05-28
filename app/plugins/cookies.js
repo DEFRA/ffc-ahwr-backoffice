@@ -10,7 +10,8 @@ module.exports = {
           statusCode !== 500 &&
           request.response.source.manager._context
         ) {
-          request.response.source.manager._context.user = request.auth?.credentials?.account;
+          request.response.source.manager._context.user =
+            request.auth?.credentials?.account;
           request.response.source.manager._context.currentPath = request.path;
         }
         return h.continue;

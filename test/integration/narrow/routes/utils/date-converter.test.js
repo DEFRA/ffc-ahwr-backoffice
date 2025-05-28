@@ -1,4 +1,6 @@
-const { convertDateToFormattedString } = require("../../../../../app/routes/utils/date-converter");
+const {
+  convertDateToFormattedString,
+} = require("../../../../../app/routes/utils/date-converter");
 
 describe("convertDateToFormattedString", () => {
   it("should convert the date to the formatted string", () => {

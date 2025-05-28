@@ -36,7 +36,9 @@ describe("Process process on hold claims function test.", () => {
   });
 
   test("error while running process", async () => {
-    const { processOnHoldClaims } = require("../../../app/crons/process-on-hold/process");
+    const {
+      processOnHoldClaims,
+    } = require("../../../app/crons/process-on-hold/process");
     getClaims.mockRejectedValueOnce("getClaims boom");
 
     expect(async () => {
@@ -45,7 +47,9 @@ describe("Process process on hold claims function test.", () => {
   });
 
   test("no pending claims", async () => {
-    const { processOnHoldClaims } = require("../../../app/crons/process-on-hold/process");
+    const {
+      processOnHoldClaims,
+    } = require("../../../app/crons/process-on-hold/process");
     getClaims.mockResolvedValue({
       claims: [],
       total: 0,
@@ -67,7 +71,9 @@ describe("Process process on hold claims function test.", () => {
       ],
       total: 1,
     });
-    const { processOnHoldClaims } = require("../../../app/crons/process-on-hold/process");
+    const {
+      processOnHoldClaims,
+    } = require("../../../app/crons/process-on-hold/process");
     const logger = { setBindings: jest.fn() };
     await processOnHoldClaims(logger);
 
@@ -90,7 +96,9 @@ describe("Process process on hold claims function test.", () => {
       total: 2,
     });
     updateClaimStatus.mockRejectedValueOnce(new Error("boom"));
-    const { processOnHoldClaims } = require("../../../app/crons/process-on-hold/process");
+    const {
+      processOnHoldClaims,
+    } = require("../../../app/crons/process-on-hold/process");
     const logger = { setBindings: jest.fn() };
     await processOnHoldClaims(logger);
 

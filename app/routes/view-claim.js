@@ -1,7 +1,10 @@
 const { Buffer } = require("buffer");
 const joi = require("joi");
 const { getClaim, getClaims } = require("../api/claims");
-const { getApplication, getApplicationHistory } = require("../api/applications");
+const {
+  getApplication,
+  getApplicationHistory,
+} = require("../api/applications");
 const { getHistoryDetails } = require("./models/application-history");
 const { getStyleClassByStatus } = require("../constants/status");
 const { formatStatusId } = require("../lib/display-helper");
@@ -11,8 +14,17 @@ const {
   sheepTestTypes,
   sheepTestResultsType,
 } = require("../constants/sheep-test-types");
-const { administrator, authoriser, processor, recommender, user } = require("../auth/permissions");
-const { upperFirstLetter, formattedDateToUk } = require("../lib/display-helper");
+const {
+  administrator,
+  authoriser,
+  processor,
+  recommender,
+  user,
+} = require("../auth/permissions");
+const {
+  upperFirstLetter,
+  formattedDateToUk,
+} = require("../lib/display-helper");
 const { getCurrentStatusEvent } = require("./utils/get-current-status-event");
 const { getClaimViewStates } = require("./utils/get-claim-view-states");
 const { getErrorMessagesByKey } = require("./utils/get-error-messages-by-key");
@@ -53,7 +65,11 @@ module.exports = {
       }),
       query: joi.object({
         page: joi.string().default(1).allow(null),
-        returnPage: joi.string().optional().allow("").valid("agreement", "claims"),
+        returnPage: joi
+          .string()
+          .optional()
+          .allow("")
+          .valid("agreement", "claims"),
         errors: joi.string().allow(null),
         moveToInCheck: joi.bool().default(false),
         recommendToPay: joi.bool().default(false),
@@ -83,7 +99,10 @@ module.exports = {
 
       request.logger.setBindings({ applicationReference, reference });
 
-      const application = await getApplication(applicationReference, request.logger);
+      const application = await getApplication(
+        applicationReference,
+        request.logger,
+      );
 
       const { organisation } = application.data;
 
@@ -94,20 +113,31 @@ module.exports = {
 
       const applicationSummaryDetails = [
         buildKeyValueJson("Agreement number", applicationReference),
-        buildKeyValueJson("Agreement date", formattedDateToUk(application.createdAt)),
+        buildKeyValueJson(
+          "Agreement date",
+          formattedDateToUk(application.createdAt),
+        ),
         buildKeyValueJson("Agreement holder", organisation.farmerName),
         buildKeyValueJson("Agreement holder email", organisation.email),
         buildKeyValueJson("SBI number", organisation.sbi),
-        buildKeyValueJson("Address", organisation.address.split(",").join(", ")),
+        buildKeyValueJson(
+          "Address",
+          organisation.address.split(",").join(", "),
+        ),
         buildKeyValueJson("Business email", organisation.orgEmail),
         buildKeyValueJson("Flagged", flaggedText),
       ];
 
       const errors = request.query.errors
-        ? JSON.parse(Buffer.from(request.query.errors, "base64").toString("utf8"))
+        ? JSON.parse(
+            Buffer.from(request.query.errors, "base64").toString("utf8"),
+          )
         : [];
 
-      const { historyRecords } = await getApplicationHistory(reference, request.logger);
+      const { historyRecords } = await getApplicationHistory(
+        reference,
+        request.logger,
+      );
       const historyDetails = getHistoryDetails(historyRecords);
       const currentStatusEvent = getCurrentStatusEvent(claim, historyRecords);
 
@@ -131,15 +161,19 @@ module.exports = {
         updateDateOfVisitForm,
       } = getClaimViewStates(request, claim.statusId, currentStatusEvent);
 
-      const { isBeef, isDairy, isPigs, isSheep } = getLivestockTypes(data?.typeOfLivestock);
+      const { isBeef, isDairy, isPigs, isSheep } = getLivestockTypes(
+        data?.typeOfLivestock,
+      );
       const { isReview, isEndemicsFollowUp } = getReviewType(type);
 
       const getBiosecurityRow = () =>
         data?.biosecurity &&
         isEndemicsFollowUp &&
-        [livestockTypes.pigs, livestockTypes.beef, livestockTypes.dairy].includes(
-          data?.typeOfLivestock,
-        ) && {
+        [
+          livestockTypes.pigs,
+          livestockTypes.beef,
+          livestockTypes.dairy,
+        ].includes(data?.typeOfLivestock) && {
           key: { text: "Biosecurity assessment" },
           value: {
             html:
@@ -166,7 +200,8 @@ module.exports = {
                     typeof sheepTest.result === "object"
                       ? sheepTest.result
                           .map(
-                            (testResult) => `${testResult.diseaseType} (${testResult.result})</br>`,
+                            (testResult) =>
+                              `${testResult.diseaseType} (${testResult.result})</br>`,
                           )
                           .join(" ")
                       : `${sheepTestTypes[data?.sheepEndemicsPackage].find((test) => test.value === sheepTest.diseaseType)?.text} (${sheepTestResultsType[sheepTest.diseaseType].find((resultType) => resultType.value === sheepTest.result).text})`,
@@ -235,7 +270,9 @@ module.exports = {
         key: { text: "Livestock" },
         value: {
           html: upperFirstLetter(
-            [livestockTypes.pigs, livestockTypes.sheep].includes(data?.typeOfLivestock)
+            [livestockTypes.pigs, livestockTypes.sheep].includes(
+              data?.typeOfLivestock,
+            )
               ? data?.typeOfLivestock
               : `${data?.typeOfLivestock} cattle`,
           ),
@@ -244,7 +281,9 @@ module.exports = {
       const typeOfVisit = {
         key: { text: "Type of visit" },
         value: {
-          html: isReview ? "Animal health and welfare review" : "Endemic disease follow-ups",
+          html: isReview
+            ? "Animal health and welfare review"
+            : "Endemic disease follow-ups",
         },
       };
       const dateOfVisit = {
@@ -296,7 +335,9 @@ module.exports = {
         data?.testResults && typeof data?.testResults === "string",
         {
           key: {
-            text: data?.reviewTestResults ? "Follow-up test result" : "Test result",
+            text: data?.reviewTestResults
+              ? "Follow-up test result"
+              : "Test result",
           },
           value: { html: upperFirstLetter(data?.testResults) },
         },
@@ -457,7 +498,9 @@ module.exports = {
         title: upperFirstLetter(application.data.organisation.name),
         claimSummaryDetails: rowsWithData,
         status: {
-          normalType: upperFirstLetter(formatStatusId(claim.statusId).toLowerCase()),
+          normalType: upperFirstLetter(
+            formatStatusId(claim.statusId).toLowerCase(),
+          ),
           tagClass: getStyleClassByStatus(formatStatusId(claim.statusId)),
         },
         applicationSummaryDetails,

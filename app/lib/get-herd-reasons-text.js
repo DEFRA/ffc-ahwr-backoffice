@@ -20,11 +20,15 @@ const getHerdReasonsText = (reasons, isSheep) => {
     onlyHerd: `This is the only ${isSheep ? "flock" : "herd"}`,
   };
 
-  const formattedReasons = reasons.map((reason) => MULTIPLE_HERD_REASONS[reason]);
+  const formattedReasons = reasons.map(
+    (reason) => MULTIPLE_HERD_REASONS[reason],
+  );
 
   const startOfHtml = '<ul class="govuk-list govuk-list--bullet">';
   const endOfHtml = "</ul>";
-  const middleOfHtml = formattedReasons.map((reason) => `<li>${reason}</li>`).join("\n");
+  const middleOfHtml = formattedReasons
+    .map((reason) => `<li>${reason}</li>`)
+    .join("\n");
 
   return `${startOfHtml}${middleOfHtml}${endOfHtml}`;
 };

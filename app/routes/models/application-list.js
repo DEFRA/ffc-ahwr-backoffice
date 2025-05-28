@@ -14,13 +14,15 @@ const viewModel = (request, page) => {
 };
 
 const getApplicationTableHeader = (sortField) => {
-  const direction = sortField && sortField.direction === "DESC" ? "descending" : "ascending";
+  const direction =
+    sortField && sortField.direction === "DESC" ? "descending" : "ascending";
   const agreementDateTitle = "Agreement date";
   const headerColumns = [
     {
       text: "Agreement number",
       attributes: {
-        "aria-sort": sortField && sortField.field === "Reference" ? direction : "none",
+        "aria-sort":
+          sortField && sortField.field === "Reference" ? direction : "none",
         "data-url": "/agreements/sort/Reference",
       },
     },
@@ -30,14 +32,16 @@ const getApplicationTableHeader = (sortField) => {
     {
       text: "Organisation",
       attributes: {
-        "aria-sort": sortField && sortField.field === "Organisation" ? direction : "none",
+        "aria-sort":
+          sortField && sortField.field === "Organisation" ? direction : "none",
         "data-url": "/agreements/sort/Organisation",
       },
     },
     {
       text: "SBI number",
       attributes: {
-        "aria-sort": sortField && sortField.field === "SBI" ? direction : "none",
+        "aria-sort":
+          sortField && sortField.field === "SBI" ? direction : "none",
         "data-url": "/agreements/sort/SBI",
       },
       format: "numeric",
@@ -45,7 +49,8 @@ const getApplicationTableHeader = (sortField) => {
     {
       text: agreementDateTitle,
       attributes: {
-        "aria-sort": sortField && sortField.field === "Apply date" ? direction : "none",
+        "aria-sort":
+          sortField && sortField.field === "Apply date" ? direction : "none",
         "data-url": "/agreements/sort/Apply date",
       },
       format: "date",
@@ -53,7 +58,8 @@ const getApplicationTableHeader = (sortField) => {
     {
       text: "Status",
       attributes: {
-        "aria-sort": sortField && sortField.field === "Status" ? direction : "none",
+        "aria-sort":
+          sortField && sortField.field === "Status" ? direction : "none",
         "data-url": "/agreements/sort/Status",
       },
     },
@@ -151,7 +157,9 @@ async function createModel(request, page) {
 
     return {
       applications,
-      header: getApplicationTableHeader(getAppSearch(request, keys.appSearch.sort)),
+      header: getApplicationTableHeader(
+        getAppSearch(request, keys.appSearch.sort),
+      ),
       ...pagingData,
       searchText,
       availableStatus: groupByStatus,

@@ -5,7 +5,9 @@ const { administrator } = require("../../../../app/auth/permissions");
 const applicationData = require("../../../data/applications.json");
 const applications = require("../../../../app/api/applications");
 jest.mock("../../../../app/api/applications");
-applications.getApplication = jest.fn().mockReturnValue(applicationData.applications[0]);
+applications.getApplication = jest
+  .fn()
+  .mockReturnValue(applicationData.applications[0]);
 
 const claimData = require("../../../data/claims.json");
 const claims = require("../../../../app/api/claims");
@@ -15,7 +17,9 @@ claims.getClaimsByApplicationReference = jest.fn().mockReturnValue(claimData);
 const contactHistoryData = require("../../../data/contact-history.json");
 const contactHistory = require("../../../../app/api/contact-history");
 jest.mock("../../../../app/api/contact-history.js");
-contactHistory.getContactHistory = jest.fn().mockReturnValue(contactHistoryData);
+contactHistory.getContactHistory = jest
+  .fn()
+  .mockReturnValue(contactHistoryData);
 
 const pagination = require("../../../../app/pagination");
 jest.mock("../../../../app/pagination");
@@ -91,13 +95,21 @@ describe("Claims test", () => {
       expectPhaseBanner.ok($);
 
       expect($("th[aria-sort]")[0].attribs["aria-sort"]).toEqual("none");
-      expect($("th[aria-sort]")[0].attribs["data-url"]).toContain("claim number");
+      expect($("th[aria-sort]")[0].attribs["data-url"]).toContain(
+        "claim number",
+      );
       expect($("th[aria-sort]")[1].attribs["aria-sort"]).toEqual("none");
-      expect($("th[aria-sort]")[1].attribs["data-url"]).toContain("claims/sort/species");
+      expect($("th[aria-sort]")[1].attribs["data-url"]).toContain(
+        "claims/sort/species",
+      );
       expect($("th[aria-sort]")[2].attribs["aria-sort"]).toEqual("none");
-      expect($("th[aria-sort]")[2].attribs["data-url"]).toContain("claims/sort/claim date");
+      expect($("th[aria-sort]")[2].attribs["data-url"]).toContain(
+        "claims/sort/claim date",
+      );
       expect($("th[aria-sort]")[3].attribs["aria-sort"]).toEqual("none");
-      expect($("th[aria-sort]")[3].attribs["data-url"]).toContain("claims/sort/status");
+      expect($("th[aria-sort]")[3].attribs["data-url"]).toContain(
+        "claims/sort/status",
+      );
     });
 
     test("returns table in correct sort order", async () => {
@@ -119,13 +131,21 @@ describe("Claims test", () => {
       expectPhaseBanner.ok($);
 
       expect($("th[aria-sort]")[0].attribs["aria-sort"]).toEqual("ascending");
-      expect($("th[aria-sort]")[0].attribs["data-url"]).toContain("claim number");
+      expect($("th[aria-sort]")[0].attribs["data-url"]).toContain(
+        "claim number",
+      );
       expect($("th[aria-sort]")[1].attribs["aria-sort"]).toEqual("none");
-      expect($("th[aria-sort]")[1].attribs["data-url"]).toContain("claims/sort/species");
+      expect($("th[aria-sort]")[1].attribs["data-url"]).toContain(
+        "claims/sort/species",
+      );
       expect($("th[aria-sort]")[2].attribs["aria-sort"]).toEqual("none");
-      expect($("th[aria-sort]")[2].attribs["data-url"]).toContain("claims/sort/claim date");
+      expect($("th[aria-sort]")[2].attribs["data-url"]).toContain(
+        "claims/sort/claim date",
+      );
       expect($("th[aria-sort]")[3].attribs["aria-sort"]).toEqual("none");
-      expect($("th[aria-sort]")[3].attribs["data-url"]).toContain("claims/sort/status");
+      expect($("th[aria-sort]")[3].attribs["data-url"]).toContain(
+        "claims/sort/status",
+      );
     });
 
     test.each([
@@ -181,7 +201,9 @@ describe("Claims test", () => {
       expect($("title").text()).toContain("Administration - My Farm");
       expectPhaseBanner.ok($);
 
-      expect($(".govuk-back-link").attr("href")).toEqual("/view-claim/REDC-6179-D9D3?page=1");
+      expect($(".govuk-back-link").attr("href")).toEqual(
+        "/view-claim/REDC-6179-D9D3?page=1",
+      );
     });
     test("the back link should go to all agreements if the user is coming from all agreements main tab", async () => {
       const options = {

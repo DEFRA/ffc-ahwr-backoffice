@@ -11,7 +11,10 @@ function getPagingData(total, limit, query) {
   const querystring = commonQuery ? `&${commonQuery}` : commonQuery;
 
   const totalPages = Math.ceil(total / limit);
-  const previous = Number(page) === 1 ? null : { href: `?page=${Number(page) - 1}${querystring}` };
+  const previous =
+    Number(page) === 1
+      ? null
+      : { href: `?page=${Number(page) - 1}${querystring}` };
   const next =
     totalPages === 1 || totalPages === Number(page)
       ? null

@@ -90,7 +90,11 @@ describe("Claims API", () => {
 
     wreck.put = jest.fn().mockResolvedValueOnce(wreckResponse);
 
-    const response = await updateClaimStatus(applicationReference, "Admin", status.IN_CHECK);
+    const response = await updateClaimStatus(
+      applicationReference,
+      "Admin",
+      status.IN_CHECK,
+    );
 
     expect(response).toEqual(wreckResponse.payload);
   });
@@ -108,7 +112,12 @@ describe("Claims API", () => {
     const logger = { setBindings: jest.fn() };
 
     expect(async () => {
-      await updateClaimStatus(applicationReference, "Admin", status.IN_CHECK, logger);
+      await updateClaimStatus(
+        applicationReference,
+        "Admin",
+        status.IN_CHECK,
+        logger,
+      );
     }).rejects.toEqual(wreckResponse);
   });
   test("updateClaimData", async () => {

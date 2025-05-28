@@ -292,34 +292,39 @@ describe("Applications test", () => {
       { searchDetails: { searchText: "" } },
       { searchDetails: { searchText: null } },
       { searchDetails: { searchText: undefined } },
-    ])("returns success with error message when no data found", async ({ searchDetails }) => {
-      const options = {
-        method,
-        url,
-        payload: {
-          crumb,
-          searchText: searchDetails.searchText,
-          status: [],
-          submit: searchDetails.submit ?? "search",
-        },
-        headers: { cookie: `crumb=${crumb}` },
-        auth,
-      };
+    ])(
+      "returns success with error message when no data found",
+      async ({ searchDetails }) => {
+        const options = {
+          method,
+          url,
+          payload: {
+            crumb,
+            searchText: searchDetails.searchText,
+            status: [],
+            submit: searchDetails.submit ?? "search",
+          },
+          headers: { cookie: `crumb=${crumb}` },
+          auth,
+        };
 
-      applications.getApplications.mockReturnValue({
-        applications: [],
-        applicationStatus: [],
-        total: 0,
-      });
-      const res = await global.__SERVER__.inject(options);
+        applications.getApplications.mockReturnValue({
+          applications: [],
+          applicationStatus: [],
+          total: 0,
+        });
+        const res = await global.__SERVER__.inject(options);
 
-      expect(res.statusCode).toBe(200);
-      expect(sessionMock.getAppSearch).toBeCalled();
-      expect(sessionMock.setAppSearch).toBeCalled();
-      expect(applications.getApplications).toBeCalled();
-      expect(pagination.getPagination).toBeCalled();
-      const $ = cheerio.load(res.payload);
-      expect($("p.govuk-error-message").text()).toMatch("No agreements found.");
-    });
+        expect(res.statusCode).toBe(200);
+        expect(sessionMock.getAppSearch).toBeCalled();
+        expect(sessionMock.setAppSearch).toBeCalled();
+        expect(applications.getApplications).toBeCalled();
+        expect(pagination.getPagination).toBeCalled();
+        const $ = cheerio.load(res.payload);
+        expect($("p.govuk-error-message").text()).toMatch(
+          "No agreements found.",
+        );
+      },
+    );
   });
 });

@@ -1,4 +1,7 @@
-const { formattedDateToUk, upperFirstLetter } = require("../../lib/display-helper");
+const {
+  formattedDateToUk,
+  upperFirstLetter,
+} = require("../../lib/display-helper");
 const { getStyleClassByStatus } = require("../../constants/status");
 const speciesNumbers = require("../../constants/species-numbers");
 
@@ -19,7 +22,10 @@ const getApplicationDetails = (application, statusActions) => {
     },
     {
       key: {
-        text: status.status === "NOT AGREED" ? "Date agreement rejected" : "Date of agreement",
+        text:
+          status.status === "NOT AGREED"
+            ? "Date agreement rejected"
+            : "Date of agreement",
       },
       value: { text: formatedDate },
     },

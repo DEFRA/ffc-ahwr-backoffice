@@ -3,7 +3,11 @@ const { updateApplicationStatus } = require("../api/applications");
 const { updateClaimStatus } = require("../api/claims");
 const preDoubleSubmitHandler = require("./utils/pre-submission-handler");
 const crumbCache = require("./utils/crumb-cache");
-const { administrator, recommender, authoriser } = require("../auth/permissions");
+const {
+  administrator,
+  recommender,
+  authoriser,
+} = require("../auth/permissions");
 const { inCheck } = require("../constants/application-status");
 const { encodeErrorsForUI } = require("./utils/encode-errors-for-ui");
 
@@ -32,7 +36,8 @@ module.exports = {
         returnPage: joi.string().allow("").optional(),
       }),
       failAction: async (request, h, err) => {
-        const { claimOrAgreement, page, reference, returnPage } = request.payload;
+        const { claimOrAgreement, page, reference, returnPage } =
+          request.payload;
 
         request.logger.setBindings({ err, reference });
 
@@ -47,7 +52,11 @@ module.exports = {
           query.append("returnPage", returnPage);
         }
 
-        return h.redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`).takeover();
+        return h
+          .redirect(
+            `/view-${claimOrAgreement}/${reference}?${query.toString()}`,
+          )
+          .takeover();
       },
     },
     handler: async (request, h) => {
@@ -66,7 +75,9 @@ module.exports = {
         await updateApplicationStatus(reference, name, inCheck, request.logger);
       }
 
-      return h.redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`);
+      return h.redirect(
+        `/view-${claimOrAgreement}/${reference}?${query.toString()}`,
+      );
     },
   },
 };

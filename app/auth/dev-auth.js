@@ -1,4 +1,10 @@
-const { administrator, processor, user, recommender, authoriser } = require("./permissions");
+const {
+  administrator,
+  processor,
+  user,
+  recommender,
+  authoriser,
+} = require("./permissions");
 
 let cachedUserId;
 

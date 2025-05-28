@@ -142,10 +142,16 @@ describe("Flags tests", () => {
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
       const redirectedLocation = res.headers.location;
-      expect(redirectedLocation).toContain(`flags?deleteFlag=${flagId}&errors=`);
+      expect(redirectedLocation).toContain(
+        `flags?deleteFlag=${flagId}&errors=`,
+      );
 
-      const base64EncodedErrors = redirectedLocation.split("errors=")[1].replace("%3D%3D", "");
-      const parsedErrors = JSON.parse(Buffer.from(base64EncodedErrors, "base64").toString("utf8"));
+      const base64EncodedErrors = redirectedLocation
+        .split("errors=")[1]
+        .replace("%3D%3D", "");
+      const parsedErrors = JSON.parse(
+        Buffer.from(base64EncodedErrors, "base64").toString("utf8"),
+      );
       expect(parsedErrors).toEqual([
         {
           href: "#deletedNote",
@@ -172,10 +178,16 @@ describe("Flags tests", () => {
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
       const redirectedLocation = res.headers.location;
-      expect(redirectedLocation).toContain(`flags?deleteFlag=${flagId}&errors=`);
+      expect(redirectedLocation).toContain(
+        `flags?deleteFlag=${flagId}&errors=`,
+      );
 
-      const base64EncodedErrors = redirectedLocation.split("errors=")[1].replace("%3D%3D", "");
-      const parsedErrors = JSON.parse(Buffer.from(base64EncodedErrors, "base64").toString("utf8"));
+      const base64EncodedErrors = redirectedLocation
+        .split("errors=")[1]
+        .replace("%3D%3D", "");
+      const parsedErrors = JSON.parse(
+        Buffer.from(base64EncodedErrors, "base64").toString("utf8"),
+      );
       expect(parsedErrors).toEqual([
         {
           href: "#deletedNote",
@@ -275,8 +287,12 @@ describe("Flags tests", () => {
       const redirectedLocation = res.headers.location;
       expect(redirectedLocation).toContain("flags?createFlag=true&errors=");
 
-      const base64EncodedErrors = redirectedLocation.split("errors=")[1].replace("%3D", "");
-      const parsedErrors = JSON.parse(Buffer.from(base64EncodedErrors, "base64").toString("utf8"));
+      const base64EncodedErrors = redirectedLocation
+        .split("errors=")[1]
+        .replace("%3D", "");
+      const parsedErrors = JSON.parse(
+        Buffer.from(base64EncodedErrors, "base64").toString("utf8"),
+      );
       expect(parsedErrors).toEqual([
         {
           href: "#",
@@ -306,8 +322,12 @@ describe("Flags tests", () => {
       const redirectedLocation = res.headers.location;
       expect(redirectedLocation).toContain("flags?createFlag=true&errors=");
 
-      const base64EncodedErrors = redirectedLocation.split("errors=")[1].replace("%3D%3D", "");
-      const parsedErrors = JSON.parse(Buffer.from(base64EncodedErrors, "base64").toString("utf8"));
+      const base64EncodedErrors = redirectedLocation
+        .split("errors=")[1]
+        .replace("%3D%3D", "");
+      const parsedErrors = JSON.parse(
+        Buffer.from(base64EncodedErrors, "base64").toString("utf8"),
+      );
       expect(parsedErrors).toEqual([
         {
           href: "#",
@@ -337,8 +357,12 @@ describe("Flags tests", () => {
       const redirectedLocation = res.headers.location;
       expect(redirectedLocation).toContain("flags?createFlag=true&errors=");
 
-      const base64EncodedErrors = redirectedLocation.split("errors=")[1].replace("%3D%3D", "");
-      const parsedErrors = JSON.parse(Buffer.from(base64EncodedErrors, "base64").toString("utf8"));
+      const base64EncodedErrors = redirectedLocation
+        .split("errors=")[1]
+        .replace("%3D%3D", "");
+      const parsedErrors = JSON.parse(
+        Buffer.from(base64EncodedErrors, "base64").toString("utf8"),
+      );
       expect(parsedErrors).toEqual([
         {
           href: "#",
@@ -380,8 +404,12 @@ describe("Flags tests", () => {
       const redirectedLocation = res.headers.location;
       expect(redirectedLocation).toContain("flags?createFlag=true&errors=");
 
-      const base64EncodedErrors = redirectedLocation.split("errors=")[1].replace("%3D%3D", "");
-      const parsedErrors = JSON.parse(Buffer.from(base64EncodedErrors, "base64").toString("utf8"));
+      const base64EncodedErrors = redirectedLocation
+        .split("errors=")[1]
+        .replace("%3D%3D", "");
+      const parsedErrors = JSON.parse(
+        Buffer.from(base64EncodedErrors, "base64").toString("utf8"),
+      );
       expect(parsedErrors).toEqual([
         {
           href: "#agreement-reference",
@@ -423,8 +451,12 @@ describe("Flags tests", () => {
       const redirectedLocation = res.headers.location;
       expect(redirectedLocation).toContain("flags?createFlag=true&errors=");
 
-      const base64EncodedErrors = redirectedLocation.split("errors=")[1].replace("%3D%3D", "");
-      const parsedErrors = JSON.parse(Buffer.from(base64EncodedErrors, "base64").toString("utf8"));
+      const base64EncodedErrors = redirectedLocation
+        .split("errors=")[1]
+        .replace("%3D%3D", "");
+      const parsedErrors = JSON.parse(
+        Buffer.from(base64EncodedErrors, "base64").toString("utf8"),
+      );
       expect(parsedErrors).toEqual([
         {
           href: "#agreement-reference",

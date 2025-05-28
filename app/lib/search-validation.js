@@ -1,7 +1,9 @@
 const regexChecker = require("../../app/routes/utils/regex-checker");
 
-const refRegEx = /^(IAHW|AHWR|REPI|RESH|REBC|REDC|FUPI|FUSH|FUBC|FUDC)-[A-Z0-9]{4}-[A-Z0-9]{4}$/i;
-const dateRegEx = /^(0[1-9]|[12]\d|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/; // DD/MM/YYYY
+const refRegEx =
+  /^(IAHW|AHWR|REPI|RESH|REBC|REDC|FUPI|FUSH|FUBC|FUDC)-[A-Z0-9]{4}-[A-Z0-9]{4}$/i;
+const dateRegEx =
+  /^(0[1-9]|[12]\d|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/; // DD/MM/YYYY
 const validStatus = [
   "agreed",
   "applied",
@@ -67,7 +69,9 @@ module.exports = (searchText) => {
     case validTypes.indexOf(searchText.toLowerCase()) !== -1:
       searchType = "type";
       searchText =
-        validTypes[validTypes.indexOf(searchText.toLowerCase())] === "review" ? "R" : "E";
+        validTypes[validTypes.indexOf(searchText.toLowerCase())] === "review"
+          ? "R"
+          : "E";
       break;
     case isValidSpecies:
       searchType = "species";

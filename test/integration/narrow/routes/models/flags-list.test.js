@@ -1,5 +1,7 @@
 const flags = require("../../../../../app/api/flags");
-const { createFlagsTableData } = require("../../../../../app/routes/models/flags-list");
+const {
+  createFlagsTableData,
+} = require("../../../../../app/routes/models/flags-list");
 const mockFlags = require("../../../../data/flags.json");
 const { serviceUri } = require("../../../../../app/config");
 

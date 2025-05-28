@@ -33,13 +33,17 @@ if (cookieContainer) {
     submitPreference(false);
   });
 
-  acceptedBanner?.querySelector(".js-hide").addEventListener("click", function () {
-    cookieBanner.setAttribute("hidden", "hidden");
-  });
+  acceptedBanner
+    ?.querySelector(".js-hide")
+    .addEventListener("click", function () {
+      cookieBanner.setAttribute("hidden", "hidden");
+    });
 
-  rejectedBanner?.querySelector(".js-hide").addEventListener("click", function () {
-    cookieBanner.setAttribute("hidden", "hidden");
-  });
+  rejectedBanner
+    ?.querySelector(".js-hide")
+    .addEventListener("click", function () {
+      cookieBanner.setAttribute("hidden", "hidden");
+    });
 
   function submitPreference(accepted) {
     const xhr = new XMLHttpRequest();

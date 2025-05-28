@@ -12,7 +12,15 @@ async function getClaim(reference, logger) {
   }
 }
 
-async function getClaims(searchType, searchText, filter, limit, offset, sort, logger) {
+async function getClaims(
+  searchType,
+  searchText,
+  filter,
+  limit,
+  offset,
+  sort,
+  logger,
+) {
   const endpoint = `${applicationApiUri}/claim/search`;
   const options = {
     payload: {

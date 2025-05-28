@@ -1,6 +1,9 @@
 const cheerio = require("cheerio");
 const expectPhaseBanner = require("../../../utils/phase-banner-expect");
-const { administrator, authoriser } = require("../../../../app/auth/permissions");
+const {
+  administrator,
+  authoriser,
+} = require("../../../../app/auth/permissions");
 const getCrumbs = require("../../../utils/get-crumbs");
 
 const reference = "AHWR-555A-FD4C";
@@ -138,7 +141,9 @@ describe("/approve-application-claim", () => {
       const res = await global.__SERVER__.inject(options);
 
       expect(res.statusCode).toBe(302);
-      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`);
+      expect(res.headers.location).toEqual(
+        `/view-agreement/${reference}?page=1`,
+      );
     });
 
     test.each([
@@ -170,7 +175,9 @@ describe("/approve-application-claim", () => {
       const res = await global.__SERVER__.inject(options);
 
       expect(res.statusCode).toBe(302);
-      expect(res.headers.location).toEqual(`/view-claim/${reference}?page=1&returnPage=claims`);
+      expect(res.headers.location).toEqual(
+        `/view-claim/${reference}?page=1&returnPage=claims`,
+      );
     });
 
     test("Approve application claim not processed", async () => {

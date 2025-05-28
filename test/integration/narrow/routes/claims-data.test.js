@@ -67,7 +67,9 @@ describe("Claims data tests", () => {
       const res = await global.__SERVER__.inject(options);
       expect(res.statusCode).toBe(302);
 
-      expect(res.headers.location).toBe("/view-claim/AAAA?page=1&returnPage=claims");
+      expect(res.headers.location).toBe(
+        "/view-claim/AAAA?page=1&returnPage=claims",
+      );
       expect(claims.updateClaimData).toHaveBeenCalledWith(
         "AAAA",
         { dateOfVisit: undefined, vetRCVSNumber: undefined, vetsName: "Barry" },
@@ -98,7 +100,9 @@ describe("Claims data tests", () => {
       const res = await global.__SERVER__.inject(options);
       expect(res.statusCode).toBe(302);
 
-      expect(res.headers.location).toBe("/view-claim/AAAA?page=1&returnPage=claims");
+      expect(res.headers.location).toBe(
+        "/view-claim/AAAA?page=1&returnPage=claims",
+      );
       expect(claims.updateClaimData).toHaveBeenCalledWith(
         "AAAA",
         {
@@ -131,7 +135,9 @@ describe("Claims data tests", () => {
       const res = await global.__SERVER__.inject(options);
       expect(res.statusCode).toBe(302);
 
-      expect(res.headers.location).toBe("/view-claim/AAAA?page=1&returnPage=claims");
+      expect(res.headers.location).toBe(
+        "/view-claim/AAAA?page=1&returnPage=claims",
+      );
       expect(claims.updateClaimData).toHaveBeenCalledWith(
         "AAAA",
         {

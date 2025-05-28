@@ -35,7 +35,9 @@ module.exports = {
         const errors = encodeErrorsForUI(err.details, "#withdraw");
         const query = new URLSearchParams({ page, withdraw: "true", errors });
 
-        return h.redirect(`/view-agreement/${reference}?${query.toString()}`).takeover();
+        return h
+          .redirect(`/view-agreement/${reference}?${query.toString()}`)
+          .takeover();
       },
     },
     handler: async (request, h) => {

@@ -1,4 +1,6 @@
-const { getClaimViewStates } = require("../../../../app/routes/utils/get-claim-view-states");
+const {
+  getClaimViewStates,
+} = require("../../../../app/routes/utils/get-claim-view-states");
 const { status } = require("../../../../app/constants/status");
 const {
   administrator,
@@ -869,7 +871,11 @@ test("status: in recommended to pay, user: admin, recommender: different person"
   const currentStatusEvent = {
     updatedBy: "someone else",
   };
-  const state = getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent);
+  const state = getClaimViewStates(
+    request,
+    status.RECOMMENDED_TO_PAY,
+    currentStatusEvent,
+  );
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -910,7 +916,11 @@ test("status: in recommended to pay, user: admin, recommender: same person", () 
   const currentStatusEvent = {
     updatedBy: currentUser,
   };
-  const state = getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent);
+  const state = getClaimViewStates(
+    request,
+    status.RECOMMENDED_TO_PAY,
+    currentStatusEvent,
+  );
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -951,7 +961,11 @@ test("status: in recommended to pay, user: recommender, recommender: different p
   const currentStatusEvent = {
     updatedBy: "someone else",
   };
-  const state = getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent);
+  const state = getClaimViewStates(
+    request,
+    status.RECOMMENDED_TO_PAY,
+    currentStatusEvent,
+  );
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -992,7 +1006,11 @@ test("status: in recommended to pay, user: authoriser, recommender: different pe
   const currentStatusEvent = {
     updatedBy: "someone else",
   };
-  const state = getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent);
+  const state = getClaimViewStates(
+    request,
+    status.RECOMMENDED_TO_PAY,
+    currentStatusEvent,
+  );
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -1033,7 +1051,11 @@ test("status: in recommended to pay, query: approve, user: admin, recommender: d
   const currentStatusEvent = {
     updatedBy: "someone else",
   };
-  const state = getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent);
+  const state = getClaimViewStates(
+    request,
+    status.RECOMMENDED_TO_PAY,
+    currentStatusEvent,
+  );
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -1074,7 +1096,11 @@ test("status: in recommended to pay, query: approve, user: recommender, recommen
   const currentStatusEvent = {
     updatedBy: "someone else",
   };
-  const state = getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent);
+  const state = getClaimViewStates(
+    request,
+    status.RECOMMENDED_TO_PAY,
+    currentStatusEvent,
+  );
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -1115,7 +1141,11 @@ test("status: in recommended to pay, query: approve, user: authoriser, recommend
   const currentStatusEvent = {
     updatedBy: "someone else",
   };
-  const state = getClaimViewStates(request, status.RECOMMENDED_TO_PAY, currentStatusEvent);
+  const state = getClaimViewStates(
+    request,
+    status.RECOMMENDED_TO_PAY,
+    currentStatusEvent,
+  );
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -1156,7 +1186,11 @@ test("status: in recommended to reject, user: admin, recommender: different pers
   const currentStatusEvent = {
     updatedBy: "someone else",
   };
-  const state = getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent);
+  const state = getClaimViewStates(
+    request,
+    status.RECOMMENDED_TO_REJECT,
+    currentStatusEvent,
+  );
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -1197,7 +1231,11 @@ test("status: in recommended to reject, user: admin, recommender: same person", 
   const currentStatusEvent = {
     updatedBy: currentUser,
   };
-  const state = getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent);
+  const state = getClaimViewStates(
+    request,
+    status.RECOMMENDED_TO_REJECT,
+    currentStatusEvent,
+  );
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -1238,7 +1276,11 @@ test("status: in recommended to reject, user: recommender, recommender: differen
   const currentStatusEvent = {
     updatedBy: "someone else",
   };
-  const state = getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent);
+  const state = getClaimViewStates(
+    request,
+    status.RECOMMENDED_TO_REJECT,
+    currentStatusEvent,
+  );
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -1279,7 +1321,11 @@ test("status: in recommended to reject, user: authoriser, recommender: different
   const currentStatusEvent = {
     updatedBy: "someone else",
   };
-  const state = getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent);
+  const state = getClaimViewStates(
+    request,
+    status.RECOMMENDED_TO_REJECT,
+    currentStatusEvent,
+  );
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -1320,7 +1366,11 @@ test("status: in recommended to reject, query: reject, user: admin, recommender:
   const currentStatusEvent = {
     updatedBy: "someone else",
   };
-  const state = getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent);
+  const state = getClaimViewStates(
+    request,
+    status.RECOMMENDED_TO_REJECT,
+    currentStatusEvent,
+  );
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -1361,7 +1411,11 @@ test("status: in recommended to reject, query: reject, user: admin, recommender:
   const currentStatusEvent = {
     updatedBy: currentUser,
   };
-  const state = getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent);
+  const state = getClaimViewStates(
+    request,
+    status.RECOMMENDED_TO_REJECT,
+    currentStatusEvent,
+  );
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -1402,7 +1456,11 @@ test("status: in recommended to reject, query: reject, user: recommender, recomm
   const currentStatusEvent = {
     updatedBy: "someone else",
   };
-  const state = getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent);
+  const state = getClaimViewStates(
+    request,
+    status.RECOMMENDED_TO_REJECT,
+    currentStatusEvent,
+  );
 
   expect(state).toEqual({
     withdrawAction: false,
@@ -1443,7 +1501,11 @@ test("status: in recommended to reject, query: reject, user: authoriser, recomme
   const currentStatusEvent = {
     updatedBy: "someone else",
   };
-  const state = getClaimViewStates(request, status.RECOMMENDED_TO_REJECT, currentStatusEvent);
+  const state = getClaimViewStates(
+    request,
+    status.RECOMMENDED_TO_REJECT,
+    currentStatusEvent,
+  );
 
   expect(state).toEqual({
     withdrawAction: false,

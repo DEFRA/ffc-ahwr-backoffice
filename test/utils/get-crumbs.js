@@ -23,7 +23,9 @@ module.exports = async (
   const regex = new RegExp(`${crumbKey}=([^",;\\\x7F]*)`);
   const crumb = cookieHeader[0].match(regex)[1];
   if (!crumb) {
-    throw Error(`Crumb was not found, ensure name of cookie key is set to '${crumbKey}'.`);
+    throw Error(
+      `Crumb was not found, ensure name of cookie key is set to '${crumbKey}'.`,
+    );
   }
   return crumb;
 };

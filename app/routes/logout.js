@@ -5,7 +5,8 @@ module.exports = {
   path: "/logout",
   handler: async (request, h) => {
     try {
-      request.auth?.credentials?.account && (await auth.logout(request.auth.credentials.account));
+      request.auth?.credentials?.account &&
+        (await auth.logout(request.auth.credentials.account));
       request.cookieAuth.clear();
       return h.redirect("/login");
     } catch (err) {

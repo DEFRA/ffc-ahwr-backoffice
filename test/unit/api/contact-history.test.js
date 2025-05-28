@@ -1,4 +1,7 @@
-const { getContactHistory, displayContactHistory } = require("../../../app/api/contact-history");
+const {
+  getContactHistory,
+  displayContactHistory,
+} = require("../../../app/api/contact-history");
 const wreck = require("@hapi/wreck");
 
 jest.mock("@hapi/wreck");
@@ -91,7 +94,8 @@ describe("contact-history", () => {
       const result = displayContactHistory(contactHistory);
 
       expect(result).toEqual({
-        orgEmail: "Organisation email at start of agreement: original-org@example.com",
+        orgEmail:
+          "Organisation email at start of agreement: original-org@example.com",
         email: "User email at start of agreement: original-test@example.com",
         farmerName: "NA",
         address: "NA",

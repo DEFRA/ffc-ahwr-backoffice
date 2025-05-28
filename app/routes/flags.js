@@ -1,8 +1,17 @@
 const Joi = require("joi");
-const { administrator, processor, user, recommender, authoriser } = require("../auth/permissions");
+const {
+  administrator,
+  processor,
+  user,
+  recommender,
+  authoriser,
+} = require("../auth/permissions");
 const crumbCache = require("./utils/crumb-cache");
 const { createFlagsTableData } = require("./models/flags-list");
-const { deleteFlag: deleteFlagAPICall, createFlag: createFlagAPICall } = require("../api/flags");
+const {
+  deleteFlag: deleteFlagAPICall,
+  createFlag: createFlagAPICall,
+} = require("../api/flags");
 const { encodeErrorsForUI } = require("./utils/encode-errors-for-ui");
 const { StatusCodes } = require("http-status-codes");
 const mapAuth = require("../auth/map-auth");
@@ -28,7 +37,9 @@ const getFlagsHandler = {
       const { createFlag, deleteFlag, errors } = request.query;
       await crumbCache.generateNewCrumb(request, h);
 
-      const parsedErrors = errors ? JSON.parse(Buffer.from(errors, "base64").toString("utf8")) : [];
+      const parsedErrors = errors
+        ? JSON.parse(Buffer.from(errors, "base64").toString("utf8"))
+        : [];
 
       const { isAdministrator } = mapAuth(request);
 
@@ -67,10 +78,14 @@ const deleteFlagHandler = {
 
         let errorMessageToBeRendered = "";
 
-        if (joiError.message.includes("length must be at least 2 characters long")) {
-          errorMessageToBeRendered = "Enter a note of at least 2 characters in length";
+        if (
+          joiError.message.includes("length must be at least 2 characters long")
+        ) {
+          errorMessageToBeRendered =
+            "Enter a note of at least 2 characters in length";
         } else {
-          errorMessageToBeRendered = "Enter a note to explain the reason for removing this flag";
+          errorMessageToBeRendered =
+            "Enter a note to explain the reason for removing this flag";
         }
 
         const formattedError = {
@@ -92,7 +107,11 @@ const deleteFlagHandler = {
         const { flagId } = request.params;
         const { deletedNote } = request.payload;
         const { name: userName } = request.auth.credentials.account;
-        await deleteFlagAPICall({ flagId, deletedNote }, userName, request.logger);
+        await deleteFlagAPICall(
+          { flagId, deletedNote },
+          userName,
+          request.logger,
+        );
 
         return h.redirect("/flags").takeover();
       } catch (err) {
@@ -126,7 +145,8 @@ const createFlagHandler = {
             if (error.message.includes("note")) {
               return {
                 ...error,
-                message: "Enter a note to explain the reason for creating the flag.",
+                message:
+                  "Enter a note to explain the reason for creating the flag.",
               };
             }
 
@@ -140,7 +160,8 @@ const createFlagHandler = {
             if (error.message.includes("appliesToMh")) {
               return {
                 ...error,
-                message: "Select if the flag is because the user declined multiple herds T&C's.",
+                message:
+                  "Select if the flag is because the user declined multiple herds T&C's.",
               };
             }
 
@@ -167,7 +188,11 @@ const createFlagHandler = {
           appliesToMh: appliesToMh === "yes",
         };
 
-        const { res } = await createFlagAPICall(payload, appRef.trim(), request.logger);
+        const { res } = await createFlagAPICall(
+          payload,
+          appRef.trim(),
+          request.logger,
+        );
 
         if (res.statusCode === StatusCodes.NO_CONTENT) {
           let error = new Error("Flag already exists.");
@@ -214,7 +239,10 @@ const createFlagHandler = {
         }
 
         if (formattedErrors.length) {
-          const errors = encodeErrorsForUI(formattedErrors, "#agreement-reference");
+          const errors = encodeErrorsForUI(
+            formattedErrors,
+            "#agreement-reference",
+          );
           const query = new URLSearchParams({
             createFlag: "true",
             errors,

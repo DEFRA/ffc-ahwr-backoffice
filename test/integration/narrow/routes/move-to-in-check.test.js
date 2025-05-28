@@ -135,35 +135,42 @@ describe("Reject On Hold (move to In Check) Application test", () => {
       );
       expect(applications.updateApplicationStatus).toHaveBeenCalledTimes(1);
       expect(res.statusCode).toBe(302);
-      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`);
+      expect(res.headers.location).toEqual(
+        `/view-agreement/${reference}?page=1`,
+      );
     });
-    test.each([authoriser, administrator, recommender])("Reject claim processed", async (scope) => {
-      auth = {
-        strategy: "session-auth",
-        credentials: {
-          scope: [scope],
-          account: { homeAccountId: "testId", name: "admin" },
-        },
-      };
-      const options = {
-        method: "POST",
-        url,
-        auth,
-        headers: { cookie: `crumb=${crumb}` },
-        payload: {
-          reference,
-          claimOrAgreement: "claim",
-          confirm: ["recommendToMoveOnHoldClaim", "updateIssuesLog"],
-          page: 1,
-          returnPage: "claims",
-          crumb,
-        },
-      };
+    test.each([authoriser, administrator, recommender])(
+      "Reject claim processed",
+      async (scope) => {
+        auth = {
+          strategy: "session-auth",
+          credentials: {
+            scope: [scope],
+            account: { homeAccountId: "testId", name: "admin" },
+          },
+        };
+        const options = {
+          method: "POST",
+          url,
+          auth,
+          headers: { cookie: `crumb=${crumb}` },
+          payload: {
+            reference,
+            claimOrAgreement: "claim",
+            confirm: ["recommendToMoveOnHoldClaim", "updateIssuesLog"],
+            page: 1,
+            returnPage: "claims",
+            crumb,
+          },
+        };
 
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
-      expect(res.headers.location).toEqual(`/view-claim/${reference}?page=1&returnPage=claims`);
-    });
+        const res = await global.__SERVER__.inject(options);
+        expect(res.statusCode).toBe(302);
+        expect(res.headers.location).toEqual(
+          `/view-claim/${reference}?page=1&returnPage=claims`,
+        );
+      },
+    );
 
     test("Reject application invalid reference", async () => {
       auth = {
