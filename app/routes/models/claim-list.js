@@ -3,7 +3,7 @@ const { getStyleClassByStatus } = require("../../constants/status");
 const {
   formatTypeOfVisit,
   formatSpecies,
-  formatedDateToUk,
+  formattedDateToUk,
   upperFirstLetter,
 } = require("../../lib/display-helper");
 const { FLAG_EMOJI } = require("../utils/ui-constants");
@@ -123,7 +123,7 @@ const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
           ]
         : []),
       {
-        text: formatedDateToUk(claim.createdAt),
+        text: formattedDateToUk(claim.createdAt),
         format: "date",
         attributes: {
           "data-sort-value": claim.createdAt,

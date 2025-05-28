@@ -1,5 +1,5 @@
 const {
-  formatedDateToUk,
+  formattedDateToUk,
   upperFirstLetter,
 } = require("../../lib/display-helper");
 const { getStyleClassByStatus } = require("../../constants/status");
@@ -33,7 +33,7 @@ const getApplicationClaimDetails = (
   let formatedDate = "";
 
   if (data?.dateOfClaim) {
-    formatedDate = formatedDateToUk(data?.dateOfClaim);
+    formatedDate = formattedDateToUk(data?.dateOfClaim);
   } else {
     let filteredEvents;
     if (applicationEvents?.eventRecords) {
@@ -46,7 +46,7 @@ const getApplicationClaimDetails = (
           "claim-claimed",
           "claimed",
         );
-        formatedDate = formatedDateToUk(claimClaimed?.raisedOn);
+        formatedDate = formattedDateToUk(claimClaimed?.raisedOn);
       }
     }
   }
@@ -64,12 +64,12 @@ const getApplicationClaimDetails = (
     },
     {
       key: { text: "Date of review" },
-      value: { text: formatedDateToUk(data.visitDate) },
+      value: { text: formattedDateToUk(data.visitDate) },
       actions: visitDateActions,
     },
     {
       key: { text: "Date of testing" },
-      value: { text: formatedDateToUk(data.dateOfTesting) },
+      value: { text: formattedDateToUk(data.dateOfTesting) },
     },
     { key: { text: "Date of claim" }, value: { text: formatedDate } },
     {

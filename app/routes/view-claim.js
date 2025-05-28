@@ -1,6 +1,6 @@
 const { Buffer } = require("buffer");
 const joi = require("joi");
-const { getClaim } = require("../api/claims");
+const { getClaim, getClaims } = require("../api/claims");
 const {
   getApplication,
   getApplicationHistory,
@@ -21,13 +21,18 @@ const {
   recommender,
   user,
 } = require("../auth/permissions");
-const { upperFirstLetter, formatedDateToUk } = require("../lib/display-helper");
+const {
+  upperFirstLetter,
+  formattedDateToUk,
+} = require("../lib/display-helper");
 const { getCurrentStatusEvent } = require("./utils/get-current-status-event");
 const { getClaimViewStates } = require("./utils/get-claim-view-states");
 const { getErrorMessagesByKey } = require("./utils/get-error-messages-by-key");
 const { getStatusUpdateOptions } = require("./utils/get-status-update-options");
 const { getLivestockTypes } = require("../lib/get-livestock-types");
 const { getReviewType } = require("../lib/get-review-type");
+const { getHerdBreakdown } = require("../lib/get-herd-breakdown");
+const { getHerdRowData } = require("../lib/get-herd-row-data");
 
 const backLink = (applicationReference, returnPage, page) => {
   return returnPage === "agreement"
@@ -36,13 +41,18 @@ const backLink = (applicationReference, returnPage, page) => {
 };
 
 const speciesEligibleNumber = {
-  beef: "11 or more beef cattle ",
-  dairy: "11 or more dairy cattle ",
+  beef: "11 or more beef cattle",
+  dairy: "11 or more dairy cattle",
   pigs: "51 or more pigs",
   sheep: "21 or more sheep",
 };
 
 const returnClaimDetailIfExist = (property, value) => property && value;
+
+const buildKeyValueJson = (keyText, valueText) => ({
+  key: { text: keyText },
+  value: { text: valueText },
+});
 
 module.exports = {
   method: "get",
@@ -84,6 +94,7 @@ module.exports = {
         status: claimStatus,
         statusId,
         createdAt,
+        herd,
       } = claim;
 
       request.logger.setBindings({ applicationReference, reference });
@@ -101,35 +112,20 @@ module.exports = {
       const flaggedText = isFlagged ? "Yes" : "No";
 
       const applicationSummaryDetails = [
-        {
-          key: { text: "Agreement number" },
-          value: { text: applicationReference },
-        },
-        {
-          key: { text: "Agreement date" },
-          value: { text: formatedDateToUk(application.createdAt) },
-        },
-        {
-          key: { text: "Agreement holder" },
-          value: { text: organisation.farmerName },
-        },
-        {
-          key: { text: "Agreement holder email" },
-          value: { text: organisation.email },
-        },
-        { key: { text: "SBI number" }, value: { text: organisation.sbi } },
-        {
-          key: { text: "Address" },
-          value: { text: organisation.address.split(",").join(", ") },
-        },
-        {
-          key: { text: "Business email" },
-          value: { text: organisation.orgEmail },
-        },
-        {
-          key: { text: "Flagged" },
-          value: { text: flaggedText },
-        },
+        buildKeyValueJson("Agreement number", applicationReference),
+        buildKeyValueJson(
+          "Agreement date",
+          formattedDateToUk(application.createdAt),
+        ),
+        buildKeyValueJson("Agreement holder", organisation.farmerName),
+        buildKeyValueJson("Agreement holder email", organisation.email),
+        buildKeyValueJson("SBI number", organisation.sbi),
+        buildKeyValueJson(
+          "Address",
+          organisation.address.split(",").join(", "),
+        ),
+        buildKeyValueJson("Business email", organisation.orgEmail),
+        buildKeyValueJson("Flagged", flaggedText),
       ];
 
       const errors = request.query.errors
@@ -264,7 +260,7 @@ module.exports = {
       };
       const claimDate = {
         key: { text: "Claim date" },
-        value: { html: formatedDateToUk(createdAt) },
+        value: { html: formattedDateToUk(createdAt) },
       };
       const organisationName = {
         key: { text: "Business name" },
@@ -292,13 +288,13 @@ module.exports = {
       };
       const dateOfVisit = {
         key: { text: "Date of visit" },
-        value: { html: formatedDateToUk(data?.dateOfVisit) },
+        value: { html: formattedDateToUk(data?.dateOfVisit) },
         actions: dateOfVisitActions,
       };
       const dateOfSampling = {
         key: { text: "Date of sampling" },
         value: {
-          html: data?.dateOfTesting && formatedDateToUk(data?.dateOfTesting),
+          html: data?.dateOfTesting && formattedDateToUk(data?.dateOfTesting),
         },
       };
       const typeOfLivestock = {
@@ -377,14 +373,25 @@ module.exports = {
         value: { html: upperFirstLetter(data?.piHuntAllAnimals) },
       };
 
-      const beefRows = [
+      // There are more common rows than this, but the ordering matters and things get more complicated after these
+      const commonRows = [
         status,
         claimDate,
         organisationName,
         livestock,
         typeOfVisit,
-        reviewTestResults,
         dateOfVisit,
+        ...getHerdRowData(herd, isSheep),
+      ];
+
+      const commonCowRows = [
+        ...commonRows.slice(0, commonRows.indexOf(typeOfVisit)),
+        reviewTestResults,
+        ...commonRows.slice(commonRows.indexOf(typeOfVisit)),
+      ];
+
+      const beefRows = [
+        ...commonCowRows,
         isReview && dateOfSampling,
         typeOfLivestock,
         vetName,
@@ -399,13 +406,7 @@ module.exports = {
       ];
 
       const dairyRows = [
-        status,
-        claimDate,
-        organisationName,
-        livestock,
-        typeOfVisit,
-        reviewTestResults,
-        dateOfVisit,
+        ...commonCowRows,
         isReview && dateOfSampling,
         typeOfLivestock,
         vetName,
@@ -420,12 +421,7 @@ module.exports = {
       ];
 
       const sheepRows = [
-        status,
-        claimDate,
-        organisationName,
-        livestock,
-        typeOfVisit,
-        dateOfVisit,
+        ...commonRows,
         dateOfSampling,
         typeOfLivestock,
         vetName,
@@ -443,12 +439,7 @@ module.exports = {
       ];
 
       const pigRows = [
-        status,
-        claimDate,
-        organisationName,
-        livestock,
-        typeOfVisit,
-        dateOfVisit,
+        ...commonRows,
         dateOfSampling,
         typeOfLivestock,
         numberOfOralFluidSamples,
@@ -481,8 +472,20 @@ module.exports = {
 
       const rows = [...speciesRows()];
       const rowsWithData = rows.filter((row) => row?.value?.html);
-
       const errorMessages = getErrorMessagesByKey(errors);
+      const searchText = applicationReference;
+      const searchType = "appRef";
+      const limit = 30;
+      const offset = 0;
+      const { claims } = await getClaims(
+        searchType,
+        searchText,
+        undefined,
+        limit,
+        offset,
+        undefined,
+        request.logger,
+      );
 
       return h.view("view-claim", {
         page,
@@ -518,6 +521,7 @@ module.exports = {
         statusOptions,
         errorMessages,
         errors,
+        ...getHerdBreakdown(claims),
       });
     },
   },

@@ -1,5 +1,5 @@
 const {
-  formatedDateToUk,
+  formattedDateToUk,
   upperFirstLetter,
 } = require("../../lib/display-helper");
 const { getStyleClassByStatus } = require("../../constants/status");
@@ -7,7 +7,7 @@ const speciesNumbers = require("../../constants/species-numbers");
 
 const getApplicationDetails = (application, statusActions) => {
   const { data, createdAt, status } = application;
-  const formatedDate = formatedDateToUk(createdAt);
+  const formatedDate = formattedDateToUk(createdAt);
 
   const statusLabel = upperFirstLetter(status.status.toLowerCase());
   const statusClass = getStyleClassByStatus(status.status);

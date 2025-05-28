@@ -97,7 +97,10 @@ describe("session", () => {
           expect(requestSetMock.yar.set).toHaveBeenCalledTimes(1);
           expect(requestSetMock.yar.set).toHaveBeenCalledWith(
             expectedSectionKey,
-            { ...{ [key]: value }, ...existingValue },
+            {
+              ...{ [key]: value },
+              ...existingValue,
+            },
           );
         },
       );

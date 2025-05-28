@@ -8,7 +8,7 @@ const {
   recommendToPay,
   recommendToReject,
 } = require("../../../app/constants/application-status");
-const { formatedDateToUk } = require("../../lib/display-helper");
+const { formattedDateToUk } = require("../../lib/display-helper");
 
 const getAction = (updatedProperty, newValue, oldValue) => {
   const statusIds = {
@@ -31,8 +31,8 @@ const getAction = (updatedProperty, newValue, oldValue) => {
     vetName: `Vet updated from ${oldValue} to ${newValue}`,
     vetRCVSNumber: `RCVS updated from ${oldValue} to ${newValue}`,
     vetRcvs: `RCVS updated from ${oldValue} to ${newValue}`,
-    dateOfVisit: `Date of visit updated from ${formatedDateToUk(oldValue)} to ${formatedDateToUk(newValue)}`,
-    visitDate: `Date of review updated from ${formatedDateToUk(oldValue)} to ${formatedDateToUk(newValue)}`,
+    dateOfVisit: `Date of visit updated from ${formattedDateToUk(oldValue)} to ${formattedDateToUk(newValue)}`,
+    visitDate: `Date of review updated from ${formattedDateToUk(oldValue)} to ${formattedDateToUk(newValue)}`,
     agreementFlag: `Agreement was moved from ${oldValue} to ${newValue}`,
     testResults: `Test results updated from ${oldValue} to ${newValue}`,
   };

@@ -33,7 +33,9 @@ describe("Holiday Functions", () => {
       expect(await holidays.getHolidayCalendarForEngland()).toEqual(mockEvents);
       expect(wreckGetSpy).toHaveBeenCalledWith(
         "https://www.gov.uk/bank-holidays.json",
-        { json: true },
+        {
+          json: true,
+        },
       );
     });
 

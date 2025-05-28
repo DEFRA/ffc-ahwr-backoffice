@@ -4,7 +4,7 @@ function upperFirstLetter(str) {
     : "";
 }
 
-function formatedDateToUk(date) {
+function formattedDateToUk(date) {
   return new Date(date).toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "2-digit",
@@ -49,7 +49,7 @@ function formatTypeOfVisit(typeOfVisit) {
 
 module.exports = {
   upperFirstLetter,
-  formatedDateToUk,
+  formattedDateToUk,
   formatSpecies,
   formatTypeOfVisit,
   formatStatusId,

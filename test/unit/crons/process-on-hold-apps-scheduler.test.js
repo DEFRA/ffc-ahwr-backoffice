@@ -38,7 +38,9 @@ describe("Process On Hold Applications plugin test", () => {
     expect(mockNodeCron.schedule).toHaveBeenCalledWith(
       "0 18 * * 1-5",
       expect.any(Function),
-      { scheduled: true },
+      {
+        scheduled: true,
+      },
     );
   });
 
