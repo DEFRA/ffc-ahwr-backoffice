@@ -16,18 +16,13 @@ const getClaimViewStates = (request, statusId, currentStatusEvent) => {
   } = request.query;
   const { name } = request.auth.credentials.account;
 
-  const { isAdministrator, isRecommender, isAuthoriser, isSuperAdmin } =
-    mapAuth(request);
+  const { isAdministrator, isRecommender, isAuthoriser, isSuperAdmin } = mapAuth(request);
 
   const withdrawAction =
-    (isAdministrator || isAuthoriser) &&
-    statusId === status.AGREED &&
-    withdraw === false;
+    (isAdministrator || isAuthoriser) && statusId === status.AGREED && withdraw === false;
 
   const withdrawForm =
-    (isAdministrator || isAuthoriser) &&
-    statusId === status.AGREED &&
-    withdraw === true;
+    (isAdministrator || isAuthoriser) && statusId === status.AGREED && withdraw === true;
 
   const moveToInCheckAction =
     (isAdministrator || isRecommender || isAuthoriser) &&
@@ -46,9 +41,7 @@ const getClaimViewStates = (request, statusId, currentStatusEvent) => {
     recommendToReject === false;
 
   const recommendToPayForm =
-    (isAdministrator || isRecommender) &&
-    statusId === status.IN_CHECK &&
-    recommendToPay === true;
+    (isAdministrator || isRecommender) && statusId === status.IN_CHECK && recommendToPay === true;
 
   const recommendToRejectForm =
     (isAdministrator || isRecommender) &&

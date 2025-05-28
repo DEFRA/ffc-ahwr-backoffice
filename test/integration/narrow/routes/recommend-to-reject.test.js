@@ -1,7 +1,4 @@
-const {
-  administrator,
-  recommender,
-} = require("../../../../app/auth/permissions");
+const { administrator, recommender } = require("../../../../app/auth/permissions");
 const getCrumbs = require("../../../utils/get-crumbs");
 
 const applications = require("../../../../app/api/applications");
@@ -86,106 +83,91 @@ describe("Recommended To Reject test", () => {
     test.each([
       [recommender, "recommender"],
       [administrator, "recommender"],
-    ])(
-      "Redirects correctly on successful validation for application",
-      async (scope, role) => {
-        auth = {
-          strategy: "session-auth",
-          credentials: {
-            scope: [scope],
-            account: { homeAccountId: "testId", name: "admin" },
-          },
-        };
-        const options = {
-          method: "POST",
-          url,
-          auth,
-          headers: { cookie: `crumb=${crumb}` },
-          payload: {
-            reference,
-            claimOrAgreement: "agreement",
-            page: 1,
-            confirm: ["checkedAgainstChecklist", "sentChecklist"],
-            crumb,
-          },
-        };
-        const res = await global.__SERVER__.inject(options);
-        expect(res.statusCode).toBe(302);
-        expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1);
-        expect(res.headers.location).toEqual(
-          `/view-agreement/${reference}?page=1`,
-        );
-      },
-    );
+    ])("Redirects correctly on successful validation for application", async (scope, role) => {
+      auth = {
+        strategy: "session-auth",
+        credentials: {
+          scope: [scope],
+          account: { homeAccountId: "testId", name: "admin" },
+        },
+      };
+      const options = {
+        method: "POST",
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
+          claimOrAgreement: "agreement",
+          page: 1,
+          confirm: ["checkedAgainstChecklist", "sentChecklist"],
+          crumb,
+        },
+      };
+      const res = await global.__SERVER__.inject(options);
+      expect(res.statusCode).toBe(302);
+      expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1);
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`);
+    });
     test.each([
       [recommender, "recommender"],
       [administrator, "recommender"],
-    ])(
-      "Redirects correctly on successful validation for claim",
-      async (scope, role) => {
-        auth = {
-          strategy: "session-auth",
-          credentials: {
-            scope: [scope],
-            account: { homeAccountId: "testId", name: "admin" },
-          },
-        };
-        const options = {
-          method: "post",
-          url,
-          auth,
-          headers: { cookie: `crumb=${crumb}` },
-          payload: {
-            reference,
-            claimOrAgreement: "claim",
-            page: 1,
-            returnPage: "claims",
-            confirm: ["checkedAgainstChecklist", "sentChecklist"],
-            crumb,
-          },
-        };
-        const res = await global.__SERVER__.inject(options);
-        expect(res.statusCode).toBe(302);
-        expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1);
-        expect(res.headers.location).toEqual(
-          `/view-claim/${reference}?page=1&returnPage=claims`,
-        );
-      },
-    );
+    ])("Redirects correctly on successful validation for claim", async (scope, role) => {
+      auth = {
+        strategy: "session-auth",
+        credentials: {
+          scope: [scope],
+          account: { homeAccountId: "testId", name: "admin" },
+        },
+      };
+      const options = {
+        method: "post",
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
+          claimOrAgreement: "claim",
+          page: 1,
+          returnPage: "claims",
+          confirm: ["checkedAgainstChecklist", "sentChecklist"],
+          crumb,
+        },
+      };
+      const res = await global.__SERVER__.inject(options);
+      expect(res.statusCode).toBe(302);
+      expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1);
+      expect(res.headers.location).toEqual(`/view-claim/${reference}?page=1&returnPage=claims`);
+    });
 
     test.each([
       [recommender, "recommender"],
       [administrator, "recommender"],
-    ])(
-      "Redirects correctly on successful validation - no page given",
-      async (scope, role) => {
-        auth = {
-          strategy: "session-auth",
-          credentials: {
-            scope: [scope],
-            account: { homeAccountId: "testId", name: "admin" },
-          },
-        };
-        const options = {
-          method: "POST",
-          url,
-          auth,
-          headers: { cookie: `crumb=${crumb}` },
-          payload: {
-            reference,
-            claimOrAgreement: "agreement",
-            confirm: ["checkedAgainstChecklist", "sentChecklist"],
-            crumb,
-          },
-        };
-        const res = await global.__SERVER__.inject(options);
-        expect(res.statusCode).toBe(302);
-        expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1);
-        expect(res.headers.location).toEqual(
-          `/view-agreement/${reference}?page=1`,
-        );
-      },
-    );
+    ])("Redirects correctly on successful validation - no page given", async (scope, role) => {
+      auth = {
+        strategy: "session-auth",
+        credentials: {
+          scope: [scope],
+          account: { homeAccountId: "testId", name: "admin" },
+        },
+      };
+      const options = {
+        method: "POST",
+        url,
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          reference,
+          claimOrAgreement: "agreement",
+          confirm: ["checkedAgainstChecklist", "sentChecklist"],
+          crumb,
+        },
+      };
+      const res = await global.__SERVER__.inject(options);
+      expect(res.statusCode).toBe(302);
+      expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1);
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`);
+    });
 
     test("Returns 302 on wrong payload", async () => {
       const errors =

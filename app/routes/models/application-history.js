@@ -49,32 +49,30 @@ const getHistoryTableHeader = () => [
 ];
 
 const getHistoryTableRows = (historyRecords) =>
-  historyRecords.map(
-    ({ updatedProperty, newValue, oldValue, updatedAt, updatedBy, note }) => {
-      const action = getAction(updatedProperty, newValue, oldValue);
+  historyRecords.map(({ updatedProperty, newValue, oldValue, updatedAt, updatedBy, note }) => {
+    const action = getAction(updatedProperty, newValue, oldValue);
 
-      const updatedDate = new Date(updatedAt);
-      return [
-        {
-          text: updatedDate.toLocaleString("en-GB", {
-            day: "numeric",
-            month: "numeric",
-            year: "numeric",
-          }),
-        },
-        {
-          text: updatedDate.toLocaleString("en-GB", {
-            hour: "numeric",
-            minute: "numeric",
-            second: "numeric",
-          }),
-        },
-        { text: action },
-        { text: updatedBy },
-        { text: note },
-      ];
-    },
-  );
+    const updatedDate = new Date(updatedAt);
+    return [
+      {
+        text: updatedDate.toLocaleString("en-GB", {
+          day: "numeric",
+          month: "numeric",
+          year: "numeric",
+        }),
+      },
+      {
+        text: updatedDate.toLocaleString("en-GB", {
+          hour: "numeric",
+          minute: "numeric",
+          second: "numeric",
+        }),
+      },
+      { text: action },
+      { text: updatedBy },
+      { text: note },
+    ];
+  });
 
 const getHistoryDetails = (historyRecords) => ({
   header: getHistoryTableHeader(),

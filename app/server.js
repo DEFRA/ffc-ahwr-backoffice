@@ -1,8 +1,6 @@
 const config = require("./config");
 const Hapi = require("@hapi/hapi");
-const catbox = config.useRedis
-  ? require("@hapi/catbox-redis")
-  : require("@hapi/catbox-memory");
+const catbox = config.useRedis ? require("@hapi/catbox-redis") : require("@hapi/catbox-memory");
 const cacheConfig = config.useRedis ? config.cache.options : {};
 const onHoldAppScheduler = require("./crons/process-on-hold/scheduler");
 

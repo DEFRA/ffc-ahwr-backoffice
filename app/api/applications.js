@@ -12,15 +12,7 @@ async function getApplication(applicationReference, logger) {
   }
 }
 
-async function getApplications(
-  searchType,
-  searchText,
-  limit,
-  offset,
-  filterStatus,
-  sort,
-  logger,
-) {
+async function getApplications(searchType, searchText, limit, offset, filterStatus, sort, logger) {
   const endpoint = `${applicationApiUri}/application/search`;
   const options = {
     payload: {
@@ -41,13 +33,7 @@ async function getApplications(
   }
 }
 
-async function processApplicationClaim(
-  reference,
-  user,
-  approved,
-  logger,
-  note,
-) {
+async function processApplicationClaim(reference, user, approved, logger, note) {
   const endpoint = `${applicationApiUri}/application/claim`;
   const options = {
     payload: {

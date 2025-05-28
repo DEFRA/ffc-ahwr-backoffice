@@ -77,12 +77,7 @@ const createTableHeader = (isAdmin) => {
   ].filter((item) => Object.keys(item).length > 0);
 };
 
-const createFlagsTableData = async ({
-  logger,
-  flagIdToDelete,
-  createFlag,
-  isAdmin,
-}) => {
+const createFlagsTableData = async ({ logger, flagIdToDelete, createFlag, isAdmin }) => {
   const flags = await getAllFlags(logger);
 
   const applicationRefOfFlagToDelete = flagIdToDelete

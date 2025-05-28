@@ -36,13 +36,7 @@ describe("Dev auth test", () => {
         name: "Developer",
         username: "developer@defra.gov.uk",
       },
-      scope: [
-        "administrator",
-        "processor",
-        "user",
-        "recommender",
-        "authoriser",
-      ],
+      scope: ["administrator", "processor", "user", "recommender", "authoriser"],
     });
   });
 
@@ -56,20 +50,18 @@ describe("Dev auth test", () => {
         name: "Developer-abc123",
         username: "developer+abc123@defra.gov.uk",
       },
-      scope: [
-        "administrator",
-        "processor",
-        "user",
-        "recommender",
-        "authoriser",
-      ],
+      scope: ["administrator", "processor", "user", "recommender", "authoriser"],
     });
   });
 
   test("refresh test", async () => {
-    expect(
-      await refresh(expect.anything(), { set: MOCK_COOKIE_AUTH_SET }),
-    ).toEqual([administrator, processor, user, recommender, authoriser]);
+    expect(await refresh(expect.anything(), { set: MOCK_COOKIE_AUTH_SET })).toEqual([
+      administrator,
+      processor,
+      user,
+      recommender,
+      authoriser,
+    ]);
     expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledTimes(1);
   });
 

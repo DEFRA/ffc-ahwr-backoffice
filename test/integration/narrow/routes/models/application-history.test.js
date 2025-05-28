@@ -1,6 +1,4 @@
-const {
-  getHistoryDetails,
-} = require("../../../../../app/routes/models/application-history");
+const { getHistoryDetails } = require("../../../../../app/routes/models/application-history");
 
 test("renders table", () => {
   const historyRecords = [

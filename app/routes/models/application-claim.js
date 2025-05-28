@@ -1,7 +1,4 @@
-const {
-  formattedDateToUk,
-  upperFirstLetter,
-} = require("../../lib/display-helper");
+const { formattedDateToUk, upperFirstLetter } = require("../../lib/display-helper");
 const { getStyleClassByStatus } = require("../../constants/status");
 const { parseData } = require("../utils/parse-data");
 
@@ -22,10 +19,7 @@ const getApplicationClaimDetails = (
   vetsNameActions,
   vetRCVSNumberActions,
 ) => {
-  if (
-    !application.claimed &&
-    !claimDataStatus.includes(application.status.status)
-  ) {
+  if (!application.claimed && !claimDataStatus.includes(application.status.status)) {
     return null;
   }
 
@@ -41,11 +35,7 @@ const getApplicationClaimDetails = (
         (event) => event.EventType === "claim-claimed",
       );
       if (filteredEvents.length !== 0) {
-        const claimClaimed = parseData(
-          filteredEvents,
-          "claim-claimed",
-          "claimed",
-        );
+        const claimClaimed = parseData(filteredEvents, "claim-claimed", "claimed");
         formatedDate = formattedDateToUk(claimClaimed?.raisedOn);
       }
     }

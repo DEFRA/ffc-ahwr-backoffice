@@ -41,19 +41,11 @@ describe("Application API", () => {
       json: true,
     };
     wreck.post = jest.fn().mockResolvedValueOnce(wreckResponse);
-    const response = await getApplications(
-      searchType,
-      searchText,
-      limit,
-      offset,
-    );
+    const response = await getApplications(searchType, searchText, limit, offset);
 
     expect(response).toEqual(wreckResponse.payload);
     expect(wreck.post).toHaveBeenCalledTimes(1);
-    expect(wreck.post).toHaveBeenCalledWith(
-      `${applicationApiUri}/application/search`,
-      options,
-    );
+    expect(wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/application/search`, options);
   });
 
   it("getApplication should return null application", async () => {
@@ -118,21 +110,10 @@ describe("Application API", () => {
     const logger = { setBindings: jest.fn() };
 
     expect(async () => {
-      await getApplications(
-        searchType,
-        searchText,
-        limit,
-        offset,
-        filter,
-        sort,
-        logger,
-      );
+      await getApplications(searchType, searchText, limit, offset, filter, sort, logger);
     }).rejects.toBe("getApplications boom");
     expect(wreck.post).toHaveBeenCalledTimes(1);
-    expect(wreck.post).toHaveBeenCalledWith(
-      `${applicationApiUri}/application/search`,
-      options,
-    );
+    expect(wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/application/search`, options);
   });
 
   it("getApplication should throw errors", async () => {
@@ -169,10 +150,7 @@ describe("Application API", () => {
     }).rejects.toBe("updateApplicationStatus boom");
 
     expect(wreck.put).toHaveBeenCalledTimes(1);
-    expect(wreck.put).toHaveBeenCalledWith(
-      `${applicationApiUri}/application/${appRef}`,
-      options,
-    );
+    expect(wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/application/${appRef}`, options);
   });
 
   it("updateApplicationStatus should return on success", async () => {
@@ -196,10 +174,7 @@ describe("Application API", () => {
 
     expect(response).toEqual(wreckResponse.payload);
     expect(wreck.put).toHaveBeenCalledTimes(1);
-    expect(wreck.put).toHaveBeenCalledWith(
-      `${applicationApiUri}/application/${appRef}`,
-      options,
-    );
+    expect(wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/application/${appRef}`, options);
   });
 
   test("updateApplicationData", async () => {
@@ -266,19 +241,14 @@ describe("Application API", () => {
       },
       json: true,
     };
-    wreck.post = jest
-      .fn()
-      .mockRejectedValueOnce("processApplicationClaim boom");
+    wreck.post = jest.fn().mockRejectedValueOnce("processApplicationClaim boom");
     const logger = { setBindings: jest.fn() };
 
     expect(async () => {
       await processApplicationClaim(appRef, "test", false, logger);
     }).rejects.toBe("processApplicationClaim boom");
     expect(wreck.post).toHaveBeenCalledTimes(1);
-    expect(wreck.post).toHaveBeenCalledWith(
-      `${applicationApiUri}/application/claim`,
-      options,
-    );
+    expect(wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/application/claim`, options);
   });
 
   it("processApplicationClaim should return on success", async () => {
@@ -303,10 +273,7 @@ describe("Application API", () => {
 
     expect(response).toEqual(wreckResponse.payload);
     expect(wreck.post).toHaveBeenCalledTimes(1);
-    expect(wreck.post).toHaveBeenCalledWith(
-      `${applicationApiUri}/application/claim`,
-      options,
-    );
+    expect(wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/application/claim`, options);
   });
 
   it("getApplicationHistory should return history records", async () => {

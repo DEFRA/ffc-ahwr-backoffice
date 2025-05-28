@@ -1,9 +1,5 @@
 const wreck = require("@hapi/wreck");
-const {
-  getAllFlags,
-  deleteFlag,
-  createFlag,
-} = require("../../../app/api/flags");
+const { getAllFlags, deleteFlag, createFlag } = require("../../../app/api/flags");
 const flags = require("../../data/flags.json");
 const { applicationApiUri } = require("../../../app/config");
 
@@ -42,9 +38,7 @@ describe("Flags API", () => {
         throw new Error("test error");
       });
 
-      expect(async () => await getAllFlags(mockLogger)).rejects.toThrow(
-        "test error",
-      );
+      expect(async () => await getAllFlags(mockLogger)).rejects.toThrow("test error");
       expect(mockLogger.setBindings).toHaveBeenCalled();
     });
   });
@@ -85,9 +79,7 @@ describe("Flags API", () => {
         throw new Error("test error");
       });
 
-      expect(async () => await deleteFlag("", "", mockLogger)).rejects.toThrow(
-        "test error",
-      );
+      expect(async () => await deleteFlag("", "", mockLogger)).rejects.toThrow("test error");
       expect(mockLogger.setBindings).toHaveBeenCalled();
     });
   });
@@ -129,9 +121,7 @@ describe("Flags API", () => {
         throw new Error("test error");
       });
 
-      expect(async () => await createFlag({}, "", mockLogger)).rejects.toThrow(
-        "test error",
-      );
+      expect(async () => await createFlag({}, "", mockLogger)).rejects.toThrow("test error");
       expect(mockLogger.setBindings).toHaveBeenCalled();
     });
   });

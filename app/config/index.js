@@ -13,9 +13,7 @@ const schema = joi.object({
     },
   },
   cookie: {
-    cookieNameCookiePolicy: joi
-      .string()
-      .default("ffc_ahwr_backoffice_cookie_policy"),
+    cookieNameCookiePolicy: joi.string().default("ffc_ahwr_backoffice_cookie_policy"),
     cookieNameAuth: joi.string().default("ffc_ahwr_backoffice_auth"),
     cookieNameSession: joi.string().default("ffc_ahwr_backoffice_session"),
     isSameSite: joi.string().default("Lax"),
@@ -32,16 +30,11 @@ const schema = joi.object({
     path: joi.string().default("/"),
     ttl: joi.number().default(1000 * 60 * 60 * 24 * 365), // 1 year
   },
-  env: joi
-    .string()
-    .valid("development", "test", "production")
-    .default("development"),
+  env: joi.string().valid("development", "test", "production").default("development"),
   isDev: joi.boolean().default(false),
   isProd: joi.boolean().default(false),
   port: joi.number().default(3000),
-  serviceName: joi
-    .string()
-    .default("Administration of the health and welfare of your livestock"),
+  serviceName: joi.string().default("Administration of the health and welfare of your livestock"),
   siteTitle: joi.string().default("Administration"),
   serviceUri: joi.string().uri(),
   useRedis: joi.boolean().default(false),
@@ -95,9 +88,7 @@ const config = {
     schedule: process.env.ON_HOLD_APP_PROCESS_SCHEDULE,
   },
   superAdmins: process.env.SUPER_ADMINS
-    ? process.env.SUPER_ADMINS.split(",").map((user) =>
-        user.trim().toLowerCase(),
-      )
+    ? process.env.SUPER_ADMINS.split(",").map((user) => user.trim().toLowerCase())
     : [],
   multiHerdsEnabled: process.env.MULTI_HERDS_ENABLED === "true",
 };

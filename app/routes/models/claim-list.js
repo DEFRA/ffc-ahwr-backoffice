@@ -12,15 +12,13 @@ const respText = "responsive-text";
 const col6RespText = `col-6 ${respText}`;
 
 const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
-  const direction =
-    sortField && sortField.direction === "DESC" ? "descending" : "ascending";
+  const direction = sortField && sortField.direction === "DESC" ? "descending" : "ascending";
 
   return [
     {
       text: "Claim number & Type",
       attributes: {
-        "aria-sort":
-          sortField && sortField.field === "claim number" ? direction : "none",
+        "aria-sort": sortField && sortField.field === "claim number" ? direction : "none",
         "data-url": `${dataURLPrefix}claims/sort/claim number`,
       },
       classes: "col-12 responsive-text",
@@ -32,8 +30,7 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
     {
       text: "Species",
       attributes: {
-        "aria-sort":
-          sortField && sortField.field === "species" ? direction : "none",
+        "aria-sort": sortField && sortField.field === "species" ? direction : "none",
         "data-url": "claims/sort/species",
       },
       classes: col6RespText,
@@ -49,8 +46,7 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
     showSBI && {
       text: "SBI number",
       attributes: {
-        "aria-sort":
-          sortField && sortField.field === "SBI" ? direction : "none",
+        "aria-sort": sortField && sortField.field === "SBI" ? direction : "none",
         "data-url": "/claims/sort/SBI",
       },
       format: "numeric",
@@ -59,8 +55,7 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
     {
       text: "Claim date",
       attributes: {
-        "aria-sort":
-          sortField && sortField.field === "claim date" ? direction : "none",
+        "aria-sort": sortField && sortField.field === "claim date" ? direction : "none",
         "data-url": "claims/sort/claim date",
       },
       format: "date",
@@ -69,8 +64,7 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
     {
       text: "Status",
       attributes: {
-        "aria-sort":
-          sortField && sortField.field === "status" ? direction : "none",
+        "aria-sort": sortField && sortField.field === "status" ? direction : "none",
         "data-url": "claims/sort/status",
       },
       classes: col6RespText,
@@ -101,9 +95,7 @@ const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
       {
         text:
           claim.herd?.herdName ??
-          (claim.data.typeOfLivestock === "sheep"
-            ? "Unnamed flock"
-            : "Unnamed herd"),
+          (claim.data.typeOfLivestock === "sheep" ? "Unnamed flock" : "Unnamed herd"),
         classes: respText,
       },
       {

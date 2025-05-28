@@ -5,23 +5,14 @@ const {
   getApplicationHistory,
   getApplicationEvents,
 } = require("../api/applications");
-const {
-  administrator,
-  processor,
-  user,
-  recommender,
-  authoriser,
-} = require("../auth/permissions");
+const { administrator, processor, user, recommender, authoriser } = require("../auth/permissions");
 const { getStyleClassByStatus } = require("../constants/status");
 const { getClaimViewStates } = require("./utils/get-claim-view-states");
 const { getCurrentStatusEvent } = require("./utils/get-current-status-event");
 const applicationStatus = require("../constants/application-status");
 const { getErrorMessagesByKey } = require("./utils/get-error-messages-by-key");
 const { getStatusUpdateOptions } = require("./utils/get-status-update-options");
-const {
-  getContactHistory,
-  displayContactHistory,
-} = require("../api/contact-history");
+const { getContactHistory, displayContactHistory } = require("../api/contact-history");
 const { upperFirstLetter } = require("../lib/display-helper");
 const { getOrganisationDetails } = require("./models/organisation-details");
 const { getApplicationDetails } = require("./models/application-details");
@@ -54,19 +45,13 @@ module.exports = {
     },
     handler: async (request, h) => {
       const { page } = request.query;
-      const application = await getApplication(
-        request.params.reference,
-        request.logger,
-      );
+      const application = await getApplication(request.params.reference, request.logger);
       const { historyRecords } = await getApplicationHistory(
         request.params.reference,
         request.logger,
       );
 
-      const currentStatusEvent = getCurrentStatusEvent(
-        application,
-        historyRecords,
-      );
+      const currentStatusEvent = getCurrentStatusEvent(application, historyRecords);
 
       let applicationEvents;
       if (
@@ -83,9 +68,7 @@ module.exports = {
       }
 
       const status = application.status.status.toUpperCase();
-      const statusLabel = upperFirstLetter(
-        application.status.status.toLowerCase(),
-      );
+      const statusLabel = upperFirstLetter(application.status.status.toLowerCase());
       const statusClass = getStyleClassByStatus(application.status.status);
 
       const {
@@ -111,9 +94,7 @@ module.exports = {
       } = getClaimViewStates(request, application.statusId, currentStatusEvent);
 
       const errors = request.query.errors
-        ? JSON.parse(
-            Buffer.from(request.query.errors, "base64").toString("utf8"),
-          )
+        ? JSON.parse(Buffer.from(request.query.errors, "base64").toString("utf8"))
         : [];
 
       const statusOptions = getStatusUpdateOptions(application.statusId);
@@ -131,37 +112,20 @@ module.exports = {
         ? getAction("updateStatus", "status", "update-status")
         : null;
       const dateOfVisitActions = updateDateOfVisitAction
-        ? getAction(
-            "updateDateOfVisit",
-            "date of review",
-            "update-date-of-visit",
-          )
+        ? getAction("updateDateOfVisit", "date of review", "update-date-of-visit")
         : null;
       const vetsNameActions = updateVetsNameAction
         ? getAction("updateVetsName", "vet's name", "update-vets-name")
         : null;
       const vetRCVSNumberActions = updateVetRCVSNumberAction
-        ? getAction(
-            "updateVetRCVSNumber",
-            "RCVS number",
-            "update-vet-rcvs-number",
-          )
+        ? getAction("updateVetRCVSNumber", "RCVS number", "update-vet-rcvs-number")
         : null;
 
-      const contactHistory = await getContactHistory(
-        request.params.reference,
-        request.logger,
-      );
+      const contactHistory = await getContactHistory(request.params.reference, request.logger);
       const contactHistoryDetails = displayContactHistory(contactHistory);
       const { organisation } = application.data;
-      const organisationDetails = getOrganisationDetails(
-        organisation,
-        contactHistoryDetails,
-      );
-      const applicationDetails = getApplicationDetails(
-        application,
-        statusActions,
-      );
+      const organisationDetails = getOrganisationDetails(organisation, contactHistoryDetails);
+      const applicationDetails = getApplicationDetails(application, statusActions);
       const historyDetails = getHistoryDetails(historyRecords);
       const applicationClaimDetails = getApplicationClaimDetails(
         application,

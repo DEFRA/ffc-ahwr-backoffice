@@ -17,16 +17,13 @@ describe("Application-list model test", () => {
     { n: 6, field: "claim date", direction: "ASC" },
     { n: 7, field: "status", direction: "DESC" },
     { n: 7, field: "status", direction: "ASC" },
-  ])(
-    "getClaimTableHeader $field $direction",
-    async ({ n, field, direction }) => {
-      const sortField = { field, direction };
-      const ariaSort = direction === "DESC" ? "descending" : "ascending";
-      const res = getClaimTableHeader(sortField);
-      expect(res).not.toBeNull();
-      expect(res[n].attributes["aria-sort"]).toEqual(ariaSort);
-    },
-  );
+  ])("getClaimTableHeader $field $direction", async ({ n, field, direction }) => {
+    const sortField = { field, direction };
+    const ariaSort = direction === "DESC" ? "descending" : "ascending";
+    const res = getClaimTableHeader(sortField);
+    expect(res).not.toBeNull();
+    expect(res[n].attributes["aria-sort"]).toEqual(ariaSort);
+  });
 });
 
 describe("Application-list createModel", () => {
@@ -74,9 +71,7 @@ describe("Application-list createModel", () => {
     expect(formattedRows).toContain(
       '<a class="govuk-!-margin-0 responsive-text" href="test-uri/view-claim/AHWR-1111-1111?page=1&returnPage=claim">AHWR-1111-1111</a>',
     );
-    expect(formattedRows).toContain(
-      '<p class="govuk-!-margin-0 responsive-text">Review</p>',
-    );
+    expect(formattedRows).toContain('<p class="govuk-!-margin-0 responsive-text">Review</p>');
   });
   test("getClaimTableRows with a flagged claim", async () => {
     const page = 1;
@@ -88,9 +83,7 @@ describe("Application-list createModel", () => {
     expect(formattedRows).toContain(
       '<a class="govuk-!-margin-0 responsive-text" href="test-uri/view-claim/AHWR-1111-1111?page=1&returnPage=claim">AHWR-1111-1111</a>',
     );
-    expect(formattedRows).toContain(
-      '<p class="govuk-!-margin-0 responsive-text">Review</p>',
-    );
+    expect(formattedRows).toContain('<p class="govuk-!-margin-0 responsive-text">Review</p>');
   });
   test("getClaimTableRows showSBI false", async () => {
     const page = 1;
@@ -101,8 +94,6 @@ describe("Application-list createModel", () => {
     expect(formattedRows).toContain(
       '<a class="govuk-!-margin-0 responsive-text" href="test-uri/view-claim/AHWR-1111-1111?page=1&returnPage=claim">AHWR-1111-1111</a>',
     );
-    expect(formattedRows).toContain(
-      '<p class="govuk-!-margin-0 responsive-text">Review</p>',
-    );
+    expect(formattedRows).toContain('<p class="govuk-!-margin-0 responsive-text">Review</p>');
   });
 });

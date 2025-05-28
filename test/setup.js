@@ -1,5 +1,4 @@
-process.env.COOKIE_PASSWORD =
-  "who-likes-cookies-i-like-cookies-everybody-likes-cookies";
+process.env.COOKIE_PASSWORD = "who-likes-cookies-i-like-cookies-everybody-likes-cookies";
 require("dotenv").config();
 
 beforeEach(async () => {

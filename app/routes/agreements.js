@@ -4,13 +4,7 @@ const { displayPageSize } = require("../pagination");
 const Joi = require("joi");
 const { setAppSearch, getAppSearch } = require("../session");
 const keys = require("../session/keys");
-const {
-  administrator,
-  processor,
-  user,
-  recommender,
-  authoriser,
-} = require("../auth/permissions");
+const { administrator, processor, user, recommender, authoriser } = require("../auth/permissions");
 const { viewModel } = require("./models/application-list");
 const checkValidSearch = require("../lib/search-validation");
 const crumbCache = require("./utils/crumb-cache");
@@ -87,15 +81,11 @@ module.exports = [
           // Is Search Button Clicked
           if (!request.payload.submit) {
             filterStatus = request.payload?.status ?? [];
-            filterStatus = Array.isArray(filterStatus)
-              ? filterStatus
-              : [filterStatus];
+            filterStatus = Array.isArray(filterStatus) ? filterStatus : [filterStatus];
           }
 
           setAppSearch(request, keys.appSearch.filterStatus, filterStatus);
-          const { searchText, searchType } = checkValidSearch(
-            request.payload.searchText,
-          );
+          const { searchText, searchType } = checkValidSearch(request.payload.searchText);
           setAppSearch(request, keys.appSearch.searchText, searchText ?? "");
           setAppSearch(request, keys.appSearch.searchType, searchType ?? "");
           return h.view(viewTemplate, await viewModel(request, 1)); // NOSONAR
@@ -122,8 +112,7 @@ module.exports = [
         }),
       },
       handler: async (request, h) => {
-        request.params.direction =
-          request.params.direction !== "descending" ? "DESC" : "ASC";
+        request.params.direction = request.params.direction !== "descending" ? "DESC" : "ASC";
         setAppSearch(request, keys.appSearch.sort, request.params);
         return 1; // NOSONAR
       },
