@@ -21,6 +21,7 @@ const { getLivestockTypes } = require("../lib/get-livestock-types");
 const { getReviewType } = require("../lib/get-review-type");
 const { getHerdBreakdown } = require("../lib/get-herd-breakdown");
 const { getHerdRowData } = require("../lib/get-herd-row-data");
+const config = require("../config/index");
 
 const backLink = (applicationReference, returnPage, page) => {
   return returnPage === "agreement"
@@ -332,6 +333,8 @@ module.exports = {
         value: { html: upperFirstLetter(data?.piHuntAllAnimals) },
       };
 
+      const herdRowData = config.multiHerdsEnabled ? getHerdRowData(herd, isSheep) : [];
+
       // There are more common rows than this, but the ordering matters and things get more complicated after these
       const commonRows = [
         status,
@@ -340,7 +343,7 @@ module.exports = {
         livestock,
         typeOfVisit,
         dateOfVisit,
-        ...getHerdRowData(herd, isSheep),
+        ...herdRowData,
       ];
 
       const commonCowRows = [
