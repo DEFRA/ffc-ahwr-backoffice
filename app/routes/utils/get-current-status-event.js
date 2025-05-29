@@ -4,8 +4,7 @@ const getCurrentStatusEvent = (application, historyRecords) => {
   );
 
   const isToCurrentStatus =
-    mostRecentStatusUpdate &&
-    mostRecentStatusUpdate.newValue === application.statusId;
+    mostRecentStatusUpdate && mostRecentStatusUpdate.newValue === application.statusId;
 
   return isToCurrentStatus ? mostRecentStatusUpdate : null;
 };

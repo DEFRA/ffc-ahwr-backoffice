@@ -1,26 +1,14 @@
 const joi = require("joi");
 const boom = require("@hapi/boom");
 const crumbCache = require("./utils/crumb-cache");
-const {
-  administrator,
-  authoriser,
-  processor,
-  recommender,
-  user,
-} = require("../auth/permissions");
+const { administrator, authoriser, processor, recommender, user } = require("../auth/permissions");
 const { getApplication } = require("../api/applications");
 const { formattedDateToUk } = require("../lib/display-helper");
 const { getClaimSearch, setClaimSearch } = require("../session");
 const { claimSearch } = require("../session/keys");
-const {
-  getContactHistory,
-  displayContactHistory,
-} = require("../api/contact-history");
+const { getContactHistory, displayContactHistory } = require("../api/contact-history");
 const { getClaims } = require("../api/claims");
-const {
-  getClaimTableHeader,
-  getClaimTableRows,
-} = require("./models/claim-list");
+const { getClaimTableHeader, getClaimTableRows } = require("./models/claim-list");
 const { FLAG_EMOJI } = require("./utils/ui-constants");
 const { getHerdBreakdown } = require("../lib/get-herd-breakdown");
 
@@ -104,12 +92,9 @@ module.exports = [
           },
         ];
 
-        const applicationSummaryDetails = summaryDetails.filter(
-          (row) => row.newValue,
-        );
+        const applicationSummaryDetails = summaryDetails.filter((row) => row.newValue);
 
-        const sortField =
-          getClaimSearch(request, claimSearch.sort) ?? undefined;
+        const sortField = getClaimSearch(request, claimSearch.sort) ?? undefined;
         const showSBI = false;
         const dataURLPrefix = `/agreement/${applicationReference}/`;
         const header = getClaimTableHeader(sortField, dataURLPrefix, showSBI);
@@ -158,8 +143,7 @@ module.exports = [
         }),
       },
       handler: async (request, h) => {
-        request.params.direction =
-          request.params.direction !== "descending" ? "DESC" : "ASC";
+        request.params.direction = request.params.direction !== "descending" ? "DESC" : "ASC";
         setClaimSearch(request, claimSearch.sort, request.params);
         return 1; // NOSONAR
       },

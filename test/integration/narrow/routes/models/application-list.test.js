@@ -1,9 +1,5 @@
-const {
-  createModel,
-} = require("../../../../../app/routes/models/application-list");
-const {
-  getApplicationTableHeader,
-} = require("../../../../../app/routes/models/application-list");
+const { createModel } = require("../../../../../app/routes/models/application-list");
+const { getApplicationTableHeader } = require("../../../../../app/routes/models/application-list");
 const applicationData = require(".././../../../data/applications.json");
 const { getApplications } = require("../../../../../app/api/applications");
 jest.mock("../../../../../app/api/applications");
@@ -22,16 +18,13 @@ describe("Application-list model test", () => {
     { n: 4, field: "Apply date", direction: "ASC" },
     { n: 5, field: "Status", direction: "DESC" },
     { n: 5, field: "Status", direction: "ASC" },
-  ])(
-    "getApplicationTableHeader $field $direction",
-    async ({ n, field, direction }) => {
-      const sortField = { field, direction };
-      const ariaSort = direction === "DESC" ? "descending" : "ascending";
-      const res = getApplicationTableHeader(sortField);
-      expect(res).not.toBeNull();
-      expect(res[n].attributes["aria-sort"]).toEqual(ariaSort);
-    },
-  );
+  ])("getApplicationTableHeader $field $direction", async ({ n, field, direction }) => {
+    const sortField = { field, direction };
+    const ariaSort = direction === "DESC" ? "descending" : "ascending";
+    const res = getApplicationTableHeader(sortField);
+    expect(res).not.toBeNull();
+    expect(res[n].attributes["aria-sort"]).toEqual(ariaSort);
+  });
 
   test.each([
     { n: 0, field: "Reference", direction: "DESC" },
@@ -44,14 +37,11 @@ describe("Application-list model test", () => {
     { n: 4, field: "Apply date", direction: "ASC" },
     { n: 5, field: "Status", direction: "DESC" },
     { n: 5, field: "Status", direction: "ASC" },
-  ])(
-    "getApplicationTableHeader $field $direction",
-    async ({ n, field, direction }) => {
-      const sortField = { field, direction };
-      const res = getApplicationTableHeader(sortField);
-      expect(res).not.toBeNull();
-    },
-  );
+  ])("getApplicationTableHeader $field $direction", async ({ n, field, direction }) => {
+    const sortField = { field, direction };
+    const res = getApplicationTableHeader(sortField);
+    expect(res).not.toBeNull();
+  });
 });
 
 describe("Application-list createModel", () => {

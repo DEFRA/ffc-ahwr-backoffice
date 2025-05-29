@@ -29,15 +29,10 @@ module.exports = {
           }),
         reference: joi.string().valid().required(),
         page: joi.number().greater(0).default(1),
-        returnPage: joi
-          .string()
-          .optional()
-          .allow("")
-          .valid("agreement", "claims"),
+        returnPage: joi.string().optional().allow("").valid("agreement", "claims"),
       }),
       failAction: async (request, h, err) => {
-        const { claimOrAgreement, page, reference, returnPage } =
-          request.payload;
+        const { claimOrAgreement, page, reference, returnPage } = request.payload;
         request.logger.setBindings({ err, reference });
 
         const errors = encodeErrorsForUI(err.details, "#recommend-to-pay");
@@ -51,11 +46,7 @@ module.exports = {
           query.append("returnPage", returnPage);
         }
 
-        return h
-          .redirect(
-            `/view-${claimOrAgreement}/${reference}?${query.toString()}`,
-          )
-          .takeover();
+        return h.redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`).takeover();
       },
     },
     handler: async (request, h) => {
@@ -69,24 +60,12 @@ module.exports = {
 
       if (claimOrAgreement === "claim") {
         query.append("returnPage", returnPage);
-        await updateClaimStatus(
-          reference,
-          name,
-          recommendToPay,
-          request.logger,
-        );
+        await updateClaimStatus(reference, name, recommendToPay, request.logger);
       } else {
-        await updateApplicationStatus(
-          reference,
-          name,
-          recommendToPay,
-          request.logger,
-        );
+        await updateApplicationStatus(reference, name, recommendToPay, request.logger);
       }
 
-      return h.redirect(
-        `/view-${claimOrAgreement}/${reference}?${query.toString()}`,
-      );
+      return h.redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`);
     },
   },
 };

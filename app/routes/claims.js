@@ -6,17 +6,8 @@ const { displayPageSize } = require("../pagination");
 const { getClaims } = require("../api/claims");
 const { getPagination, getPagingData } = require("../pagination");
 const checkValidSearch = require("../lib/search-validation");
-const {
-  getClaimTableHeader,
-  getClaimTableRows,
-} = require("./models/claim-list");
-const {
-  administrator,
-  authoriser,
-  processor,
-  recommender,
-  user,
-} = require("../auth/permissions");
+const { getClaimTableHeader, getClaimTableRows } = require("./models/claim-list");
+const { administrator, authoriser, processor, recommender, user } = require("../auth/permissions");
 
 const viewTemplate = "claims";
 const currentPath = `/${viewTemplate}`;
@@ -88,8 +79,7 @@ module.exports = [
         }),
       },
       handler: async (request) => {
-        request.params.direction =
-          request.params.direction !== "descending" ? "DESC" : "ASC";
+        request.params.direction = request.params.direction !== "descending" ? "DESC" : "ASC";
         setClaimSearch(request, claimSearch.sort, request.params);
         return 1; // NOSONAR
       },
@@ -110,11 +100,7 @@ module.exports = [
       },
       handler: async (request, h) => {
         try {
-          setClaimSearch(
-            request,
-            claimSearch.searchText,
-            request.payload?.searchText,
-          );
+          setClaimSearch(request, claimSearch.searchText, request.payload?.searchText);
           const viewData = await getViewData(request);
           return h.view(viewTemplate, viewData);
         } catch (err) {

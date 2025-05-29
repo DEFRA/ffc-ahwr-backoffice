@@ -27,12 +27,8 @@ module.exports = {
               await processOnHoldClaims(logger);
             }
 
-            const { failedApplicationRefs, failedClaimRefs } =
-              logger.bindings();
-            if (
-              failedApplicationRefs.length > 0 ||
-              failedClaimRefs.length > 0
-            ) {
+            const { failedApplicationRefs, failedClaimRefs } = logger.bindings();
+            if (failedApplicationRefs.length > 0 || failedClaimRefs.length > 0) {
               throw new Error("failed updates");
             }
 

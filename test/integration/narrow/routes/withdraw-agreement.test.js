@@ -139,9 +139,7 @@ describe("Withdraw Application tests", () => {
       const res = await global.__SERVER__.inject(options);
       expect(applications.updateApplicationStatus).toHaveBeenCalledTimes(1);
       expect(res.statusCode).toBe(302);
-      expect(res.headers.location).toEqual(
-        `/view-agreement/${reference}?page=1`,
-      );
+      expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`);
     });
     test("Return error, when any of the check boxes are not checked", async () => {
       const errors =

@@ -73,9 +73,7 @@ describe("Applications Filter test", () => {
       const res = await global.__SERVER__.inject(options);
       expect(res.statusCode).toBe(200);
       const $ = cheerio.load(res.payload);
-      expect(
-        $("govuk-checkboxes__input").filter((s) => s.value === "APPLIED"),
-      ).toBeTruthy();
+      expect($("govuk-checkboxes__input").filter((s) => s.value === "APPLIED")).toBeTruthy();
       expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(6);
       expect(sessionMock.setAppSearch).toHaveBeenCalledTimes(1);
       expectPhaseBanner.ok($);

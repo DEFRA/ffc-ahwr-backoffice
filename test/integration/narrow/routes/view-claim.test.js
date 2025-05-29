@@ -1,13 +1,7 @@
 const cheerio = require("cheerio");
 const { getClaim, getClaims } = require("../../../../app/api/claims");
-const {
-  administrator,
-  recommender,
-} = require("../../../../app/auth/permissions");
-const {
-  getApplication,
-  getApplicationHistory,
-} = require("../../../../app/api/applications");
+const { administrator, recommender } = require("../../../../app/auth/permissions");
+const { getApplication, getApplicationHistory } = require("../../../../app/api/applications");
 const config = require("../../../../app/config/index");
 
 jest.mock("../../../../app/auth");
@@ -52,7 +46,7 @@ describe("View claim test", () => {
     updatedBy: null,
     statusId: 1,
     type: "EE",
-    status: { status: "AGREED" },
+    status: "AGREED",
     flags: [],
   };
   const claims = [
@@ -78,7 +72,7 @@ describe("View claim test", () => {
       updatedAt: "2024-03-25T12:20:18.307Z",
       createdBy: "sql query",
       updatedBy: null,
-      status: { status: "PAID" },
+      status: "PAID",
       flags: [],
     },
     {
@@ -129,7 +123,7 @@ describe("View claim test", () => {
       updatedAt: "2024-03-20T12:20:18.307Z",
       createdBy: "sql query",
       updatedBy: null,
-      status: { status: "Recommended to Pay" },
+      status: "Recommended to Pay",
       flags: [],
     },
     {
@@ -161,7 +155,7 @@ describe("View claim test", () => {
       updatedAt: "2024-03-25T12:20:18.307Z",
       createdBy: "sql query",
       updatedBy: null,
-      status: { status: "PAID" },
+      status: "PAID",
       flags: [],
     },
     {
@@ -189,7 +183,7 @@ describe("View claim test", () => {
       updatedAt: "2024-03-25T12:20:18.307Z",
       createdBy: "sql query",
       updatedBy: null,
-      status: { status: "PAID" },
+      status: "PAID",
       flags: [],
     },
   ];
@@ -258,21 +252,13 @@ describe("View claim test", () => {
       expect($(".govuk-summary-list__row").length).toEqual(21);
       // Application summary details expects
       for (let i = 0; i < 6; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
       // Claim summary details expects
       for (let i = 6; i < 20; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
     });
     test("returns 200 with endemics claim and sheep species", async () => {
@@ -326,12 +312,8 @@ describe("View claim test", () => {
       expect($(".govuk-summary-list__row").length).toEqual(25);
       // Claim summary details expects
       for (let i = 7; i < 24; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
     });
     test.each([
@@ -440,12 +422,8 @@ describe("View claim test", () => {
         },
       ];
       for (let i = 19; i < 24; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
     });
 
@@ -464,9 +442,7 @@ describe("View claim test", () => {
       const $ = cheerio.load(res.payload);
 
       expect(res.statusCode).toBe(200);
-      expect($(".govuk-back-link").attr("href")).toEqual(
-        "/agreement/AHWR-1234-APP1/claims",
-      );
+      expect($(".govuk-back-link").attr("href")).toEqual("/agreement/AHWR-1234-APP1/claims");
     });
     test("the back link should go to all claims main tab if the user is coming from all claims main tab", async () => {
       const options = {
@@ -540,7 +516,7 @@ describe("View claim test", () => {
         { key: "Date of visit", value: "22/03/2024" },
         { key: "Herd name", value: herd.herdName },
         { key: "Herd CPH", value: herd.cph },
-        { key: "Other herds on this SBI", value: "Yes" },
+        { key: "Is this the only herd on this SBI?", value: "Yes" },
         { key: "Reasons the herd is separate", value: "This is the only herd" },
         { key: "Date of sampling", value: "22/03/2024" },
         { key: "51 or more pigs", value: "Yes" },
@@ -554,21 +530,13 @@ describe("View claim test", () => {
       expect($(".govuk-summary-list__row").length).toEqual(25);
       // Application summary details expects
       for (let i = 0; i < 6; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
       // Claim summary details expects
       for (let i = 6; i < 20; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
     });
 
@@ -614,7 +582,7 @@ describe("View claim test", () => {
         { key: "Date of visit", value: "22/03/2024" },
         { key: "Herd name", value: "Unnamed herd" },
         { key: "Herd CPH", value: "-" },
-        { key: "Other herds on this SBI", value: "-" },
+        { key: "Is this the only herd on this SBI?", value: "-" },
         { key: "Reasons the herd is separate", value: "-" },
         { key: "Date of sampling", value: "22/03/2024" },
         { key: "51 or more pigs", value: "Yes" },
@@ -628,21 +596,13 @@ describe("View claim test", () => {
       expect($(".govuk-summary-list__row").length).toEqual(25);
       // Application summary details expects
       for (let i = 0; i < 6; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
       // Claim summary details expects
       for (let i = 6; i < 20; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
     });
 
@@ -701,7 +661,7 @@ describe("View claim test", () => {
         { key: "Date of visit", value: "22/03/2024" },
         { key: "Flock name", value: herd.herdName },
         { key: "Flock CPH", value: herd.cph },
-        { key: "Other flocks on this SBI", value: "Yes" },
+        { key: "Is this the only flock on this SBI?", value: "Yes" },
         {
           key: "Reasons the flock is separate",
           value: "This is the only herd",
@@ -718,21 +678,13 @@ describe("View claim test", () => {
       expect($(".govuk-summary-list__row").length).toEqual(25);
       // Application summary details expects
       for (let i = 0; i < 6; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
       // Claim summary details expects
       for (let i = 6; i < 20; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(
-          content[i].key,
-        );
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(
-          content[i].value,
-        );
+        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
+        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
       }
     });
   });

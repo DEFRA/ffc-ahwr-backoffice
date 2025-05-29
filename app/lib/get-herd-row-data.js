@@ -1,12 +1,7 @@
-const config = require("../config");
 const { upperFirstLetter } = require("./display-helper");
 const { getHerdReasonsText } = require("./get-herd-reasons-text");
 
 const getHerdRowData = (herd, isSheep) => {
-  if (!config.multiHerdsEnabled) {
-    return [];
-  }
-
   const flockOrHerdWord = isSheep ? "flock" : "herd";
 
   const herdInfo = herd ?? {
@@ -26,7 +21,7 @@ const getHerdRowData = (herd, isSheep) => {
     value: { html: herdInfo.cph },
   };
   const otherHerdsOnSbi = {
-    key: { text: `Other ${flockOrHerdWord}s on this SBI` },
+    key: { text: `Is this the only ${flockOrHerdWord} on this SBI?` },
     value: { html: herdInfo.herdReasons ? isOnlyHerd : "-" },
   };
   const reasonsForHerd = {

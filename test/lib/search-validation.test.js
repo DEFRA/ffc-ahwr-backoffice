@@ -15,16 +15,11 @@ describe("Set search params test", () => {
     { type: "type", text: "review" },
     { type: "type", text: "endemics" },
     { type: "reset", text: "" },
-  ])(
-    "A valid $searchType ($text) should return $text and $type as type",
-    ({ type, text }) => {
-      const { searchText, searchType } = setSearchParams(text);
-      expect(searchType).toBe(type);
-      expect(searchText).toBe(
-        text === "endemics" ? "E" : text === "review" ? "R" : text,
-      );
-    },
-  );
+  ])("A valid $searchType ($text) should return $text and $type as type", ({ type, text }) => {
+    const { searchText, searchType } = setSearchParams(text);
+    expect(searchType).toBe(type);
+    expect(searchText).toBe(text === "endemics" ? "E" : text === "review" ? "R" : text);
+  });
   test.each([
     { status: "agreed" },
     { status: "applied" },
@@ -46,12 +41,9 @@ describe("Set search params test", () => {
     { status: "ready to pay" },
     { status: "hold" },
     { status: "on hold" },
-  ])(
-    "A valid status ($status) should return $status and status as type",
-    ({ status }) => {
-      const { searchText, searchType } = setSearchParams(status);
-      expect(searchType).toBe("status");
-      expect(searchText).toBe(status);
-    },
-  );
+  ])("A valid status ($status) should return $status and status as type", ({ status }) => {
+    const { searchText, searchType } = setSearchParams(status);
+    expect(searchType).toBe("status");
+    expect(searchText).toBe(status);
+  });
 });

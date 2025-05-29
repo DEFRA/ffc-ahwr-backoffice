@@ -1,7 +1,4 @@
-const {
-  processApplicationClaim,
-  getApplications,
-} = require("../../api/applications");
+const { processApplicationClaim, getApplications } = require("../../api/applications");
 const { updateClaimStatus, getClaims } = require("../../api/claims");
 const { status } = require("../../../app/constants/status");
 

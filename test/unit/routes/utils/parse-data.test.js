@@ -3,11 +3,7 @@ const applicationEventData = require("../../../data/application-events.json");
 
 describe("Parse data tests", () => {
   test("Parse data - Valid payload", async () => {
-    const parsedData = parseData(
-      applicationEventData.eventRecords,
-      "claim-claimed",
-      "claimed",
-    );
+    const parsedData = parseData(applicationEventData.eventRecords, "claim-claimed", "claimed");
 
     expect(parsedData.value).toBeFalsy();
     expect(parsedData.raisedOn).toBe("2022-11-09T11:36:00.000Z");

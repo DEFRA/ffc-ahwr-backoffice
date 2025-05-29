@@ -1,7 +1,4 @@
-const {
-  administrator,
-  recommender,
-} = require("../../../../app/auth/permissions");
+const { administrator, recommender } = require("../../../../app/auth/permissions");
 const getCrumbs = require("../../../utils/get-crumbs");
 
 const applications = require("../../../../app/api/applications");
@@ -111,9 +108,7 @@ describe("Recommended To Pay test", () => {
         const res = await global.__SERVER__.inject(options);
         expect(res.statusCode).toBe(302);
         expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1);
-        expect(res.headers.location).toEqual(
-          `/view-agreement/${reference}?page=1`,
-        );
+        expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`);
       },
     );
     test.each([recommender, administrator])(
@@ -143,9 +138,7 @@ describe("Recommended To Pay test", () => {
         const res = await global.__SERVER__.inject(options);
         expect(res.statusCode).toBe(302);
         expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1);
-        expect(res.headers.location).toEqual(
-          `/view-claim/${reference}?page=1&returnPage=claims`,
-        );
+        expect(res.headers.location).toEqual(`/view-claim/${reference}?page=1&returnPage=claims`);
       },
     );
 
