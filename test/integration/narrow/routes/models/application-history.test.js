@@ -46,6 +46,15 @@ test("renders table", () => {
       updatedBy: "Tom",
       updatedProperty: "agreementFlag",
     },
+    {
+      eventType: "claim-herdAssociated",
+      newValue: "Sheepies",
+      note: "Herd details were retroactively applied to this pre-multiple herds claim",
+      oldValue: "Unnamed herd",
+      updatedAt: "2025-03-28T14:54:18.927Z",
+      updatedBy: "admin",
+      updatedProperty: "herdName",
+    },
   ];
 
   const expected = {
@@ -93,6 +102,23 @@ test("renders table", () => {
         },
         { text: "Tom" },
         { text: "Flag this please" },
+      ],
+      [
+        {
+          text: "28/03/2025",
+        },
+        {
+          text: "14:54:18",
+        },
+        {
+          text: "Herd details were updated from Unnamed herd to Sheepies",
+        },
+        {
+          text: "admin",
+        },
+        {
+          text: "Herd details were retroactively applied to this pre-multiple herds claim",
+        },
       ],
     ],
   };
