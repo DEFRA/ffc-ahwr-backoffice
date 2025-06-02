@@ -1,24 +1,28 @@
-const { multiHerdsEnabled } = require("../config");
+const config = require("../config");
 
 const getHerdBreakdown = (claims) => {
-  if (!multiHerdsEnabled) {
+  if (!config.multiHerdsEnabled) {
     return undefined;
   }
 
   const initialBreakdown = { beef: 0, sheep: 0, dairy: 0, pigs: 0 };
-  const speciesAlreadyCountedFromNoHerd = new Set();
+  const countedHerdIds = new Set();
+  const countedSpeciesWithoutHerd = new Set();
 
-  // Only increase the herd count *once* per unnamed herd
   for (const claim of claims) {
     if (claim.herd) {
-      const species = claim.herd.species;
-      initialBreakdown[species]++;
+      const { id: herdId, species } = claim.herd;
+
+      if (!countedHerdIds.has(herdId)) {
+        countedHerdIds.add(herdId);
+        initialBreakdown[species]++;
+      }
     } else {
       const species = claim.data.typeOfLivestock;
 
-      if (!speciesAlreadyCountedFromNoHerd.has(species)) {
+      if (!countedSpeciesWithoutHerd.has(species)) {
+        countedSpeciesWithoutHerd.add(species);
         initialBreakdown[species]++;
-        speciesAlreadyCountedFromNoHerd.add(species);
       }
     }
   }
