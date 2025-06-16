@@ -1,4 +1,4 @@
-const regexChecker = require("../../app/routes/utils/regex-checker");
+import { regexChecker } from "../../app/routes/utils/regex-checker.js";
 
 const refRegEx = /^(IAHW|AHWR|REPI|RESH|REBC|REDC|FUPI|FUSH|FUBC|FUDC)-[A-Z0-9]{4}-[A-Z0-9]{4}$/i;
 const dateRegEx = /^(0[1-9]|[12]\d|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/; // DD/MM/YYYY
@@ -46,7 +46,7 @@ const validSpecies = (searchText) => {
   return { isValidSpecies: !!theSpecies, theSpecies: theSpecies ?? "" };
 };
 
-module.exports = (searchText) => {
+export const searchValidation = (searchText) => {
   let searchType;
   searchText = (searchText ?? "").trim();
   const { isValidSpecies, theSpecies } = validSpecies(searchText);

@@ -1,19 +1,21 @@
-const { getApplications } = require("../../api/applications");
-const { getPagination, getPagingData } = require("../../pagination");
-const { getAppSearch } = require("../../session");
-const { getStyleClassByStatus } = require("../../constants/status");
-const keys = require("../../session/keys");
-const { serviceUri } = require("../../config");
-const { upperFirstLetter } = require("../../lib/display-helper");
-const { FLAG_EMOJI } = require("../utils/ui-constants");
+import { sessionKeys } from "../../session/keys.js";
+import { getApplications } from "../../api/applications.js";
+import { getPagination, getPagingData } from "../../pagination.js";
+import { getAppSearch } from "../../session/index.js";
+import { getStyleClassByStatus } from "../../constants/status.js";
+import { upperFirstLetter } from "../../lib/display-helper.js";
+import { FLAG_EMOJI } from "../utils/ui-constants.js";
+import { config } from "../../config/index.js";
 
-const viewModel = (request, page) => {
+const { serviceUri } = config;
+
+export const viewModel = (request, page) => {
   return (async () => {
     return { model: await createModel(request, page) };
   })();
 };
 
-const getApplicationTableHeader = (sortField) => {
+export const getApplicationTableHeader = (sortField) => {
   const direction = sortField && sortField.direction === "DESC" ? "descending" : "ascending";
   const agreementDateTitle = "Agreement date";
   const headerColumns = [
@@ -65,15 +67,15 @@ const getApplicationTableHeader = (sortField) => {
   return headerColumns;
 };
 
-async function createModel(request, page) {
+export async function createModel(request, page) {
   const viewTemplate = "agreements";
   const currentPath = `/${viewTemplate}`;
   page = page ?? request.query.page ?? 1;
   const { limit, offset } = getPagination(page);
-  const searchText = getAppSearch(request, keys.appSearch.searchText);
-  const searchType = getAppSearch(request, keys.appSearch.searchType);
-  const filterStatus = getAppSearch(request, keys.appSearch.filterStatus) ?? [];
-  const sortField = getAppSearch(request, keys.appSearch.sort) ?? undefined;
+  const searchText = getAppSearch(request, sessionKeys.appSearch.searchText);
+  const searchType = getAppSearch(request, sessionKeys.appSearch.searchType);
+  const filterStatus = getAppSearch(request, sessionKeys.appSearch.filterStatus) ?? [];
+  const sortField = getAppSearch(request, sessionKeys.appSearch.sort) ?? undefined;
   const apps = await getApplications(
     searchType,
     searchText,
@@ -151,7 +153,7 @@ async function createModel(request, page) {
 
     return {
       applications,
-      header: getApplicationTableHeader(getAppSearch(request, keys.appSearch.sort)),
+      header: getApplicationTableHeader(getAppSearch(request, sessionKeys.appSearch.sort)),
       ...pagingData,
       searchText,
       availableStatus: groupByStatus,
@@ -184,5 +186,3 @@ async function createModel(request, page) {
     };
   }
 }
-
-module.exports = { viewModel, getApplicationTableHeader, createModel };

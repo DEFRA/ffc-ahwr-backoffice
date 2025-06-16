@@ -1,27 +1,29 @@
-const { Buffer } = require("buffer");
-const joi = require("joi");
-const { getClaim, getClaims } = require("../api/claims");
-const { getApplication, getApplicationHistory } = require("../api/applications");
-const { getHistoryDetails } = require("./models/application-history");
-const { getStyleClassByStatus } = require("../constants/status");
-const { formatStatusId } = require("../lib/display-helper");
-const { livestockTypes } = require("../constants/claim");
-const {
+import { Buffer } from "buffer";
+import joi from "joi";
+import { getClaim, getClaims } from "../api/claims.js";
+import { getApplication, getApplicationHistory } from "../api/applications.js";
+import { getHistoryDetails } from "./models/application-history.js";
+import { getStyleClassByStatus } from "../constants/status.js";
+import { formatStatusId, upperFirstLetter, formattedDateToUk } from "../lib/display-helper.js";
+import { TYPE_OF_LIVESTOCK } from "ffc-ahwr-common-library";
+import {
   sheepPackages,
   sheepTestTypes,
   sheepTestResultsType,
-} = require("../constants/sheep-test-types");
-const { administrator, authoriser, processor, recommender, user } = require("../auth/permissions");
-const { upperFirstLetter, formattedDateToUk } = require("../lib/display-helper");
-const { getCurrentStatusEvent } = require("./utils/get-current-status-event");
-const { getClaimViewStates } = require("./utils/get-claim-view-states");
-const { getErrorMessagesByKey } = require("./utils/get-error-messages-by-key");
-const { getStatusUpdateOptions } = require("./utils/get-status-update-options");
-const { getLivestockTypes } = require("../lib/get-livestock-types");
-const { getReviewType } = require("../lib/get-review-type");
-const { getHerdBreakdown } = require("../lib/get-herd-breakdown");
-const { getHerdRowData } = require("../lib/get-herd-row-data");
-const config = require("../config/index");
+} from "../constants/sheep-test-types.js";
+import { permissions } from "../auth/permissions.js";
+import { getCurrentStatusEvent } from "./utils/get-current-status-event.js";
+import { getClaimViewStates } from "./utils/get-claim-view-states.js";
+import { getErrorMessagesByKey } from "./utils/get-error-messages-by-key.js";
+import { getStatusUpdateOptions } from "./utils/get-status-update-options.js";
+import { getLivestockTypes } from "../lib/get-livestock-types.js";
+import { getReviewType } from "../lib/get-review-type.js";
+import { getHerdBreakdown } from "../lib/get-herd-breakdown.js";
+import { getHerdRowData } from "../lib/get-herd-row-data.js";
+import { config } from "../config/index.js";
+
+const { BEEF, PIGS, DAIRY, SHEEP } = TYPE_OF_LIVESTOCK;
+const { administrator, authoriser, processor, recommender, user } = permissions;
 
 const backLink = (applicationReference, returnPage, page) => {
   return returnPage === "agreement"
@@ -43,7 +45,7 @@ const buildKeyValueJson = (keyText, valueText) => ({
   value: { text: valueText },
 });
 
-module.exports = {
+export const viewClaimRoute = {
   method: "get",
   path: "/view-claim/{reference}",
   options: {
@@ -138,13 +140,11 @@ module.exports = {
       const getBiosecurityRow = () =>
         data?.biosecurity &&
         isEndemicsFollowUp &&
-        [livestockTypes.pigs, livestockTypes.beef, livestockTypes.dairy].includes(
-          data?.typeOfLivestock,
-        ) && {
+        [PIGS, BEEF, DAIRY].includes(data?.typeOfLivestock) && {
           key: { text: "Biosecurity assessment" },
           value: {
             html:
-              data?.typeOfLivestock === livestockTypes.pigs
+              data?.typeOfLivestock === PIGS
                 ? upperFirstLetter(
                     `${data?.biosecurity?.biosecurity}, Assessment percentage: ${data?.biosecurity?.assessmentPercentage}%`,
                   )
@@ -153,7 +153,7 @@ module.exports = {
         };
 
       const getSheepDiseasesTestedRow = () =>
-        data?.typeOfLivestock === livestockTypes.sheep &&
+        data?.typeOfLivestock === SHEEP &&
         isEndemicsFollowUp &&
         typeof data.testResults === "object" &&
         data.testResults.length
@@ -236,7 +236,7 @@ module.exports = {
         key: { text: "Livestock" },
         value: {
           html: upperFirstLetter(
-            [livestockTypes.pigs, livestockTypes.sheep].includes(data?.typeOfLivestock)
+            [PIGS, SHEEP].includes(data?.typeOfLivestock)
               ? data?.typeOfLivestock
               : `${data?.typeOfLivestock} cattle`,
           ),

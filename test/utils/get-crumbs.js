@@ -1,16 +1,4 @@
-/**
- * Make a request to the `url` to get the value of the crumb (CSRF token). This
- * ensures subsequent requests will be valid.
- *
- * @param {object} server Hapi server to inject request to.
- * @param {object} [options] object containing [url='/'] and
- * [crumbKey='crumb']. `url` is where the request is made to and `crumbKey` is
- * the name of the cookie containing the crumb.
- * @param {function} [mockForRequest=()=>{}] function containing any mocks
- * required for the `url` of the request.
- * @returns {string} value of crumb.
- */
-module.exports = async (
+export const getCrumbs = async (
   server,
   options = { url: "/healthy", crumbKey: "crumb" },
   mockForRequest = () => {},

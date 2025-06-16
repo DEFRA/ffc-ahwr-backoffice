@@ -1,10 +1,14 @@
-const { createModel } = require("../../../../../app/routes/models/application-list");
-const { getApplicationTableHeader } = require("../../../../../app/routes/models/application-list");
-const applicationData = require(".././../../../data/applications.json");
-const { getApplications } = require("../../../../../app/api/applications");
+import {
+  createModel,
+  getApplicationTableHeader,
+} from "../../../../../app/routes/models/application-list";
+import { applicationsData } from "../../../../data/applications.js";
+import { getApplications } from "../../../../../app/api/applications";
+import { permissions } from "../../../../../app/auth/permissions";
+
 jest.mock("../../../../../app/api/applications");
 
-const { administrator } = require("../../../../../app/auth/permissions");
+const { administrator } = permissions;
 
 describe("Application-list model test", () => {
   test.each([
@@ -46,7 +50,7 @@ describe("Application-list model test", () => {
 
 describe("Application-list createModel", () => {
   beforeAll(() => {
-    getApplications.mockImplementation(() => applicationData);
+    getApplications.mockImplementation(() => applicationsData);
   });
 
   afterAll(() => {

@@ -1,25 +1,26 @@
+import { CLAIM_STATUS } from "ffc-ahwr-common-library";
+import { formattedDateToUk } from "../../lib/display-helper.js";
 const {
-  agreed,
-  withdrawn,
-  readyToPay,
-  rejected,
-  inCheck,
-  onHold,
-  recommendToPay,
-  recommendToReject,
-} = require("../../../app/constants/application-status");
-const { formattedDateToUk } = require("../../lib/display-helper");
+  AGREED,
+  WITHDRAWN,
+  READY_TO_PAY,
+  REJECTED,
+  IN_CHECK,
+  ON_HOLD,
+  RECOMMENDED_TO_PAY,
+  RECOMMENDED_TO_REJECT,
+} = CLAIM_STATUS;
 
 const getAction = (updatedProperty, newValue, oldValue) => {
   const statusIds = {
-    [agreed]: "Agreed",
-    [withdrawn]: "Withdrawn",
-    [readyToPay]: "Approved",
-    [rejected]: "Rejected",
-    [inCheck]: "Moved to 'In Check'",
-    [onHold]: "Moved to 'On Hold'",
-    [recommendToPay]: "Recommended to Pay",
-    [recommendToReject]: "Recommended to Reject",
+    [AGREED]: "Agreed",
+    [WITHDRAWN]: "Withdrawn",
+    [READY_TO_PAY]: "Approved",
+    [REJECTED]: "Rejected",
+    [IN_CHECK]: "Moved to 'In Check'",
+    [ON_HOLD]: "Moved to 'On Hold'",
+    [RECOMMENDED_TO_PAY]: "Recommended to Pay",
+    [RECOMMENDED_TO_REJECT]: "Recommended to Reject",
   };
 
   if (updatedProperty === "statusId") {
@@ -75,9 +76,7 @@ const getHistoryTableRows = (historyRecords) =>
     ];
   });
 
-const getHistoryDetails = (historyRecords) => ({
+export const getHistoryDetails = (historyRecords) => ({
   header: getHistoryTableHeader(),
   rows: getHistoryTableRows(historyRecords),
 });
-
-module.exports = { getHistoryDetails };

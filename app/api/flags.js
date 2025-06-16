@@ -1,7 +1,9 @@
-const wreck = require("@hapi/wreck");
-const { applicationApiUri } = require("../config");
+import wreck from "@hapi/wreck";
+import { config } from "../config/index.js";
 
-async function getAllFlags(logger) {
+const { applicationApiUri } = config;
+
+export async function getAllFlags(logger) {
   const endpoint = `${applicationApiUri}/flags`;
   try {
     const { payload } = await wreck.get(endpoint, { json: true });
@@ -12,7 +14,7 @@ async function getAllFlags(logger) {
   }
 }
 
-async function deleteFlag({ flagId, deletedNote }, user, logger) {
+export async function deleteFlag({ flagId, deletedNote }, user, logger) {
   const endpoint = `${applicationApiUri}/application/flag/${flagId}/delete`;
   try {
     await wreck.patch(endpoint, { json: true, payload: { user, deletedNote } });
@@ -22,7 +24,7 @@ async function deleteFlag({ flagId, deletedNote }, user, logger) {
   }
 }
 
-async function createFlag(payload, appRef, logger) {
+export async function createFlag(payload, appRef, logger) {
   const endpoint = `${applicationApiUri}/application/${appRef}/flag`;
   try {
     return wreck.post(endpoint, { json: true, payload });
@@ -31,9 +33,3 @@ async function createFlag(payload, appRef, logger) {
     throw err;
   }
 }
-
-module.exports = {
-  getAllFlags,
-  deleteFlag,
-  createFlag,
-};

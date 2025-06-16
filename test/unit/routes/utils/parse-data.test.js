@@ -1,9 +1,9 @@
-const { parseData } = require("../../../../app/routes/utils/parse-data");
-const applicationEventData = require("../../../data/application-events.json");
+import { parseData } from "../../../../app/routes/utils/parse-data";
+import { applicationEvents } from "../../../data/application-events.js";
 
 describe("Parse data tests", () => {
   test("Parse data - Valid payload", async () => {
-    const parsedData = parseData(applicationEventData.eventRecords, "claim-claimed", "claimed");
+    const parsedData = parseData(applicationEvents.eventRecords, "claim-claimed", "claimed");
 
     expect(parsedData.value).toBeFalsy();
     expect(parsedData.raisedOn).toBe("2022-11-09T11:36:00.000Z");

@@ -13,25 +13,18 @@ function get(request, entryKey, key) {
   return key ? request.yar.get(entryKey)?.[key] : request.yar.get(entryKey);
 }
 
-function setAppSearch(request, key, value) {
+export function setAppSearch(request, key, value) {
   set(request, entries.appSearch, key, value);
 }
 
-function getAppSearch(request, key) {
+export function getAppSearch(request, key) {
   return get(request, entries.appSearch, key);
 }
 
-function setClaimSearch(request, key, value) {
+export function setClaimSearch(request, key, value) {
   set(request, entries.claimSearch, key, value);
 }
 
-function getClaimSearch(request, key) {
+export function getClaimSearch(request, key) {
   return get(request, entries.claimSearch, key);
 }
-
-module.exports = {
-  setAppSearch,
-  getAppSearch,
-  setClaimSearch,
-  getClaimSearch,
-};

@@ -1,11 +1,13 @@
-const flags = require("../../../../../app/api/flags");
-const { createFlagsTableData } = require("../../../../../app/routes/models/flags-list");
-const mockFlags = require("../../../../data/flags.json");
-const { serviceUri } = require("../../../../../app/config");
+import { getAllFlags } from "../../../../../app/api/flags";
+import { createFlagsTableData } from "../../../../../app/routes/models/flags-list";
+import { flags } from "../../../../data/flags.js";
+import { config } from "../../../../../app/config";
+
+const { serviceUri } = config;
 
 jest.mock("../../../../../app/api/flags");
 
-flags.getAllFlags.mockResolvedValue(mockFlags);
+getAllFlags.mockResolvedValue(flags);
 
 const mockLogger = {
   setBindings: jest.fn(),
@@ -162,18 +164,18 @@ describe("createFlagsTableData", () => {
   it("creates the table data from the getAllFlags API call data when a flagId to delete is passed", async () => {
     const result = await createFlagsTableData({
       logger: mockLogger,
-      flagIdToDelete: mockFlags[0].id,
+      flagIdToDelete: flags[0].id,
       createFlag: false,
       isAdmin: true,
     });
 
     expect(result).toEqual({
       model: {
-        applicationRefOfFlagToDelete: mockFlags[0].applicationReference,
+        applicationRefOfFlagToDelete: flags[0].applicationReference,
         appliesToMh: "non-MH",
         createFlag: false,
         createFlagUrl: `${serviceUri}/flags?createFlag=true`,
-        flagIdToDelete: mockFlags[0].id,
+        flagIdToDelete: flags[0].id,
         header: [
           { text: "Agreement number" },
           { text: "SBI" },
@@ -214,18 +216,18 @@ describe("createFlagsTableData", () => {
   it("creates the table data from the getAllFlags API call data when a flagId to delete is passed and it is a flag which applies to multiple herds", async () => {
     const result = await createFlagsTableData({
       logger: mockLogger,
-      flagIdToDelete: mockFlags[1].id,
+      flagIdToDelete: flags[1].id,
       createFlag: false,
       isAdmin: true,
     });
 
     expect(result).toEqual({
       model: {
-        applicationRefOfFlagToDelete: mockFlags[1].applicationReference,
+        applicationRefOfFlagToDelete: flags[1].applicationReference,
         appliesToMh: "multiple herds T&C's",
         createFlag: false,
         createFlagUrl: `${serviceUri}/flags?createFlag=true`,
-        flagIdToDelete: mockFlags[1].id,
+        flagIdToDelete: flags[1].id,
         header: [
           { text: "Agreement number" },
           { text: "SBI" },

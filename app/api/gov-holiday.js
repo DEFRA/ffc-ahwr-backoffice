@@ -1,6 +1,9 @@
-const wreck = require("@hapi/wreck");
+import wreck from "@hapi/wreck";
+import { config } from "../config/index.js";
 
-async function getHolidayCalendarForEngland() {
+const { applicationApiUri } = config;
+
+export async function getHolidayCalendarForEngland() {
   const endpoint = "https://www.gov.uk/bank-holidays.json";
   const { payload } = await wreck.get(endpoint, { json: true });
   if (!payload?.["england-and-wales"]?.events) {
@@ -9,8 +12,8 @@ async function getHolidayCalendarForEngland() {
   return payload["england-and-wales"].events; // Returns only the events for England and Wales
 }
 
-async function isTodayCustomHoliday() {
-  const url = `${process.env.APPLICATION_API_URI}/holidays/isTodayHoliday`;
+export async function isTodayCustomHoliday() {
+  const url = `${applicationApiUri}/holidays/isTodayHoliday`;
   try {
     await wreck.get(url);
     return true;
@@ -22,17 +25,3 @@ async function isTodayCustomHoliday() {
     }
   }
 }
-
-async function isTodayHoliday() {
-  const holidays = await module.exports.getHolidayCalendarForEngland();
-  const today = new Date().toISOString().split("T")[0]; // Format today's date as YYYY-MM-DD
-  let isHoliday = holidays?.some((holiday) => holiday.date === today);
-  if (!isHoliday) isHoliday = await module.exports.isTodayCustomHoliday();
-  return isHoliday;
-}
-
-module.exports = {
-  isTodayHoliday,
-  getHolidayCalendarForEngland,
-  isTodayCustomHoliday,
-};

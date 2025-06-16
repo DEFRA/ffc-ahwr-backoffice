@@ -1,9 +1,11 @@
-const joi = require("joi");
-const { administrator } = require("../auth/permissions");
-const { encodeErrorsForUI } = require("./utils/encode-errors-for-ui");
-const crumbCache = require("./utils/crumb-cache");
-const { updateClaimData } = require("../api/claims");
-const { updateApplicationData } = require("../api/applications");
+import joi from "joi";
+import { generateNewCrumb } from "./utils/crumb-cache.js";
+import { permissions } from "../auth/permissions.js";
+import { updateClaimData } from "../api/claims.js";
+import { updateApplicationData } from "../api/applications.js";
+import { encodeErrorsForUI } from "./utils/encode-errors-for-ui.js";
+
+const { administrator } = permissions;
 
 const panelIdGivenFormName = (formName) => {
   if (formName === "updateVetsName") {
@@ -17,7 +19,7 @@ const panelIdGivenFormName = (formName) => {
   return "#update-vet-rcvs-number";
 };
 
-module.exports = [
+export const claimsDataRoutes = [
   {
     method: "post",
     path: "/claims/data",
@@ -138,7 +140,7 @@ module.exports = [
 
         request.logger.setBindings({ form });
 
-        await crumbCache.generateNewCrumb(request, h);
+        await generateNewCrumb(request, h);
         const query = new URLSearchParams({ page });
 
         const dateOfVisit =

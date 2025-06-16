@@ -1,10 +1,10 @@
 {% from "govuk/components/cookie-banner/macro.njk" import govukCookieBanner %}
 <noscript>
   {{ govukCookieBanner({
-  ariaLabel: serviceName,
+  ariaLabel: "Administration of the health and welfare of your livestock",
   messages: [
     {
-      headingText: serviceName,
+      headingText: "Administration of the health and welfare of your livestock",
       text: "We use cookies to make this service work. To accept or reject cookies, turn on JavaScript in your browser settings or reload this page."
     }
   ]
@@ -19,11 +19,11 @@
   <p class="govuk-body">You’ve accepted cookies.</p>
   {% endset %}
   {{ govukCookieBanner({
-    ariaLabel: serviceName,
+    ariaLabel: "Administration of the health and welfare of your livestock",
     classes: "js-cookies-banner",
     messages: [
       {
-        headingText: serviceName,
+        headingText: "Administration of the health and welfare of your livestock",
         html: html,
         classes: "js-question-banner",
         actions: [

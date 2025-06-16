@@ -1,14 +1,17 @@
-const joi = require("joi");
-const { getClaimSearch, setClaimSearch } = require("../session");
-const { claimSearch } = require("../session/keys");
-const crumbCache = require("./utils/crumb-cache");
-const { displayPageSize } = require("../pagination");
-const { getClaims } = require("../api/claims");
-const { getPagination, getPagingData } = require("../pagination");
-const checkValidSearch = require("../lib/search-validation");
-const { getClaimTableHeader, getClaimTableRows } = require("./models/claim-list");
-const { administrator, authoriser, processor, recommender, user } = require("../auth/permissions");
+import joi from "joi";
+import { getClaimSearch, setClaimSearch } from "../session/index.js";
+import { sessionKeys } from "../session/keys.js";
+import { generateNewCrumb } from "./utils/crumb-cache.js";
+import { config } from "../config/index.js";
+import { getClaims } from "../api/claims.js";
+import { getPagination, getPagingData } from "../pagination.js";
+import { searchValidation } from "../lib/search-validation.js";
+import { getClaimTableHeader, getClaimTableRows } from "./models/claim-list.js";
+import { permissions } from "../auth/permissions.js";
 
+const { administrator, authoriser, processor, recommender, user } = permissions;
+const { displayPageSize } = config;
+const { claimSearch } = sessionKeys;
 const viewTemplate = "claims";
 const currentPath = `/${viewTemplate}`;
 
@@ -18,7 +21,7 @@ const getViewData = async (request) => {
   const { limit, offset } = getPagination(page);
   const searchText = getClaimSearch(request, claimSearch.searchText);
   const sort = getClaimSearch(request, claimSearch.sort);
-  const { searchType } = checkValidSearch(searchText);
+  const { searchType } = searchValidation(searchText);
   const filter = undefined;
   const { claims, total } = await getClaims(
     searchType,
@@ -32,7 +35,7 @@ const getViewData = async (request) => {
   const header = getClaimTableHeader(sort);
   const rows = getClaimTableRows(claims, page, returnPage);
   const { previous, next, pages } = getPagingData(total, limit, request.query);
-  const error = total === 0 ? "no claims found" : null;
+  const error = total === 0 ? "No claims found." : null;
 
   return {
     searchText,
@@ -45,7 +48,7 @@ const getViewData = async (request) => {
   };
 };
 
-module.exports = [
+export const claimsRoutes = [
   {
     method: "GET",
     path: currentPath,
@@ -59,7 +62,7 @@ module.exports = [
         }),
       },
       handler: async (request, h) => {
-        await crumbCache.generateNewCrumb(request, h);
+        await generateNewCrumb(request, h);
         const viewData = await getViewData(request);
         return h.view("claims", viewData);
       },

@@ -1,4 +1,4 @@
-const { getHistoryDetails } = require("../../../../../app/routes/models/application-history");
+import { getHistoryDetails } from "../../../../../app/routes/models/application-history";
 
 test("renders table", () => {
   const historyRecords = [

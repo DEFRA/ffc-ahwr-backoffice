@@ -1,8 +1,11 @@
-const cheerio = require("cheerio");
-const { getClaim, getClaims } = require("../../../../app/api/claims");
-const { administrator, recommender } = require("../../../../app/auth/permissions");
-const { getApplication, getApplicationHistory } = require("../../../../app/api/applications");
-const config = require("../../../../app/config/index");
+import * as cheerio from "cheerio";
+import { getClaim, getClaims } from "../../../../app/api/claims";
+import { permissions } from "../../../../app/auth/permissions";
+import { getApplication, getApplicationHistory } from "../../../../app/api/applications";
+import { config } from "../../../../app/config/index";
+import { createServer } from "../../../../app/server";
+import { StatusCodes } from "http-status-codes";
+const { administrator, recommender } = permissions;
 
 jest.mock("../../../../app/auth");
 jest.mock("../../../../app/session");
@@ -192,14 +195,21 @@ describe("View claim test", () => {
     jest.clearAllMocks();
   });
 
+  let server;
+
+  beforeAll(async () => {
+    jest.clearAllMocks();
+    server = await createServer();
+  });
+
   describe(`GET ${url} route`, () => {
     test("returns 302 no auth", async () => {
       const options = {
         method: "GET",
         url: `${url}/123`,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
 
     test("returns 200 with review claim type and Pigs species", async () => {
@@ -213,10 +223,10 @@ describe("View claim test", () => {
       getClaims.mockReturnValue({ claims });
       getApplication.mockReturnValue(application);
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       const $ = cheerio.load(res.payload);
 
-      expect(res.statusCode).toBe(200);
+      expect(res.statusCode).toBe(StatusCodes.OK);
 
       const content = [
         { key: "Agreement number", value: "AHWR-1234-APP1" },
@@ -272,10 +282,10 @@ describe("View claim test", () => {
       getClaims.mockReturnValue({ claims });
       getApplication.mockReturnValue(application);
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       const $ = cheerio.load(res.payload);
 
-      expect(res.statusCode).toBe(200);
+      expect(res.statusCode).toBe(StatusCodes.OK);
 
       const content = [
         null,
@@ -333,10 +343,10 @@ describe("View claim test", () => {
         data: { ...application.data, organisation: { address: "" } },
       });
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       const $ = cheerio.load(res.payload);
 
-      expect(res.statusCode).toBe(200);
+      expect(res.statusCode).toBe(StatusCodes.OK);
 
       // Summary list rows expect to show only application data or if type is provided show application data and type of review
       expect($(".govuk-summary-list__row").length).toEqual(rows);
@@ -366,10 +376,10 @@ describe("View claim test", () => {
         data: { ...application.data, organisation: { address: "" } },
       });
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       const $ = cheerio.load(res.payload);
 
-      expect(res.statusCode).toBe(200);
+      expect(res.statusCode).toBe(StatusCodes.OK);
 
       expect($(".govuk-summary-list__row").length).toEqual(8);
     });
@@ -384,10 +394,10 @@ describe("View claim test", () => {
       getClaims.mockReturnValue({ claims });
       getApplication.mockReturnValue(application);
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       const $ = cheerio.load(res.payload);
 
-      expect(res.statusCode).toBe(200);
+      expect(res.statusCode).toBe(StatusCodes.OK);
       // Summary list rows expect
       expect($(".govuk-summary-list__row").length).toEqual(25);
       // Claim summary details expects
@@ -438,10 +448,10 @@ describe("View claim test", () => {
       getClaims.mockReturnValue({ claims });
       getApplication.mockReturnValue(application);
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       const $ = cheerio.load(res.payload);
 
-      expect(res.statusCode).toBe(200);
+      expect(res.statusCode).toBe(StatusCodes.OK);
       expect($(".govuk-back-link").attr("href")).toEqual("/agreement/AHWR-1234-APP1/claims");
     });
     test("the back link should go to all claims main tab if the user is coming from all claims main tab", async () => {
@@ -455,10 +465,10 @@ describe("View claim test", () => {
       getClaims.mockReturnValue({ claims });
       getApplication.mockReturnValue(application);
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       const $ = cheerio.load(res.payload);
 
-      expect(res.statusCode).toBe(200);
+      expect(res.statusCode).toBe(StatusCodes.OK);
       expect($(".govuk-back-link").attr("href")).toEqual("/claims?page=1");
     });
 
@@ -487,9 +497,9 @@ describe("View claim test", () => {
       getClaims.mockReturnValue({ claims });
       getApplication.mockReturnValue(application);
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
-      expect(res.statusCode).toBe(200);
+      expect(res.statusCode).toBe(StatusCodes.OK);
     });
 
     test("Multi herds enabled - returns 200 with no herd in claim", async () => {
@@ -505,9 +515,9 @@ describe("View claim test", () => {
       getClaims.mockReturnValue({ claims });
       getApplication.mockReturnValue(application);
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
-      expect(res.statusCode).toBe(200);
+      expect(res.statusCode).toBe(StatusCodes.OK);
     });
 
     test("Multi herds enabled - returns 200 for sheep", async () => {
@@ -536,9 +546,9 @@ describe("View claim test", () => {
       getClaims.mockReturnValue({ claims });
       getApplication.mockReturnValue(application);
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
-      expect(res.statusCode).toBe(200);
+      expect(res.statusCode).toBe(StatusCodes.OK);
     });
   });
 });

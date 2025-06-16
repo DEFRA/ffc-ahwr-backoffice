@@ -1,6 +1,6 @@
-const { processApplicationClaim, getApplications } = require("../../api/applications");
-const { updateClaimStatus, getClaims } = require("../../api/claims");
-const { status } = require("../../../app/constants/status");
+import { processApplicationClaim, getApplications } from "../../api/applications.js";
+import { updateClaimStatus, getClaims } from "../../api/claims.js";
+import { CLAIM_STATUS } from "ffc-ahwr-common-library";
 
 const getCommonData = () => {
   const now = new Date();
@@ -10,6 +10,7 @@ const getCommonData = () => {
     date24HrsAgo: now.setDate(now.getDate() - 1),
   };
 };
+
 const formatDateForFilter = (timestamp) => {
   const dateString = new Date(timestamp).toLocaleString("en-GB");
   const [date, time] = dateString.split(",");
@@ -18,7 +19,7 @@ const formatDateForFilter = (timestamp) => {
   return `${bigEndianDate}${time}`;
 };
 
-const processOnHoldApplications = async (logger) => {
+export const processOnHoldApplications = async (logger) => {
   const { searchType, searchText, date24HrsAgo } = getCommonData();
   const apps = await getApplications(
     searchType,
@@ -45,7 +46,7 @@ const processOnHoldApplications = async (logger) => {
   logger.setBindings({ applicationRefs, failedApplicationRefs });
 };
 
-const processOnHoldClaims = async (logger) => {
+export const processOnHoldClaims = async (logger) => {
   const { searchType, searchText, date24HrsAgo } = getCommonData();
   const value = formatDateForFilter(date24HrsAgo);
   const filter = {
@@ -69,7 +70,7 @@ const processOnHoldClaims = async (logger) => {
   const failedClaimRefs = [];
   for (const { reference } of claims) {
     try {
-      await updateClaimStatus(reference, "admin", status.READY_TO_PAY, logger);
+      await updateClaimStatus(reference, "admin", CLAIM_STATUS.READY_TO_PAY, logger);
       claimRefs.push(reference);
     } catch (_) {
       failedClaimRefs.push(reference);
@@ -77,9 +78,4 @@ const processOnHoldClaims = async (logger) => {
   }
 
   logger.setBindings({ claimRefs, failedClaimRefs });
-};
-
-module.exports = {
-  processOnHoldClaims,
-  processOnHoldApplications,
 };

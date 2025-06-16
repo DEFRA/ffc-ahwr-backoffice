@@ -1,41 +1,50 @@
-const getCrumbs = require("../../../utils/get-crumbs");
-const { administrator } = require("../../../../app/auth/permissions");
-const claimData = require("../../../data/claims.json");
+import { getCrumbs } from "../../../utils/get-crumbs";
+import { permissions } from "../../../../app/auth/permissions";
+import { claims } from "../../../data/claims";
+import { getClaims, updateClaimData } from "../../../../app/api/claims";
+import { updateApplicationData } from "../../../../app/api/applications";
+import { getPagination, getPagingData } from "../../../../app/pagination";
+import { createServer } from "../../../../app/server";
+import { StatusCodes } from "http-status-codes";
+
+const { administrator } = permissions;
 
 jest.mock("../../../../app/session");
-const claims = require("../../../../app/api/claims");
 jest.mock("../../../../app/api/claims");
-const applications = require("../../../../app/api/applications");
 jest.mock("../../../../app/api/applications");
-const pagination = require("../../../../app/pagination");
 jest.mock("../../../../app/pagination");
-
 jest.mock("../../../../app/routes/models/claim-list");
+jest.mock("../../../../app/auth");
 
-pagination.getPagination = jest.fn().mockReturnValue({
+getPagination.mockReturnValue({
   limit: 10,
   offset: 0,
 });
 
-pagination.getPagingData = jest.fn().mockReturnValue({
+getPagingData.mockReturnValue({
   page: 1,
   totalPages: 1,
   total: 1,
   limit: 10,
 });
-claims.getClaims = jest.fn().mockReturnValue(claimData);
+getClaims.mockReturnValue(claims);
 
 describe("Claims data tests", () => {
-  jest.mock("../../../../app/auth");
   const auth = {
     strategy: "session-auth",
     credentials: { scope: [administrator], account: { name: "test user" } },
   };
 
+  let server;
+
+  beforeAll(async () => {
+    server = await createServer();
+  });
+
   describe(`POST /claims/{reference}/data route`, () => {
     let crumb;
     beforeEach(async () => {
-      crumb = await getCrumbs(global.__SERVER__);
+      crumb = await getCrumbs(server);
       jest.clearAllMocks();
     });
 
@@ -44,8 +53,8 @@ describe("Claims data tests", () => {
         method: "POST",
         url: "/claims/data",
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
 
     test("returns 302 after calling update claim data for vetsName", async () => {
@@ -64,11 +73,11 @@ describe("Claims data tests", () => {
           returnPage: "claims",
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
       expect(res.headers.location).toBe("/view-claim/AAAA?page=1&returnPage=claims");
-      expect(claims.updateClaimData).toHaveBeenCalledWith(
+      expect(updateClaimData).toHaveBeenCalledWith(
         "AAAA",
         { dateOfVisit: undefined, vetRCVSNumber: undefined, vetsName: "Barry" },
         "Updated value",
@@ -95,11 +104,11 @@ describe("Claims data tests", () => {
           returnPage: "claims",
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
       expect(res.headers.location).toBe("/view-claim/AAAA?page=1&returnPage=claims");
-      expect(claims.updateClaimData).toHaveBeenCalledWith(
+      expect(updateClaimData).toHaveBeenCalledWith(
         "AAAA",
         {
           dateOfVisit: "2028-02-01T00:00:00.000Z",
@@ -128,11 +137,11 @@ describe("Claims data tests", () => {
           returnPage: "claims",
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
       expect(res.headers.location).toBe("/view-claim/AAAA?page=1&returnPage=claims");
-      expect(claims.updateClaimData).toHaveBeenCalledWith(
+      expect(updateClaimData).toHaveBeenCalledWith(
         "AAAA",
         {
           dateOfVisit: undefined,
@@ -161,11 +170,11 @@ describe("Claims data tests", () => {
           returnPage: "agreement",
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
       expect(res.headers.location).toBe("/view-agreement/AAAA?page=1");
-      expect(applications.updateApplicationData).toHaveBeenCalledWith(
+      expect(updateApplicationData).toHaveBeenCalledWith(
         "AAAA",
         { visitDate: undefined, vetRcvs: undefined, vetName: "Barry" },
         "Updated value",
@@ -192,11 +201,11 @@ describe("Claims data tests", () => {
           returnPage: "agreement",
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
       expect(res.headers.location).toBe("/view-agreement/AAAA?page=1");
-      expect(applications.updateApplicationData).toHaveBeenCalledWith(
+      expect(updateApplicationData).toHaveBeenCalledWith(
         "AAAA",
         {
           visitDate: "2028-02-01T00:00:00.000Z",
@@ -225,11 +234,11 @@ describe("Claims data tests", () => {
           returnPage: "agreement",
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
       expect(res.headers.location).toBe("/view-agreement/AAAA?page=1");
-      expect(applications.updateApplicationData).toHaveBeenCalledWith(
+      expect(updateApplicationData).toHaveBeenCalledWith(
         "AAAA",
         { visitDate: undefined, vetRcvs: "1234567", vetName: undefined },
         "Updated value",
@@ -255,13 +264,13 @@ describe("Claims data tests", () => {
           returnPage: "claims",
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
       expect(res.headers.location).toMatch(
         /view-claim\/AAAA\?page=1&updateVetRCVSNumber=true&errors=.+&returnPage=claims/,
       );
-      expect(applications.updateApplicationData).toHaveBeenCalledTimes(0);
+      expect(updateApplicationData).toHaveBeenCalledTimes(0);
     });
   });
 });

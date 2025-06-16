@@ -1,7 +1,10 @@
-const cookieConfig = require("../config").cookie;
+import { config } from "../config/index.js";
+import crumb from "@hapi/crumb";
 
-module.exports = {
-  plugin: require("@hapi/crumb"),
+const { cookie: cookieConfig } = config;
+
+export const crumbPlugin = {
+  plugin: crumb,
   options: {
     cookieOptions: {
       isSecure: cookieConfig.isSecure,

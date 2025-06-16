@@ -1,4 +1,4 @@
-const crumbPlugin = require("../../../app/plugins/crumb");
+import { crumbPlugin } from "../../../app/plugins/crumb";
 
 describe("crumb plugin", () => {
   test("is correctly configured", () => {

@@ -1,18 +1,20 @@
-const joi = require("joi");
-const crumbCache = require("./utils/crumb-cache");
-const preDoubleSubmitHandler = require("./utils/pre-submission-handler");
-const { encodeErrorsForUI } = require("./utils/encode-errors-for-ui");
-const { updateApplicationStatus } = require("../api/applications");
-const { updateClaimStatus } = require("../api/claims");
-const { recommendToPay } = require("../constants/application-status");
-const { administrator, recommender } = require("../auth/permissions");
+import joi from "joi";
+import { generateNewCrumb } from "./utils/crumb-cache.js";
+import { preSubmissionHandler } from "./utils/pre-submission-handler.js";
+import { encodeErrorsForUI } from "./utils/encode-errors-for-ui.js";
+import { updateApplicationStatus } from "../api/applications.js";
+import { updateClaimStatus } from "../api/claims.js";
+import { CLAIM_STATUS } from "ffc-ahwr-common-library";
+import { permissions } from "../auth/permissions.js";
 
-module.exports = {
+const { administrator, recommender } = permissions;
+
+export const recommendToPayRoute = {
   method: "post",
   path: "/recommend-to-pay",
   options: {
     auth: { scope: [administrator, recommender] },
-    pre: [{ method: preDoubleSubmitHandler }],
+    pre: [{ method: preSubmissionHandler }],
     validate: {
       payload: joi.object({
         claimOrAgreement: joi.string().valid("claim", "agreement").required(),
@@ -55,14 +57,19 @@ module.exports = {
 
       request.logger.setBindings({ reference });
 
-      await crumbCache.generateNewCrumb(request, h);
+      await generateNewCrumb(request, h);
       const query = new URLSearchParams({ page });
 
       if (claimOrAgreement === "claim") {
         query.append("returnPage", returnPage);
-        await updateClaimStatus(reference, name, recommendToPay, request.logger);
+        await updateClaimStatus(reference, name, CLAIM_STATUS.RECOMMENDED_TO_PAY, request.logger);
       } else {
-        await updateApplicationStatus(reference, name, recommendToPay, request.logger);
+        await updateApplicationStatus(
+          reference,
+          name,
+          CLAIM_STATUS.RECOMMENDED_TO_PAY,
+          request.logger,
+        );
       }
 
       return h.redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`);

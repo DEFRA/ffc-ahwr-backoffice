@@ -1,24 +1,26 @@
-const cheerio = require("cheerio");
-const expectPhaseBanner = require("../../../utils/phase-banner-expect");
-const { upperFirstLetter } = require("../../../../app/lib/display-helper");
-const {
-  administrator,
-  processor,
-  user,
-  recommender,
-  authoriser,
-} = require("../../../../app/auth/permissions");
+import * as cheerio from "cheerio";
+import { phaseBannerOk } from "../../../utils/phase-banner-expect";
+import { upperFirstLetter } from "../../../../app/lib/display-helper";
+import { permissions } from "../../../../app/auth/permissions";
+import { createServer } from "../../../../app/server";
+import { StatusCodes } from "http-status-codes";
+
+jest.mock("../../../../app/auth");
+
+const { administrator, processor, user, recommender, authoriser } = permissions;
 
 describe("Account page test", () => {
   const url = "/account";
-  jest.mock("../../../../app/auth");
   let auth = {
     strategy: "session-auth",
     credentials: { scope: ["administrator"], account: {} },
   };
 
-  beforeAll(() => {
+  let server;
+
+  beforeAll(async () => {
     jest.clearAllMocks();
+    server = await createServer();
   });
 
   describe(`GET ${url} route`, () => {
@@ -27,8 +29,8 @@ describe("Account page test", () => {
         method: "GET",
         url,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
     test.each([
       ["Test user 1", "user1@test", [administrator]],
@@ -47,8 +49,8 @@ describe("Account page test", () => {
         url,
         auth,
       };
-      const response = await global.__SERVER__.inject(options);
-      expect(response.statusCode).toBe(200);
+      const response = await server.inject(options);
+      expect(response.statusCode).toBe(StatusCodes.OK);
 
       const $ = cheerio.load(response.payload);
       expect($(".govuk-summary-list__row").length).toEqual(3);
@@ -61,7 +63,7 @@ describe("Account page test", () => {
         roles.map((x) => upperFirstLetter(x)).join(", "),
       );
 
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
     });
   });
 });

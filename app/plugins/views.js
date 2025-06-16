@@ -1,11 +1,11 @@
-const path = require("path");
-const nunjucks = require("nunjucks");
-const getMOJFilters = require("@ministryofjustice/frontend/moj/filters/all");
-const { isLocal, serviceName, siteTitle } = require("../config");
-const { version } = require("../../package.json");
+import nunjucks from "nunjucks";
+import path from "path";
+import getMOJFilters from "@ministryofjustice/frontend/moj/filters/all.js";
+import { config } from "../config/index.js";
+import vision from "@hapi/vision";
 
-module.exports = {
-  plugin: require("@hapi/vision"),
+export const viewsPlugin = {
+  plugin: vision,
   options: {
     engines: {
       njk: {
@@ -43,14 +43,12 @@ module.exports = {
       },
     },
     path: "../views",
-    relativeTo: __dirname,
-    isCached: !isLocal,
+    relativeTo: "./app/views",
+    isCached: config.env === "development",
     context: {
-      appVersion: version,
+      appVersion: process.env.npm_package_version,
       assetPath: "/assets",
-      pageTitle: serviceName,
-      siteTitle,
-      serviceName,
+      pageTitle: "ffc-ahwr-backoffice",
     },
   },
 };

@@ -1,20 +1,3 @@
-const status = {
-  AGREED: 1,
-  WITHDRAWN: 2,
-  IN_CHECK: 5,
-  ACCEPTED: 6,
-  NOT_AGREED: 7,
-  PAID: 8,
-  READY_TO_PAY: 9,
-  REJECTED: 10,
-  ON_HOLD: 11,
-  RECOMMENDED_TO_PAY: 12,
-  RECOMMENDED_TO_REJECT: 13,
-  AUTHORISED: 14,
-  SENT_TO_FINANCE: 15,
-  PAYMENT_HELD: 16,
-};
-
 const statusStyle = {
   APPLIED: {
     styleClass: "govuk-tag--green",
@@ -66,7 +49,7 @@ const statusStyle = {
   },
 };
 
-const getStyleClassByStatus = (value) => {
+export const getStyleClassByStatus = (value) => {
   if (value === undefined) return "govuk-tag--orange";
 
   value = value.replace(/\s/g, "");
@@ -77,5 +60,3 @@ const getStyleClassByStatus = (value) => {
     return "govuk-tag--orange";
   }
 };
-
-module.exports = { status, getStyleClassByStatus };

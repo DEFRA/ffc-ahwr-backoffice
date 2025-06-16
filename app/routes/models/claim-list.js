@@ -1,17 +1,19 @@
-const { serviceUri } = require("../../config");
-const { getStyleClassByStatus } = require("../../constants/status");
-const {
+import { getStyleClassByStatus } from "../../constants/status.js";
+import {
+  upperFirstLetter,
   formatTypeOfVisit,
   formatSpecies,
   formattedDateToUk,
-  upperFirstLetter,
-} = require("../../lib/display-helper");
-const { FLAG_EMOJI } = require("../utils/ui-constants");
+} from "../../lib/display-helper.js";
+import { FLAG_EMOJI } from "../utils/ui-constants.js";
+import { config } from "../../config/index.js";
+
+const { serviceUri } = config;
 
 const respText = "responsive-text";
 const col6RespText = `col-6 ${respText}`;
 
-const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
+export const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
   const direction = sortField && sortField.direction === "DESC" ? "descending" : "ascending";
 
   return [
@@ -72,7 +74,7 @@ const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
   ].filter(Boolean);
 };
 
-const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
+export const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
   claims.map((claim) => {
     const row = [
       {
@@ -139,5 +141,3 @@ const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
 
     return row;
   });
-
-module.exports = { getClaimTableHeader, getClaimTableRows };

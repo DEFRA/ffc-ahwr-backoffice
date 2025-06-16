@@ -1,12 +1,14 @@
-const joi = require("joi");
-const crumbCache = require("./utils/crumb-cache");
-const { updateApplicationStatus } = require("../api/applications");
-const { updateClaimStatus } = require("../api/claims");
-const { encodeErrorsForUI } = require("./utils/encode-errors-for-ui");
-const { recommendToReject } = require("../constants/application-status");
-const { administrator, recommender } = require("../auth/permissions");
+import joi from "joi";
+import { generateNewCrumb } from "./utils/crumb-cache.js";
+import { updateApplicationStatus } from "../api/applications.js";
+import { updateClaimStatus } from "../api/claims.js";
+import { encodeErrorsForUI } from "./utils/encode-errors-for-ui.js";
+import { permissions } from "../auth/permissions.js";
+import { CLAIM_STATUS } from "ffc-ahwr-common-library";
 
-module.exports = {
+const { administrator, recommender } = permissions;
+
+export const recommendToRejectRoute = {
   method: "post",
   path: "/recommend-to-reject",
   options: {
@@ -54,14 +56,24 @@ module.exports = {
 
       request.logger.setBindings({ reference });
 
-      await crumbCache.generateNewCrumb(request, h);
+      await generateNewCrumb(request, h);
       const query = new URLSearchParams({ page });
 
       if (claimOrAgreement === "claim") {
         query.append("returnPage", returnPage);
-        await updateClaimStatus(reference, name, recommendToReject, request.logger);
+        await updateClaimStatus(
+          reference,
+          name,
+          CLAIM_STATUS.RECOMMENDED_TO_REJECT,
+          request.logger,
+        );
       } else {
-        await updateApplicationStatus(reference, name, recommendToReject, request.logger);
+        await updateApplicationStatus(
+          reference,
+          name,
+          CLAIM_STATUS.RECOMMENDED_TO_REJECT,
+          request.logger,
+        );
       }
 
       return h.redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`);

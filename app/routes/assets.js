@@ -1,4 +1,4 @@
-module.exports = {
+export const assetsRoute = {
   method: "GET",
   path: "/assets/{path*}",
   options: {

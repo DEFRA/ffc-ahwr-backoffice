@@ -1,9 +1,13 @@
-const config = require("../../../../../app/config");
-config.serviceUri = "test-uri";
-const {
+import {
   getClaimTableHeader,
   getClaimTableRows,
-} = require("../../../../../app/routes/models/claim-list");
+} from "../../../../../app/routes/models/claim-list";
+
+jest.mock("../../../../../app/config/index.js", () => ({
+  config: {
+    serviceUri: "test-uri",
+  },
+}));
 
 describe("Application-list model test", () => {
   test.each([
@@ -73,6 +77,7 @@ describe("Application-list createModel", () => {
     );
     expect(formattedRows).toContain('<p class="govuk-!-margin-0 responsive-text">Review</p>');
   });
+
   test("getClaimTableRows with a flagged claim", async () => {
     const page = 1;
     const returnPage = "claim";
@@ -85,6 +90,7 @@ describe("Application-list createModel", () => {
     );
     expect(formattedRows).toContain('<p class="govuk-!-margin-0 responsive-text">Review</p>');
   });
+
   test("getClaimTableRows showSBI false", async () => {
     const page = 1;
     const returnPage = "claim";

@@ -1,12 +1,8 @@
-const { claimType } = require("../constants/claim");
+import { claimType } from "../constants/claim-type.js";
 
-const getReviewType = (typeOfReview) => {
+export const getReviewType = (typeOfReview) => {
   return {
     isReview: typeOfReview === claimType.review,
     isEndemicsFollowUp: typeOfReview === claimType.endemics,
   };
-};
-
-module.exports = {
-  getReviewType,
 };

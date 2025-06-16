@@ -1,4 +1,4 @@
-module.exports = {
+export const healthyRoute = {
   method: "GET",
   path: "/healthy",
   options: {

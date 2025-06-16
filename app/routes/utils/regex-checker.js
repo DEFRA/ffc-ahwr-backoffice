@@ -1,4 +1,4 @@
-const regexChecker = (regex, str) => {
+export const regexChecker = (regex, str) => {
   let isValid = true;
   let regexValue;
   try {
@@ -10,5 +10,3 @@ const regexChecker = (regex, str) => {
 
   return regexValue.test(str);
 };
-
-module.exports = regexChecker;

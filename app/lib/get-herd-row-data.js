@@ -1,7 +1,7 @@
-const { upperFirstLetter } = require("./display-helper");
-const { getHerdReasonsText } = require("./get-herd-reasons-text");
+import { upperFirstLetter } from "./display-helper.js";
+import { getHerdReasonsText } from "./get-herd-reasons-text.js";
 
-const getHerdRowData = (herd, isSheep) => {
+export const getHerdRowData = (herd, isSheep) => {
   const flockOrHerdWord = isSheep ? "flock" : "herd";
 
   const herdInfo = herd ?? {
@@ -33,5 +33,3 @@ const getHerdRowData = (herd, isSheep) => {
 
   return [herdName, herdCph, otherHerdsOnSbi, reasonsForHerd];
 };
-
-module.exports = { getHerdRowData };

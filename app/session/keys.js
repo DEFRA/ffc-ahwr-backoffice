@@ -1,4 +1,4 @@
-module.exports = {
+export const sessionKeys = {
   appSearch: {
     searchText: "searchText",
     searchType: "searchType",

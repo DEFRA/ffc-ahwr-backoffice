@@ -1,4 +1,12 @@
+import { createServer } from "../../../app/server";
+
 describe("headers plugin tests", () => {
+  let server;
+
+  beforeAll(async () => {
+    server = await createServer();
+  });
+
   test.each([
     { key: "X-Frame-Options", value: "deny" },
     { key: "X-Content-Type-Options", value: "nosniff" },
@@ -20,7 +28,7 @@ describe("headers plugin tests", () => {
       method: "GET",
       url,
     };
-    const res = await global.__SERVER__.inject(options);
+    const res = await server.inject(options);
     expect(res.headers[key.toLowerCase()]).toEqual(value);
   });
 });

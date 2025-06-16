@@ -1,30 +1,41 @@
-const { administrator, recommender } = require("../../../../app/auth/permissions");
-const getCrumbs = require("../../../utils/get-crumbs");
+import { StatusCodes } from "http-status-codes";
+import { processApplicationClaim } from "../../../../app/api/applications";
+import { permissions } from "../../../../app/auth/permissions";
+import { generateNewCrumb } from "../../../../app/routes/utils/crumb-cache";
+import { createServer } from "../../../../app/server";
+import { getCrumbs } from "../../../utils/get-crumbs";
 
-const applications = require("../../../../app/api/applications");
+const { administrator, recommender } = permissions;
+
 jest.mock("../../../../app/api/applications");
 jest.mock("../../../../app/api/claims");
 jest.mock("../../../../app/routes/utils/crumb-cache");
-const crumbCache = require("../../../../app/routes/utils/crumb-cache");
+jest.mock("../../../../app/auth");
 
 const reference = "AHWR-555A-FD4C";
 const url = "/recommend-to-reject";
 const encodedErrors =
   "W3sidGV4dCI6IlNlbGVjdCBhbGwgY2hlY2tib3hlcyIsImhyZWYiOiIjcmVjb21tZW5kLXRvLXJlamVjdCIsImtleSI6ImNvbmZpcm0ifV0%3D";
 
-applications.processApplicationClaim = jest.fn().mockResolvedValue(true);
+processApplicationClaim.mockResolvedValue(true);
 
 describe("Recommended To Reject test", () => {
   let crumb;
 
-  jest.mock("../../../../app/auth");
   let auth = {
     strategy: "session-auth",
     credentials: { scope: [administrator] },
   };
 
+  let server;
+
+  beforeAll(async () => {
+    jest.clearAllMocks();
+    server = await createServer();
+  });
+
   beforeEach(async () => {
-    crumb = await getCrumbs(global.__SERVER__);
+    crumb = await getCrumbs(server);
     jest.clearAllMocks();
   });
 
@@ -34,8 +45,8 @@ describe("Recommended To Reject test", () => {
         method: "POST",
         url,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
 
     test("returns 302 when validation fails - no page given for application", async () => {
@@ -52,8 +63,8 @@ describe("Recommended To Reject test", () => {
           crumb,
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       expect(res.headers.location).toEqual(
         `/view-agreement/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}`,
       );
@@ -73,8 +84,8 @@ describe("Recommended To Reject test", () => {
           crumb,
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       expect(res.headers.location).toEqual(
         `/view-claim/${reference}?page=1&recommendToReject=true&errors=${encodedErrors}&returnPage=claims`,
       );
@@ -104,9 +115,9 @@ describe("Recommended To Reject test", () => {
           crumb,
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
-      expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+      expect(generateNewCrumb).toHaveBeenCalledTimes(1);
       expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`);
     });
     test.each([
@@ -134,9 +145,9 @@ describe("Recommended To Reject test", () => {
           crumb,
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
-      expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+      expect(generateNewCrumb).toHaveBeenCalledTimes(1);
       expect(res.headers.location).toEqual(`/view-claim/${reference}?page=1&returnPage=claims`);
     });
 
@@ -163,9 +174,9 @@ describe("Recommended To Reject test", () => {
           crumb,
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
-      expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+      expect(generateNewCrumb).toHaveBeenCalledTimes(1);
       expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`);
     });
 
@@ -192,8 +203,8 @@ describe("Recommended To Reject test", () => {
           crumb,
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       expect(res.headers.location).toEqual(
         `/view-agreement/${reference}?page=1&recommendToReject=true&errors=${errors}`,
       );
@@ -223,9 +234,9 @@ describe("Recommended To Reject test", () => {
         },
       };
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
-      expect(res.statusCode).toBe(302);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       expect(res.headers.location).toEqual(
         `/view-agreement/123?page=1&recommendToReject=true&errors=${errors}`,
       );

@@ -1,7 +1,7 @@
-const mapAuth = require("../../auth/map-auth");
-const { status } = require("../../constants/status");
+import { CLAIM_STATUS } from "ffc-ahwr-common-library";
+import { mapAuth } from "../../auth/map-auth.js";
 
-const getClaimViewStates = (request, statusId, currentStatusEvent) => {
+export const getClaimViewStates = (request, statusId, currentStatusEvent) => {
   const {
     withdraw,
     moveToInCheck,
@@ -19,56 +19,58 @@ const getClaimViewStates = (request, statusId, currentStatusEvent) => {
   const { isAdministrator, isRecommender, isAuthoriser, isSuperAdmin } = mapAuth(request);
 
   const withdrawAction =
-    (isAdministrator || isAuthoriser) && statusId === status.AGREED && withdraw === false;
+    (isAdministrator || isAuthoriser) && statusId === CLAIM_STATUS.AGREED && withdraw === false;
 
   const withdrawForm =
-    (isAdministrator || isAuthoriser) && statusId === status.AGREED && withdraw === true;
+    (isAdministrator || isAuthoriser) && statusId === CLAIM_STATUS.AGREED && withdraw === true;
 
   const moveToInCheckAction =
     (isAdministrator || isRecommender || isAuthoriser) &&
-    statusId === status.ON_HOLD &&
+    statusId === CLAIM_STATUS.ON_HOLD &&
     moveToInCheck === false;
 
   const moveToInCheckForm =
     (isAdministrator || isRecommender || isAuthoriser) &&
-    statusId === status.ON_HOLD &&
+    statusId === CLAIM_STATUS.ON_HOLD &&
     moveToInCheck === true;
 
   const recommendAction =
     (isAdministrator || isRecommender) &&
-    statusId === status.IN_CHECK &&
+    statusId === CLAIM_STATUS.IN_CHECK &&
     recommendToPay === false &&
     recommendToReject === false;
 
   const recommendToPayForm =
-    (isAdministrator || isRecommender) && statusId === status.IN_CHECK && recommendToPay === true;
+    (isAdministrator || isRecommender) &&
+    statusId === CLAIM_STATUS.IN_CHECK &&
+    recommendToPay === true;
 
   const recommendToRejectForm =
     (isAdministrator || isRecommender) &&
-    statusId === status.IN_CHECK &&
+    statusId === CLAIM_STATUS.IN_CHECK &&
     recommendToReject === true;
 
   const authoriseAction =
     (isAdministrator || isAuthoriser) &&
-    statusId === status.RECOMMENDED_TO_PAY &&
+    statusId === CLAIM_STATUS.RECOMMENDED_TO_PAY &&
     approve === false &&
     statusWasSetByAnotherUser(currentStatusEvent, name);
 
   const authoriseForm =
     (isAdministrator || isAuthoriser) &&
-    statusId === status.RECOMMENDED_TO_PAY &&
+    statusId === CLAIM_STATUS.RECOMMENDED_TO_PAY &&
     approve === true &&
     statusWasSetByAnotherUser(currentStatusEvent, name);
 
   const rejectAction =
     (isAdministrator || isAuthoriser) &&
-    statusId === status.RECOMMENDED_TO_REJECT &&
+    statusId === CLAIM_STATUS.RECOMMENDED_TO_REJECT &&
     reject === false &&
     statusWasSetByAnotherUser(currentStatusEvent, name);
 
   const rejectForm =
     (isAdministrator || isAuthoriser) &&
-    statusId === status.RECOMMENDED_TO_REJECT &&
+    statusId === CLAIM_STATUS.RECOMMENDED_TO_REJECT &&
     reject === true &&
     statusWasSetByAnotherUser(currentStatusEvent, name);
 
@@ -125,10 +127,10 @@ const superAdminActions = (
   updateVetRCVSNumber,
   updateDateOfVisit,
 ) => {
-  const updateStatusAction = isSuperAdmin && statusId !== status.READY_TO_PAY;
+  const updateStatusAction = isSuperAdmin && statusId !== CLAIM_STATUS.READY_TO_PAY;
 
   const updateStatusForm =
-    isSuperAdmin && updateStatus === true && statusId !== status.READY_TO_PAY;
+    isSuperAdmin && updateStatus === true && statusId !== CLAIM_STATUS.READY_TO_PAY;
 
   const updateVetsNameAction = isSuperAdmin;
   const updateVetsNameForm = isSuperAdmin && updateVetsName === true;
@@ -150,5 +152,3 @@ const superAdminActions = (
     updateDateOfVisitForm,
   };
 };
-
-module.exports = { getClaimViewStates };

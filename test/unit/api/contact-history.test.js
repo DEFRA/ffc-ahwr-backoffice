@@ -1,5 +1,5 @@
-const { getContactHistory, displayContactHistory } = require("../../../app/api/contact-history");
-const wreck = require("@hapi/wreck");
+import { getContactHistory, displayContactHistory } from "../../../app/api/contact-history";
+import wreck from "@hapi/wreck";
 
 jest.mock("@hapi/wreck");
 jest.mock("../../../app/config");

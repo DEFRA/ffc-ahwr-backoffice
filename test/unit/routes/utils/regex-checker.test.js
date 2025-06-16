@@ -1,4 +1,4 @@
-const regexChecker = require("../../../../app/routes/utils/regex-checker");
+import { regexChecker } from "../../../../app/routes/utils/regex-checker";
 
 describe("regexChecker", () => {
   test("should return false if the string is empty", () => {

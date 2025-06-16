@@ -1,5 +1,8 @@
-const { administrator, processor, user, recommender, authoriser } = require("../auth/permissions");
-module.exports = {
+import { permissions } from "../auth/permissions.js";
+
+const { administrator, processor, user, recommender, authoriser } = permissions;
+
+export const homeRoute = {
   method: "GET",
   path: "/",
   options: {

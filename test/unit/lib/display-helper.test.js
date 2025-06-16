@@ -1,10 +1,10 @@
-const {
+import {
   upperFirstLetter,
   formattedDateToUk,
   formatSpecies,
   formatTypeOfVisit,
   formatStatusId,
-} = require("../../../app/lib/display-helper");
+} from "../../../app/lib/display-helper";
 
 describe("display-helper tests", () => {
   test.each([

@@ -1,8 +1,17 @@
-const config = require("../config");
-const auth = config.auth.enabled ? require("./azure-auth") : require("./dev-auth");
-const mapAuth = require("./map-auth");
+import * as devAuth from "../auth/dev-auth.js";
+import * as realAuth from "../auth/azure-auth.js";
+import { config } from "../config/index.js";
+import { mapAuth } from "./map-auth.js";
 
-module.exports = {
-  ...auth,
+const getAuth = () => {
+  if (config.auth.enabled) {
+    return realAuth;
+  }
+
+  return devAuth;
+};
+
+export const auth = {
+  ...getAuth(),
   mapAuth,
 };

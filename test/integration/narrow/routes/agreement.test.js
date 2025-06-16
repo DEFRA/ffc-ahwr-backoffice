@@ -1,59 +1,64 @@
-const cheerio = require("cheerio");
-const expectPhaseBanner = require("../../../utils/phase-banner-expect");
-const { administrator } = require("../../../../app/auth/permissions");
+import * as cheerio from "cheerio";
+import { phaseBannerOk } from "../../../utils/phase-banner-expect";
+import { permissions } from "../../../../app/auth/permissions";
+import { applicationsData } from "../../../data/applications.js";
+import { getApplication } from "../../../../app/api/applications";
+import { getClaims } from "../../../../app/api/claims";
+import { claims } from "../../../data/claims";
+import { displayContactHistory, getContactHistory } from "../../../../app/api/contact-history";
+import { contactHistory } from "../../../data/contact-history";
+import { getPagination, getPagingData } from "../../../../app/pagination";
+import { getClaimSearch } from "../../../../app/session";
+import { createServer } from "../../../../app/server";
+import { StatusCodes } from "http-status-codes";
 
-const applicationData = require("../../../data/applications.json");
-const applications = require("../../../../app/api/applications");
+const { administrator } = permissions;
+
 jest.mock("../../../../app/api/applications");
-applications.getApplication = jest.fn().mockReturnValue(applicationData.applications[0]);
-
-const claimData = require("../../../data/claims.json");
-const claims = require("../../../../app/api/claims");
 jest.mock("../../../../app/api/claims");
-claims.getClaimsByApplicationReference = jest.fn().mockReturnValue(claimData);
-
-const contactHistoryData = require("../../../data/contact-history.json");
-const contactHistory = require("../../../../app/api/contact-history");
 jest.mock("../../../../app/api/contact-history.js");
-contactHistory.getContactHistory = jest.fn().mockReturnValue(contactHistoryData);
-
-const pagination = require("../../../../app/pagination");
 jest.mock("../../../../app/pagination");
+jest.mock("../../../../app/api/claims.js");
+jest.mock("../../../../app/api/contact-history.js");
+jest.mock("../../../../app/auth");
+jest.mock("../../../../app/session");
 
-pagination.getPagination = jest.fn().mockReturnValue({
+getApplication.mockReturnValue(applicationsData.applications[0]);
+getContactHistory.mockReturnValue(contactHistory);
+getPagination.mockReturnValue({
   limit: 10,
   offset: 0,
 });
 
-pagination.getPagingData = jest.fn().mockReturnValue({
+getPagingData.mockReturnValue({
   page: 1,
   totalPages: 1,
   total: 1,
   limit: 10,
 });
 
-jest.mock("../../../../app/api/claims.js");
-claims.getClaims = jest.fn().mockReturnValue({ total: 9, claims: claimData });
+getClaims.mockReturnValue({ total: 9, claims });
 
-jest.mock("../../../../app/api/contact-history.js");
-contactHistory.displayContactHistory = jest.fn().mockReturnValue({
+displayContactHistory.mockReturnValue({
   orgEmail: "Na",
   email: "test12@testvest.com",
   farmerName: "NA",
   address: "NA",
 });
 
-jest.mock("../../../../app/auth");
 const auth = {
   strategy: "session-auth",
   credentials: { scope: [administrator], account: "test user" },
 };
 
-jest.mock("../../../../app/session");
-const session = require("../../../../app/session");
-
 describe("Claims test", () => {
   const url = "/agreement/123/claims";
+
+  let server;
+
+  beforeAll(async () => {
+    server = await createServer();
+  });
 
   describe(`GET ${url} route`, () => {
     test("returns 302 no auth", async () => {
@@ -61,19 +66,19 @@ describe("Claims test", () => {
         method: "GET",
         url,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
 
     test("returns 400 if application is undefined", async () => {
-      applications.getApplication.mockReturnValueOnce(undefined);
+      getApplication.mockReturnValueOnce(undefined);
       const options = {
         method: "GET",
         url,
         auth,
       };
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       expect(res.statusCode).toBe(400);
     });
 
@@ -84,11 +89,11 @@ describe("Claims test", () => {
         auth,
       };
 
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($("title").text()).toContain("Administration - My Farm");
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
 
       expect($("th[aria-sort]")[0].attribs["aria-sort"]).toEqual("none");
       expect($("th[aria-sort]")[0].attribs["data-url"]).toContain("claim number");
@@ -101,7 +106,7 @@ describe("Claims test", () => {
     });
 
     test("returns table in correct sort order", async () => {
-      session.getClaimSearch.mockReturnValueOnce({
+      getClaimSearch.mockReturnValueOnce({
         field: "claim number",
         direction: "ASC",
       });
@@ -112,11 +117,11 @@ describe("Claims test", () => {
         auth,
       };
 
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($("title").text()).toContain("Administration - My Farm");
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
 
       expect($("th[aria-sort]")[0].attribs["aria-sort"]).toEqual("ascending");
       expect($("th[aria-sort]")[0].attribs["data-url"]).toContain("claim number");
@@ -142,7 +147,7 @@ describe("Claims test", () => {
     ])(
       "returns table in correct $direction sort order on field $field",
       async ({ field, direction }) => {
-        session.getClaimSearch.mockReturnValueOnce({ field, direction });
+        getClaimSearch.mockReturnValueOnce({ field, direction });
 
         const options = {
           method: "GET",
@@ -150,11 +155,11 @@ describe("Claims test", () => {
           auth,
         };
 
-        const res = await global.__SERVER__.inject(options);
-        expect(res.statusCode).toBe(200);
+        const res = await server.inject(options);
+        expect(res.statusCode).toBe(StatusCodes.OK);
         const $ = cheerio.load(res.payload);
         expect($("title").text()).toContain("Administration - My Farm");
-        expectPhaseBanner.ok($);
+        phaseBannerOk($);
       },
     );
 
@@ -165,7 +170,7 @@ describe("Claims test", () => {
         auth,
       };
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       expect(res.result).toEqual(1);
     });
     test("the back link should go to view claim if the user is coming from view claim page", async () => {
@@ -175,11 +180,11 @@ describe("Claims test", () => {
         auth,
       };
 
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($("title").text()).toContain("Administration - My Farm");
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
 
       expect($(".govuk-back-link").attr("href")).toEqual("/view-claim/REDC-6179-D9D3?page=1");
     });
@@ -190,11 +195,11 @@ describe("Claims test", () => {
         auth,
       };
 
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($("title").text()).toContain("Administration - My Farm");
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
 
       expect($(".govuk-back-link").attr("href")).toEqual("/agreements?page=1");
     });

@@ -1,10 +1,10 @@
-const appInsights = require("applicationinsights");
-const cron = require("node-cron");
-const config = require("../../config");
-const { processOnHoldApplications, processOnHoldClaims } = require("./process");
-const { isTodayHoliday } = require("../../api/gov-holiday");
+import appInsights from "applicationinsights";
+import cron from "node-cron";
+import { config } from "../../config/index.js";
+import { processOnHoldApplications, processOnHoldClaims } from "./process.js";
+import { isTodayHoliday } from "../../api/is-today-holiday.js";
 
-module.exports = {
+export const scheduler = {
   plugin: {
     name: "onHoldAppScheduler",
     register: async (server) => {

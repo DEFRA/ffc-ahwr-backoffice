@@ -1,26 +1,35 @@
-const cheerio = require("cheerio");
-const expectPhaseBanner = require("../../../utils/phase-banner-expect");
-const {
-  administrator,
-  processor,
-  user,
-  recommender,
-  authoriser,
-} = require("../../../../app/auth/permissions");
-const getCrumbs = require("../../../utils/get-crumbs");
+import * as cheerio from "cheerio";
+import { phaseBannerOk } from "../../../utils/phase-banner-expect";
+import { permissions } from "../../../../app/auth/permissions";
+import { getCrumbs } from "../../../utils/get-crumbs";
+import { updateApplicationStatus } from "../../../../app/api/applications";
+import { createServer } from "../../../../app/server";
+import { StatusCodes } from "http-status-codes";
+import { preSubmissionHandler } from "../../../../app/routes/utils/pre-submission-handler";
+import boom from "@hapi/boom";
 
-const applications = require("../../../../app/api/applications");
+const { administrator, processor, user, recommender, authoriser } = permissions;
+
 jest.mock("../../../../app/api/applications");
+jest.mock("../../../../app/auth");
+jest.mock("../../../../app/routes/utils/pre-submission-handler");
+
+preSubmissionHandler.mockImplementation((_arg, h) => h.continue);
 
 const reference = "AHWR-555A-FD4C";
 
 describe("Withdraw Application tests", () => {
   let crumb;
   const url = "/withdraw-agreement";
-  jest.mock("../../../../app/auth");
+
+  let server;
+
+  beforeAll(async () => {
+    server = await createServer();
+  });
 
   beforeEach(async () => {
-    crumb = await getCrumbs(global.__SERVER__);
+    crumb = await getCrumbs(server);
     jest.clearAllMocks();
   });
 
@@ -30,8 +39,8 @@ describe("Withdraw Application tests", () => {
         method: "POST",
         url,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
 
     test("returns 403 when scope is not administrator, recommender or authoriser", async () => {
@@ -50,11 +59,11 @@ describe("Withdraw Application tests", () => {
           crumb,
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(403);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.FORBIDDEN);
       const $ = cheerio.load(res.payload);
       expect($("h1.govuk-heading-l").text()).toEqual("403 - Forbidden");
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
     });
 
     test("returns 403", async () => {
@@ -70,14 +79,19 @@ describe("Withdraw Application tests", () => {
           reference,
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(403);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.FORBIDDEN);
       const $ = cheerio.load(res.payload);
       expect($("h1.govuk-heading-l").text()).toEqual("403 - Forbidden");
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
     });
 
     test("returns 403 when duplicate submission - $crumb", async () => {
+      jest.resetAllMocks();
+      preSubmissionHandler.mockImplementationOnce((_arg, h) => h.continue);
+      preSubmissionHandler.mockImplementationOnce(() => {
+        return boom.forbidden("Duplicate submission");
+      });
       const auth = {
         strategy: "session-auth",
         credentials: {
@@ -85,7 +99,7 @@ describe("Withdraw Application tests", () => {
           account: { homeAccountId: "testId", name: "admin" },
         },
       };
-      const crumb = await getCrumbs(global.__SERVER__);
+      const crumb = await getCrumbs(server);
       const options = {
         auth,
         method: "POST",
@@ -103,13 +117,16 @@ describe("Withdraw Application tests", () => {
         headers: { cookie: `crumb=${crumb}` },
       };
 
-      const res1 = await global.__SERVER__.inject(options);
-      expect(res1.statusCode).toBe(302);
-      const res2 = await global.__SERVER__.inject(options);
-      expect(res2.statusCode).toBe(403);
+      const res1 = await server.inject(options);
+      expect(res1.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+
+      const res2 = await server.inject(options);
+      expect(res2.statusCode).toBe(StatusCodes.FORBIDDEN);
       const $ = cheerio.load(res2.payload);
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
       expect($(".govuk-heading-l").text()).toEqual("403 - Forbidden");
+
+      preSubmissionHandler.mockImplementation((_arg, h) => h.continue);
     });
 
     test("Approve withdraw application", async () => {
@@ -136,11 +153,12 @@ describe("Withdraw Application tests", () => {
           crumb,
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(applications.updateApplicationStatus).toHaveBeenCalledTimes(1);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+      expect(updateApplicationStatus).toHaveBeenCalledTimes(1);
       expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`);
     });
+
     test("Return error, when any of the check boxes are not checked", async () => {
       const errors =
         "W3sidGV4dCI6IlwiY29uZmlybVwiIGRvZXMgbm90IGNvbnRhaW4gMSByZXF1aXJlZCB2YWx1ZShzKSIsImhyZWYiOiIjd2l0aGRyYXciLCJrZXkiOiJjb25maXJtIn1d";
@@ -163,7 +181,7 @@ describe("Withdraw Application tests", () => {
           crumb,
         },
       };
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
       expect(res.headers.location).toEqual(
         `/view-agreement/${reference}?page=1&withdraw=true&errors=${errors}`,

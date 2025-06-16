@@ -1,16 +1,18 @@
-const joi = require("joi");
-const crumbCache = require("./utils/crumb-cache");
-const { administrator, authoriser } = require("../auth/permissions");
-const { updateApplicationStatus } = require("../api/applications");
-const { withdrawn } = require("../constants/application-status");
-const preDoubleSubmitHandler = require("./utils/pre-submission-handler");
-const { encodeErrorsForUI } = require("./utils/encode-errors-for-ui");
+import joi from "joi";
+import { generateNewCrumb } from "./utils/crumb-cache.js";
+import { permissions } from "../auth/permissions.js";
+import { CLAIM_STATUS } from "ffc-ahwr-common-library";
+import { updateApplicationStatus } from "../api/applications.js";
+import { preSubmissionHandler } from "./utils/pre-submission-handler.js";
+import { encodeErrorsForUI } from "./utils/encode-errors-for-ui.js";
 
-module.exports = {
+const { administrator, authoriser } = permissions;
+
+export const withdrawAgreementRoute = {
   method: "post",
   path: "/withdraw-agreement",
   options: {
-    pre: [{ method: preDoubleSubmitHandler }],
+    pre: [{ method: preSubmissionHandler }],
     auth: { scope: [administrator, authoriser] },
     validate: {
       payload: joi.object({
@@ -42,8 +44,8 @@ module.exports = {
       const { page, reference } = request.payload;
       const { user } = request.auth.credentials.account;
 
-      await updateApplicationStatus(reference, user, withdrawn, request.logger);
-      await crumbCache.generateNewCrumb(request, h);
+      await updateApplicationStatus(reference, user, CLAIM_STATUS.WITHDRAWN, request.logger);
+      await generateNewCrumb(request, h);
       const query = new URLSearchParams({ page });
 
       return h.redirect(`/view-agreement/${reference}?${query.toString()}`);

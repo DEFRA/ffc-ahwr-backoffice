@@ -1,4 +1,4 @@
-const sheepPackages = {
+export const sheepPackages = {
   improvedEwePerformance: "Ewe condition",
   improvedReproductivePerformance: "Reproductive performance",
   improvedLambPerformance: "Lamb performance",
@@ -7,7 +7,7 @@ const sheepPackages = {
   reducedLameness: "Lameness",
 };
 
-const sheepTestTypes = {
+export const sheepTestTypes = {
   improvedEwePerformance: [
     { value: "johnes", text: "Johne’s" },
     { value: "mv", text: "Maedi Visna (MV)" },
@@ -83,7 +83,7 @@ const sheepTestTypes = {
   ],
 };
 
-const testResultOptions = {
+export const testResultOptions = {
   clinicalSymptoms: [
     { value: "clinicalSymptomsPresent", text: "Clinical symptoms present" },
     {
@@ -100,9 +100,10 @@ const testResultOptions = {
     { value: "noProblemIdentified", text: "No problem identified" },
   ],
 };
+
 const { positiveNegative, clinicalSymptoms, problem } = testResultOptions;
 
-const sheepTestResultsType = {
+export const sheepTestResultsType = {
   bd: positiveNegative,
   cla: positiveNegative,
   coccidiosis: clinicalSymptoms,
@@ -136,11 +137,4 @@ const sheepTestResultsType = {
   toxoplasmosis: positiveNegative,
   traceElements: problem,
   wateryMouth: clinicalSymptoms,
-};
-
-module.exports = {
-  sheepPackages,
-  sheepTestTypes,
-  sheepTestResultsType,
-  testResultOptions,
 };

@@ -1,7 +1,9 @@
-const wreck = require("@hapi/wreck");
-const { applicationApiUri } = require("../config");
+import wreck from "@hapi/wreck";
+import { config } from "../config/index.js";
 
-async function getClaim(reference, logger) {
+const { applicationApiUri } = config;
+
+export async function getClaim(reference, logger) {
   const endpoint = `${applicationApiUri}/claim/get-by-reference/${reference}`;
   try {
     const { payload } = await wreck.get(endpoint, { json: true });
@@ -12,7 +14,7 @@ async function getClaim(reference, logger) {
   }
 }
 
-async function getClaims(searchType, searchText, filter, limit, offset, sort, logger) {
+export async function getClaims(searchType, searchText, filter, limit, offset, sort, logger) {
   const endpoint = `${applicationApiUri}/claim/search`;
   const options = {
     payload: {
@@ -33,7 +35,7 @@ async function getClaims(searchType, searchText, filter, limit, offset, sort, lo
   }
 }
 
-async function updateClaimStatus(reference, user, status, logger, note) {
+export async function updateClaimStatus(reference, user, status, logger, note) {
   const endpoint = `${applicationApiUri}/claim/update-by-reference`;
   const options = {
     payload: {
@@ -53,7 +55,7 @@ async function updateClaimStatus(reference, user, status, logger, note) {
   }
 }
 
-async function updateClaimData(reference, data, note, name, logger) {
+export async function updateClaimData(reference, data, note, name, logger) {
   const endpoint = `${applicationApiUri}/claims/${reference}/data`;
   logger.setBindings({ endpoint });
 
@@ -68,10 +70,3 @@ async function updateClaimData(reference, data, note, name, logger) {
   const { payload } = await wreck.put(endpoint, options);
   return payload;
 }
-
-module.exports = {
-  getClaim,
-  getClaims,
-  updateClaimData,
-  updateClaimStatus,
-};

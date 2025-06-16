@@ -1,5 +1,5 @@
-const config = require("../config");
-const msal = require("@azure/msal-node");
+import { config } from "../config/index.js";
+import * as msal from "@azure/msal-node";
 
 const msalLogging = config.isProd
   ? {}
@@ -16,7 +16,7 @@ const msalClientApplication = new msal.ConfidentialClientApplication({
   system: { loggerOptions: msalLogging },
 });
 
-const getAuthenticationUrl = () => {
+export const getAuthenticationUrl = () => {
   const authCodeUrlParameters = {
     prompt: "select_account", // Force the MS account select dialog
     redirectUri: config.auth.redirectUrl,
@@ -25,7 +25,7 @@ const getAuthenticationUrl = () => {
   return msalClientApplication.getAuthCodeUrl(authCodeUrlParameters);
 };
 
-const authenticate = async (redirectCode, cookieAuth) => {
+export const authenticate = async (redirectCode, cookieAuth) => {
   const token = await msalClientApplication.acquireTokenByCode({
     code: redirectCode,
     redirectUri: config.auth.redirectUrl,
@@ -37,7 +37,7 @@ const authenticate = async (redirectCode, cookieAuth) => {
   });
 };
 
-const refresh = async (account, cookieAuth) => {
+export const refresh = async (account, cookieAuth) => {
   const token = await msalClientApplication.acquireTokenSilent({
     account,
     forceRefresh: true,
@@ -51,17 +51,10 @@ const refresh = async (account, cookieAuth) => {
   return token.idTokenClaims.roles;
 };
 
-const logout = async (account) => {
+export const logout = async (account) => {
   try {
     await msalClientApplication.getTokenCache().removeAccount(account);
   } catch (err) {
     console.error("Unable to end session", err);
   }
-};
-
-module.exports = {
-  getAuthenticationUrl,
-  authenticate,
-  refresh,
-  logout,
 };
