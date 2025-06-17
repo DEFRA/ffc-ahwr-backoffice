@@ -1,6 +1,80 @@
 import { CLAIM_STATUS } from "ffc-ahwr-common-library";
 import { mapAuth } from "../../auth/map-auth.js";
 
+const getAdminAndRecommenderActions = ({
+  isAdminOrRecommender,
+  claimIsInCheck,
+  recommendToPay,
+  recommendToReject,
+}) => {
+  const recommendAction =
+    isAdminOrRecommender &&
+    claimIsInCheck &&
+    recommendToPay === false &&
+    recommendToReject === false;
+
+  const recommendToPayForm = isAdminOrRecommender && claimIsInCheck && recommendToPay === true;
+
+  const recommendToRejectForm =
+    isAdminOrRecommender && claimIsInCheck && recommendToReject === true;
+
+  return { recommendAction, recommendToPayForm, recommendToRejectForm };
+};
+
+const getAdminAndAuthoriserActions = ({
+  isAdminOrAuthorisor,
+  claimIsAgreed,
+  withdraw,
+  claimIsRecommendedToPay,
+  approve,
+  currentStatusEvent,
+  claimIsRecommendedToReject,
+  reject,
+  name,
+}) => {
+  const withdrawAction = isAdminOrAuthorisor && claimIsAgreed && withdraw === false;
+  const withdrawForm = isAdminOrAuthorisor && claimIsAgreed && withdraw === true;
+  const authoriseAction =
+    isAdminOrAuthorisor &&
+    claimIsRecommendedToPay &&
+    approve === false &&
+    statusWasSetByAnotherUser(currentStatusEvent, name);
+
+  const authoriseForm =
+    isAdminOrAuthorisor &&
+    claimIsRecommendedToPay &&
+    approve === true &&
+    statusWasSetByAnotherUser(currentStatusEvent, name);
+
+  const rejectAction =
+    isAdminOrAuthorisor &&
+    claimIsRecommendedToReject &&
+    reject === false &&
+    statusWasSetByAnotherUser(currentStatusEvent, name);
+
+  const rejectForm =
+    isAdminOrAuthorisor &&
+    claimIsRecommendedToReject &&
+    reject === true &&
+    statusWasSetByAnotherUser(currentStatusEvent, name);
+
+  return { withdrawAction, withdrawForm, authoriseAction, authoriseForm, rejectAction, rejectForm };
+};
+
+const getAdminAndAuthoriserAndRecommenderActions = ({
+  isAdminOrAuthorisorOrRecommender,
+  claimIsOnHold,
+  moveToInCheck,
+}) => {
+  const moveToInCheckAction =
+    isAdminOrAuthorisorOrRecommender && claimIsOnHold && moveToInCheck === false;
+
+  const moveToInCheckForm =
+    isAdminOrAuthorisorOrRecommender && claimIsOnHold && moveToInCheck === true;
+
+  return { moveToInCheckAction, moveToInCheckForm };
+};
+
 const getAdminActionsAvailable = ({
   isAdministrator,
   isAuthoriser,
@@ -15,61 +89,41 @@ const getAdminActionsAvailable = ({
   currentStatusEvent,
   name,
 }) => {
-  const withdrawAction =
-    (isAdministrator || isAuthoriser) && statusId === CLAIM_STATUS.AGREED && withdraw === false;
+  const isAdminOrAuthorisor = isAdministrator || isAuthoriser;
+  const isAdminOrRecommender = isAdministrator || isRecommender;
+  const isAdminOrAuthorisorOrRecommender = isAdministrator || isAuthoriser || isRecommender;
+  const claimIsInCheck = statusId === CLAIM_STATUS.IN_CHECK;
+  const claimIsAgreed = statusId === CLAIM_STATUS.AGREED;
+  const claimIsOnHold = statusId === CLAIM_STATUS.ON_HOLD;
+  const claimIsRecommendedToPay = statusId === CLAIM_STATUS.RECOMMENDED_TO_PAY;
+  const claimIsRecommendedToReject = statusId === CLAIM_STATUS.RECOMMENDED_TO_REJECT;
 
-  const withdrawForm =
-    (isAdministrator || isAuthoriser) && statusId === CLAIM_STATUS.AGREED && withdraw === true;
+  const { withdrawAction, withdrawForm, authoriseAction, authoriseForm, rejectAction, rejectForm } =
+    getAdminAndAuthoriserActions({
+      isAdminOrAuthorisor,
+      claimIsAgreed,
+      withdraw,
+      claimIsRecommendedToPay,
+      approve,
+      currentStatusEvent,
+      claimIsRecommendedToReject,
+      reject,
+      name,
+    });
 
-  const moveToInCheckAction =
-    (isAdministrator || isRecommender || isAuthoriser) &&
-    statusId === CLAIM_STATUS.ON_HOLD &&
-    moveToInCheck === false;
+  const { recommendAction, recommendToPayForm, recommendToRejectForm } =
+    getAdminAndRecommenderActions({
+      isAdminOrRecommender,
+      claimIsInCheck,
+      recommendToPay,
+      recommendToReject,
+    });
 
-  const moveToInCheckForm =
-    (isAdministrator || isRecommender || isAuthoriser) &&
-    statusId === CLAIM_STATUS.ON_HOLD &&
-    moveToInCheck === true;
-
-  const recommendAction =
-    (isAdministrator || isRecommender) &&
-    statusId === CLAIM_STATUS.IN_CHECK &&
-    recommendToPay === false &&
-    recommendToReject === false;
-
-  const recommendToPayForm =
-    (isAdministrator || isRecommender) &&
-    statusId === CLAIM_STATUS.IN_CHECK &&
-    recommendToPay === true;
-
-  const recommendToRejectForm =
-    (isAdministrator || isRecommender) &&
-    statusId === CLAIM_STATUS.IN_CHECK &&
-    recommendToReject === true;
-
-  const authoriseAction =
-    (isAdministrator || isAuthoriser) &&
-    statusId === CLAIM_STATUS.RECOMMENDED_TO_PAY &&
-    approve === false &&
-    statusWasSetByAnotherUser(currentStatusEvent, name);
-
-  const authoriseForm =
-    (isAdministrator || isAuthoriser) &&
-    statusId === CLAIM_STATUS.RECOMMENDED_TO_PAY &&
-    approve === true &&
-    statusWasSetByAnotherUser(currentStatusEvent, name);
-
-  const rejectAction =
-    (isAdministrator || isAuthoriser) &&
-    statusId === CLAIM_STATUS.RECOMMENDED_TO_REJECT &&
-    reject === false &&
-    statusWasSetByAnotherUser(currentStatusEvent, name);
-
-  const rejectForm =
-    (isAdministrator || isAuthoriser) &&
-    statusId === CLAIM_STATUS.RECOMMENDED_TO_REJECT &&
-    reject === true &&
-    statusWasSetByAnotherUser(currentStatusEvent, name);
+  const { moveToInCheckAction, moveToInCheckForm } = getAdminAndAuthoriserAndRecommenderActions({
+    isAdminOrAuthorisorOrRecommender,
+    claimIsOnHold,
+    moveToInCheck,
+  });
 
   return {
     withdrawAction,

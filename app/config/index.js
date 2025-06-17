@@ -1,6 +1,12 @@
 import joi from "joi";
 import { authConfig } from "./auth.js";
 
+const SECONDS_PER_HOUR = 3600;
+const MILLISECONDS_PER_SECOND = 1000;
+const HOURS_PER_DAY = 24;
+const NUMBER_OF_DAYS = 3;
+const ONE_YEAR_IN_DAYS = 365;
+
 const getCookieConfigSchema = () => ({
   cookieNameCookiePolicy: joi.string(),
   cookieNameAuth: joi.string(),
@@ -8,7 +14,9 @@ const getCookieConfigSchema = () => ({
   isSameSite: joi.string(),
   isSecure: joi.boolean(),
   password: joi.string().min(32).required(),
-  ttl: joi.number().default(1000 * 3600 * 24 * 3), // 3 days
+  ttl: joi
+    .number()
+    .default(MILLISECONDS_PER_SECOND * SECONDS_PER_HOUR * HOURS_PER_DAY * NUMBER_OF_DAYS),
 });
 
 const getCacheConfigSchema = () => ({
@@ -55,7 +63,7 @@ const buildConfig = () => {
 
   const conf = {
     cache: {
-      expiresIn: 1000 * 3600 * 24 * 3, // 3 days
+      expiresIn: MILLISECONDS_PER_SECOND * SECONDS_PER_HOUR * HOURS_PER_DAY * NUMBER_OF_DAYS,
       options: {
         host: process.env.REDIS_HOSTNAME,
         password: process.env.REDIS_PASSWORD,
@@ -79,7 +87,7 @@ const buildConfig = () => {
       isSecure: process.env.NODE_ENV === "production",
       password: process.env.COOKIE_PASSWORD,
       path: "/",
-      ttl: 1000 * 60 * 60 * 24 * 365, // 1 year
+      ttl: MILLISECONDS_PER_SECOND * SECONDS_PER_HOUR * HOURS_PER_DAY * ONE_YEAR_IN_DAYS,
     },
     env: process.env.NODE_ENV,
     isDev: process.env.NODE_ENV === "development",
