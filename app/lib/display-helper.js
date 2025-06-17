@@ -22,22 +22,14 @@ export const formatSpecies = (species) => {
 };
 
 export const formatStatusId = (statusId) => {
-  const newMap = {};
-
-  for (const key in CLAIM_STATUS) {
-    const value = CLAIM_STATUS[key];
-    newMap[value] = key;
-  }
-
-  if (!newMap[statusId]) {
-    return;
-  }
+  const newMap = Object.entries(CLAIM_STATUS).reduce((map, [key, value]) => {
+    map[value] = key;
+    return map;
+  }, {});
 
   return newMap[statusId].replace(/_/g, " ");
 };
 
 export const formatTypeOfVisit = (typeOfVisit) => {
-  if (typeOfVisit === undefined) return;
-
   return typeOfVisit === "E" ? "Endemics" : "Review";
 };

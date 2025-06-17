@@ -2,7 +2,7 @@ import Joi from "joi";
 import { permissions } from "../auth/permissions.js";
 import { generateNewCrumb } from "./utils/crumb-cache.js";
 import { createFlagsTableData } from "./models/flags-list.js";
-import { deleteFlag, createFlag } from "../api/flags.js";
+import { deleteFlag as deleteFlagApiCall, createFlag as createFlagApiCall } from "../api/flags.js";
 import { encodeErrorsForUI } from "./utils/encode-errors-for-ui.js";
 import { StatusCodes } from "http-status-codes";
 import { mapAuth } from "../auth/map-auth.js";
@@ -93,7 +93,7 @@ const deleteFlagHandler = {
         const { flagId } = request.params;
         const { deletedNote } = request.payload;
         const { name: userName } = request.auth.credentials.account;
-        await deleteFlag({ flagId, deletedNote }, userName, request.logger);
+        await deleteFlagApiCall({ flagId, deletedNote }, userName, request.logger);
 
         return h.redirect("/flags").takeover();
       } catch (err) {
@@ -168,7 +168,7 @@ const createFlagHandler = {
           appliesToMh: appliesToMh === "yes",
         };
 
-        const { res } = await createFlag(payload, appRef.trim(), request.logger);
+        const { res } = await createFlagApiCall(payload, appRef.trim(), request.logger);
 
         if (res.statusCode === StatusCodes.NO_CONTENT) {
           let error = new Error("Flag already exists.");

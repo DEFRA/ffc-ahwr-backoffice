@@ -15,12 +15,13 @@ const col6RespText = `col-6 ${respText}`;
 
 export const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = true) => {
   const direction = sortField && sortField.direction === "DESC" ? "descending" : "ascending";
+  const sort = sortField ? sortField.field : "";
 
   return [
     {
       text: "Claim number & Type",
       attributes: {
-        "aria-sort": sortField && sortField.field === "claim number" ? direction : "none",
+        "aria-sort": sort === "claim number" ? direction : "none",
         "data-url": `${dataURLPrefix}claims/sort/claim number`,
       },
       classes: "col-12 responsive-text",
@@ -32,7 +33,7 @@ export const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = tru
     {
       text: "Species",
       attributes: {
-        "aria-sort": sortField && sortField.field === "species" ? direction : "none",
+        "aria-sort": sort === "species" ? direction : "none",
         "data-url": "claims/sort/species",
       },
       classes: col6RespText,
@@ -48,7 +49,7 @@ export const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = tru
     showSBI && {
       text: "SBI number",
       attributes: {
-        "aria-sort": sortField && sortField.field === "SBI" ? direction : "none",
+        "aria-sort": sort === "SBI" ? direction : "none",
         "data-url": "/claims/sort/SBI",
       },
       format: "numeric",
@@ -57,7 +58,7 @@ export const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = tru
     {
       text: "Claim date",
       attributes: {
-        "aria-sort": sortField && sortField.field === "claim date" ? direction : "none",
+        "aria-sort": sort === "claim date" ? direction : "none",
         "data-url": "claims/sort/claim date",
       },
       format: "date",
@@ -66,7 +67,7 @@ export const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = tru
     {
       text: "Status",
       attributes: {
-        "aria-sort": sortField && sortField.field === "status" ? direction : "none",
+        "aria-sort": sort === "status" ? direction : "none",
         "data-url": "claims/sort/status",
       },
       classes: col6RespText,

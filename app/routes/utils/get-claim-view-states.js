@@ -1,23 +1,20 @@
 import { CLAIM_STATUS } from "ffc-ahwr-common-library";
 import { mapAuth } from "../../auth/map-auth.js";
 
-export const getClaimViewStates = (request, statusId, currentStatusEvent) => {
-  const {
-    withdraw,
-    moveToInCheck,
-    recommendToPay,
-    recommendToReject,
-    approve,
-    reject,
-    updateStatus,
-    updateVetsName,
-    updateDateOfVisit,
-    updateVetRCVSNumber,
-  } = request.query;
-  const { name } = request.auth.credentials.account;
-
-  const { isAdministrator, isRecommender, isAuthoriser, isSuperAdmin } = mapAuth(request);
-
+const getAdminActionsAvailable = ({
+  isAdministrator,
+  isAuthoriser,
+  statusId,
+  withdraw,
+  isRecommender,
+  moveToInCheck,
+  recommendToPay,
+  recommendToReject,
+  approve,
+  reject,
+  currentStatusEvent,
+  name,
+}) => {
   const withdrawAction =
     (isAdministrator || isAuthoriser) && statusId === CLAIM_STATUS.AGREED && withdraw === false;
 
@@ -73,6 +70,65 @@ export const getClaimViewStates = (request, statusId, currentStatusEvent) => {
     statusId === CLAIM_STATUS.RECOMMENDED_TO_REJECT &&
     reject === true &&
     statusWasSetByAnotherUser(currentStatusEvent, name);
+
+  return {
+    withdrawAction,
+    withdrawForm,
+    moveToInCheckAction,
+    moveToInCheckForm,
+    recommendAction,
+    recommendToPayForm,
+    recommendToRejectForm,
+    authoriseAction,
+    authoriseForm,
+    rejectAction,
+    rejectForm,
+  };
+};
+
+export const getClaimViewStates = (request, statusId, currentStatusEvent) => {
+  const {
+    withdraw,
+    moveToInCheck,
+    recommendToPay,
+    recommendToReject,
+    approve,
+    reject,
+    updateStatus,
+    updateVetsName,
+    updateDateOfVisit,
+    updateVetRCVSNumber,
+  } = request.query;
+  const { name } = request.auth.credentials.account;
+
+  const { isAdministrator, isRecommender, isAuthoriser, isSuperAdmin } = mapAuth(request);
+
+  const {
+    withdrawAction,
+    withdrawForm,
+    moveToInCheckAction,
+    moveToInCheckForm,
+    recommendAction,
+    recommendToPayForm,
+    recommendToRejectForm,
+    authoriseAction,
+    authoriseForm,
+    rejectAction,
+    rejectForm,
+  } = getAdminActionsAvailable({
+    isAdministrator,
+    isAuthoriser,
+    statusId,
+    withdraw,
+    isRecommender,
+    moveToInCheck,
+    recommendToPay,
+    recommendToReject,
+    approve,
+    reject,
+    currentStatusEvent,
+    name,
+  });
 
   const {
     updateStatusAction,

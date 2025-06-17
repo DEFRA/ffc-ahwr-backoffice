@@ -1,56 +1,61 @@
 import joi from "joi";
 import { authConfig } from "./auth.js";
 
+const getCookieConfigSchema = () => ({
+  cookieNameCookiePolicy: joi.string(),
+  cookieNameAuth: joi.string(),
+  cookieNameSession: joi.string(),
+  isSameSite: joi.string(),
+  isSecure: joi.boolean(),
+  password: joi.string().min(32).required(),
+  ttl: joi.number().default(1000 * 3600 * 24 * 3), // 3 days
+});
+
+const getCacheConfigSchema = () => ({
+  expiresIn: joi.number(),
+  options: {
+    host: joi.string().default("redis-hostname.default"),
+    partition: joi.string().default("ffc-ahwr-backoffice"),
+    password: joi.string().allow(""),
+    port: joi.number().default(6379),
+    tls: joi.object(),
+  },
+});
+
+const getCookiePolicyConfigSchema = () => ({
+  clearInvalid: joi.bool(),
+  encoding: joi.string(),
+  isSameSite: joi.string(),
+  isSecure: joi.bool(),
+  password: joi.string().min(32).required(),
+  path: joi.string(),
+  ttl: joi.number(),
+});
+
 const buildConfig = () => {
   const schema = joi.object({
-    cache: {
-      expiresIn: joi.number().default(1000 * 3600 * 24 * 3), // 3 days
-      options: {
-        host: joi.string().default("redis-hostname.default"),
-        partition: joi.string().default("ffc-ahwr-backoffice"),
-        password: joi.string().allow(""),
-        port: joi.number().default(6379),
-        tls: joi.object(),
-      },
-    },
-    cookie: {
-      cookieNameCookiePolicy: joi.string().default("ffc_ahwr_backoffice_cookie_policy"),
-      cookieNameAuth: joi.string().default("ffc_ahwr_backoffice_auth"),
-      cookieNameSession: joi.string().default("ffc_ahwr_backoffice_session"),
-      isSameSite: joi.string().default("Lax"),
-      isSecure: joi.boolean().default(true),
-      password: joi.string().min(32).required(),
-      ttl: joi.number().default(1000 * 3600 * 24 * 3), // 3 days
-    },
-    cookiePolicy: {
-      clearInvalid: joi.bool().default(false),
-      encoding: joi.string().valid("base64json").default("base64json"),
-      isSameSite: joi.string().default("Lax"),
-      isSecure: joi.bool().default(true),
-      password: joi.string().min(32).required(),
-      path: joi.string().default("/"),
-      ttl: joi.number().default(1000 * 60 * 60 * 24 * 365), // 1 year
-    },
+    cache: getCacheConfigSchema(),
+    cookie: getCookieConfigSchema(),
+    cookiePolicy: getCookiePolicyConfigSchema(),
     env: joi.string().valid("development", "test", "production").default("development"),
-    isDev: joi.boolean().default(false),
-    isProd: joi.boolean().default(false),
+    isDev: joi.boolean(),
+    isProd: joi.boolean(),
     port: joi.number().default(3000),
     serviceUri: joi.string().uri(),
-    useRedis: joi.boolean().default(false),
+    useRedis: joi.boolean(),
     applicationApiUri: joi.string().uri(),
     displayPageSize: joi.number().default(20),
     onHoldAppScheduler: {
-      enabled: joi.bool().default(true),
+      enabled: joi.bool(),
       schedule: joi.string().default("0 18 * * 1-5"),
     },
     superAdmins: joi.array().items(joi.string()).required(),
-    developerName: joi.string().allow(""),
-    developerUsername: joi.string().allow(""),
     multiHerdsEnabled: joi.boolean().required(),
   });
 
-  const config = {
+  const conf = {
     cache: {
+      expiresIn: 1000 * 3600 * 24 * 3, // 3 days
       options: {
         host: process.env.REDIS_HOSTNAME,
         password: process.env.REDIS_PASSWORD,
@@ -73,6 +78,8 @@ const buildConfig = () => {
       isSameSite: "Lax",
       isSecure: process.env.NODE_ENV === "production",
       password: process.env.COOKIE_PASSWORD,
+      path: "/",
+      ttl: 1000 * 60 * 60 * 24 * 365, // 1 year
     },
     env: process.env.NODE_ENV,
     isDev: process.env.NODE_ENV === "development",
@@ -91,13 +98,13 @@ const buildConfig = () => {
       : [],
     multiHerdsEnabled: process.env.MULTI_HERDS_ENABLED === "true",
   };
-  const { error } = schema.validate(config, { abortEarly: false });
+  const { error } = schema.validate(conf, { abortEarly: false });
 
   if (error) {
     throw new Error(`The server config is invalid. ${error.message}`);
   }
 
-  return { ...config, auth: authConfig };
+  return { ...conf, auth: authConfig };
 };
 
 export const config = buildConfig();
