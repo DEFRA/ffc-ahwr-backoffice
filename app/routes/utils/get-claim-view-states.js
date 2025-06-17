@@ -7,16 +7,15 @@ const getAdminAndRecommenderActions = ({
   recommendToPay,
   recommendToReject,
 }) => {
-  const recommendAction =
-    isAdminOrRecommender &&
-    claimIsInCheck &&
-    recommendToPay === false &&
-    recommendToReject === false;
+  if (!isAdminOrRecommender) {
+    return { recommendAction: false, recommendToPayForm: false, recommendToRejectForm: false };
+  }
 
-  const recommendToPayForm = isAdminOrRecommender && claimIsInCheck && recommendToPay === true;
+  const recommendAction = claimIsInCheck && recommendToPay === false && recommendToReject === false;
 
-  const recommendToRejectForm =
-    isAdminOrRecommender && claimIsInCheck && recommendToReject === true;
+  const recommendToPayForm = claimIsInCheck && recommendToPay === true;
+
+  const recommendToRejectForm = claimIsInCheck && recommendToReject === true;
 
   return { recommendAction, recommendToPayForm, recommendToRejectForm };
 };
@@ -32,28 +31,35 @@ const getAdminAndAuthoriserActions = ({
   reject,
   name,
 }) => {
-  const withdrawAction = isAdminOrAuthorisor && claimIsAgreed && withdraw === false;
-  const withdrawForm = isAdminOrAuthorisor && claimIsAgreed && withdraw === true;
+  if (!isAdminOrAuthorisor) {
+    return {
+      withdrawAction: false,
+      withdrawForm: false,
+      authoriseAction: false,
+      authoriseForm: false,
+      rejectAction: false,
+      rejectForm: false,
+    };
+  }
+
+  const withdrawAction = claimIsAgreed && withdraw === false;
+  const withdrawForm = claimIsAgreed && withdraw === true;
   const authoriseAction =
-    isAdminOrAuthorisor &&
     claimIsRecommendedToPay &&
     approve === false &&
     statusWasSetByAnotherUser(currentStatusEvent, name);
 
   const authoriseForm =
-    isAdminOrAuthorisor &&
     claimIsRecommendedToPay &&
     approve === true &&
     statusWasSetByAnotherUser(currentStatusEvent, name);
 
   const rejectAction =
-    isAdminOrAuthorisor &&
     claimIsRecommendedToReject &&
     reject === false &&
     statusWasSetByAnotherUser(currentStatusEvent, name);
 
   const rejectForm =
-    isAdminOrAuthorisor &&
     claimIsRecommendedToReject &&
     reject === true &&
     statusWasSetByAnotherUser(currentStatusEvent, name);
@@ -66,11 +72,13 @@ const getAdminAndAuthoriserAndRecommenderActions = ({
   claimIsOnHold,
   moveToInCheck,
 }) => {
-  const moveToInCheckAction =
-    isAdminOrAuthorisorOrRecommender && claimIsOnHold && moveToInCheck === false;
+  if (!isAdminOrAuthorisorOrRecommender) {
+    return { moveToInCheckAction: false, moveToInCheckForm: false };
+  }
 
-  const moveToInCheckForm =
-    isAdminOrAuthorisorOrRecommender && claimIsOnHold && moveToInCheck === true;
+  const moveToInCheckAction = claimIsOnHold && moveToInCheck === false;
+
+  const moveToInCheckForm = claimIsOnHold && moveToInCheck === true;
 
   return { moveToInCheckAction, moveToInCheckForm };
 };
@@ -157,19 +165,7 @@ export const getClaimViewStates = (request, statusId, currentStatusEvent) => {
 
   const { isAdministrator, isRecommender, isAuthoriser, isSuperAdmin } = mapAuth(request);
 
-  const {
-    withdrawAction,
-    withdrawForm,
-    moveToInCheckAction,
-    moveToInCheckForm,
-    recommendAction,
-    recommendToPayForm,
-    recommendToRejectForm,
-    authoriseAction,
-    authoriseForm,
-    rejectAction,
-    rejectForm,
-  } = getAdminActionsAvailable({
+  const admActions = getAdminActionsAvailable({
     isAdministrator,
     isAuthoriser,
     statusId,
@@ -184,16 +180,7 @@ export const getClaimViewStates = (request, statusId, currentStatusEvent) => {
     name,
   });
 
-  const {
-    updateStatusAction,
-    updateStatusForm,
-    updateVetsNameAction,
-    updateVetsNameForm,
-    updateVetRCVSNumberAction,
-    updateVetRCVSNumberForm,
-    updateDateOfVisitAction,
-    updateDateOfVisitForm,
-  } = superAdminActions(
+  const superAdmActions = superAdminActions(
     isSuperAdmin,
     statusId,
     updateStatus,
@@ -203,25 +190,8 @@ export const getClaimViewStates = (request, statusId, currentStatusEvent) => {
   );
 
   return {
-    withdrawAction,
-    withdrawForm,
-    moveToInCheckAction,
-    moveToInCheckForm,
-    recommendAction,
-    recommendToPayForm,
-    recommendToRejectForm,
-    authoriseAction,
-    authoriseForm,
-    rejectAction,
-    rejectForm,
-    updateStatusAction,
-    updateStatusForm,
-    updateVetsNameAction,
-    updateVetsNameForm,
-    updateVetRCVSNumberAction,
-    updateVetRCVSNumberForm,
-    updateDateOfVisitAction,
-    updateDateOfVisitForm,
+    ...admActions,
+    ...superAdmActions,
   };
 };
 

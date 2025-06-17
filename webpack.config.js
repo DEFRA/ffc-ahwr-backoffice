@@ -6,8 +6,8 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
 const isDev = process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
 
-const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
-const __dirname = path.dirname(__filename); // get the name of the directory
+const filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const dirname = path.dirname(filename); // get the name of the directory
 
 console.log(`Running webpack in ${isDev ? "development" : "production"} mode`);
 
@@ -57,7 +57,7 @@ export default {
   },
   output: {
     filename: "js/[contenthash].js",
-    path: path.resolve(__dirname, "app/frontend/dist"),
+    path: path.resolve(dirname, "app/frontend/dist"),
     publicPath: "/assets/",
   },
   plugins: [
