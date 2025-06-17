@@ -42,27 +42,29 @@ const getAdminAndAuthoriserActions = ({
     };
   }
 
+  const setByAnotherUser = statusWasSetByAnotherUser(currentStatusEvent, name);
+
   const withdrawAction = claimIsAgreed && withdraw === false;
   const withdrawForm = claimIsAgreed && withdraw === true;
-  const authoriseAction =
-    claimIsRecommendedToPay &&
-    approve === false &&
-    statusWasSetByAnotherUser(currentStatusEvent, name);
 
-  const authoriseForm =
-    claimIsRecommendedToPay &&
-    approve === true &&
-    statusWasSetByAnotherUser(currentStatusEvent, name);
+  if (!setByAnotherUser) {
+    return {
+      withdrawAction,
+      withdrawForm,
+      authoriseAction: false,
+      authoriseForm: false,
+      rejectAction: false,
+      rejectForm: false,
+    };
+  }
 
-  const rejectAction =
-    claimIsRecommendedToReject &&
-    reject === false &&
-    statusWasSetByAnotherUser(currentStatusEvent, name);
+  const authoriseAction = claimIsRecommendedToPay && approve === false;
 
-  const rejectForm =
-    claimIsRecommendedToReject &&
-    reject === true &&
-    statusWasSetByAnotherUser(currentStatusEvent, name);
+  const authoriseForm = claimIsRecommendedToPay && approve === true;
+
+  const rejectAction = claimIsRecommendedToReject && reject === false;
+
+  const rejectForm = claimIsRecommendedToReject && reject === true;
 
   return { withdrawAction, withdrawForm, authoriseAction, authoriseForm, rejectAction, rejectForm };
 };
