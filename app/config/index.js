@@ -63,9 +63,9 @@ const buildConfig = () => {
     cache: {
       expiresIn: MILLISECONDS_PER_SECOND * SECONDS_PER_HOUR * HOURS_PER_DAY * NUMBER_OF_DAYS,
       options: {
-        host: process.env.REDIS_HOSTNAME || "redis-hostname.default",
-        password: process.env.REDIS_PASSWORD || "ffc-ahwr-backoffice",
-        port: process.env.REDIS_PORT || 6379,
+        host: process.env.REDIS_HOSTNAME,
+        password: process.env.REDIS_PASSWORD,
+        port: process.env.REDIS_PORT,
         tls: process.env.NODE_ENV === "production" ? {} : undefined,
       },
     },
@@ -92,14 +92,14 @@ const buildConfig = () => {
     env: process.env.NODE_ENV,
     isDev: process.env.NODE_ENV === "development",
     isProd: process.env.NODE_ENV === "production",
-    port: process.env.PORT || 3000,
+    port: process.env.PORT,
     serviceUri: process.env.SERVICE_URI,
     useRedis: process.env.NODE_ENV !== "test",
     applicationApiUri: process.env.APPLICATION_API_URI,
-    displayPageSize: Number(process.env.DISPLAY_PAGE_SIZE) || 20,
+    displayPageSize: Number(process.env.DISPLAY_PAGE_SIZE),
     onHoldAppScheduler: {
       enabled: process.env.ON_HOLD_APP_PROCESS_ENABLED === "true",
-      schedule: process.env.ON_HOLD_APP_PROCESS_SCHEDULE || "0 18 * * 1-5",
+      schedule: process.env.ON_HOLD_APP_PROCESS_SCHEDULE,
     },
     superAdmins: process.env.SUPER_ADMINS
       ? process.env.SUPER_ADMINS.split(",").map((user) => user.trim().toLowerCase())
