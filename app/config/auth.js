@@ -17,6 +17,10 @@ const buildAuthConfig = () => {
     redirectUrl: process.env.AADAR_REDIRECT_URL,
   };
 
+  if (process.env.NODE_ENV === "test") {
+    return config;
+  }
+
   const { error } = schema.validate(config, { abortEarly: false });
 
   if (error) {

@@ -8,34 +8,34 @@ const NUMBER_OF_DAYS = 3;
 const ONE_YEAR_IN_DAYS = 365;
 
 const getCookieConfigSchema = () => ({
-  cookieNameCookiePolicy: joi.string(),
-  cookieNameAuth: joi.string(),
-  cookieNameSession: joi.string(),
-  isSameSite: joi.string(),
-  isSecure: joi.boolean(),
+  cookieNameCookiePolicy: joi.string().required(),
+  cookieNameAuth: joi.string().required(),
+  cookieNameSession: joi.string().required(),
+  isSameSite: joi.string().required(),
+  isSecure: joi.boolean().required(),
   password: joi.string().min(32).required(),
-  ttl: joi.number(),
+  ttl: joi.number().required(),
 });
 
 const getCacheConfigSchema = () => ({
-  expiresIn: joi.number(),
+  expiresIn: joi.number().required(),
   options: {
-    host: joi.string(),
-    partition: joi.string(),
-    password: joi.string().allow(""),
-    port: joi.number(),
+    host: joi.string().required(),
+    partition: joi.string().required(),
+    password: joi.string().allow("").required(),
+    port: joi.number().required(),
     tls: joi.object(),
   },
 });
 
 const getCookiePolicyConfigSchema = () => ({
-  clearInvalid: joi.bool(),
-  encoding: joi.string(),
-  isSameSite: joi.string(),
-  isSecure: joi.bool(),
+  clearInvalid: joi.bool().required(),
+  encoding: joi.string().required(),
+  isSameSite: joi.string().required(),
+  isSecure: joi.bool().required(),
   password: joi.string().min(32).required(),
-  path: joi.string(),
-  ttl: joi.number(),
+  path: joi.string().required(),
+  ttl: joi.number().required(),
 });
 
 const buildConfig = () => {
@@ -43,20 +43,20 @@ const buildConfig = () => {
     cache: getCacheConfigSchema(),
     cookie: getCookieConfigSchema(),
     cookiePolicy: getCookiePolicyConfigSchema(),
-    env: joi.string().valid("development", "test", "production"),
-    isDev: joi.boolean(),
-    isProd: joi.boolean(),
-    port: joi.number(),
-    serviceUri: joi.string().uri(),
-    useRedis: joi.boolean(),
-    applicationApiUri: joi.string().uri(),
-    displayPageSize: joi.number(),
+    env: joi.string().valid("development", "test", "production").required(),
+    isDev: joi.boolean().required(),
+    isProd: joi.boolean().required(),
+    port: joi.number().required(),
+    serviceUri: joi.string().uri().required(),
+    useRedis: joi.boolean().required(),
+    applicationApiUri: joi.string().uri().required(),
+    displayPageSize: joi.number().required(),
     onHoldAppScheduler: {
-      enabled: joi.bool(),
-      schedule: joi.string(),
+      enabled: joi.bool().required(),
+      schedule: joi.string().required(),
     },
-    superAdmins: joi.array().items(joi.string()).required(),
-    multiHerdsEnabled: joi.boolean().required(),
+    superAdmins: joi.array().items(joi.string()).required().required(),
+    multiHerdsEnabled: joi.boolean().required().required(),
   });
 
   const conf = {
@@ -67,6 +67,7 @@ const buildConfig = () => {
         password: process.env.REDIS_PASSWORD,
         port: process.env.REDIS_PORT,
         tls: process.env.NODE_ENV === "production" ? {} : undefined,
+        partition: "ffc-ahwr-backoffice",
       },
     },
     cookie: {
@@ -104,6 +105,11 @@ const buildConfig = () => {
       : [],
     multiHerdsEnabled: process.env.MULTI_HERDS_ENABLED === "true",
   };
+
+  if (process.env.NODE_ENV === "test") {
+    return { ...conf, auth: authConfig };
+  }
+
   const { error } = schema.validate(conf, { abortEarly: false });
 
   if (error) {

@@ -3,9 +3,13 @@ import { createServer } from "./server.js";
 
 let server;
 const init = async () => {
+  console.log("Running application insights setup");
   setup();
+  console.log("Creating server");
   server = await createServer();
+  console.log("Server created, starting...");
   await server.start();
+  console.log("Server started");
 };
 
 process.on("unhandledRejection", async (err) => {
