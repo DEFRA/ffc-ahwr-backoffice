@@ -1,7 +1,6 @@
 import nunjucks from "nunjucks";
 import path from "path";
 import getMOJFilters from "@ministryofjustice/frontend/moj/filters/all.js";
-import { config } from "../config/index.js";
 import vision from "@hapi/vision";
 
 export const viewsPlugin = {
@@ -44,7 +43,7 @@ export const viewsPlugin = {
     },
     path: "../views",
     relativeTo: "./app/views",
-    isCached: config.env === "development",
+    isCached: true,
     context: {
       appVersion: process.env.npm_package_version,
       assetPath: "/assets",

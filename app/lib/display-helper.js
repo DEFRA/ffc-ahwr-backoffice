@@ -1,4 +1,4 @@
-import { CLAIM_STATUS } from "ffc-ahwr-common-library";
+import { getInvertedClaimStatusMap } from "../constants/inverted-claim-status.js";
 
 export const upperFirstLetter = (str) => {
   return typeof str === "string" ? str.charAt(0).toUpperCase() + str.slice(1) : "";
@@ -22,12 +22,9 @@ export const formatSpecies = (species) => {
 };
 
 export const formatStatusId = (statusId) => {
-  const newMap = Object.entries(CLAIM_STATUS).reduce((map, [key, value]) => {
-    map[value] = key;
-    return map;
-  }, {});
+  const invertedClaimStatusMap = getInvertedClaimStatusMap();
 
-  return newMap[statusId].replace(/_/g, " ");
+  return invertedClaimStatusMap[statusId].replace(/_/g, " ");
 };
 
 export const formatTypeOfVisit = (typeOfVisit) => {

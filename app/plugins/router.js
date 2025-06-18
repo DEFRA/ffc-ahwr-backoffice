@@ -24,18 +24,18 @@ import { viewAgreementRoute } from "../routes/view-agreement.js";
 import { viewClaimRoute } from "../routes/view-claim.js";
 import { withdrawAgreementRoute } from "../routes/withdraw-agreement.js";
 
-const routes = [].concat(
+const routes = [
   accessibilityRoute,
   accountRoute,
-  agreementRoutes,
-  agreementsRoutes,
+  ...agreementRoutes,
+  ...agreementsRoutes,
   approveApplicationClaimRoute,
   assetsRoute,
   authenticateRoute,
-  claimsDataRoutes,
-  claimsRoutes,
+  ...claimsDataRoutes,
+  ...claimsRoutes,
   devAuthRoute,
-  flagsRoutes,
+  ...flagsRoutes,
   healthyRoute,
   healthzRoute,
   homeRoute,
@@ -50,7 +50,7 @@ const routes = [].concat(
   viewAgreementRoute,
   viewClaimRoute,
   withdrawAgreementRoute,
-);
+];
 
 export const routerPlugin = {
   plugin: {

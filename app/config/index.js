@@ -14,18 +14,16 @@ const getCookieConfigSchema = () => ({
   isSameSite: joi.string(),
   isSecure: joi.boolean(),
   password: joi.string().min(32).required(),
-  ttl: joi
-    .number()
-    .default(MILLISECONDS_PER_SECOND * SECONDS_PER_HOUR * HOURS_PER_DAY * NUMBER_OF_DAYS),
+  ttl: joi.number(),
 });
 
 const getCacheConfigSchema = () => ({
   expiresIn: joi.number(),
   options: {
-    host: joi.string().default("redis-hostname.default"),
-    partition: joi.string().default("ffc-ahwr-backoffice"),
+    host: joi.string(),
+    partition: joi.string(),
     password: joi.string().allow(""),
-    port: joi.number().default(6379),
+    port: joi.number(),
     tls: joi.object(),
   },
 });
@@ -45,17 +43,17 @@ const buildConfig = () => {
     cache: getCacheConfigSchema(),
     cookie: getCookieConfigSchema(),
     cookiePolicy: getCookiePolicyConfigSchema(),
-    env: joi.string().valid("development", "test", "production").default("development"),
+    env: joi.string().valid("development", "test", "production"),
     isDev: joi.boolean(),
     isProd: joi.boolean(),
-    port: joi.number().default(3000),
+    port: joi.number(),
     serviceUri: joi.string().uri(),
     useRedis: joi.boolean(),
     applicationApiUri: joi.string().uri(),
-    displayPageSize: joi.number().default(20),
+    displayPageSize: joi.number(),
     onHoldAppScheduler: {
       enabled: joi.bool(),
-      schedule: joi.string().default("0 18 * * 1-5"),
+      schedule: joi.string(),
     },
     superAdmins: joi.array().items(joi.string()).required(),
     multiHerdsEnabled: joi.boolean().required(),
@@ -65,9 +63,9 @@ const buildConfig = () => {
     cache: {
       expiresIn: MILLISECONDS_PER_SECOND * SECONDS_PER_HOUR * HOURS_PER_DAY * NUMBER_OF_DAYS,
       options: {
-        host: process.env.REDIS_HOSTNAME,
-        password: process.env.REDIS_PASSWORD,
-        port: process.env.REDIS_PORT,
+        host: process.env.REDIS_HOSTNAME || "redis-hostname.default",
+        password: process.env.REDIS_PASSWORD || "ffc-ahwr-backoffice",
+        port: process.env.REDIS_PORT || 6379,
         tls: process.env.NODE_ENV === "production" ? {} : undefined,
       },
     },
@@ -78,7 +76,9 @@ const buildConfig = () => {
       isSameSite: "Lax",
       isSecure: process.env.NODE_ENV === "production",
       password: process.env.COOKIE_PASSWORD,
-      ttl: process.env.COOKIE_TTL,
+      ttl:
+        process.env.COOKIE_TTL ||
+        MILLISECONDS_PER_SECOND * SECONDS_PER_HOUR * HOURS_PER_DAY * NUMBER_OF_DAYS,
     },
     cookiePolicy: {
       clearInvalid: false,
@@ -92,14 +92,14 @@ const buildConfig = () => {
     env: process.env.NODE_ENV,
     isDev: process.env.NODE_ENV === "development",
     isProd: process.env.NODE_ENV === "production",
-    port: process.env.PORT,
+    port: process.env.PORT || 3000,
     serviceUri: process.env.SERVICE_URI,
     useRedis: process.env.NODE_ENV !== "test",
     applicationApiUri: process.env.APPLICATION_API_URI,
-    displayPageSize: Number(process.env.DISPLAY_PAGE_SIZE),
+    displayPageSize: Number(process.env.DISPLAY_PAGE_SIZE) || 20,
     onHoldAppScheduler: {
       enabled: process.env.ON_HOLD_APP_PROCESS_ENABLED === "true",
-      schedule: process.env.ON_HOLD_APP_PROCESS_SCHEDULE,
+      schedule: process.env.ON_HOLD_APP_PROCESS_SCHEDULE || "0 18 * * 1-5",
     },
     superAdmins: process.env.SUPER_ADMINS
       ? process.env.SUPER_ADMINS.split(",").map((user) => user.trim().toLowerCase())
