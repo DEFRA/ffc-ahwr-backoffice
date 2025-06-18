@@ -76,9 +76,7 @@ const buildConfig = () => {
       isSameSite: "Lax",
       isSecure: process.env.NODE_ENV === "production",
       password: process.env.COOKIE_PASSWORD,
-      ttl:
-        process.env.COOKIE_TTL ||
-        MILLISECONDS_PER_SECOND * SECONDS_PER_HOUR * HOURS_PER_DAY * NUMBER_OF_DAYS,
+      ttl: MILLISECONDS_PER_SECOND * SECONDS_PER_HOUR * HOURS_PER_DAY * NUMBER_OF_DAYS,
     },
     cookiePolicy: {
       clearInvalid: false,
