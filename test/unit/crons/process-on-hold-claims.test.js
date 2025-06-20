@@ -1,9 +1,11 @@
+import { updateClaimStatus, getClaims } from "../../../app/api/claims";
+import { processOnHoldClaims } from "../../../app/crons/process-on-hold/process";
+
+jest.mock("../../../app/api/claims");
+
 const MOCK_NOW = new Date();
 
 describe("Process process on hold claims function test.", () => {
-  jest.mock("../../../app/api/claims");
-  const { updateClaimStatus, getClaims } = require("../../../app/api/claims");
-
   beforeEach(() => {
     jest.useFakeTimers();
     jest.setSystemTime(MOCK_NOW);
@@ -36,7 +38,6 @@ describe("Process process on hold claims function test.", () => {
   });
 
   test("error while running process", async () => {
-    const { processOnHoldClaims } = require("../../../app/crons/process-on-hold/process");
     getClaims.mockRejectedValueOnce("getClaims boom");
 
     expect(async () => {
@@ -45,7 +46,6 @@ describe("Process process on hold claims function test.", () => {
   });
 
   test("no pending claims", async () => {
-    const { processOnHoldClaims } = require("../../../app/crons/process-on-hold/process");
     getClaims.mockResolvedValue({
       claims: [],
       total: 0,
@@ -67,7 +67,7 @@ describe("Process process on hold claims function test.", () => {
       ],
       total: 1,
     });
-    const { processOnHoldClaims } = require("../../../app/crons/process-on-hold/process");
+
     const logger = { setBindings: jest.fn() };
     await processOnHoldClaims(logger);
 
@@ -90,7 +90,7 @@ describe("Process process on hold claims function test.", () => {
       total: 2,
     });
     updateClaimStatus.mockRejectedValueOnce(new Error("boom"));
-    const { processOnHoldClaims } = require("../../../app/crons/process-on-hold/process");
+
     const logger = { setBindings: jest.fn() };
     await processOnHoldClaims(logger);
 

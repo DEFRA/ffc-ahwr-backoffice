@@ -1,4 +1,4 @@
-const getCurrentStatusEvent = (application, historyRecords) => {
+export const getCurrentStatusEvent = (application, historyRecords) => {
   const mostRecentStatusUpdate = historyRecords.findLast(
     ({ eventType }) => eventType === "status-updated",
   );
@@ -8,5 +8,3 @@ const getCurrentStatusEvent = (application, historyRecords) => {
 
   return isToCurrentStatus ? mostRecentStatusUpdate : null;
 };
-
-module.exports = { getCurrentStatusEvent };

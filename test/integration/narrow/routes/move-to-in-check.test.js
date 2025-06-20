@@ -1,35 +1,41 @@
-const cheerio = require("cheerio");
-const expectPhaseBanner = require("../../../utils/phase-banner-expect");
-const {
-  administrator,
-  user,
-  authoriser,
-  recommender,
-} = require("../../../../app/auth/permissions");
-const getCrumbs = require("../../../utils/get-crumbs");
+import * as cheerio from "cheerio";
+import { phaseBannerOk } from "../../../utils/phase-banner-expect";
+import { permissions } from "../../../../app/auth/permissions";
+import { getCrumbs } from "../../../utils/get-crumbs";
+import { createServer } from "../../../../app/server";
+import { updateApplicationStatus } from "../../../../app/api/applications";
+import { StatusCodes } from "http-status-codes";
+import { preSubmissionHandler } from "../../../../app/routes/utils/pre-submission-handler";
+import boom from "@hapi/boom";
+
+jest.mock("../../../../app/auth");
+jest.mock("@hapi/wreck", () => ({
+  put: jest.fn().mockReturnValue({}),
+}));
+jest.mock("../../../../app/api/applications");
+jest.mock("../../../../app/api/claims");
+jest.mock("../../../../app/routes/utils/pre-submission-handler");
+
+preSubmissionHandler.mockImplementation((_arg, h) => h.continue);
+updateApplicationStatus.mockResolvedValue(true);
 
 const reference = "AHWR-555A-FD4C";
 
+const { administrator, user, authoriser, recommender } = permissions;
+
 describe("Reject On Hold (move to In Check) Application test", () => {
-  let applications;
   let crumb;
   const url = "/move-to-in-check/";
-  jest.mock("../../../../app/auth");
 
-  jest.mock("@hapi/wreck", () => ({
-    put: jest.fn().mockReturnValue({}),
-  }));
   let auth = {
     strategy: "session-auth",
     credentials: { scope: [administrator] },
   };
 
-  beforeAll(() => {
-    jest.mock("../../../../app/api/applications");
-    jest.mock("../../../../app/api/claims");
-    applications = require("../../../../app/api/applications");
+  let server;
 
-    applications.updateApplicationStatus = jest.fn().mockResolvedValue(true);
+  beforeAll(async () => {
+    server = await createServer();
   });
 
   afterAll(() => {
@@ -37,7 +43,7 @@ describe("Reject On Hold (move to In Check) Application test", () => {
   });
 
   beforeEach(async () => {
-    crumb = await getCrumbs(global.__SERVER__);
+    crumb = await getCrumbs(server);
     jest.clearAllMocks();
   });
 
@@ -47,8 +53,8 @@ describe("Reject On Hold (move to In Check) Application test", () => {
         method: "POST",
         url,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
 
     test("returns 403", async () => {
@@ -61,14 +67,20 @@ describe("Reject On Hold (move to In Check) Application test", () => {
           claimOrAgreement: "application",
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(403);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.FORBIDDEN);
       const $ = cheerio.load(res.payload);
       expect($("h1.govuk-heading-l").text()).toEqual("403 - Forbidden");
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
     });
 
     test("returns 403 when duplicate submission - $crumb", async () => {
+      jest.resetAllMocks();
+      preSubmissionHandler.mockImplementationOnce((_arg, h) => h.continue);
+      preSubmissionHandler.mockImplementationOnce(() => {
+        return boom.forbidden("Duplicate submission");
+      });
+
       auth = {
         strategy: "session-auth",
         credentials: {
@@ -76,7 +88,7 @@ describe("Reject On Hold (move to In Check) Application test", () => {
           account: { homeAccountId: "testId", name: "admin" },
         },
       };
-      const crumb = await getCrumbs(global.__SERVER__);
+      const testCrumb = await getCrumbs(server);
       const options = {
         auth,
         method: "POST",
@@ -86,17 +98,18 @@ describe("Reject On Hold (move to In Check) Application test", () => {
           claimOrAgreement: "agreement",
           confirm: ["recommendToMoveOnHoldClaim", "updateIssuesLog"],
           page: 1,
-          crumb,
+          crumb: testCrumb,
         },
-        headers: { cookie: `crumb=${crumb}` },
+        headers: { cookie: `crumb=${testCrumb}` },
       };
-      const res1 = await global.__SERVER__.inject(options);
-      expect(res1.statusCode).toBe(302);
-      const res2 = await global.__SERVER__.inject(options);
-      expect(res2.statusCode).toBe(403);
+      const res1 = await server.inject(options);
+      expect(res1.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+      const res2 = await server.inject(options);
+      expect(res2.statusCode).toBe(StatusCodes.FORBIDDEN);
       const $ = cheerio.load(res2.payload);
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
       expect($(".govuk-heading-l").text()).toEqual("403 - Forbidden");
+      preSubmissionHandler.mockImplementation((_arg, h) => h.continue);
     });
 
     test.each([
@@ -125,18 +138,14 @@ describe("Reject On Hold (move to In Check) Application test", () => {
         },
       };
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       const logger = expect.any(Object);
-      expect(applications.updateApplicationStatus).toHaveBeenCalledWith(
-        reference,
-        "admin",
-        5,
-        logger,
-      );
-      expect(applications.updateApplicationStatus).toHaveBeenCalledTimes(1);
-      expect(res.statusCode).toBe(302);
+      expect(updateApplicationStatus).toHaveBeenCalledWith(reference, "admin", 5, logger);
+      expect(updateApplicationStatus).toHaveBeenCalledTimes(1);
       expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`);
     });
+
     test.each([authoriser, administrator, recommender])("Reject claim processed", async (scope) => {
       auth = {
         strategy: "session-auth",
@@ -160,8 +169,8 @@ describe("Reject On Hold (move to In Check) Application test", () => {
         },
       };
 
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       expect(res.headers.location).toEqual(`/view-claim/${reference}?page=1&returnPage=claims`);
     });
 
@@ -187,8 +196,8 @@ describe("Reject On Hold (move to In Check) Application test", () => {
         },
       };
 
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       const encodedErrors =
         "W3sidGV4dCI6IlwicmVmZXJlbmNlXCIgbXVzdCBiZSBhIHN0cmluZyIsImhyZWYiOiIjbW92ZS10by1pbi1jaGVjayIsImtleSI6InJlZmVyZW5jZSJ9XQ%3D%3D";
 
@@ -219,8 +228,8 @@ describe("Reject On Hold (move to In Check) Application test", () => {
         },
       };
 
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       const encodedErrors =
         "W3sidGV4dCI6IlwiY29uZmlybVwiIGRvZXMgbm90IGNvbnRhaW4gMSByZXF1aXJlZCB2YWx1ZShzKSIsImhyZWYiOiIjbW92ZS10by1pbi1jaGVjayIsImtleSI6ImNvbmZpcm0ifV0%3D";
       expect(res.headers.location).toEqual(
@@ -250,9 +259,9 @@ describe("Reject On Hold (move to In Check) Application test", () => {
         },
       };
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
-      expect(res.statusCode).toBe(403);
+      expect(res.statusCode).toBe(StatusCodes.FORBIDDEN);
     });
 
     test("Reject application claim not processed", async () => {
@@ -275,9 +284,9 @@ describe("Reject On Hold (move to In Check) Application test", () => {
           crumb,
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
-      expect(applications.updateApplicationStatus).not.toHaveBeenCalled();
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+      expect(updateApplicationStatus).not.toHaveBeenCalled();
     });
   });
 
@@ -294,10 +303,11 @@ describe("Reject On Hold (move to In Check) Application test", () => {
         crumb,
       },
     };
-    const res = await global.__SERVER__.inject(options);
-    expect(res.statusCode).toBe(302);
-    expect(applications.updateApplicationStatus).not.toHaveBeenCalled();
+    const res = await server.inject(options);
+    expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+    expect(updateApplicationStatus).not.toHaveBeenCalled();
   });
+
   test("Redirect to view claim with 302 status", async () => {
     const encodedErrors =
       "W3sidGV4dCI6IlNlbGVjdCBhbGwgY2hlY2tib3hlcyIsImhyZWYiOiIjbW92ZS10by1pbi1jaGVjayIsImtleSI6ImNvbmZpcm0ifV0%3D";
@@ -314,9 +324,9 @@ describe("Reject On Hold (move to In Check) Application test", () => {
         crumb,
       },
     };
-    const res = await global.__SERVER__.inject(options);
-    expect(res.statusCode).toBe(302);
-    expect(applications.updateApplicationStatus).not.toHaveBeenCalled();
+    const res = await server.inject(options);
+    expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+    expect(updateApplicationStatus).not.toHaveBeenCalled();
     expect(res.headers.location).toEqual(
       `/view-claim/${reference}?page=1&moveToInCheck=true&errors=${encodedErrors}&returnPage=claims`,
     );

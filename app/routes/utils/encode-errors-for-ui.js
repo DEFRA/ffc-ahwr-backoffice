@@ -1,4 +1,4 @@
-const encodeErrorsForUI = (joiErrors, href) => {
+export const encodeErrorsForUI = (joiErrors, href) => {
   const errors = joiErrors.map((error) => ({
     text: error.message,
     href,
@@ -7,5 +7,3 @@ const encodeErrorsForUI = (joiErrors, href) => {
 
   return Buffer.from(JSON.stringify(errors)).toString("base64");
 };
-
-module.exports = { encodeErrorsForUI };

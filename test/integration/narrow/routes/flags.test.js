@@ -1,30 +1,38 @@
-const cheerio = require("cheerio");
-const expectPhaseBanner = require("../../../utils/phase-banner-expect");
-const getCrumbs = require("../../../utils/get-crumbs");
-const { administrator, user } = require("../../../../app/auth/permissions");
-const flags = require("../../../../app/api/flags");
-const mockFlags = require("../../../data/flags.json");
-const { StatusCodes } = require("http-status-codes");
-const mapAuth = require("../../../../app/auth/map-auth");
+import * as cheerio from "cheerio";
+import { phaseBannerOk } from "../../../utils/phase-banner-expect.js";
+import { getCrumbs } from "../../../utils/get-crumbs.js";
+import { permissions } from "../../../../app/auth/permissions.js";
+import { getAllFlags, createFlag, deleteFlag } from "../../../../app/api/flags";
+import { flags } from "../../../data/flags.js";
+import { StatusCodes } from "http-status-codes";
+import { mapAuth } from "../../../../app/auth/map-auth.js";
+import { createServer } from "../../../../app/server.js";
+
+const { administrator, user } = permissions;
 
 jest.mock("../../../../app/api/flags");
 jest.mock("../../../../app/auth/map-auth");
+jest.mock("../../../../app/auth");
 
 mapAuth.mockResolvedValue({ isAdministrator: true });
-flags.getAllFlags.mockResolvedValue(mockFlags);
+getAllFlags.mockResolvedValue(flags);
 
 describe("Flags tests", () => {
-  jest.mock("../../../../app/auth");
   const auth = {
     strategy: "session-auth",
     credentials: { scope: [administrator], account: { name: "test admin" } },
   };
 
   let crumb;
+  let server;
+
+  beforeAll(async () => {
+    server = await createServer();
+  });
 
   describe("GET /flags route", () => {
     beforeEach(async () => {
-      crumb = await getCrumbs(global.__SERVER__);
+      crumb = await getCrumbs(server);
     });
 
     test("returns 302 when there is no auth", async () => {
@@ -32,7 +40,7 @@ describe("Flags tests", () => {
         method: "GET",
         url: "/flags",
       };
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
 
@@ -43,13 +51,13 @@ describe("Flags tests", () => {
         auth,
         headers: { cookie: `crumb=${crumb}` },
       };
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($("h1.govuk-heading-l").text()).toContain("Flags");
       expect($("title").text()).toContain("AHWR Flags");
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
     });
 
     test("returns 200 when user is not an admin", async () => {
@@ -64,19 +72,19 @@ describe("Flags tests", () => {
         auth,
         headers: { cookie: `crumb=${crumb}` },
       };
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($("h1.govuk-heading-l").text()).toContain("Flags");
       expect($("title").text()).toContain("AHWR Flags");
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
     });
   });
 
   describe(`POST /flags/{flagId}/delete route`, () => {
     beforeEach(async () => {
-      crumb = await getCrumbs(global.__SERVER__);
+      crumb = await getCrumbs(server);
     });
 
     test("returns 302 when there is no auth", async () => {
@@ -85,12 +93,12 @@ describe("Flags tests", () => {
         method: "POST",
         url: `/flags/${flagId}/delete`,
       };
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
 
     test("returns a 400 if the delete API call fails and redirects user back to flags page", async () => {
-      flags.deleteFlag.mockImplementationOnce(() => {
+      deleteFlag.mockImplementationOnce(() => {
         throw new Error("deletion failed");
       });
       const flagId = "abc123";
@@ -101,17 +109,17 @@ describe("Flags tests", () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: { crumb, deletedNote: "Flag deleted" },
       };
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.BAD_REQUEST);
       const $ = cheerio.load(res.payload);
       expect($("h1.govuk-heading-l").text()).toContain("Flags");
       expect($("title").text()).toContain("AHWR Flags");
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
     });
 
     test("redirects the user to the flags page when the flag has happily been deleted", async () => {
-      flags.deleteFlag.mockResolvedValueOnce(null);
+      deleteFlag.mockResolvedValueOnce(null);
       const flagId = "abc123";
       const options = {
         method: "POST",
@@ -120,7 +128,7 @@ describe("Flags tests", () => {
         headers: { cookie: `crumb=${crumb}` },
         payload: { crumb, deletedNote: "Flag deleted" },
       };
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       expect(res.headers.location).toBe("/flags");
@@ -137,7 +145,7 @@ describe("Flags tests", () => {
           crumb,
         },
       };
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
@@ -167,7 +175,7 @@ describe("Flags tests", () => {
           deletedNote: "a",
         },
       };
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
@@ -188,7 +196,7 @@ describe("Flags tests", () => {
 
   describe(`POST /flags/create route`, () => {
     beforeEach(async () => {
-      crumb = await getCrumbs(global.__SERVER__);
+      crumb = await getCrumbs(server);
       jest.clearAllMocks();
     });
 
@@ -197,12 +205,12 @@ describe("Flags tests", () => {
         method: "POST",
         url: "/flags/create",
       };
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
 
     test("returns 400 when the create flag API call fails", async () => {
-      flags.createFlag.mockImplementationOnce(() => {
+      createFlag.mockImplementationOnce(() => {
         let error = new Error("Random error");
         error = {
           data: {
@@ -226,12 +234,12 @@ describe("Flags tests", () => {
           appliesToMh: "yes",
         },
       };
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       expect(res.statusCode).toBe(StatusCodes.BAD_REQUEST);
     });
 
     test("returns the user to the flags page when the flag has been created", async () => {
-      flags.createFlag.mockResolvedValueOnce({ res: { statusCode: 201 } });
+      createFlag.mockResolvedValueOnce({ res: { statusCode: 201 } });
       const options = {
         method: "POST",
         url: "/flags/create",
@@ -244,14 +252,14 @@ describe("Flags tests", () => {
           appliesToMh: "yes",
         },
       };
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
-      expect(flags.createFlag).toHaveBeenCalledWith(
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+      expect(createFlag).toHaveBeenCalledWith(
         { appliesToMh: true, note: "Test flag", user: "test admin" },
         "IAHW-TEST-REF1",
         expect.any(Object),
       );
-      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       expect(res.headers.location).toBe("/flags");
     });
 
@@ -268,7 +276,7 @@ describe("Flags tests", () => {
           appliesToMh: "something",
         },
       };
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
@@ -299,7 +307,7 @@ describe("Flags tests", () => {
           appliesToMh: "yes",
         },
       };
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
@@ -330,7 +338,7 @@ describe("Flags tests", () => {
           appliesToMh: "yes",
         },
       };
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
@@ -349,7 +357,7 @@ describe("Flags tests", () => {
     });
 
     test("renders an error when the user is trying to create a flag which already exists", async () => {
-      flags.createFlag.mockImplementationOnce(() => {
+      createFlag.mockImplementationOnce(() => {
         let error = new Error("Flag already exists");
         error = {
           data: {
@@ -373,7 +381,7 @@ describe("Flags tests", () => {
           appliesToMh: "yes",
         },
       };
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 
@@ -392,7 +400,7 @@ describe("Flags tests", () => {
     });
 
     test("renders an error when the user is trying to create a flag with a reference that doesnt exist", async () => {
-      flags.createFlag.mockImplementationOnce(() => {
+      createFlag.mockImplementationOnce(() => {
         let error = new Error("Flag does not exist");
         error = {
           data: {
@@ -416,7 +424,7 @@ describe("Flags tests", () => {
           appliesToMh: "yes",
         },
       };
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
 

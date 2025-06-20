@@ -1,0 +1,88 @@
+export const claims = [
+  {
+    id: "32ccceb1-038f-4c6b-8ed0-af0cf70af831",
+    reference: "AHWR-1111-1111",
+    applicationReference: "AHWR-1234-APP1",
+    data: {
+      vetsName: "asdasd",
+      dateOfVisit: "2024-03-22T00:00:00.000Z",
+      dateOfTesting: "2024-03-22T00:00:00.000Z",
+      laboratoryURN: "123123",
+      vetRCVSNumber: "1235671",
+      speciesNumbers: "yes",
+      typeOfLivestock: "sheep",
+      numberAnimalsTested: "123",
+    },
+    statusId: 8,
+    type: "R",
+    createdAt: "2024-03-22T12:20:18.307Z",
+    updatedAt: "2024-03-22T12:20:18.307Z",
+    createdBy: "sql query",
+    updatedBy: null,
+    status: {
+      status: "PAID",
+    },
+    application: {
+      data: {
+        type: "EE",
+        reference: null,
+        declaration: true,
+        offerStatus: "accepted",
+        organisation: {
+          sbi: "113494460",
+          name: "Mrs S Clark",
+          email: "russelldaviese@seivadllessurm.com.test",
+          address:
+            "Tesco Stores Ltd,Harwell,Betton,WHITE HOUSE FARM,VINCENT CLOSE,LEIGHTON BUZZARD,HR2 8AN,United Kingdom",
+          userType: "newUser",
+          farmerName: "Russell Paul Davies",
+        },
+        confirmCheckDetails: "yes",
+      },
+    },
+    flags: [],
+  },
+  {
+    id: "605df3c4-518c-48e0-adcf-4b0ec02aa53b",
+    reference: "AHWR-0000-1111",
+    applicationReference: "AHWR-1234-APP1",
+    data: {
+      vetsName: "asdasd",
+      dateOfVisit: "2024-03-22T00:00:00.000Z",
+      dateOfTesting: "2024-03-22T00:00:00.000Z",
+      laboratoryURN: "123123",
+      vetRCVSNumber: "1235671",
+      speciesNumbers: "yes",
+      typeOfLivestock: "sheep",
+      numberAnimalsTested: "123",
+    },
+    statusId: 11,
+    type: "R",
+    createdAt: "2024-03-22T12:20:18.307Z",
+    updatedAt: "2024-03-22T12:20:18.307Z",
+    createdBy: "sql query",
+    updatedBy: null,
+    status: {
+      status: "ON HOLD",
+    },
+    application: {
+      data: {
+        type: "EE",
+        reference: null,
+        declaration: true,
+        offerStatus: "accepted",
+        organisation: {
+          sbi: "113494460",
+          name: "Mrs S Clark",
+          email: "russelldaviese@seivadllessurm.com.test",
+          address:
+            "Tesco Stores Ltd,Harwell,Betton,WHITE HOUSE FARM,VINCENT CLOSE,LEIGHTON BUZZARD,HR2 8AN,United Kingdom",
+          userType: "newUser",
+          farmerName: "Russell Paul Davies",
+        },
+        confirmCheckDetails: "yes",
+      },
+    },
+    flags: [],
+  },
+];

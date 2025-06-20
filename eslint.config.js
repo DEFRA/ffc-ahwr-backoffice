@@ -1,7 +1,7 @@
-const neostandard = require("neostandard");
-const eslintConfigPrettier = require("eslint-config-prettier/flat");
+import neostandard from "neostandard";
+import eslintConfigPrettier from "eslint-config-prettier/flat";
 
-module.exports = [
+export default [
   ...neostandard({
     env: ["node", "jest", "browser"],
     ignores: ["app/frontend/dist/**/*"],

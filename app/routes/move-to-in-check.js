@@ -1,18 +1,20 @@
-const joi = require("joi");
-const { updateApplicationStatus } = require("../api/applications");
-const { updateClaimStatus } = require("../api/claims");
-const preDoubleSubmitHandler = require("./utils/pre-submission-handler");
-const crumbCache = require("./utils/crumb-cache");
-const { administrator, recommender, authoriser } = require("../auth/permissions");
-const { inCheck } = require("../constants/application-status");
-const { encodeErrorsForUI } = require("./utils/encode-errors-for-ui");
+import joi from "joi";
+import { updateApplicationStatus } from "../api/applications.js";
+import { updateClaimStatus } from "../api/claims.js";
+import { preSubmissionHandler } from "./utils/pre-submission-handler.js";
+import { permissions } from "../auth/permissions.js";
+import { generateNewCrumb } from "./utils/crumb-cache.js";
+import { CLAIM_STATUS } from "ffc-ahwr-common-library";
+import { encodeErrorsForUI } from "./utils/encode-errors-for-ui.js";
 
-module.exports = {
+const { administrator, recommender, authoriser } = permissions;
+
+export const moveToInCheckRoute = {
   method: "post",
   path: "/move-to-in-check",
   options: {
     auth: { scope: [administrator, recommender, authoriser] },
-    pre: [{ method: preDoubleSubmitHandler }],
+    pre: [{ method: preSubmissionHandler }],
     validate: {
       payload: joi.object({
         claimOrAgreement: joi.string().valid("claim", "agreement").required(),
@@ -55,15 +57,14 @@ module.exports = {
       const { name } = request.auth.credentials.account;
 
       request.logger.setBindings({ reference });
-
-      await crumbCache.generateNewCrumb(request, h);
+      await generateNewCrumb(request, h);
       const query = new URLSearchParams({ page });
 
       if (claimOrAgreement === "claim") {
         query.append("returnPage", returnPage);
-        await updateClaimStatus(reference, name, inCheck, request.logger);
+        await updateClaimStatus(reference, name, CLAIM_STATUS.IN_CHECK, request.logger);
       } else {
-        await updateApplicationStatus(reference, name, inCheck, request.logger);
+        await updateApplicationStatus(reference, name, CLAIM_STATUS.IN_CHECK, request.logger);
       }
 
       return h.redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`);

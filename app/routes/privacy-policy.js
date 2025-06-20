@@ -1,4 +1,4 @@
-module.exports = {
+export const privacyPolicyRoute = {
   method: "GET",
   path: "/privacy-policy",
   options: {

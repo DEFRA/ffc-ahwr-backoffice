@@ -1,5 +1,5 @@
-const config = require("../../app/config/index");
-const { getHerdBreakdown } = require("../../app/lib/get-herd-breakdown");
+import { config } from "../../app/config/index";
+import { getHerdBreakdown } from "../../app/lib/get-herd-breakdown";
 
 const sheepClaimOneWithSheepiesHerd = {
   id: "4e62d9cb-0046-421e-8296-7051a584723b",

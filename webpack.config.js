@@ -1,14 +1,17 @@
-const path = require("path");
-
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+import path from "path";
+import { fileURLToPath } from "url";
+import { CleanWebpackPlugin } from "clean-webpack-plugin";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
 const isDev = process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
 
+const filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const dirname = path.dirname(filename); // get the name of the directory
+
 console.log(`Running webpack in ${isDev ? "development" : "production"} mode`);
 
-module.exports = {
+export default {
   entry: "./app/frontend/src/entry.js",
   mode: isDev ? "development" : "production",
   module: {
@@ -54,7 +57,7 @@ module.exports = {
   },
   output: {
     filename: "js/[contenthash].js",
-    path: path.resolve(__dirname, "app/frontend/dist"),
+    path: path.resolve(dirname, "app/frontend/dist"),
     publicPath: "/assets/",
   },
   plugins: [

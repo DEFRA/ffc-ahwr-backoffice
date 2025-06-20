@@ -1,15 +1,12 @@
-const mapAuth = require("../../../app/auth/map-auth");
-const {
-  administrator,
-  processor,
-  user,
-  recommender,
-  authoriser,
-} = require("../../../app/auth/permissions");
+import { mapAuth } from "../../../app/auth/map-auth";
+import { permissions } from "../../../app/auth/permissions";
+
+const { administrator, processor, user, recommender, authoriser } = permissions;
 
 jest.mock("../../../app/config", () => ({
-  ...jest.requireActual("../../../app/config"),
-  superAdmins: ["superadmin@test"],
+  config: {
+    superAdmins: ["superadmin@test"],
+  },
 }));
 
 test("roles in scope", () => {

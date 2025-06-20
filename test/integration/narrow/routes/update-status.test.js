@@ -1,7 +1,10 @@
-const createServer = require("../../../../app/server");
-const { administrator } = require("../../../../app/auth/permissions");
-const getCrumbs = require("../../../utils/get-crumbs");
-const { inCheck, readyToPay } = require("../../../../app/constants/application-status");
+import { createServer } from "../../../../app/server";
+import { permissions } from "../../../../app/auth/permissions";
+import { getCrumbs } from "../../../utils/get-crumbs";
+import { CLAIM_STATUS } from "ffc-ahwr-common-library";
+import { StatusCodes } from "http-status-codes";
+
+const { administrator } = permissions;
 
 jest.mock("../../../../app/api/applications");
 jest.mock("../../../../app/api/claims");
@@ -33,14 +36,14 @@ test("success: update claim", async () => {
       reference,
       claimOrAgreement,
       page,
-      status: inCheck,
+      status: CLAIM_STATUS.IN_CHECK,
       note: "test",
       returnPage,
       crumb,
     },
   });
 
-  expect(res.statusCode).toBe(302);
+  expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
   expect(res.headers.location).toBe(
     `/view-${claimOrAgreement}/${reference}?page=${page}&returnPage=${returnPage}`,
   );
@@ -70,13 +73,13 @@ test("success: update agreement", async () => {
       reference,
       claimOrAgreement,
       page,
-      status: inCheck,
+      status: CLAIM_STATUS.IN_CHECK,
       note: "test",
       crumb,
     },
   });
 
-  expect(res.statusCode).toBe(302);
+  expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
   expect(res.headers.location).toBe(`/view-${claimOrAgreement}/${reference}?page=${page}`);
 });
 
@@ -104,13 +107,13 @@ test("success: authorise agreement", async () => {
       reference,
       claimOrAgreement,
       page,
-      status: readyToPay,
+      status: CLAIM_STATUS.READY_TO_PAY,
       note: "test",
       crumb,
     },
   });
 
-  expect(res.statusCode).toBe(302);
+  expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
   expect(res.headers.location).toBe(`/view-${claimOrAgreement}/${reference}?page=${page}`);
 });
 
@@ -139,7 +142,7 @@ test("failure: update claim, missing note", async () => {
       reference,
       claimOrAgreement,
       page,
-      status: inCheck,
+      status: CLAIM_STATUS.IN_CHECK,
       returnPage,
       crumb,
     },
@@ -154,7 +157,7 @@ test("failure: update claim, missing note", async () => {
   ];
   const encodedErrors = Buffer.from(JSON.stringify(errors)).toString("base64");
 
-  expect(res.statusCode).toBe(302);
+  expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
   expect(res.headers.location).toBe(
     `/view-${claimOrAgreement}/${reference}?page=${page}&updateStatus=true&errors=${encodedErrors}&returnPage=${returnPage}`,
   );
@@ -184,7 +187,7 @@ test("failure: update agreement, missing note", async () => {
       reference,
       claimOrAgreement,
       page,
-      status: inCheck,
+      status: CLAIM_STATUS.IN_CHECK,
       crumb,
     },
   });
@@ -198,7 +201,7 @@ test("failure: update agreement, missing note", async () => {
   ];
   const encodedErrors = Buffer.from(JSON.stringify(errors)).toString("base64");
 
-  expect(res.statusCode).toBe(302);
+  expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
   expect(res.headers.location).toBe(
     `/view-${claimOrAgreement}/${reference}?page=${page}&updateStatus=true&errors=${encodedErrors}`,
   );

@@ -1,12 +1,13 @@
-const Joi = require("joi");
-const { administrator, processor, user, recommender, authoriser } = require("../auth/permissions");
-const crumbCache = require("./utils/crumb-cache");
-const { createFlagsTableData } = require("./models/flags-list");
-const { deleteFlag: deleteFlagAPICall, createFlag: createFlagAPICall } = require("../api/flags");
-const { encodeErrorsForUI } = require("./utils/encode-errors-for-ui");
-const { StatusCodes } = require("http-status-codes");
-const mapAuth = require("../auth/map-auth");
+import Joi from "joi";
+import { permissions } from "../auth/permissions.js";
+import { generateNewCrumb } from "./utils/crumb-cache.js";
+import { createFlagsTableData } from "./models/flags-list.js";
+import { deleteFlag as deleteFlagApiCall, createFlag as createFlagApiCall } from "../api/flags.js";
+import { encodeErrorsForUI } from "./utils/encode-errors-for-ui.js";
+import { StatusCodes } from "http-status-codes";
+import { mapAuth } from "../auth/map-auth.js";
 
+const { administrator, processor, user, recommender, authoriser } = permissions;
 const MIN_APPLICATION_REFERENCE_LENGTH = 14;
 const MIN_NOTE_LENGTH = 1;
 
@@ -26,7 +27,7 @@ const getFlagsHandler = {
     },
     handler: async (request, h) => {
       const { createFlag, deleteFlag, errors } = request.query;
-      await crumbCache.generateNewCrumb(request, h);
+      await generateNewCrumb(request, h);
 
       const parsedErrors = errors ? JSON.parse(Buffer.from(errors, "base64").toString("utf8")) : [];
 
@@ -92,7 +93,7 @@ const deleteFlagHandler = {
         const { flagId } = request.params;
         const { deletedNote } = request.payload;
         const { name: userName } = request.auth.credentials.account;
-        await deleteFlagAPICall({ flagId, deletedNote }, userName, request.logger);
+        await deleteFlagApiCall({ flagId, deletedNote }, userName, request.logger);
 
         return h.redirect("/flags").takeover();
       } catch (err) {
@@ -167,7 +168,7 @@ const createFlagHandler = {
           appliesToMh: appliesToMh === "yes",
         };
 
-        const { res } = await createFlagAPICall(payload, appRef.trim(), request.logger);
+        const { res } = await createFlagApiCall(payload, appRef.trim(), request.logger);
 
         if (res.statusCode === StatusCodes.NO_CONTENT) {
           let error = new Error("Flag already exists.");
@@ -232,4 +233,4 @@ const createFlagHandler = {
   },
 };
 
-module.exports = [getFlagsHandler, deleteFlagHandler, createFlagHandler];
+export const flagsRoutes = [getFlagsHandler, deleteFlagHandler, createFlagHandler];

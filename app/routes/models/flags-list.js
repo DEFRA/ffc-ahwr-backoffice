@@ -1,5 +1,7 @@
-const { getAllFlags } = require("../../api/flags");
-const { serviceUri } = require("../../config");
+import { getAllFlags } from "../../api/flags.js";
+import { config } from "../../config/index.js";
+
+const { serviceUri } = config;
 
 const formatDate = (dateInput) => {
   const date = new Date(dateInput); // parses with timezone offset preserved
@@ -77,7 +79,7 @@ const createTableHeader = (isAdmin) => {
   ].filter((item) => Object.keys(item).length > 0);
 };
 
-const createFlagsTableData = async ({ logger, flagIdToDelete, createFlag, isAdmin }) => {
+export const createFlagsTableData = async ({ logger, flagIdToDelete, createFlag, isAdmin }) => {
   const flags = await getAllFlags(logger);
 
   const applicationRefOfFlagToDelete = flagIdToDelete
@@ -100,5 +102,3 @@ const createFlagsTableData = async ({ logger, flagIdToDelete, createFlag, isAdmi
     },
   };
 };
-
-module.exports = { createFlagsTableData };

@@ -1,17 +1,16 @@
-const joi = require("joi");
-const { administrator } = require("../auth/permissions");
-const { updateClaimStatus } = require("../api/claims");
-const { updateApplicationStatus } = require("../api/applications");
-const { processApplicationClaim } = require("../api/applications");
-const crumbCache = require("./utils/crumb-cache");
-const { encodeErrorsForUI } = require("./utils/encode-errors-for-ui");
-const { readyToPay, rejected } = require("../constants/application-status");
+import joi from "joi";
+import { permissions } from "../auth/permissions.js";
+import { updateClaimStatus } from "../api/claims.js";
+import { updateApplicationStatus, processApplicationClaim } from "../api/applications.js";
+import { generateNewCrumb } from "./utils/crumb-cache.js";
+import { encodeErrorsForUI } from "./utils/encode-errors-for-ui.js";
+import { CLAIM_STATUS } from "ffc-ahwr-common-library";
 
-module.exports = {
+export const updateStatusRoute = {
   method: "post",
   path: "/update-status",
   options: {
-    auth: { scope: [administrator] },
+    auth: { scope: [permissions.administrator] },
     validate: {
       payload: joi.object({
         claimOrAgreement: joi.string().valid("claim", "agreement").required(),
@@ -49,7 +48,7 @@ module.exports = {
 
       request.logger.setBindings({ status, reference });
 
-      await crumbCache.generateNewCrumb(request, h);
+      await generateNewCrumb(request, h);
       const query = new URLSearchParams({ page });
 
       if (claimOrAgreement === "claim") {
@@ -57,12 +56,19 @@ module.exports = {
         await updateClaimStatus(reference, name, status, request.logger, note);
       }
 
-      if (claimOrAgreement === "agreement" && status !== readyToPay && status !== rejected) {
+      if (
+        claimOrAgreement === "agreement" &&
+        status !== CLAIM_STATUS.READY_TO_PAY &&
+        status !== CLAIM_STATUS.REJECTED
+      ) {
         await updateApplicationStatus(reference, name, status, request.logger, note);
       }
 
-      if (claimOrAgreement === "agreement" && (status === readyToPay || status === rejected)) {
-        const isClaimToBePaid = status === readyToPay;
+      if (
+        claimOrAgreement === "agreement" &&
+        (status === CLAIM_STATUS.READY_TO_PAY || status === CLAIM_STATUS.REJECTED)
+      ) {
+        const isClaimToBePaid = status === CLAIM_STATUS.READY_TO_PAY;
         await processApplicationClaim(reference, name, isClaimToBePaid, request.logger, note);
       }
 

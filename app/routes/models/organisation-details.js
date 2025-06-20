@@ -1,4 +1,4 @@
-const getOrganisationDetails = (organisation, contactHistoryDetails) => {
+export const getOrganisationDetails = (organisation, contactHistoryDetails) => {
   return [
     {
       field: "Agreement holder",
@@ -23,5 +23,3 @@ const getOrganisationDetails = (organisation, contactHistoryDetails) => {
     },
   ];
 };
-
-module.exports = { getOrganisationDetails };

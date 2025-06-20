@@ -1,4 +1,4 @@
-const parsePayload = (events, eventType) => {
+export const parsePayload = (events, eventType) => {
   const eventData = events.filter((event) => event.EventType.startsWith(eventType));
   const latestEvent = eventData.sort(
     (a, b) => new Date(b.EventRaised) - new Date(a.EventRaised),
@@ -6,7 +6,7 @@ const parsePayload = (events, eventType) => {
   return latestEvent?.Payload ? JSON.parse(latestEvent?.Payload) : {};
 };
 
-const parseData = (events, type, key) => {
+export const parseData = (events, type, key) => {
   const { data, raisedOn = "", raisedBy = "" } = parsePayload(events, type);
 
   return {
@@ -14,9 +14,4 @@ const parseData = (events, type, key) => {
     raisedOn,
     raisedBy,
   };
-};
-
-module.exports = {
-  parsePayload,
-  parseData,
 };

@@ -1,36 +1,48 @@
-const cheerio = require("cheerio");
-const expectPhaseBanner = require("../../../utils/phase-banner-expect");
-const getCrumbs = require("../../../utils/get-crumbs");
-const { administrator } = require("../../../../app/auth/permissions");
-const sessionMock = require("../../../../app/session");
-const applicationData = require("../../../data/applications.json");
+import * as cheerio from "cheerio";
+import { phaseBannerOk } from "../../../utils/phase-banner-expect";
+import { getCrumbs } from "../../../utils/get-crumbs";
+import { permissions } from "../../../../app/auth/permissions";
+import { getAppSearch, setAppSearch } from "../../../../app/session";
+import { getPagination, getPagingData } from "../../../../app/pagination";
+import { getApplications } from "../../../../app/api/applications";
+import { applicationsData } from "../../../data/applications";
+import { createServer } from "../../../../app/server";
+import { StatusCodes } from "http-status-codes";
+
+const { administrator } = permissions;
 
 jest.mock("../../../../app/session");
-const applications = require("../../../../app/api/applications");
 jest.mock("../../../../app/api/applications");
-const pagination = require("../../../../app/pagination");
 jest.mock("../../../../app/pagination");
+jest.mock("../../../../app/auth");
 
-pagination.getPagination = jest.fn().mockReturnValue({
+getPagination.mockReturnValue({
   limit: 10,
   offset: 0,
 });
 
-pagination.getPagingData = jest.fn().mockReturnValue({
+getPagingData.mockReturnValue({
   page: 1,
   totalPages: 1,
   total: 1,
   limit: 10,
 });
-applications.getApplications = jest.fn().mockReturnValue(applicationData);
+
+getApplications.mockReturnValue(applicationsData);
 
 describe("Applications test", () => {
   const url = "/agreements";
-  jest.mock("../../../../app/auth");
   const auth = {
     strategy: "session-auth",
     credentials: { scope: [administrator], account: { username: "test user" } },
   };
+
+  let server;
+
+  beforeAll(async () => {
+    jest.clearAllMocks();
+    server = await createServer();
+  });
 
   describe(`GET ${url} route`, () => {
     test("returns 302 no auth", async () => {
@@ -38,22 +50,23 @@ describe("Applications test", () => {
         method: "GET",
         url,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
+
     test("returns 200", async () => {
       const options = {
         method: "GET",
         url,
         auth,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($("h1.govuk-heading-l").text()).toEqual("Agreements");
       expect($("title").text()).toContain("AHWR Agreements");
-      expect(sessionMock.getAppSearch).toHaveBeenCalledTimes(5);
-      expectPhaseBanner.ok($);
+      expect(getAppSearch).toHaveBeenCalledTimes(5);
+      phaseBannerOk($);
     });
 
     test("returns 200 with query parameter", async () => {
@@ -62,8 +75,8 @@ describe("Applications test", () => {
         url: `${url}?page=1`,
         auth,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($("h1.govuk-heading-l").text()).toEqual("Agreements");
       expect($("title").text()).toContain("AHWR Agreements");
@@ -77,63 +90,66 @@ describe("Applications test", () => {
       expect($("span.govuk-tag--red").text()).toContain("Rejected");
       expect($('th[aria-sort="none"]').text()).toContain("SBI");
       expect($('th[aria-sort="none"]').text()).toContain("Status");
-      expect(sessionMock.getAppSearch).toBeCalled();
-      expect(applications.getApplications).toBeCalled();
-      expect(pagination.getPagination).toBeCalled();
-      expect(pagination.getPagination).toHaveBeenCalledWith(1);
-      expect(pagination.getPagingData).toBeCalled();
-      expect(pagination.getPagingData).toHaveBeenCalledWith(9, 10, {
+      expect(getAppSearch).toHaveBeenCalled();
+      expect(getApplications).toHaveBeenCalled();
+      expect(getPagination).toHaveBeenCalled();
+      expect(getPagination).toHaveBeenCalledWith(1);
+      expect(getPagingData).toHaveBeenCalled();
+      expect(getPagingData).toHaveBeenCalledWith(9, 10, {
         limit: 20,
         page: 1,
       });
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
     });
+
     test("should head column agreement date", async () => {
       const options = {
         method: "GET",
         url: `${url}?page=1`,
         auth,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($('th[aria-sort="none"]').text()).toContain("Agreement date");
     });
-    test("", async () => {
+
+    test("should sort in descending order when requested", async () => {
       let options = {
         method: "GET",
         url: "/agreements/sort/SBI/descending",
         auth,
       };
-      let res = await global.__SERVER__.inject(options);
+      let res = await server.inject(options);
       options = {
         method: "GET",
         url: `${url}?page=2`,
         auth,
       };
-      res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
+      res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($('th[aria-sort="none"]').text()).toContain("SBI");
-      expect(sessionMock.getAppSearch).toBeCalled();
-      expect(applications.getApplications).toBeCalled();
-      expect(pagination.getPagination).toBeCalled();
-      expect(pagination.getPagination).toHaveBeenCalledWith(2);
-      expect(pagination.getPagingData).toBeCalled();
-      expect(pagination.getPagingData).toHaveBeenCalledWith(9, 10, {
+      expect(getAppSearch).toHaveBeenCalled();
+      expect(getApplications).toHaveBeenCalled();
+      expect(getPagination).toHaveBeenCalled();
+      expect(getPagination).toHaveBeenCalledWith(2);
+      expect(getPagingData).toHaveBeenCalled();
+      expect(getPagingData).toHaveBeenCalledWith(9, 10, {
         limit: 20,
         page: 1,
       });
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
     });
+
     test("returns 200 without query parameter", async () => {
       const options = {
         method: "GET",
         url: `${url}`,
         auth,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($("h1.govuk-heading-l").text()).toEqual("Agreements");
       expect($("title").text()).toContain("AHWR Agreements");
@@ -145,11 +161,11 @@ describe("Applications test", () => {
       expect($("span.govuk-tag--blue").text()).toContain("Claimed");
       expect($("span.govuk-tag--grey").text()).toContain("Withdrawn");
       expect($("span.govuk-tag--red").text()).toContain("Rejected");
-      expect(sessionMock.getAppSearch).toBeCalled();
-      expect(applications.getApplications).toBeCalled();
-      expect(pagination.getPagination).toBeCalled();
-      expect(pagination.getPagingData).toBeCalled();
-      expectPhaseBanner.ok($);
+      expect(getAppSearch).toHaveBeenCalled();
+      expect(getApplications).toHaveBeenCalled();
+      expect(getPagination).toHaveBeenCalled();
+      expect(getPagingData).toHaveBeenCalled();
+      phaseBannerOk($);
     });
 
     test("returns correct content", async () => {
@@ -158,8 +174,8 @@ describe("Applications test", () => {
         url: `${url}`,
         auth,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($("h1.govuk-heading-l").text()).toEqual("Agreements");
       expect($("title").text()).toContain("AHWR Agreements");
@@ -171,37 +187,41 @@ describe("Applications test", () => {
       expect($("span.govuk-tag--blue").text()).toContain("Claimed");
       expect($("span.govuk-tag--grey").text()).toContain("Withdrawn");
       expect($("span.govuk-tag--red").text()).toContain("Rejected");
-      expect(sessionMock.getAppSearch).toBeCalled();
-      expect(applications.getApplications).toBeCalled();
-      expect(pagination.getPagination).toBeCalled();
-      expect(pagination.getPagingData).toBeCalled();
-      expectPhaseBanner.ok($);
+      expect(getAppSearch).toHaveBeenCalled();
+      expect(getApplications).toHaveBeenCalled();
+      expect(getPagination).toHaveBeenCalled();
+      expect(getPagingData).toHaveBeenCalled();
+      phaseBannerOk($);
     });
+
     test("returns 200 clear", async () => {
       const options = {
         method: "GET",
         url: `${url}/clear`,
         auth,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.OK);
     });
+
     test("returns 200 remove status", async () => {
-      sessionMock.getAppSearch.mockReturnValueOnce(["AGREED"]);
+      getAppSearch.mockReturnValueOnce(["AGREED"]);
       const options = {
         method: "GET",
         url: `${url}/remove/AGREED`,
         auth,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.OK);
     });
   });
+
   describe(`POST ${url} route`, () => {
     let crumb;
     const method = "POST";
+
     beforeEach(async () => {
-      crumb = await getCrumbs(global.__SERVER__);
+      crumb = await getCrumbs(server);
     });
 
     test("returns 302 no auth", async () => {
@@ -216,8 +236,8 @@ describe("Applications test", () => {
         },
         headers: { cookie: `crumb=${crumb}` },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
 
     test.each([
@@ -271,18 +291,18 @@ describe("Applications test", () => {
         auth,
         headers: { cookie: `crumb=${crumb}` },
       };
-      applications.getApplications.mockReturnValue({
+      getApplications.mockReturnValue({
         applications: [],
         applicationStatus: [],
         total: 0,
       });
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
-      expect(res.statusCode).toBe(200);
-      expect(sessionMock.getAppSearch).toBeCalled();
-      expect(sessionMock.setAppSearch).toBeCalled();
-      expect(applications.getApplications).toBeCalled();
-      expect(pagination.getPagination).toBeCalled();
+      expect(res.statusCode).toBe(StatusCodes.OK);
+      expect(getAppSearch).toHaveBeenCalled();
+      expect(setAppSearch).toHaveBeenCalled();
+      expect(getApplications).toHaveBeenCalled();
+      expect(getPagination).toHaveBeenCalled();
     });
     test.each([
       { searchDetails: { searchText: "333333333" } },
@@ -306,18 +326,18 @@ describe("Applications test", () => {
         auth,
       };
 
-      applications.getApplications.mockReturnValue({
+      getApplications.mockReturnValue({
         applications: [],
         applicationStatus: [],
         total: 0,
       });
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
-      expect(res.statusCode).toBe(200);
-      expect(sessionMock.getAppSearch).toBeCalled();
-      expect(sessionMock.setAppSearch).toBeCalled();
-      expect(applications.getApplications).toBeCalled();
-      expect(pagination.getPagination).toBeCalled();
+      expect(res.statusCode).toBe(StatusCodes.OK);
+      expect(getAppSearch).toHaveBeenCalled();
+      expect(setAppSearch).toHaveBeenCalled();
+      expect(getApplications).toHaveBeenCalled();
+      expect(getPagination).toHaveBeenCalled();
       const $ = cheerio.load(res.payload);
       expect($("p.govuk-error-message").text()).toMatch("No agreements found.");
     });

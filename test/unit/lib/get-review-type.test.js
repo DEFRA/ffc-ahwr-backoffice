@@ -1,5 +1,5 @@
-const { getReviewType } = require("../../../app/lib/get-review-type");
-const { claimType } = require("../../../app/constants/claim");
+import { getReviewType } from "../../../app/lib/get-review-type";
+import { claimType } from "../../../app/constants/claim-type";
 
 describe("getReviewType", () => {
   let typeOfReview;

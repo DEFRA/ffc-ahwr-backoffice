@@ -1,17 +1,18 @@
-const joi = require("joi");
-const boom = require("@hapi/boom");
-const crumbCache = require("./utils/crumb-cache");
-const { administrator, authoriser, processor, recommender, user } = require("../auth/permissions");
-const { getApplication } = require("../api/applications");
-const { formattedDateToUk } = require("../lib/display-helper");
-const { getClaimSearch, setClaimSearch } = require("../session");
-const { claimSearch } = require("../session/keys");
-const { getContactHistory, displayContactHistory } = require("../api/contact-history");
-const { getClaims } = require("../api/claims");
-const { getClaimTableHeader, getClaimTableRows } = require("./models/claim-list");
-const { FLAG_EMOJI } = require("./utils/ui-constants");
-const { getHerdBreakdown } = require("../lib/get-herd-breakdown");
+import joi from "joi";
+import boom from "@hapi/boom";
+import { generateNewCrumb } from "./utils/crumb-cache.js";
+import { permissions } from "../auth/permissions.js";
+import { getApplication } from "../api/applications.js";
+import { formattedDateToUk } from "../lib/display-helper.js";
+import { getClaimSearch, setClaimSearch } from "../session/index.js";
+import { sessionKeys } from "../session/keys.js";
+import { getContactHistory, displayContactHistory } from "../api/contact-history.js";
+import { getClaims } from "../api/claims.js";
+import { getClaimTableHeader, getClaimTableRows } from "./models/claim-list.js";
+import { FLAG_EMOJI } from "./utils/ui-constants.js";
+import { getHerdBreakdown } from "../lib/get-herd-breakdown.js";
 
+const { administrator, authoriser, processor, recommender, user } = permissions;
 const pageUrl = "/agreement/{reference}/claims";
 const getBackLink = (page, claimReference, returnPage) => {
   return returnPage === "view-claim"
@@ -19,7 +20,7 @@ const getBackLink = (page, claimReference, returnPage) => {
     : `/agreements?page=${page}`;
 };
 
-module.exports = [
+export const agreementRoutes = [
   {
     method: "GET",
     path: pageUrl,
@@ -41,7 +42,7 @@ module.exports = [
         const { page, reference, returnPage } = request.query;
         const { reference: applicationReference } = request.params;
 
-        await crumbCache.generateNewCrumb(request, h);
+        await generateNewCrumb(request, h);
         const application = await getApplication(applicationReference);
         const contactHistory = await getContactHistory(applicationReference);
         const contactHistoryDetails = displayContactHistory(contactHistory);
@@ -94,7 +95,7 @@ module.exports = [
 
         const applicationSummaryDetails = summaryDetails.filter((row) => row.newValue);
 
-        const sortField = getClaimSearch(request, claimSearch.sort) ?? undefined;
+        const sortField = getClaimSearch(request, sessionKeys.claimSearch.sort) ?? undefined;
         const showSBI = false;
         const dataURLPrefix = `/agreement/${applicationReference}/`;
         const header = getClaimTableHeader(sortField, dataURLPrefix, showSBI);
@@ -144,7 +145,7 @@ module.exports = [
       },
       handler: async (request, h) => {
         request.params.direction = request.params.direction !== "descending" ? "DESC" : "ASC";
-        setClaimSearch(request, claimSearch.sort, request.params);
+        setClaimSearch(request, sessionKeys.claimSearch.sort, request.params);
         return 1; // NOSONAR
       },
     },

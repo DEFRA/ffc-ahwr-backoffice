@@ -1,8 +1,8 @@
-const { formattedDateToUk, upperFirstLetter } = require("../../lib/display-helper");
-const { getStyleClassByStatus } = require("../../constants/status");
-const speciesNumbers = require("../../constants/species-numbers");
+import { formattedDateToUk, upperFirstLetter } from "../../lib/display-helper.js";
+import { getStyleClassByStatus } from "../../constants/status.js";
+import { speciesNumbers } from "../../constants/species-numbers.js";
 
-const getApplicationDetails = (application, statusActions) => {
+export const getApplicationDetails = (application, statusActions) => {
   const { data, createdAt, status } = application;
   const formatedDate = formattedDateToUk(createdAt);
 
@@ -41,5 +41,3 @@ const getApplicationDetails = (application, statusActions) => {
     },
   ];
 };
-
-module.exports = { getApplicationDetails };

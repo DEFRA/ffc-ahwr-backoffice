@@ -1,6 +1,6 @@
-const setSearchParams = require("../../app/lib/search-validation");
+import { searchValidation } from "../../app/lib/search-validation";
 
-describe("Set search params test", () => {
+describe("searchValidation", () => {
   test.each([
     { type: "ref", text: "AHWR-5446-5EF4" },
     { type: "ref", text: "IAHW-1234-5678" },
@@ -16,7 +16,7 @@ describe("Set search params test", () => {
     { type: "type", text: "endemics" },
     { type: "reset", text: "" },
   ])("A valid $searchType ($text) should return $text and $type as type", ({ type, text }) => {
-    const { searchText, searchType } = setSearchParams(text);
+    const { searchText, searchType } = searchValidation(text);
     expect(searchType).toBe(type);
     expect(searchText).toBe(text === "endemics" ? "E" : text === "review" ? "R" : text);
   });
@@ -42,7 +42,7 @@ describe("Set search params test", () => {
     { status: "hold" },
     { status: "on hold" },
   ])("A valid status ($status) should return $status and status as type", ({ status }) => {
-    const { searchText, searchType } = setSearchParams(status);
+    const { searchText, searchType } = searchValidation(status);
     expect(searchType).toBe("status");
     expect(searchText).toBe(status);
   });

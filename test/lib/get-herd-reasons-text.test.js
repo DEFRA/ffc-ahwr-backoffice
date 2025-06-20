@@ -1,4 +1,4 @@
-const { getHerdReasonsText } = require("../../app/lib/get-herd-reasons-text");
+import { getHerdReasonsText } from "../../app/lib/get-herd-reasons-text";
 
 describe("getHerdReasonsText", () => {
   test("it returns '-' when provided with no reasons", async () => {

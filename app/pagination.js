@@ -1,11 +1,11 @@
-const { displayPageSize } = require("./config");
+import { config } from "./config/index.js";
 
-function getPagination(page = 1, limit = displayPageSize) {
-  const offset = page === 1 ? 0 : (page - 1) * limit;
+export function getPagination(page = 1, limit = config.displayPageSize) {
+  const offset = page === 1 ? 0 : (page - 1) * Number(limit);
   return { limit, offset };
 }
 
-function getPagingData(total, limit, query) {
+export function getPagingData(total, limit, query) {
   const { page, ...rest } = query;
   const commonQuery = new URLSearchParams(rest).toString();
   const querystring = commonQuery ? `&${commonQuery}` : commonQuery;
@@ -31,9 +31,3 @@ function getPagingData(total, limit, query) {
   }
   return { previous, next, pages };
 }
-
-module.exports = {
-  getPagination,
-  getPagingData,
-  displayPageSize,
-};

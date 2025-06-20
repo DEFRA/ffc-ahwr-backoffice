@@ -1,8 +1,8 @@
-const config = require("../config");
-const authCookie = require("@hapi/cookie");
-const auth = require("../auth");
+import { config } from "../config/index.js";
+import authCookie from "@hapi/cookie";
+import { auth } from "../auth/index.js";
 
-module.exports = {
+export const authPlugin = {
   plugin: {
     name: "auth",
     register: async (server) => {

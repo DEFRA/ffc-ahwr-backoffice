@@ -1,25 +1,27 @@
-const { Buffer } = require("buffer");
-const joi = require("joi");
-const {
+import { Buffer } from "buffer";
+import joi from "joi";
+import {
   getApplication,
   getApplicationHistory,
   getApplicationEvents,
-} = require("../api/applications");
-const { administrator, processor, user, recommender, authoriser } = require("../auth/permissions");
-const { getStyleClassByStatus } = require("../constants/status");
-const { getClaimViewStates } = require("./utils/get-claim-view-states");
-const { getCurrentStatusEvent } = require("./utils/get-current-status-event");
-const applicationStatus = require("../constants/application-status");
-const { getErrorMessagesByKey } = require("./utils/get-error-messages-by-key");
-const { getStatusUpdateOptions } = require("./utils/get-status-update-options");
-const { getContactHistory, displayContactHistory } = require("../api/contact-history");
-const { upperFirstLetter } = require("../lib/display-helper");
-const { getOrganisationDetails } = require("./models/organisation-details");
-const { getApplicationDetails } = require("./models/application-details");
-const { getHistoryDetails } = require("./models/application-history");
-const { getApplicationClaimDetails } = require("./models/application-claim");
+} from "../api/applications.js";
+import { permissions } from "../auth/permissions.js";
+import { getStyleClassByStatus } from "../constants/status.js";
+import { getClaimViewStates } from "./utils/get-claim-view-states.js";
+import { getCurrentStatusEvent } from "./utils/get-current-status-event.js";
+import { CLAIM_STATUS } from "ffc-ahwr-common-library";
+import { getErrorMessagesByKey } from "./utils/get-error-messages-by-key.js";
+import { getStatusUpdateOptions } from "./utils/get-status-update-options.js";
+import { getContactHistory, displayContactHistory } from "../api/contact-history.js";
+import { upperFirstLetter } from "../lib/display-helper.js";
+import { getOrganisationDetails } from "./models/organisation-details.js";
+import { getApplicationDetails } from "./models/application-details.js";
+import { getHistoryDetails } from "./models/application-history.js";
+import { getApplicationClaimDetails } from "./models/application-claim.js";
 
-module.exports = {
+const { administrator, processor, user, recommender, authoriser } = permissions;
+
+export const viewAgreementRoute = {
   method: "get",
   path: "/view-agreement/{reference}",
   options: {
@@ -56,9 +58,9 @@ module.exports = {
       let applicationEvents;
       if (
         (application.claimed ||
-          application.statusId === applicationStatus.inCheck ||
-          application.statusId === applicationStatus.readyToPay ||
-          application.statusId === applicationStatus.rejected) &&
+          application.statusId === CLAIM_STATUS.IN_CHECK ||
+          application.statusId === CLAIM_STATUS.READY_TO_PAY ||
+          application.statusId === CLAIM_STATUS.REJECTED) &&
         !application.data.dateOfClaim
       ) {
         applicationEvents = await getApplicationEvents(

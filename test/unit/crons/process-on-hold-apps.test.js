@@ -1,19 +1,22 @@
+import { processOnHoldApplications } from "../../../app/crons/process-on-hold/process";
+import { processApplicationClaim, getApplications } from "../../../app/api/applications";
+
+jest.mock("../../../app/api/applications");
+jest.mock("../../../app/config", () => ({
+  ...jest.requireActual("../../../app/config"),
+  onHoldAppScheduler: {
+    enabled: true,
+    schedule: "0 18 * * 1-5",
+  },
+}));
+
 const MOCK_NOW = new Date();
 
 describe("Process process on hold applications function test.", () => {
-  jest.mock("../../../app/api/applications");
-  const { processApplicationClaim, getApplications } = require("../../../app/api/applications");
-
   beforeEach(() => {
     jest.useFakeTimers();
     jest.setSystemTime(MOCK_NOW);
-    jest.mock("../../../app/config", () => ({
-      ...jest.requireActual("../../../app/config"),
-      onHoldAppScheduler: {
-        enabled: true,
-        schedule: "0 18 * * 1-5",
-      },
-    }));
+
     processApplicationClaim.mockResolvedValue(true);
     getApplications.mockResolvedValue({
       applications: [
@@ -36,7 +39,6 @@ describe("Process process on hold applications function test.", () => {
   });
 
   test("test error while running process", async () => {
-    const { processOnHoldApplications } = require("../../../app/crons/process-on-hold/process");
     getApplications.mockRejectedValueOnce("getApplications boom");
 
     expect(async () => {
@@ -45,7 +47,6 @@ describe("Process process on hold applications function test.", () => {
   });
 
   test("test error handled no pending application", async () => {
-    const { processOnHoldApplications } = require("../../../app/crons/process-on-hold/process");
     getApplications.mockResolvedValue({
       applications: [],
       total: 0,
@@ -67,7 +68,6 @@ describe("Process process on hold applications function test.", () => {
       ],
       total: 1,
     });
-    const { processOnHoldApplications } = require("../../../app/crons/process-on-hold/process");
     const logger = { setBindings: jest.fn() };
     await processOnHoldApplications(logger);
 
@@ -85,7 +85,6 @@ describe("Process process on hold applications function test.", () => {
       ],
       total: 1,
     });
-    const { processOnHoldApplications } = require("../../../app/crons/process-on-hold/process");
     const logger = { setBindings: jest.fn() };
     await processOnHoldApplications(logger);
 
@@ -108,7 +107,6 @@ describe("Process process on hold applications function test.", () => {
       total: 2,
     });
     processApplicationClaim.mockRejectedValueOnce(new Error("boom"));
-    const { processOnHoldApplications } = require("../../../app/crons/process-on-hold/process");
     const logger = { setBindings: jest.fn() };
     await processOnHoldApplications(logger);
 

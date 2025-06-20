@@ -1,6 +1,6 @@
-const auth = require("../auth");
+import { auth } from "../auth/index.js";
 
-module.exports = {
+export const devAuthRoute = {
   method: "GET",
   path: "/dev-auth",
   options: {

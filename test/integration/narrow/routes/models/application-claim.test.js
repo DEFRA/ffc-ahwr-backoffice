@@ -1,8 +1,6 @@
-const {
-  getApplicationClaimDetails,
-} = require("../../../../../app/routes/models/application-claim");
-const viewApplicationData = require("../../../../data/view-applications.json");
-const applicationEventData = require("../../../../data/application-events.json");
+import { getApplicationClaimDetails } from "../../../../../app/routes/models/application-claim.js";
+import { viewApplicationData } from "../../../../data/view-applications.js";
+import { applicationEvents } from "../../../../data/application-events.js";
 
 describe("Application-claim model", () => {
   test("getClaimData - Valid Data with date of claim in application data", async () => {
@@ -59,7 +57,7 @@ describe("Application-claim model", () => {
     const vetRCVSActions = { items: [{ test: "change RCVS" }] };
     const res = getApplicationClaimDetails(
       viewApplicationData.claimWithNoClaimDate,
-      applicationEventData,
+      applicationEvents,
       statusActions,
       visitDateActions,
       vetsNameActions,

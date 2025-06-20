@@ -1,6 +1,6 @@
-const auth = require("../auth");
+import { auth } from "../auth/index.js";
 
-module.exports = {
+export const logOutRoute = {
   method: "GET",
   path: "/logout",
   handler: async (request, h) => {

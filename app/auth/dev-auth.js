@@ -1,4 +1,6 @@
-const { administrator, processor, user, recommender, authoriser } = require("./permissions");
+import { permissions } from "./permissions.js";
+
+const { administrator, processor, user, recommender, authoriser } = permissions;
 
 let cachedUserId;
 
@@ -18,7 +20,7 @@ const getDevAccount = (userId) => {
   };
 };
 
-const getAuthenticationUrl = (userId) => {
+export const getAuthenticationUrl = (userId) => {
   if (userId) {
     return `/dev-auth?userId=${userId}`;
   }
@@ -26,14 +28,14 @@ const getAuthenticationUrl = (userId) => {
   return "/dev-auth";
 };
 
-const authenticate = async (userId, cookieAuth) => {
+export const authenticate = async (userId, cookieAuth) => {
   cookieAuth.set({
     scope: [administrator, processor, user, recommender, authoriser],
     account: getDevAccount(userId),
   });
 };
 
-const refresh = async (_account, cookieAuth) => {
+export const refresh = async (_account, cookieAuth) => {
   cookieAuth.set({
     scope: [administrator, processor, user, recommender, authoriser],
     account: getDevAccount(cachedUserId),
@@ -42,12 +44,4 @@ const refresh = async (_account, cookieAuth) => {
   return [administrator, processor, user, recommender, authoriser];
 };
 
-const logout = async () => {};
-
-module.exports = {
-  getAuthenticationUrl,
-  authenticate,
-  refresh,
-  logout,
-  getDevAccount,
-};
+export const logout = async () => {};

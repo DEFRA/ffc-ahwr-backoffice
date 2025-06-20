@@ -1,28 +1,39 @@
-const { administrator, recommender } = require("../../../../app/auth/permissions");
-const getCrumbs = require("../../../utils/get-crumbs");
+import { permissions } from "../../../../app/auth/permissions";
+import { getCrumbs } from "../../../utils/get-crumbs";
+import { createServer } from "../../../../app/server";
+import { processApplicationClaim } from "../../../../app/api/applications";
+import { generateNewCrumb } from "../../../../app/routes/utils/crumb-cache";
+import { StatusCodes } from "http-status-codes";
 
-const applications = require("../../../../app/api/applications");
 jest.mock("../../../../app/api/applications");
 jest.mock("../../../../app/api/claims");
 jest.mock("../../../../app/routes/utils/crumb-cache");
-const crumbCache = require("../../../../app/routes/utils/crumb-cache");
+jest.mock("../../../../app/auth");
 
 const reference = "AHWR-555A-FD4C";
 const url = "/recommend-to-pay";
 
-applications.processApplicationClaim = jest.fn().mockResolvedValue(true);
+processApplicationClaim.mockResolvedValue(true);
+
+const { administrator, recommender } = permissions;
 
 describe("Recommended To Pay test", () => {
   let crumb;
 
-  jest.mock("../../../../app/auth");
   let auth = {
     strategy: "session-auth",
     credentials: { scope: [administrator] },
   };
 
+  let server;
+
+  beforeAll(async () => {
+    jest.clearAllMocks();
+    server = await createServer();
+  });
+
   beforeEach(async () => {
-    crumb = await getCrumbs(global.__SERVER__);
+    crumb = await getCrumbs(server);
     jest.clearAllMocks();
   });
 
@@ -32,8 +43,8 @@ describe("Recommended To Pay test", () => {
         method: "POST",
         url,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
 
     test("returns 302 when validation fails for application", async () => {
@@ -52,12 +63,13 @@ describe("Recommended To Pay test", () => {
           crumb,
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       expect(res.headers.location).toEqual(
         `/view-agreement/${reference}?page=1&recommendToPay=true&errors=${errors}`,
       );
     });
+
     test("returns 302 when validation fails for claim", async () => {
       const errors =
         "W3sidGV4dCI6IlNlbGVjdCBhbGwgY2hlY2tib3hlcyIsImhyZWYiOiIjcmVjb21tZW5kLXRvLXBheSIsImtleSI6ImNvbmZpcm0ifV0%3D";
@@ -75,8 +87,8 @@ describe("Recommended To Pay test", () => {
           crumb,
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       expect(res.headers.location).toEqual(
         `/view-claim/${reference}?page=1&recommendToPay=true&errors=${errors}&returnPage=claims`,
       );
@@ -105,12 +117,13 @@ describe("Recommended To Pay test", () => {
             crumb,
           },
         };
-        const res = await global.__SERVER__.inject(options);
-        expect(res.statusCode).toBe(302);
-        expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1);
+        const res = await server.inject(options);
+        expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+        expect(generateNewCrumb).toHaveBeenCalledTimes(1);
         expect(res.headers.location).toEqual(`/view-agreement/${reference}?page=1`);
       },
     );
+
     test.each([recommender, administrator])(
       "Redirects correctly on successful validation for claim",
       async (scope) => {
@@ -135,9 +148,9 @@ describe("Recommended To Pay test", () => {
             crumb,
           },
         };
-        const res = await global.__SERVER__.inject(options);
-        expect(res.statusCode).toBe(302);
-        expect(crumbCache.generateNewCrumb).toHaveBeenCalledTimes(1);
+        const res = await server.inject(options);
+        expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+        expect(generateNewCrumb).toHaveBeenCalledTimes(1);
         expect(res.headers.location).toEqual(`/view-claim/${reference}?page=1&returnPage=claims`);
       },
     );
@@ -163,8 +176,8 @@ describe("Recommended To Pay test", () => {
           crumb,
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(403);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.FORBIDDEN);
     });
 
     test("Returns 302 on wrong payload", async () => {
@@ -190,8 +203,8 @@ describe("Recommended To Pay test", () => {
           crumb,
         },
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       expect(res.headers.location).toEqual(
         `/view-agreement/${reference}?page=1&recommendToPay=true&errors=${errors}`,
       );
@@ -221,9 +234,9 @@ describe("Recommended To Pay test", () => {
         },
       };
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
 
-      expect(res.statusCode).toBe(302);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       expect(res.headers.location).toEqual(
         `/view-agreement/123?page=1&recommendToPay=true&errors=${errors}`,
       );

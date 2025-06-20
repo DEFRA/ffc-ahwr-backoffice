@@ -1,7 +1,9 @@
-const wreck = require("@hapi/wreck");
-const { applicationApiUri } = require("../config");
+import wreck from "@hapi/wreck";
+import { config } from "../config/index.js";
 
-async function getApplication(applicationReference, logger) {
+const { applicationApiUri } = config;
+
+export async function getApplication(applicationReference, logger) {
   const endpoint = `${applicationApiUri}/application/get/${applicationReference}`;
   try {
     const { payload } = await wreck.get(endpoint, { json: true });
@@ -12,7 +14,15 @@ async function getApplication(applicationReference, logger) {
   }
 }
 
-async function getApplications(searchType, searchText, limit, offset, filterStatus, sort, logger) {
+export async function getApplications(
+  searchType,
+  searchText,
+  limit,
+  offset,
+  filterStatus,
+  sort,
+  logger,
+) {
   const endpoint = `${applicationApiUri}/application/search`;
   const options = {
     payload: {
@@ -33,7 +43,7 @@ async function getApplications(searchType, searchText, limit, offset, filterStat
   }
 }
 
-async function processApplicationClaim(reference, user, approved, logger, note) {
+export async function processApplicationClaim(reference, user, approved, logger, note) {
   const endpoint = `${applicationApiUri}/application/claim`;
   const options = {
     payload: {
@@ -53,7 +63,7 @@ async function processApplicationClaim(reference, user, approved, logger, note) 
   }
 }
 
-async function updateApplicationStatus(reference, user, status, logger, note) {
+export async function updateApplicationStatus(reference, user, status, logger, note) {
   const endpoint = `${applicationApiUri}/application/${reference}`;
   const options = {
     payload: {
@@ -72,7 +82,7 @@ async function updateApplicationStatus(reference, user, status, logger, note) {
   }
 }
 
-async function getApplicationHistory(reference, logger) {
+export async function getApplicationHistory(reference, logger) {
   const endpoint = `${applicationApiUri}/application/history/${reference}`;
   try {
     const { payload } = await wreck.get(endpoint, { json: true });
@@ -83,7 +93,7 @@ async function getApplicationHistory(reference, logger) {
   }
 }
 
-async function getApplicationEvents(reference, logger) {
+export async function getApplicationEvents(reference, logger) {
   const endpoint = `${applicationApiUri}/application/events/${reference}`;
   try {
     const { payload } = await wreck.get(endpoint, { json: true });
@@ -94,7 +104,7 @@ async function getApplicationEvents(reference, logger) {
   }
 }
 
-async function updateApplicationData(reference, data, note, name, logger) {
+export async function updateApplicationData(reference, data, note, name, logger) {
   const endpoint = `${applicationApiUri}/applications/${reference}/data`;
   logger.setBindings({ endpoint });
   const options = {
@@ -108,13 +118,3 @@ async function updateApplicationData(reference, data, note, name, logger) {
   const { payload } = await wreck.put(endpoint, options);
   return payload;
 }
-
-module.exports = {
-  getApplications,
-  getApplication,
-  processApplicationClaim,
-  getApplicationHistory,
-  getApplicationEvents,
-  updateApplicationStatus,
-  updateApplicationData,
-};

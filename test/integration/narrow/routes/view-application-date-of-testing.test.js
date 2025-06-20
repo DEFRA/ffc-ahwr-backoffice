@@ -1,12 +1,22 @@
-const cheerio = require("cheerio");
-const expectPhaseBanner = require("../../../utils/phase-banner-expect");
-const applications = require("../../../../app/api/applications");
-const { administrator } = require("../../../../app/auth/permissions");
-const viewApplicationData = require(".././../../data/view-applications.json");
-const applicationHistoryData = require("../../../data/application-history.json");
-const { resetAllWhenMocks } = require("jest-when");
-const reference = "AHWR-555A-FD4C";
-let getClaimViewStates;
+import * as cheerio from "cheerio";
+import { phaseBannerOk } from "../../../utils/phase-banner-expect";
+import { getApplication, getApplicationHistory } from "../../../../app/api/applications";
+import { permissions } from "../../../../app/auth/permissions";
+import { viewApplicationData } from "../../../data/view-applications.js";
+import { applicationHistory } from "../../../data/application-history.js";
+import { resetAllWhenMocks } from "jest-when";
+import { createServer } from "../../../../app/server";
+import { getClaimViewStates } from "../../../../app/routes/utils/get-claim-view-states";
+import { StatusCodes } from "http-status-codes";
+
+const { administrator } = permissions;
+
+jest.mock("../../../../app/api/applications");
+jest.mock("../../../../app/routes/utils/get-claim-view-states");
+jest.mock("@hapi/wreck", () => ({
+  get: jest.fn().mockResolvedValue({ payload: [] }),
+}));
+jest.mock("../../../../app/auth");
 
 function expectWithdrawLink($, reference, isWithdrawLinkVisible) {
   if (isWithdrawLinkVisible) {
@@ -19,26 +29,18 @@ function expectWithdrawLink($, reference, isWithdrawLinkVisible) {
   }
 }
 
-jest.mock("../../../../app/api/applications");
-
 describe("View Application test with Date of Testing enabled", () => {
-  const url = `/view-agreement/${reference}`;
-  jest.mock("../../../../app/auth");
   const auth = {
     strategy: "session-auth",
     credentials: { scope: [administrator], account: { username: "" } },
   };
 
-  jest.mock("@hapi/wreck", () => ({
-    get: jest.fn().mockResolvedValue({ payload: [] }),
-  }));
+  let server;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     jest.clearAllMocks();
-    jest.mock("../../../../app/routes/utils/get-claim-view-states");
-    getClaimViewStates = require("../../../../app/routes/utils/get-claim-view-states");
 
-    getClaimViewStates.getClaimViewStates.mockReturnValue({
+    getClaimViewStates.mockReturnValue({
       withdrawAction: false,
       withdrawForm: false,
       moveToInCheckAction: false,
@@ -52,27 +54,30 @@ describe("View Application test with Date of Testing enabled", () => {
       rejectForm: false,
       updateStatusForm: false,
     });
+
+    server = await createServer();
   });
 
   afterEach(() => {
     resetAllWhenMocks();
   });
 
-  describe(`GET ${url} route`, () => {
+  describe("GET /view-agreement/<reference> route", () => {
     test("returns 200 application claim - claim date in application data", async () => {
+      const reference = "AHWR-555A-FD4C";
       const status = "Claimed";
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.claim);
-      applications.getApplicationHistory.mockReturnValueOnce({
-        historyRecords: applicationHistoryData,
+      getApplication.mockReturnValueOnce(viewApplicationData.claim);
+      getApplicationHistory.mockReturnValueOnce({
+        historyRecords: applicationHistory,
       });
 
       const options = {
         method: "GET",
-        url,
+        url: `/view-agreement/${reference}`,
         auth,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($("h1.govuk-caption-l").text()).toContain(`Agreement number: ${reference}`);
       expect($("h2.govuk-heading-l").text()).toContain(status);
@@ -119,7 +124,7 @@ describe("View Application test with Date of Testing enabled", () => {
 
       expectWithdrawLink($, reference, false);
 
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
     });
   });
 });

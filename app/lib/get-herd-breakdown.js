@@ -1,6 +1,6 @@
-const config = require("../config");
+import { config } from "../config/index.js";
 
-const getHerdBreakdown = (claims) => {
+export const getHerdBreakdown = (claims) => {
   if (!config.multiHerdsEnabled) {
     return undefined;
   }
@@ -28,8 +28,4 @@ const getHerdBreakdown = (claims) => {
   }
 
   return { herdBreakdown: initialBreakdown };
-};
-
-module.exports = {
-  getHerdBreakdown,
 };

@@ -1,6 +1,6 @@
-const { getRows } = require("./models/account");
+import { getRows } from "./models/account.js";
 
-module.exports = {
+export const accountRoute = {
   method: "GET",
   path: "/account",
   options: {

@@ -1,4 +1,4 @@
-module.exports = {
+export const contactHistory = {
   fieldsNames: {
     orgEmail: "orgEmail",
     email: "email",

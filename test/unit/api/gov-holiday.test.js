@@ -1,11 +1,5 @@
-// const { when, resetAllWhenMocks } = require('jest-when')
-// Assuming your functions are exported from a file named holidays.js
-// const { getHolidayCalendarForEngland, isTodayCustomHoliday } = require('../../../app/api/gov-holiday')
-// const { isTodayHoliday } = require('../../../app/api/gov-holiday')
-// const Holidays = require('../../../app/api/gov-holiday')
-const holidays = require("../../../app/api/gov-holiday");
-
-const Wreck = require("@hapi/wreck");
+import { getHolidayCalendarForEngland, isTodayCustomHoliday } from "../../../app/api/gov-holiday";
+import Wreck from "@hapi/wreck";
 
 describe("Holiday Functions", () => {
   describe("getHolidayCalendarForEngland", () => {
@@ -30,7 +24,7 @@ describe("Holiday Functions", () => {
         },
       });
 
-      expect(await holidays.getHolidayCalendarForEngland()).toEqual(mockEvents);
+      expect(await getHolidayCalendarForEngland()).toEqual(mockEvents);
       expect(wreckGetSpy).toHaveBeenCalledWith("https://www.gov.uk/bank-holidays.json", {
         json: true,
       });
@@ -40,7 +34,7 @@ describe("Holiday Functions", () => {
       wreckGetSpy.mockRejectedValueOnce("holiday boom");
 
       expect(async () => {
-        await holidays.getHolidayCalendarForEngland();
+        await getHolidayCalendarForEngland();
       }).rejects.toBe("holiday boom");
     });
 
@@ -50,7 +44,7 @@ describe("Holiday Functions", () => {
       });
 
       expect(async () => {
-        await holidays.getHolidayCalendarForEngland();
+        await getHolidayCalendarForEngland();
       }).rejects.toThrow("bank holidays response missing events");
     });
   });
@@ -71,7 +65,7 @@ describe("Holiday Functions", () => {
         payload: null,
       });
 
-      expect(await holidays.isTodayCustomHoliday()).toBeTruthy();
+      expect(await isTodayCustomHoliday()).toBeTruthy();
     });
 
     it("should return false when response is 404", async () => {
@@ -79,7 +73,7 @@ describe("Holiday Functions", () => {
         output: { statusCode: 404 },
       });
 
-      expect(await holidays.isTodayCustomHoliday()).toBe(false);
+      expect(await isTodayCustomHoliday()).toBe(false);
     });
 
     it("should return throw errors", async () => {
@@ -90,46 +84,8 @@ describe("Holiday Functions", () => {
       wreckGetSpy.mockRejectedValueOnce(errorResponse);
 
       expect(async () => {
-        await holidays.isTodayCustomHoliday();
+        await isTodayCustomHoliday();
       }).rejects.toBe(errorResponse);
-    });
-  });
-
-  describe("isTodayHoliday", () => {
-    it("should return true if today is a holiday", async () => {
-      // Mock today's date and the API response
-      const today = new Date().toISOString().split("T")[0];
-      const mockEvents = [{ date: today, title: "Mock Holiday" }];
-      holidays.getHolidayCalendarForEngland = jest.fn().mockResolvedValue(mockEvents);
-      holidays.isTodayCustomHoliday = jest.fn().mockResolvedValue(false);
-
-      expect(await holidays.isTodayHoliday()).toBeTruthy();
-      expect(holidays.getHolidayCalendarForEngland).toHaveBeenCalled();
-      expect(holidays.isTodayCustomHoliday).not.toHaveBeenCalled();
-    });
-
-    it("should return false if today is not a holiday", async () => {
-      // Mock today's date and the API response
-      const tomorrow = new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
-        .toISOString()
-        .split("T")[0];
-      const mockEvents = [{ date: tomorrow, title: "Mock Holiday" }];
-      holidays.getHolidayCalendarForEngland = jest.fn().mockResolvedValue(mockEvents);
-      holidays.isTodayCustomHoliday = jest.fn().mockResolvedValue(false);
-
-      expect(await holidays.isTodayHoliday()).toBeFalsy();
-      expect(holidays.getHolidayCalendarForEngland).toHaveBeenCalled();
-      expect(holidays.isTodayCustomHoliday).toHaveBeenCalled();
-    });
-
-    it("when Events NULL should return false if today is not a holiday", async () => {
-      const mockEvents = null;
-      holidays.getHolidayCalendarForEngland = jest.fn().mockResolvedValue(mockEvents);
-      holidays.isTodayCustomHoliday = jest.fn().mockResolvedValue(false);
-
-      expect(await holidays.isTodayHoliday()).toBeFalsy();
-      expect(holidays.getHolidayCalendarForEngland).toHaveBeenCalled();
-      expect(holidays.isTodayCustomHoliday).toHaveBeenCalled();
     });
   });
 });

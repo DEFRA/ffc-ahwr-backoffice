@@ -1,4 +1,4 @@
-const getErrorMessagesByKey = (errors) => {
+export const getErrorMessagesByKey = (errors) => {
   const dateFields = ["day", "month", "year"];
   const dateErrors = [];
   const keyedErrors = errors.reduce((obj, { key, text }) => {
@@ -15,5 +15,3 @@ const getErrorMessagesByKey = (errors) => {
     ? { ...keyedErrors, ...{ visitDate: { text: dateErrors.join(", ") } } }
     : keyedErrors;
 };
-
-module.exports = { getErrorMessagesByKey };

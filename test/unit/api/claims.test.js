@@ -1,12 +1,7 @@
-const wreck = require("@hapi/wreck");
-const claims = require("../../data/claims.json");
-const { status } = require("../../../app/constants/status");
-const {
-  getClaim,
-  getClaims,
-  updateClaimStatus,
-  updateClaimData,
-} = require("../../../app/api/claims");
+import wreck from "@hapi/wreck";
+import { claims } from "../../data/claims.js";
+import { CLAIM_STATUS } from "ffc-ahwr-common-library";
+import { getClaim, getClaims, updateClaimStatus, updateClaimData } from "../../../app/api/claims";
 
 jest.mock("@hapi/wreck");
 jest.mock("../../../app/config");
@@ -90,7 +85,7 @@ describe("Claims API", () => {
 
     wreck.put = jest.fn().mockResolvedValueOnce(wreckResponse);
 
-    const response = await updateClaimStatus(applicationReference, "Admin", status.IN_CHECK);
+    const response = await updateClaimStatus(applicationReference, "Admin", CLAIM_STATUS.IN_CHECK);
 
     expect(response).toEqual(wreckResponse.payload);
   });
@@ -108,7 +103,7 @@ describe("Claims API", () => {
     const logger = { setBindings: jest.fn() };
 
     expect(async () => {
-      await updateClaimStatus(applicationReference, "Admin", status.IN_CHECK, logger);
+      await updateClaimStatus(applicationReference, "Admin", CLAIM_STATUS.IN_CHECK, logger);
     }).rejects.toEqual(wreckResponse);
   });
   test("updateClaimData", async () => {

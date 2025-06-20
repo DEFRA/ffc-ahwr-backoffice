@@ -1,15 +1,12 @@
-const { getClaimViewStates } = require("../../../../app/routes/utils/get-claim-view-states");
-const { status } = require("../../../../app/constants/status");
-const {
-  administrator,
-  recommender,
-  authoriser,
-  user,
-} = require("../../../../app/auth/permissions");
+import { getClaimViewStates } from "../../../../app/routes/utils/get-claim-view-states";
+import { CLAIM_STATUS as status } from "ffc-ahwr-common-library";
+import { permissions } from "../../../../app/auth/permissions";
+const { administrator, recommender, authoriser, user } = permissions;
 
 jest.mock("../../../../app/config", () => ({
-  ...jest.requireActual("../../../../app/config"),
-  superAdmins: ["currentuser@test"],
+  config: {
+    superAdmins: ["currentuser@test"],
+  },
 }));
 
 const currentUser = "testUser";

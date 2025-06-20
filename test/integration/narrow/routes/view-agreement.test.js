@@ -1,13 +1,24 @@
-const cheerio = require("cheerio");
-const { Buffer } = require("buffer");
-const expectPhaseBanner = require("../../../utils/phase-banner-expect");
-const applications = require("../../../../app/api/applications");
-const { administrator } = require("../../../../app/auth/permissions");
-const viewApplicationData = require("../../../data/view-applications.json");
-const applicationHistoryData = require("../../../data/application-history.json");
-const { when, resetAllWhenMocks } = require("jest-when");
+import { createServer } from "../../../../app/server";
+import * as cheerio from "cheerio";
+import { Buffer } from "buffer";
+import { phaseBannerOk } from "../../../utils/phase-banner-expect";
+import { permissions } from "../../../../app/auth/permissions";
+import { when, resetAllWhenMocks } from "jest-when";
+import { getClaimViewStates } from "../../../../app/routes/utils/get-claim-view-states";
+import { getApplication, getApplicationHistory } from "../../../../app/api/applications";
+import { viewApplicationData } from "../../../data/view-applications";
+import { applicationHistory } from "../../../data/application-history";
+import { StatusCodes } from "http-status-codes";
+
+jest.mock("../../../../app/routes/utils/get-claim-view-states");
+jest.mock("../../../../app/api/applications");
+jest.mock("@hapi/wreck", () => ({
+  get: jest.fn().mockResolvedValue({ payload: [] }),
+}));
+jest.mock("../../../../app/auth");
+
+const { administrator } = permissions;
 const reference = "AHWR-555A-FD4C";
-let getClaimViewStates;
 
 function expectWithdrawLink($, reference, isWithdrawLinkVisible) {
   if (isWithdrawLinkVisible) {
@@ -65,31 +76,26 @@ function expectWithdrawConfirmationPanel($, istWithdrawConfirmationPanelVisible)
 
   istWithdrawConfirmationPanelVisible
     ? expect(panelText).toBeDefined()
-    : expect(panelText).not().toBeDefined();
+    : expect(panelText).not.toBeDefined();
   istWithdrawConfirmationPanelVisible
     ? expect(confirmButtonText).toBeDefined()
-    : expect(confirmButtonText).not().toBeDefined();
+    : expect(confirmButtonText).not.toBeDefined();
 }
-
-jest.mock("../../../../app/api/applications");
-jest.mock("@hapi/wreck", () => ({
-  get: jest.fn().mockResolvedValue({ payload: [] }),
-}));
 
 describe("View Application test", () => {
   const url = `/view-agreement/${reference}`;
-  jest.mock("../../../../app/auth");
+
   let auth = {
     strategy: "session-auth",
     credentials: { scope: [administrator], account: { username: "test" } },
   };
 
-  beforeAll(() => {
-    jest.clearAllMocks();
-    jest.mock("../../../../app/routes/utils/get-claim-view-states");
-    getClaimViewStates = require("../../../../app/routes/utils/get-claim-view-states");
+  let server;
 
-    getClaimViewStates.getClaimViewStates.mockReturnValue({
+  beforeAll(async () => {
+    jest.clearAllMocks();
+
+    getClaimViewStates.mockReturnValue({
       recommendAction: false,
       recommendToPayForm: false,
       recommendToRejectForm: false,
@@ -97,6 +103,8 @@ describe("View Application test", () => {
       rejectForm: false,
       withdrawAction: true,
     });
+
+    server = await createServer();
   });
 
   afterEach(() => {
@@ -109,8 +117,8 @@ describe("View Application test", () => {
         method: "GET",
         url,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(302);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
 
     test.each([
@@ -125,9 +133,9 @@ describe("View Application test", () => {
           strategy: "session-auth",
           credentials: { scope: [authScope], account: { username: "test" } },
         };
-        applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed);
-        applications.getApplicationHistory.mockReturnValueOnce({
-          historyRecords: applicationHistoryData,
+        getApplication.mockReturnValueOnce(viewApplicationData.agreed);
+        getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistory,
         });
         const options = {
           method: "GET",
@@ -135,7 +143,7 @@ describe("View Application test", () => {
           auth,
         };
 
-        const res = await global.__SERVER__.inject(options);
+        const res = await server.inject(options);
         const $ = cheerio.load(res.payload);
 
         expectWithdrawLink($, reference, isWithdrawLinkVisible);
@@ -145,11 +153,11 @@ describe("View Application test", () => {
     test.each([true, false])(
       "Recommend buttons displayed as expected for when claim helper returns %s",
       async (areRecommendButtonsVisible) => {
-        applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck);
-        applications.getApplicationHistory.mockReturnValueOnce({
-          historyRecords: applicationHistoryData,
+        getApplication.mockReturnValueOnce(viewApplicationData.incheck);
+        getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistory,
         });
-        getClaimViewStates.getClaimViewStates.mockReturnValueOnce({
+        getClaimViewStates.mockReturnValueOnce({
           recommendAction: areRecommendButtonsVisible,
         });
         const options = {
@@ -158,18 +166,18 @@ describe("View Application test", () => {
           auth,
         };
 
-        const res = await global.__SERVER__.inject(options);
+        const res = await server.inject(options);
         const $ = cheerio.load(res.payload);
         expectRecommendButtons($, areRecommendButtonsVisible);
       },
     );
 
     test.each([true, false])("Present authorisation for payment panel", async (authoriseForm) => {
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay);
-      applications.getApplicationHistory.mockReturnValueOnce({
-        historyRecords: applicationHistoryData,
+      getApplication.mockReturnValueOnce(viewApplicationData.readytopay);
+      getApplicationHistory.mockReturnValueOnce({
+        historyRecords: applicationHistory,
       });
-      when(getClaimViewStates.getClaimViewStates).mockReturnValue({
+      when(getClaimViewStates).mockReturnValue({
         authoriseForm,
       });
       const options = {
@@ -178,7 +186,7 @@ describe("View Application test", () => {
         auth,
       };
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       const $ = cheerio.load(res.payload);
 
       if (authoriseForm) {
@@ -189,11 +197,11 @@ describe("View Application test", () => {
     });
 
     test.each([true, false])("Present authorisation for reject panel", async (rejectForm) => {
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay);
-      applications.getApplicationHistory.mockReturnValueOnce({
-        historyRecords: applicationHistoryData,
+      getApplication.mockReturnValueOnce(viewApplicationData.readytopay);
+      getApplicationHistory.mockReturnValueOnce({
+        historyRecords: applicationHistory,
       });
-      when(getClaimViewStates.getClaimViewStates).mockReturnValue({
+      when(getClaimViewStates).mockReturnValue({
         rejectForm,
       });
       const options = {
@@ -202,7 +210,7 @@ describe("View Application test", () => {
         auth,
       };
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       const $ = cheerio.load(res.payload);
 
       if (rejectForm) {
@@ -215,11 +223,11 @@ describe("View Application test", () => {
     test.each([false, true])(
       "Authorisation form displayed as expected for role %s",
       async (authoriseForm) => {
-        applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay);
-        applications.getApplicationHistory.mockReturnValueOnce({
-          historyRecords: applicationHistoryData,
+        getApplication.mockReturnValueOnce(viewApplicationData.readytopay);
+        getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistory,
         });
-        when(getClaimViewStates.getClaimViewStates).mockReturnValue({
+        when(getClaimViewStates).mockReturnValue({
           authoriseForm,
         });
         const ERROR_MESSAGE_TEXT = "error_message_text";
@@ -237,7 +245,7 @@ describe("View Application test", () => {
           auth,
         };
 
-        const res = await global.__SERVER__.inject(options);
+        const res = await server.inject(options);
         const $ = cheerio.load(res.payload);
 
         if (authoriseForm) {
@@ -256,11 +264,11 @@ describe("View Application test", () => {
     test.each([false, true])(
       "Recommended to pay form displayed as expected when claim helper returns %s",
       async (recommendToPayForm) => {
-        applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay);
-        applications.getApplicationHistory.mockReturnValueOnce({
-          historyRecords: applicationHistoryData,
+        getApplication.mockReturnValueOnce(viewApplicationData.readytopay);
+        getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistory,
         });
-        getClaimViewStates.getClaimViewStates.mockReturnValueOnce({
+        getClaimViewStates.mockReturnValueOnce({
           recommendToPayForm,
         });
         const ERROR_MESSAGE_TEXT = "error_message_text";
@@ -278,7 +286,7 @@ describe("View Application test", () => {
           auth,
         };
 
-        const res = await global.__SERVER__.inject(options);
+        const res = await server.inject(options);
         const $ = cheerio.load(res.payload);
 
         if (recommendToPayForm) {
@@ -300,11 +308,11 @@ describe("View Application test", () => {
     test.each([false, true])(
       "Authorisation confirm form displayed as expected for role %s",
       async (rejectForm) => {
-        applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay);
-        applications.getApplicationHistory.mockReturnValueOnce({
-          historyRecords: applicationHistoryData,
+        getApplication.mockReturnValueOnce(viewApplicationData.readytopay);
+        getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistory,
         });
-        getClaimViewStates.getClaimViewStates.mockReturnValueOnce({
+        getClaimViewStates.mockReturnValueOnce({
           rejectForm,
         });
         const ERROR_MESSAGE_TEXT = "error_message_text";
@@ -322,7 +330,7 @@ describe("View Application test", () => {
           auth,
         };
 
-        const res = await global.__SERVER__.inject(options);
+        const res = await server.inject(options);
         const $ = cheerio.load(res.payload);
 
         if (rejectForm) {
@@ -345,11 +353,11 @@ describe("View Application test", () => {
     test.each([false, true])(
       "Recommended to reject confirm form displayed as expected when claim helper returns %s",
       async (recommendToRejectForm) => {
-        applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay);
-        applications.getApplicationHistory.mockReturnValueOnce({
-          historyRecords: applicationHistoryData,
+        getApplication.mockReturnValueOnce(viewApplicationData.readytopay);
+        getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistory,
         });
-        getClaimViewStates.getClaimViewStates.mockReturnValueOnce({
+        getClaimViewStates.mockReturnValueOnce({
           recommendToRejectForm,
         });
         const ERROR_MESSAGE_TEXT = "error_message_text";
@@ -369,7 +377,7 @@ describe("View Application test", () => {
           auth,
         };
 
-        const res = await global.__SERVER__.inject(options);
+        const res = await server.inject(options);
         const $ = cheerio.load(res.payload);
 
         if (recommendToRejectForm) {
@@ -407,11 +415,11 @@ describe("View Application test", () => {
           strategy: "session-auth",
           credentials: { scope: [authScope], account: { username: "test" } },
         };
-        applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed);
-        applications.getApplicationHistory.mockReturnValueOnce({
-          historyRecords: applicationHistoryData,
+        getApplication.mockReturnValueOnce(viewApplicationData.agreed);
+        getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistory,
         });
-        getClaimViewStates.getClaimViewStates.mockReturnValueOnce({
+        getClaimViewStates.mockReturnValueOnce({
           withdrawAction,
         });
 
@@ -421,7 +429,7 @@ describe("View Application test", () => {
           auth,
         };
 
-        const res = await global.__SERVER__.inject(options);
+        const res = await server.inject(options);
         const $ = cheerio.load(res.payload);
 
         expectWithdrawLink($, reference, withdrawAction);
@@ -438,17 +446,17 @@ describe("View Application test", () => {
         strategy: "session-auth",
         credentials: { scope: [authScope], account: { username: "test" } },
       };
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed);
-      applications.getApplicationHistory.mockReturnValueOnce({
-        historyRecords: applicationHistoryData,
+      getApplication.mockReturnValueOnce(viewApplicationData.agreed);
+      getApplicationHistory.mockReturnValueOnce({
+        historyRecords: applicationHistory,
       });
       const options = {
         method: "GET",
         url,
         auth,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($("h1.govuk-caption-l").text()).toContain(`Agreement number: ${reference}`);
       expect($("h2.govuk-heading-l").text()).toContain(status);
@@ -485,7 +493,7 @@ describe("View Application test", () => {
 
       expectWithdrawLink($, reference, isWithdrawLinkVisible);
 
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
     });
 
     test.each([["administrator"], ["processor"], ["user"]])(
@@ -496,17 +504,17 @@ describe("View Application test", () => {
           strategy: "session-auth",
           credentials: { scope: [authScope], account: { username: "test" } },
         };
-        applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck);
-        applications.getApplicationHistory.mockReturnValueOnce({
-          historyRecords: applicationHistoryData,
+        getApplication.mockReturnValueOnce(viewApplicationData.incheck);
+        getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistory,
         });
         const options = {
           method: "GET",
           url,
           auth,
         };
-        const res = await global.__SERVER__.inject(options);
-        expect(res.statusCode).toBe(200);
+        const res = await server.inject(options);
+        expect(res.statusCode).toBe(StatusCodes.OK);
         const $ = cheerio.load(res.payload);
         expect($("h1.govuk-caption-l").text()).toContain(`Agreement number: ${reference}`);
         expect($("h2.govuk-heading-l").text()).toContain(status);
@@ -535,7 +543,7 @@ describe("View Application test", () => {
         expect($("#application").text()).toContain(status);
         expect($("#claim").text()).toContain(status);
 
-        expectPhaseBanner.ok($);
+        phaseBannerOk($);
       },
     );
     test.each([["administrator"], ["processor"], ["user"]])(
@@ -546,17 +554,17 @@ describe("View Application test", () => {
           strategy: "session-auth",
           credentials: { scope: [authScope], account: { username: "test" } },
         };
-        applications.getApplication.mockReturnValueOnce(viewApplicationData.readytopay);
-        applications.getApplicationHistory.mockReturnValueOnce({
-          historyRecords: applicationHistoryData,
+        getApplication.mockReturnValueOnce(viewApplicationData.readytopay);
+        getApplicationHistory.mockReturnValueOnce({
+          historyRecords: applicationHistory,
         });
         const options = {
           method: "GET",
           url,
           auth,
         };
-        const res = await global.__SERVER__.inject(options);
-        expect(res.statusCode).toBe(200);
+        const res = await server.inject(options);
+        expect(res.statusCode).toBe(StatusCodes.OK);
         const $ = cheerio.load(res.payload);
         expect($("h1.govuk-caption-l").text()).toContain(`Agreement number: ${reference}`);
         expect($("h2.govuk-heading-l").text()).toContain(status);
@@ -567,7 +575,7 @@ describe("View Application test", () => {
         expect($("#application").text()).toContain(status);
         expect($("#claim").text()).toContain(status);
 
-        expectPhaseBanner.ok($);
+        phaseBannerOk($);
       },
     );
     test("withdraw link hidden and withdraw confirmation displayed when withdraw link selected by user", async () => {
@@ -578,9 +586,9 @@ describe("View Application test", () => {
           account: { username: "test" },
         },
       };
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.agreed);
-      applications.getApplicationHistory.mockReturnValueOnce({
-        historyRecords: applicationHistoryData,
+      getApplication.mockReturnValueOnce(viewApplicationData.agreed);
+      getApplicationHistory.mockReturnValueOnce({
+        historyRecords: applicationHistory,
       });
       const url = `/view-agreement/${reference}?page=1&withdraw=${true}`;
       const options = {
@@ -589,8 +597,8 @@ describe("View Application test", () => {
         auth,
       };
 
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.OK);
 
       const $ = cheerio.load(res.payload);
       expectWithdrawLink($, reference, false);
@@ -598,17 +606,17 @@ describe("View Application test", () => {
     });
 
     test("returns 200 application - valid history tab", async () => {
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.notagreed);
-      applications.getApplicationHistory.mockReturnValueOnce({
-        historyRecords: applicationHistoryData,
+      getApplication.mockReturnValueOnce(viewApplicationData.notagreed);
+      getApplicationHistory.mockReturnValueOnce({
+        historyRecords: applicationHistory,
       });
       const options = {
         method: "GET",
         url,
         auth,
       };
-      const res = await global.__SERVER__.inject(options);
-      expect(res.statusCode).toBe(200);
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($("#history").text()).toContain("History");
       expect($("thead:nth-child(1) tr:nth-child(1) th:nth-child(1)").text()).toContain("Date");
@@ -632,7 +640,7 @@ describe("View Application test", () => {
       expect($("tbody:nth-child(2) tr:nth-child(3)").text()).toContain("Rejected");
       expect($("tbody:nth-child(2) tr:nth-child(3)").text()).toContain("Amanda Hassan");
 
-      expectPhaseBanner.ok($);
+      phaseBannerOk($);
     });
 
     test.each([
@@ -653,7 +661,7 @@ describe("View Application test", () => {
         "?reject=true",
         false,
       ],
-    ])("%s", async ({ testName, authScope, queryParam, exepectedResult }) => {
+    ])("%s", async ([testName, authScope, queryParam, exepectedResult]) => {
       auth = {
         strategy: "session-auth",
         credentials: { scope: [authScope], account: { username: "test" } },
@@ -665,9 +673,9 @@ describe("View Application test", () => {
           enabled: true,
         },
       }));
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck);
-      applications.getApplicationHistory.mockReturnValueOnce({
-        historyRecords: applicationHistoryData,
+      getApplication.mockReturnValueOnce(viewApplicationData.incheck);
+      getApplicationHistory.mockReturnValueOnce({
+        historyRecords: applicationHistory,
       });
       const options = {
         method: "GET",
@@ -675,7 +683,7 @@ describe("View Application test", () => {
         auth,
       };
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       const $ = cheerio.load(res.payload);
 
       const panelClass = ".govuk-panel__title-s .govuk-!-font-size-36 .govuk-!-margin-top-1";
@@ -712,7 +720,7 @@ describe("View Application test", () => {
         "",
         false,
       ],
-    ])("%s", async ({ testName, authScope, queryParam, exepectedResult }) => {
+    ])("%s", async ([testName, authScope, queryParam, exepectedResult]) => {
       auth = {
         strategy: "session-auth",
         credentials: { scope: [authScope], account: { username: "test" } },
@@ -724,9 +732,9 @@ describe("View Application test", () => {
           enabled: true,
         },
       }));
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck);
-      applications.getApplicationHistory.mockReturnValueOnce({
-        historyRecords: applicationHistoryData,
+      getApplication.mockReturnValueOnce(viewApplicationData.incheck);
+      getApplicationHistory.mockReturnValueOnce({
+        historyRecords: applicationHistory,
       });
       const options = {
         method: "GET",
@@ -734,7 +742,7 @@ describe("View Application test", () => {
         auth,
       };
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       const $ = cheerio.load(res.payload);
 
       const approveClaimButtonClass = ".govuk-button .govuk-button .govuk-!-margin-bottom-3";
@@ -773,7 +781,7 @@ describe("View Application test", () => {
         "",
         false,
       ],
-    ])("%s", async ({ testName, authScope, queryParam, exepectedResult }) => {
+    ])("%s", async ([testName, authScope, queryParam, exepectedResult]) => {
       auth = {
         strategy: "session-auth",
         credentials: { scope: [authScope], account: { username: "test" } },
@@ -785,9 +793,9 @@ describe("View Application test", () => {
           enabled: true,
         },
       }));
-      applications.getApplication.mockReturnValueOnce(viewApplicationData.incheck);
-      applications.getApplicationHistory.mockReturnValueOnce({
-        historyRecords: applicationHistoryData,
+      getApplication.mockReturnValueOnce(viewApplicationData.incheck);
+      getApplicationHistory.mockReturnValueOnce({
+        historyRecords: applicationHistory,
       });
       const options = {
         method: "GET",
@@ -795,7 +803,7 @@ describe("View Application test", () => {
         auth,
       };
 
-      const res = await global.__SERVER__.inject(options);
+      const res = await server.inject(options);
       const $ = cheerio.load(res.payload);
 
       const rejectClaimButtonClass =

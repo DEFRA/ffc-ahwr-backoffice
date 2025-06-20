@@ -1,7 +1,10 @@
-const { administrator, processor, user, recommender, authoriser } = require("./permissions");
-const { superAdmins } = require("../config");
+import { permissions } from "./permissions.js";
+import { config } from "../config/index.js";
 
-const mapAuth = (request) => {
+const { administrator, processor, user, recommender, authoriser } = permissions;
+const { superAdmins } = config;
+
+export const mapAuth = (request) => {
   const { isAuthenticated, credentials } = request.auth;
   const { username } = credentials.account;
 
@@ -18,5 +21,3 @@ const mapAuth = (request) => {
       superAdmins.includes(username.trim().toLowerCase()),
   };
 };
-
-module.exports = mapAuth;

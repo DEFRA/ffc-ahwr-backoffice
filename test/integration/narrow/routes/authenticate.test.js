@@ -1,10 +1,14 @@
-const createServer = require("../../../../app/server");
+import { createServer } from "../../../../app/server";
+import { auth } from "../../../../app/auth";
+import { StatusCodes } from "http-status-codes";
+
+jest.mock("../../../../app/auth");
 
 describe("Authentication route tests", () => {
   let server;
   const url = "/authenticate";
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     jest.clearAllMocks();
     server = await createServer();
   });
@@ -12,9 +16,6 @@ describe("Authentication route tests", () => {
   afterEach(async () => {
     await server.stop();
   });
-
-  jest.mock("../../../../app/auth");
-  const mockAzureAuth = require("../../../../app/auth");
 
   describe("Authenticate GET request", () => {
     const method = "GET";
@@ -25,12 +26,12 @@ describe("Authentication route tests", () => {
       };
 
       const response = await server.inject(options);
-      expect(response.statusCode).toBe(302);
+      expect(response.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       expect(response.headers.location).toEqual("/");
     });
 
     test("GET /authenticate route returns a 500 error due to try catch", async () => {
-      mockAzureAuth.authenticate.mockImplementation(() => {
+      auth.authenticate.mockImplementation(() => {
         throw new Error();
       });
       const options = {

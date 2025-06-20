@@ -1,6 +1,6 @@
-const { upperFirstLetter } = require("../../lib/display-helper");
+import { upperFirstLetter } from "../../lib/display-helper.js";
 
-const getRows = (request) => {
+export const getRows = (request) => {
   const { name, username } = request.auth.credentials.account;
   const roles = request.auth.credentials.scope.map((x) => upperFirstLetter(x)).join(", ");
 
@@ -10,5 +10,3 @@ const getRows = (request) => {
     { key: { text: "Role" }, value: { text: roles } },
   ];
 };
-
-module.exports = { getRows };

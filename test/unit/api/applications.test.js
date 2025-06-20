@@ -1,13 +1,6 @@
-const wreck = require("@hapi/wreck");
-jest.mock("@hapi/wreck");
-jest.mock("../../../app/config");
-const { applicationApiUri } = require("../../../app/config");
-const appRef = "ABC-1234";
-const limit = 20;
-const offset = 0;
-const searchText = "";
-const searchType = "";
-const {
+import wreck from "@hapi/wreck";
+import { config } from "../../../app/config";
+import {
   getApplications,
   getApplication,
   updateApplicationStatus,
@@ -15,14 +8,24 @@ const {
   getApplicationHistory,
   getApplicationEvents,
   updateApplicationData,
-} = require("../../../app/api/applications");
+} from "../../../app/api/applications";
+
+jest.mock("@hapi/wreck");
+jest.mock("../../../app/config");
+
+const { applicationApiUri } = config;
+const appRef = "ABC-1234";
+const limit = 20;
+const offset = 0;
+const searchText = "";
+const searchType = "";
+
 describe("Application API", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   it("getApplications should return applications", async () => {
-    jest.mock("@hapi/wreck");
     const wreckResponse = {
       payload: {
         applications: [{}, {}],
@@ -49,7 +52,6 @@ describe("Application API", () => {
   });
 
   it("getApplication should return null application", async () => {
-    jest.mock("@hapi/wreck");
     const wreckResponse = {
       payload: null,
       res: {
@@ -69,7 +71,6 @@ describe("Application API", () => {
   });
 
   it("getApplication should return an application", async () => {
-    jest.mock("@hapi/wreck");
     const applicationData = {
       reference: appRef,
     };
@@ -92,7 +93,6 @@ describe("Application API", () => {
   });
 
   it("getApplications should throw errors", async () => {
-    jest.mock("@hapi/wreck");
     const filter = [];
     const sort = "ASC";
 
@@ -117,7 +117,6 @@ describe("Application API", () => {
   });
 
   it("getApplication should throw errors", async () => {
-    jest.mock("@hapi/wreck");
     const options = { json: true };
     wreck.get = jest.fn().mockRejectedValueOnce("getApplication boom");
     const logger = { setBindings: jest.fn() };
@@ -134,7 +133,6 @@ describe("Application API", () => {
   });
 
   it("updateApplicationStatus should throw errors", async () => {
-    jest.mock("@hapi/wreck");
     const options = {
       payload: {
         user: "test",
@@ -154,7 +152,6 @@ describe("Application API", () => {
   });
 
   it("updateApplicationStatus should return on success", async () => {
-    jest.mock("@hapi/wreck");
     const options = {
       payload: {
         user: "test",
@@ -232,7 +229,6 @@ describe("Application API", () => {
   });
 
   it("processApplicationClaim should throw errors", async () => {
-    jest.mock("@hapi/wreck");
     const options = {
       payload: {
         user: "test",
@@ -252,7 +248,6 @@ describe("Application API", () => {
   });
 
   it("processApplicationClaim should return on success", async () => {
-    jest.mock("@hapi/wreck");
     const options = {
       payload: {
         user: "test",
@@ -277,8 +272,6 @@ describe("Application API", () => {
   });
 
   it("getApplicationHistory should return history records", async () => {
-    jest.mock("@hapi/wreck");
-
     const wreckResponse = {
       payload: {
         historyRecords: [{}, {}, {}],
@@ -300,8 +293,6 @@ describe("Application API", () => {
   });
 
   it("getApplicationHistory should throw errors", async () => {
-    jest.mock("@hapi/wreck");
-
     const options = { json: true };
     wreck.get = jest.fn().mockRejectedValueOnce("getApplicationHistory boom");
     const logger = { setBindings: jest.fn() };
@@ -317,7 +308,6 @@ describe("Application API", () => {
   });
 
   it("getApplicationEvents should return records", async () => {
-    jest.mock("@hapi/wreck");
     const wreckResponse = {
       payload: {
         eventRecords: [{}, {}],
@@ -341,8 +331,6 @@ describe("Application API", () => {
   });
 
   it("getApplicationEvents should throw errors", async () => {
-    jest.mock("@hapi/wreck");
-
     const options = { json: true };
     wreck.get = jest.fn().mockRejectedValueOnce("getApplicationEvents boom");
     const logger = { setBindings: jest.fn() };

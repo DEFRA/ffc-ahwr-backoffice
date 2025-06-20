@@ -1,15 +1,18 @@
+import Joi from "joi";
+import { permissions } from "../auth/permissions.js";
+import { config } from "../config/index.js";
+import { setAppSearch, getAppSearch } from "../session/index.js";
+import { sessionKeys } from "../session/keys.js";
+import { viewModel } from "./models/application-list.js";
+import { searchValidation } from "../lib/search-validation.js";
+import { generateNewCrumb } from "./utils/crumb-cache.js";
+
+const { administrator, processor, user, recommender, authoriser } = permissions;
+const { displayPageSize } = config;
 const viewTemplate = "agreements";
 const currentPath = `/${viewTemplate}`;
-const { displayPageSize } = require("../pagination");
-const Joi = require("joi");
-const { setAppSearch, getAppSearch } = require("../session");
-const keys = require("../session/keys");
-const { administrator, processor, user, recommender, authoriser } = require("../auth/permissions");
-const { viewModel } = require("./models/application-list");
-const checkValidSearch = require("../lib/search-validation");
-const crumbCache = require("./utils/crumb-cache");
 
-module.exports = [
+export const agreementsRoutes = [
   {
     method: "GET",
     path: currentPath,
@@ -24,7 +27,7 @@ module.exports = [
         }),
       },
       handler: async (request, h) => {
-        await crumbCache.generateNewCrumb(request, h);
+        await generateNewCrumb(request, h);
         return h.view(viewTemplate, await viewModel(request)); // NOSONAR
       },
     },
@@ -37,7 +40,7 @@ module.exports = [
         scope: [administrator, processor, user, recommender, authoriser],
       },
       handler: async (request, h) => {
-        setAppSearch(request, keys.appSearch.filterStatus, []);
+        setAppSearch(request, sessionKeys.appSearch.filterStatus, []);
         return h.view(viewTemplate, await viewModel(request)); // NOSONAR
       },
     },
@@ -55,9 +58,9 @@ module.exports = [
         }),
       },
       handler: async (request, h) => {
-        let filterStatus = getAppSearch(request, keys.appSearch.filterStatus);
+        let filterStatus = getAppSearch(request, sessionKeys.appSearch.filterStatus);
         filterStatus = filterStatus.filter((s) => s !== request.params.status);
-        setAppSearch(request, keys.appSearch.filterStatus, filterStatus);
+        setAppSearch(request, sessionKeys.appSearch.filterStatus, filterStatus);
         return h.view(viewTemplate, await viewModel(request)); // NOSONAR
       },
     },
@@ -84,10 +87,10 @@ module.exports = [
             filterStatus = Array.isArray(filterStatus) ? filterStatus : [filterStatus];
           }
 
-          setAppSearch(request, keys.appSearch.filterStatus, filterStatus);
-          const { searchText, searchType } = checkValidSearch(request.payload.searchText);
-          setAppSearch(request, keys.appSearch.searchText, searchText ?? "");
-          setAppSearch(request, keys.appSearch.searchType, searchType ?? "");
+          setAppSearch(request, sessionKeys.appSearch.filterStatus, filterStatus);
+          const { searchText, searchType } = searchValidation(request.payload.searchText);
+          setAppSearch(request, sessionKeys.appSearch.searchText, searchText ?? "");
+          setAppSearch(request, sessionKeys.appSearch.searchType, searchType ?? "");
           return h.view(viewTemplate, await viewModel(request, 1)); // NOSONAR
         } catch (err) {
           return h
@@ -113,7 +116,7 @@ module.exports = [
       },
       handler: async (request, h) => {
         request.params.direction = request.params.direction !== "descending" ? "DESC" : "ASC";
-        setAppSearch(request, keys.appSearch.sort, request.params);
+        setAppSearch(request, sessionKeys.appSearch.sort, request.params);
         return 1; // NOSONAR
       },
     },

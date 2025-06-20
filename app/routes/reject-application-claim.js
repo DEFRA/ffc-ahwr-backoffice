@@ -1,18 +1,20 @@
-const joi = require("joi");
-const preDoubleSubmitHandler = require("./utils/pre-submission-handler");
-const crumbCache = require("./utils/crumb-cache");
-const { processApplicationClaim } = require("../api/applications");
-const { updateClaimStatus } = require("../api/claims");
-const { encodeErrorsForUI } = require("./utils/encode-errors-for-ui");
-const { administrator, authoriser } = require("../auth/permissions");
-const { rejected } = require("../constants/application-status");
+import joi from "joi";
+import { preSubmissionHandler } from "./utils/pre-submission-handler.js";
+import { generateNewCrumb } from "./utils/crumb-cache.js";
+import { processApplicationClaim } from "../api/applications.js";
+import { updateClaimStatus } from "../api/claims.js";
+import { encodeErrorsForUI } from "./utils/encode-errors-for-ui.js";
+import { permissions } from "../auth/permissions.js";
+import { CLAIM_STATUS } from "ffc-ahwr-common-library";
 
-module.exports = {
+const { administrator, authoriser } = permissions;
+
+export const rejectApplicationClaimRoute = {
   method: "post",
   path: "/reject-application-claim",
   options: {
     auth: { scope: [administrator, authoriser] },
-    pre: [{ method: preDoubleSubmitHandler }],
+    pre: [{ method: preSubmissionHandler }],
     validate: {
       payload: joi.object({
         claimOrAgreement: joi.string().valid("claim", "agreement").required(),
@@ -52,12 +54,12 @@ module.exports = {
 
       request.logger.setBindings({ reference });
 
-      await crumbCache.generateNewCrumb(request, h);
+      await generateNewCrumb(request, h);
       const query = new URLSearchParams({ page });
 
       if (claimOrAgreement === "claim") {
         query.append("returnPage", returnPage);
-        await updateClaimStatus(reference, name, rejected, request.logger);
+        await updateClaimStatus(reference, name, CLAIM_STATUS.REJECTED, request.logger);
       } else {
         const isClaimToBePaid = false;
         await processApplicationClaim(reference, name, isClaimToBePaid, request.logger);

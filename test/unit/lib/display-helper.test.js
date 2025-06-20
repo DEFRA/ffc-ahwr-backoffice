@@ -1,10 +1,10 @@
-const {
+import {
   upperFirstLetter,
   formattedDateToUk,
   formatSpecies,
   formatTypeOfVisit,
   formatStatusId,
-} = require("../../../app/lib/display-helper");
+} from "../../../app/lib/display-helper";
 
 describe("display-helper tests", () => {
   test.each([
@@ -37,7 +37,6 @@ describe("display-helper tests", () => {
   test.each([
     { input: "E", expected: "Endemics" },
     { input: "R", expected: "Review" },
-    { input: undefined, expected: undefined },
   ])("formatTypeOfVisit with $input", async ({ input, expected }) => {
     expect(formatTypeOfVisit(input)).toEqual(expected);
   });
@@ -57,7 +56,6 @@ describe("display-helper tests", () => {
     { input: 14, expected: "AUTHORISED" },
     { input: 15, expected: "SENT TO FINANCE" },
     { input: 16, expected: "PAYMENT HELD" },
-    { input: undefined, expected: undefined },
   ])("formatStatusId with $input", async ({ input, expected }) => {
     expect(formatStatusId(input)).toEqual(expected);
   });

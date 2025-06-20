@@ -1,4 +1,4 @@
-module.exports = {
+export const accessibilityRoute = {
   method: "GET",
   path: "/accessibility",
   options: {

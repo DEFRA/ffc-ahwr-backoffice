@@ -1,6 +1,6 @@
-const { formattedDateToUk, upperFirstLetter } = require("../../lib/display-helper");
-const { getStyleClassByStatus } = require("../../constants/status");
-const { parseData } = require("../utils/parse-data");
+import { formattedDateToUk, upperFirstLetter } from "../../lib/display-helper.js";
+import { getStyleClassByStatus } from "../../constants/status.js";
+import { parseData } from "../utils/parse-data.js";
 
 const claimDataStatus = [
   "IN CHECK",
@@ -11,7 +11,7 @@ const claimDataStatus = [
   "Recommended to Reject",
 ];
 
-const getApplicationClaimDetails = (
+export const getApplicationClaimDetails = (
   application,
   applicationEvents,
   statusActions,
@@ -82,5 +82,3 @@ const getApplicationClaimDetails = (
     },
   ];
 };
-
-module.exports = { getApplicationClaimDetails };

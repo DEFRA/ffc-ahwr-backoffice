@@ -1,16 +1,8 @@
-const {
-  getAuthenticationUrl,
-  authenticate,
-  refresh,
-  logout,
-} = require("../../../app/auth/dev-auth");
-const {
-  administrator,
-  processor,
-  user,
-  recommender,
-  authoriser,
-} = require("../../../app/auth/permissions");
+import { getAuthenticationUrl, authenticate, refresh, logout } from "../../../app/auth/dev-auth";
+import { permissions } from "../../../app/auth/permissions";
+
+const { administrator, processor, user, recommender, authoriser } = permissions;
+
 const MOCK_COOKIE_AUTH_SET = jest.fn();
 
 describe("Dev auth test", () => {

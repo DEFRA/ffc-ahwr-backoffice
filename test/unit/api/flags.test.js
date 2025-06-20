@@ -1,7 +1,9 @@
-const wreck = require("@hapi/wreck");
-const { getAllFlags, deleteFlag, createFlag } = require("../../../app/api/flags");
-const flags = require("../../data/flags.json");
-const { applicationApiUri } = require("../../../app/config");
+import wreck from "@hapi/wreck";
+import { getAllFlags, deleteFlag, createFlag } from "../../../app/api/flags";
+import { flags } from "../../data/flags.js";
+import { config } from "../../../app/config";
+
+const { applicationApiUri } = config;
 
 jest.mock("@hapi/wreck");
 jest.mock("../../../app/config");
