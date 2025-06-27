@@ -11,10 +11,14 @@ const msalLogging = config.isProd
       logLevel: msal.LogLevel.Verbose,
     };
 
-const msalClientApplication = new msal.ConfidentialClientApplication({
-  auth: config.auth,
-  system: { loggerOptions: msalLogging },
-});
+let msalClientApplication;
+
+export const init = () => {
+  msalClientApplication = new msal.ConfidentialClientApplication({
+    auth: config.auth,
+    system: { loggerOptions: msalLogging },
+  });
+}
 
 export const getAuthenticationUrl = () => {
   const authCodeUrlParameters = {
