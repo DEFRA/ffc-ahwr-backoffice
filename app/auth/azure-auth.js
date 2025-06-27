@@ -18,7 +18,7 @@ export const init = () => {
     auth: config.auth,
     system: { loggerOptions: msalLogging },
   });
-}
+};
 
 export const getAuthenticationUrl = () => {
   const authCodeUrlParameters = {
