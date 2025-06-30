@@ -5,6 +5,7 @@ import { mapAuth } from "./map-auth.js";
 
 const getAuth = () => {
   if (config.auth.enabled) {
+    realAuth.init();
     return realAuth;
   }
 
