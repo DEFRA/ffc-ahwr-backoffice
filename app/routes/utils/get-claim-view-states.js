@@ -209,10 +209,12 @@ const superAdminActions = (
   updateVetRCVSNumber,
   updateDateOfVisit,
 ) => {
-  const updateStatusAction = isSuperAdmin && statusId !== CLAIM_STATUS.READY_TO_PAY;
+  const claimIsntPaidOrReadyToPay = ![CLAIM_STATUS.READY_TO_PAY, CLAIM_STATUS.PAID].includes(
+    statusId,
+  );
 
-  const updateStatusForm =
-    isSuperAdmin && updateStatus === true && statusId !== CLAIM_STATUS.READY_TO_PAY;
+  const updateStatusAction = isSuperAdmin && claimIsntPaidOrReadyToPay;
+  const updateStatusForm = isSuperAdmin && updateStatus === true && claimIsntPaidOrReadyToPay;
 
   const updateVetsNameAction = isSuperAdmin;
   const updateVetsNameForm = isSuperAdmin && updateVetsName === true;
