@@ -9,6 +9,7 @@ const {
   ON_HOLD,
   RECOMMENDED_TO_PAY,
   RECOMMENDED_TO_REJECT,
+  PAID,
 } = CLAIM_STATUS;
 
 const getAction = (updatedProperty, newValue, oldValue) => {
@@ -21,6 +22,7 @@ const getAction = (updatedProperty, newValue, oldValue) => {
     [ON_HOLD]: "Moved to 'On Hold'",
     [RECOMMENDED_TO_PAY]: "Recommended to Pay",
     [RECOMMENDED_TO_REJECT]: "Recommended to Reject",
+    [PAID]: "Paid",
   };
 
   if (updatedProperty === "statusId") {
