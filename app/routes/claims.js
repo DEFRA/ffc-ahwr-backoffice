@@ -59,6 +59,7 @@ export const claimsRoutes = [
       validate: {
         query: joi.object({
           page: joi.number().greater(0).default(1),
+          limit: joi.number().greater(0).default(displayPageSize),
         }),
       },
       handler: async (request, h) => {
