@@ -3,7 +3,7 @@ export const homeRoute = {
   path: "/",
   options: {
     // auth: { scope: [administrator, processor, user, recommender, authoriser] },
-    auth: false,
+    auth: { mode: "try" },
     handler: async (request, h) => {
       // const isAuthenticated = request.auth.isAuthenticated;
       console.log(JSON.stringify(request.auth));
