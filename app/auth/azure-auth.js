@@ -1,6 +1,5 @@
 import { config } from "../config/index.js";
 import { ConfidentialClientApplication, LogLevel } from "@azure/msal-node";
-import util from "util";
 
 const msalLogging = config.isProd
   ? {}
