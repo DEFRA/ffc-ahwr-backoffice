@@ -1,5 +1,5 @@
 import { config } from "../config/index.js";
-import * as msal from "@azure/msal-node";
+import { ConfidentialClientApplication, LogLevel } from '@azure/msal-node'
 
 const msalLogging = config.isProd
   ? {}
@@ -8,13 +8,13 @@ const msalLogging = config.isProd
         console.log(message);
       },
       piiLoggingEnabled: false,
-      logLevel: msal.LogLevel.Verbose,
+      logLevel: LogLevel.Verbose,
     };
 
 let msalClientApplication;
 
 export const init = () => {
-  msalClientApplication = new msal.ConfidentialClientApplication({
+  msalClientApplication = new ConfidentialClientApplication({
     auth: config.auth,
     system: { loggerOptions: msalLogging },
   });
