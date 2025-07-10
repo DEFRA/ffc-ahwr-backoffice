@@ -1,5 +1,5 @@
 import { config } from "../config/index.js";
-import { ConfidentialClientApplication, LogLevel } from '@azure/msal-node'
+import { ConfidentialClientApplication, LogLevel } from "@azure/msal-node";
 
 const msalLogging = config.isProd
   ? {}
@@ -30,22 +30,28 @@ export const getAuthenticationUrl = () => {
 };
 
 export const authenticate = async (redirectCode, cookieAuth) => {
+  console.log('Acquiring token');
   const token = await msalClientApplication.acquireTokenByCode({
     code: redirectCode,
     redirectUri: config.auth.redirectUrl,
   });
+  console.log(`got that token... ${token}`);
 
   cookieAuth.set({
     scope: token.idTokenClaims.roles,
     account: token.account,
   });
+  console.log(`cookie auth updated ${cookieAuth}`);
 };
 
 export const refresh = async (account, cookieAuth) => {
+  console.log('Refreshing token for account:', account.username);
   const token = await msalClientApplication.acquireTokenSilent({
     account,
     forceRefresh: true,
   });
+
+  console.log(`got that token... ${token}`);
 
   cookieAuth.set({
     scope: token.idTokenClaims.roles,
