@@ -1,6 +1,5 @@
 import { config } from "../config/index.js";
 import { ConfidentialClientApplication, LogLevel } from "@azure/msal-node";
-import util from "util";
 
 const msalLogging = config.isProd
   ? {}
@@ -42,7 +41,6 @@ export const authenticate = async (redirectCode, cookieAuth) => {
     scope: token.idTokenClaims.roles,
     account: token.account,
   });
-  console.log(`cookie auth updated ${util.inspect(cookieAuth, false, null, false)}`);
 };
 
 export const refresh = async (account, cookieAuth) => {
