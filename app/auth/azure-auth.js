@@ -31,7 +31,7 @@ export const getAuthenticationUrl = () => {
 };
 
 export const authenticate = async (redirectCode, cookieAuth) => {
-  console.log('Acquiring token');
+  console.log("Acquiring token");
   const token = await msalClientApplication.acquireTokenByCode({
     code: redirectCode,
     redirectUri: config.auth.redirectUrl,
@@ -46,7 +46,7 @@ export const authenticate = async (redirectCode, cookieAuth) => {
 };
 
 export const refresh = async (account, cookieAuth) => {
-  console.log('Refreshing token for account:', account.username);
+  console.log("Refreshing token for account:", account.username);
   const token = await msalClientApplication.acquireTokenSilent({
     account,
     forceRefresh: true,
