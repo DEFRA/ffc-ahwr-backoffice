@@ -8,6 +8,7 @@ export const homeRoute = {
   options: {
     auth: { scope: [administrator, processor, user, recommender, authoriser] },
     handler: async (_, h) => {
+      console.log('made it into the home handler')
       return h.redirect("/claims");
     },
   },
