@@ -1,6 +1,6 @@
 {
   "name": "ffc-ahwr-backoffice",
-  "version": "3.0.3",
+  "version": "3.1.0",
   "description": "Back office of the health and welfare of your livestock",
   "homepage": "https://github.com/DEFRA/ffc-ahwr-backoffice",
   "main": "app/index.js",
@@ -25,7 +25,7 @@
   "author": "Defra",
   "license": "OGL-UK-3.0",
   "dependencies": {
-    "@azure/msal-node": "1.14.5",
+    "@azure/msal-node": "2.16.2",
     "@hapi/boom": "10.00",
     "@hapi/catbox-redis": "^6.0.2",
     "@hapi/cookie": "^11.0.2",
