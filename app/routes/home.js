@@ -1,7 +1,3 @@
-import { permissions } from "../auth/permissions.js";
-
-const { administrator, processor, user, recommender, authoriser } = permissions;
-
 export const homeRoute = {
   method: "GET",
   path: "/",
@@ -9,16 +5,20 @@ export const homeRoute = {
     // auth: { scope: [administrator, processor, user, recommender, authoriser] },
     auth: false,
     handler: async (request, h) => {
-      const isAuthenticated = request.auth.isAuthenticated;
-
-      if (!isAuthenticated) {
-        return h.redirect("/login");
-      }
+      // const isAuthenticated = request.auth.isAuthenticated;
+      console.log(JSON.stringify(request.auth));
+      // if (!isAuthenticated) {
+      //   return h.redirect("/login");
+      // }
 
       // Optionally check scope here
-      const scope = request.auth.credentials.scope;
+      const scope = request.auth?.credentials?.scope ?? [];
       console.log(scope);
-      if (!['administrator', 'processor', 'user', 'recommender', 'authoriser'].some(s => scope.includes(s))) {
+      if (
+        !["administrator", "processor", "user", "recommender", "authoriser"].some((s) =>
+          scope.includes(s),
+        )
+      ) {
         return h.response("Forbidden").code(403);
       }
 

@@ -10,6 +10,7 @@ describe("Home page test", () => {
   const auth = {
     strategy: "session-auth",
     credentials: { scope: [administrator] },
+    isAuthenticated: true,
   };
 
   const method = "GET";
@@ -28,8 +29,7 @@ describe("Home page test", () => {
     };
     const res = await server.inject(options);
 
-    expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
-    expect(res.headers.location).toBe("/login");
+    expect(res.statusCode).toBe(StatusCodes.FORBIDDEN);
   });
 
   test("redirects to claims with auth", async () => {
