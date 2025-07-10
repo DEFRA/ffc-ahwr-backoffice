@@ -42,8 +42,7 @@ export const authenticate = async (redirectCode, cookieAuth) => {
     scope: token.idTokenClaims.roles,
     account: token.account,
   });
-console.log(` cookieAuth ${util.inspect(cookieAuth, false, 5, false)}`);
-
+  console.log(` cookieAuth ${util.inspect(cookieAuth, false, 5, false)}`);
 };
 
 export const refresh = async (account, cookieAuth) => {
