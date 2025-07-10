@@ -35,13 +35,13 @@ export const authenticate = async (redirectCode, cookieAuth) => {
     code: redirectCode,
     redirectUri: config.auth.redirectUrl,
   });
-  console.log(`got that token... ${token}`);
+  console.log(`got that token... ${JSON.stringify(token)}`);
 
   cookieAuth.set({
     scope: token.idTokenClaims.roles,
     account: token.account,
   });
-  console.log(`cookie auth updated ${cookieAuth}`);
+  console.log(`cookie auth updated ${JSON.stringify(cookieAuth)}`);
 };
 
 export const refresh = async (account, cookieAuth) => {
