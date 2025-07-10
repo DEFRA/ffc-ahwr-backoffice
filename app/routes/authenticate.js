@@ -9,7 +9,6 @@ export const authenticateRoute = {
   handler: async (request, h) => {
     try {
       await auth.authenticate(request.query.code, request.cookieAuth);
-      console.log("In authenticateRoute handler - about to redirect");
       return h.redirect("/");
     } catch (err) {
       request.logger.setBindings({ err });
