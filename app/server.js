@@ -1,7 +1,8 @@
 import { config } from "./config/index.js";
 import Hapi from "@hapi/hapi";
 import catboxRedis from "@hapi/catbox-redis";
-import { scheduler } from "./crons/process-on-hold/scheduler.js";
+import { scheduler as processOnHoldScheduler } from "./crons/process-on-hold/scheduler.js";
+import { scheduler as dataRedactionScheduler } from "./crons/data-redaction/scheduler.js";
 import { authPlugin } from "./plugins/auth.js";
 import { cookiePlugin } from "./plugins/cookies.js";
 import { crumbPlugin } from "./plugins/crumb.js";
@@ -57,8 +58,9 @@ export async function createServer() {
   await server.register(headerPlugin);
 
   if (process.env.NODE_ENV !== "test") {
-    await server.register(scheduler);
+    await server.register(processOnHoldScheduler);
   }
+  await server.register(dataRedactionScheduler);
 
   return server;
 }

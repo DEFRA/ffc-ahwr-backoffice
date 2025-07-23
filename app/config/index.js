@@ -55,6 +55,10 @@ const buildConfig = () => {
       enabled: joi.bool().required(),
       schedule: joi.string().required(),
     },
+    dataRedactionScheduler: {
+      enabled: joi.bool().required(),
+      schedule: joi.string().required(),
+    },
     superAdmins: joi.array().items(joi.string()).required().required(),
     multiHerdsEnabled: joi.boolean().required().required(),
   });
@@ -97,6 +101,10 @@ const buildConfig = () => {
     applicationApiUri: process.env.APPLICATION_API_URI,
     displayPageSize: Number(process.env.DISPLAY_PAGE_SIZE),
     onHoldAppScheduler: {
+      enabled: process.env.ON_HOLD_APP_PROCESS_ENABLED === "true",
+      schedule: process.env.ON_HOLD_APP_PROCESS_SCHEDULE,
+    },
+    dataRedactionScheduler: {
       enabled: process.env.ON_HOLD_APP_PROCESS_ENABLED === "true",
       schedule: process.env.ON_HOLD_APP_PROCESS_SCHEDULE,
     },

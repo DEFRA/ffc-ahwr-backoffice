@@ -8,6 +8,7 @@ import {
   getApplicationHistory,
   getApplicationEvents,
   updateApplicationData,
+  redactPiiData,
 } from "../../../app/api/applications";
 
 jest.mock("@hapi/wreck");
@@ -343,5 +344,39 @@ describe("Application API", () => {
       `${applicationApiUri}/application/events/${appRef}`,
       options,
     );
+  });
+
+  describe('redactPiiData', () => {
+    const logger = {
+      setBindings: jest.fn(),
+    };
+  
+    const endpoint = `${applicationApiUri}/api/redact/pii`;
+  
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+  
+    it('should return payload when request is successful', async () => {
+      wreck.post.mockResolvedValue({ payload: {} });
+  
+      const result = await redactPiiData(logger);
+  
+      expect(wreck.post).toHaveBeenCalledWith(endpoint, {});
+      expect(result).toEqual({});
+      expect(logger.setBindings).not.toHaveBeenCalled();
+    });
+  
+    it('should log and rethrow error when request fails', async () => {
+      const mockError = new Error('Request failed');
+      wreck.post.mockRejectedValue(mockError);
+  
+      await expect(redactPiiData(logger)).rejects.toThrow('Request failed');
+  
+      expect(logger.setBindings).toHaveBeenCalledWith({
+        err: mockError,
+        endpoint,
+      });
+    });
   });
 });
