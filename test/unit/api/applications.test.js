@@ -351,7 +351,7 @@ describe("Application API", () => {
       setBindings: jest.fn(),
     };
   
-    const endpoint = `${applicationApiUri}/api/redact/pii`;
+    const endpoint = `${applicationApiUri}/redact/pii`;
   
     beforeEach(() => {
       jest.clearAllMocks();

@@ -105,8 +105,8 @@ const buildConfig = () => {
       schedule: process.env.ON_HOLD_APP_PROCESS_SCHEDULE,
     },
     dataRedactionScheduler: {
-      enabled: process.env.ON_HOLD_APP_PROCESS_ENABLED === "true",
-      schedule: process.env.ON_HOLD_APP_PROCESS_SCHEDULE,
+      enabled: process.env.DATA_REDACTION_PROCESS_ENABLED === "true",
+      schedule: process.env.DATA_REDACTION_PROCESS_SCHEDULE,
     },
     superAdmins: process.env.SUPER_ADMINS
       ? process.env.SUPER_ADMINS.split(",").map((user) => user.trim().toLowerCase())
