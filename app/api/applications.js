@@ -118,3 +118,14 @@ export async function updateApplicationData(reference, data, note, name, logger)
   const { payload } = await wreck.put(endpoint, options);
   return payload;
 }
+
+export async function redactPiiData(logger) {
+  const endpoint = `${applicationApiUri}/redact/pii`;
+  try {
+    const { payload } = await wreck.post(endpoint, {});
+    return payload;
+  } catch (err) {
+    logger.setBindings({ err, endpoint });
+    throw err;
+  }
+}

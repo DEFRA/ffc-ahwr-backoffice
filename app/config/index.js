@@ -55,6 +55,10 @@ const buildConfig = () => {
       enabled: joi.bool().required(),
       schedule: joi.string().required(),
     },
+    dataRedactionScheduler: {
+      enabled: joi.bool().required(),
+      schedule: joi.string().required(),
+    },
     superAdmins: joi.array().items(joi.string()).required().required(),
     multiHerdsEnabled: joi.boolean().required().required(),
   });
@@ -99,6 +103,10 @@ const buildConfig = () => {
     onHoldAppScheduler: {
       enabled: process.env.ON_HOLD_APP_PROCESS_ENABLED === "true",
       schedule: process.env.ON_HOLD_APP_PROCESS_SCHEDULE,
+    },
+    dataRedactionScheduler: {
+      enabled: process.env.DATA_REDACTION_PROCESS_ENABLED === "true",
+      schedule: process.env.DATA_REDACTION_PROCESS_SCHEDULE,
     },
     superAdmins: process.env.SUPER_ADMINS
       ? process.env.SUPER_ADMINS.split(",").map((user) => user.trim().toLowerCase())
