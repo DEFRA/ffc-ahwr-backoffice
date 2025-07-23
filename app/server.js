@@ -59,8 +59,8 @@ export async function createServer() {
 
   if (process.env.NODE_ENV !== "test") {
     await server.register(processOnHoldScheduler);
-  }
-  await server.register(dataRedactionScheduler);
+    await server.register(dataRedactionScheduler);
+  } 
 
   return server;
 }
