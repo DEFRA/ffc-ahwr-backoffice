@@ -47,7 +47,6 @@ container:
   onHoldAppProcessEnabled:
   onHoldAppProcessSchedule:
   superAdmins: ''
-  multiHerdsEnabled: false
 
 deployment:
   cpuThreshold: 40

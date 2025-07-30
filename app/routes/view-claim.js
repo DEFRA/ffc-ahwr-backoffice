@@ -20,7 +20,6 @@ import { getLivestockTypes } from "../lib/get-livestock-types.js";
 import { getReviewType } from "../lib/get-review-type.js";
 import { getHerdBreakdown } from "../lib/get-herd-breakdown.js";
 import { getHerdRowData } from "../lib/get-herd-row-data.js";
-import { config } from "../config/index.js";
 
 const { BEEF, PIGS, DAIRY, SHEEP } = TYPE_OF_LIVESTOCK;
 const { administrator, authoriser, processor, recommender, user } = permissions;
@@ -333,7 +332,7 @@ export const viewClaimRoute = {
         value: { html: upperFirstLetter(data?.piHuntAllAnimals) },
       };
 
-      const herdRowData = config.multiHerdsEnabled ? getHerdRowData(herd, isSheep) : [];
+      const herdRowData = getHerdRowData(herd, isSheep);
 
       // There are more common rows than this, but the ordering matters and things get more complicated after these
       const commonRows = [

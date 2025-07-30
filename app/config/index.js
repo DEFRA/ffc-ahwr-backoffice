@@ -56,7 +56,6 @@ const buildConfig = () => {
       schedule: joi.string().required(),
     },
     superAdmins: joi.array().items(joi.string()).required().required(),
-    multiHerdsEnabled: joi.boolean().required().required(),
   });
 
   const conf = {
@@ -103,7 +102,6 @@ const buildConfig = () => {
     superAdmins: process.env.SUPER_ADMINS
       ? process.env.SUPER_ADMINS.split(",").map((user) => user.trim().toLowerCase())
       : [],
-    multiHerdsEnabled: process.env.MULTI_HERDS_ENABLED === "true",
   };
 
   if (process.env.NODE_ENV === "test") {
