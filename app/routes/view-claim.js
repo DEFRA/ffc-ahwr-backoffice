@@ -333,7 +333,7 @@ export const viewClaimRoute = {
         value: { html: upperFirstLetter(data?.piHuntAllAnimals) },
       };
 
-      const herdRowData = config.multiHerdsEnabled ? getHerdRowData(herd, isSheep) : [];
+      const herdRowData = getHerdRowData(herd, isSheep);
 
       // There are more common rows than this, but the ordering matters and things get more complicated after these
       const commonRows = [

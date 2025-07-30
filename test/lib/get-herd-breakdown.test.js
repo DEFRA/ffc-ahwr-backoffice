@@ -1,4 +1,3 @@
-import { config } from "../../app/config/index";
 import { getHerdBreakdown } from "../../app/lib/get-herd-breakdown";
 
 const sheepClaimOneWithSheepiesHerd = {
@@ -123,8 +122,6 @@ const sheepClaimTwoWithSheepiesHerd = {
 };
 
 describe("getHerdBreakdown", () => {
-  config.multiHerdsEnabled = true;
-
   test("it returns a proper breakdown if all the herds are different", () => {
     const strippedDownClaims = [
       sheepClaimOneWithSheepiesHerd,
@@ -185,8 +182,4 @@ describe("getHerdBreakdown", () => {
     });
   });
 
-  test("it returns undefined if multiHerdsEnabled = false", () => {
-    config.multiHerdsEnabled = false;
-    expect(getHerdBreakdown([pigsClaimWithHerd])).toBeUndefined();
-  });
 });

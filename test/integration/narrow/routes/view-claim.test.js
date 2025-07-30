@@ -473,8 +473,6 @@ describe("View claim test", () => {
     });
 
     test("Multi herds enabled - returns 200", async () => {
-      config.multiHerdsEnabled = true;
-
       const options = {
         method: "GET",
         url: `${url}/AHWR-0000-4444`,
@@ -503,8 +501,6 @@ describe("View claim test", () => {
     });
 
     test("Multi herds enabled - returns 200 with no herd in claim", async () => {
-      config.multiHerdsEnabled = true;
-
       const options = {
         method: "GET",
         url: `${url}/AHWR-0000-4444`,
@@ -521,8 +517,6 @@ describe("View claim test", () => {
     });
 
     test("Multi herds enabled - returns 200 for sheep", async () => {
-      config.multiHerdsEnabled = true;
-
       const options = {
         method: "GET",
         url: `${url}/AHWR-0000-4444`,

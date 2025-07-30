@@ -1,9 +1,5 @@
-import { config } from "../config/index.js";
 
 export const getHerdBreakdown = (claims) => {
-  if (!config.multiHerdsEnabled) {
-    return undefined;
-  }
 
   const initialBreakdown = { beef: 0, sheep: 0, dairy: 0, pigs: 0 };
   const countedHerdIds = new Set();
