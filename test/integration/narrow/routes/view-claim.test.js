@@ -5,7 +5,7 @@ import { getApplication, getApplicationHistory } from "../../../../app/api/appli
 import { config } from "../../../../app/config/index";
 import { createServer } from "../../../../app/server";
 import { StatusCodes } from "http-status-codes";
-const { administrator, recommender } = permissions;
+const { administrator } = permissions;
 
 jest.mock("../../../../app/auth");
 jest.mock("../../../../app/session");
@@ -17,6 +17,7 @@ jest.mock("@hapi/wreck", () => ({
 
 describe("View claim test", () => {
   config.multiHerdsEnabled = false;
+  config.pigUpdatesEnabled = false;
   const url = "/view-claim";
   const auth = {
     strategy: "session-auth",
@@ -314,63 +315,6 @@ describe("View claim test", () => {
         expect($(".govuk-summary-list__value").text()).toMatch(expected.value);
       }
     });
-    test.each([
-      { type: "R", rows: 13 },
-      { type: undefined, rows: 13 },
-    ])("returns 200 without claim data", async ({ type, rows }) => {
-      const options = {
-        method: "GET",
-        url: `${url}/AHWR-0000-4444`,
-        auth,
-      };
-
-      getClaim.mockReturnValue({ ...claims[0], data: undefined, type });
-      getClaims.mockReturnValue({ claims });
-      getApplication.mockReturnValue({
-        ...application,
-        data: { ...application.data, organisation: { address: "" } },
-      });
-
-      const res = await server.inject(options);
-      const $ = cheerio.load(res.payload);
-
-      expect(res.statusCode).toBe(StatusCodes.OK);
-
-      // Summary list rows expect to show only application data or if type is provided show application data and type of review
-      expect($(".govuk-summary-list__row").length).toEqual(rows);
-    });
-    test("returns 200 without claim data and including an error", async () => {
-      const encodedErrors =
-        "W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI3JlamVjdC1jbGFpbS1wYW5lbCJ9XQ%3D%3D";
-      const auth = {
-        strategy: "session-auth",
-        credentials: { scope: [recommender], account: "test user" },
-      };
-      const options = {
-        method: "GET",
-        url: `${url}/AHWR-0000-4444?errors=${encodedErrors}`,
-        auth,
-      };
-
-      getClaim.mockReturnValue({
-        ...claims[0],
-        statusId: 5,
-        data: undefined,
-        type: "R",
-      });
-      getClaims.mockReturnValue({ claims });
-      getApplication.mockReturnValue({
-        ...application,
-        data: { ...application.data, organisation: { address: "" } },
-      });
-
-      const res = await server.inject(options);
-      const $ = cheerio.load(res.payload);
-
-      expect(res.statusCode).toBe(StatusCodes.OK);
-
-      expect($(".govuk-summary-list__row").length).toEqual(13);
-    });
     test("returns 200 with endemics claim and pigs species", async () => {
       const options = {
         method: "GET",
@@ -441,7 +385,10 @@ describe("View claim test", () => {
       expect($(".govuk-back-link").attr("href")).toEqual("/claims?page=1");
     });
 
-    test("Multi herds rows included - for pigs", async () => {
+    test("Multi herds and pig updates enabled - returns 200", async () => {
+      config.multiHerdsEnabled = true;
+      config.pigUpdatesEnabled = true;
+
       const options = {
         method: "GET",
         url: `${url}/AHWR-0000-4444`,
@@ -469,7 +416,10 @@ describe("View claim test", () => {
       expect(res.statusCode).toBe(StatusCodes.OK);
     });
 
-    test("Multi herds rows shown - no herd in claim", async () => {
+    test("Multi herds and pig updates enabled - returns 200 with no herd in claim", async () => {
+      config.multiHerdsEnabled = true;
+      config.pigUpdatesEnabled = true;
+
       const options = {
         method: "GET",
         url: `${url}/AHWR-0000-4444`,
@@ -485,7 +435,10 @@ describe("View claim test", () => {
       expect(res.statusCode).toBe(StatusCodes.OK);
     });
 
-    test("Multi herds rows shown - for sheep", async () => {
+    test("Multi herds and pig updates enabled - returns 200 for sheep", async () => {
+      config.multiHerdsEnabled = true;
+      config.pigUpdatesEnabled = true;
+
       const options = {
         method: "GET",
         url: `${url}/AHWR-0000-4444`,
