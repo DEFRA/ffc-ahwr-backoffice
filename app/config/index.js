@@ -55,7 +55,7 @@ const buildConfig = () => {
       enabled: joi.bool().required(),
       schedule: joi.string().required(),
     },
-    superAdmins: joi.array().items(joi.string()).required().required()
+    superAdmins: joi.array().items(joi.string()).required().required(),
   });
 
   const conf = {
@@ -101,7 +101,7 @@ const buildConfig = () => {
     },
     superAdmins: process.env.SUPER_ADMINS
       ? process.env.SUPER_ADMINS.split(",").map((user) => user.trim().toLowerCase())
-      : []
+      : [],
   };
 
   if (process.env.NODE_ENV === "test") {

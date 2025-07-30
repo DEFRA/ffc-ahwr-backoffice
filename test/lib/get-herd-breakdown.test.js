@@ -181,5 +181,4 @@ describe("getHerdBreakdown", () => {
       herdBreakdown: { beef: 2, dairy: 0, pigs: 1, sheep: 1 },
     });
   });
-
 });

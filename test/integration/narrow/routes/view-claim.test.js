@@ -228,7 +228,7 @@ describe("View claim test", () => {
 
       expect(res.statusCode).toBe(StatusCodes.OK);
 
-      const content = [
+      const expectedContent = [
         { key: "Agreement number", value: "AHWR-1234-APP1" },
         { key: "Agreement date", value: "22/03/2024" },
         { key: "Agreement holder", value: "Russell Paul Davies" },
@@ -259,16 +259,11 @@ describe("View claim test", () => {
         { key: "URN", value: "123456" },
       ];
       // Summary list rows expect
-      expect($(".govuk-summary-list__row").length).toEqual(21);
+      expect($(".govuk-summary-list__row").length).toEqual(30);
       // Application summary details expects
-      for (let i = 0; i < 6; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
-      }
-      // Claim summary details expects
-      for (let i = 6; i < 20; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
+      for (const expected of expectedContent) {
+        expect($(".govuk-summary-list__key").text()).toMatch(expected.key);
+        expect($(".govuk-summary-list__value").text()).toMatch(expected.value);
       }
     });
     test("returns 200 with endemics claim and sheep species", async () => {
@@ -287,14 +282,7 @@ describe("View claim test", () => {
 
       expect(res.statusCode).toBe(StatusCodes.OK);
 
-      const content = [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
+      const expectedContent = [
         { key: "Flagged", value: "No" },
         { key: "Status", value: "Recommended to pay" },
         { key: "Claim date", value: "20/03/2024" },
@@ -319,16 +307,16 @@ describe("View claim test", () => {
       ];
 
       // Summary list rows expect
-      expect($(".govuk-summary-list__row").length).toEqual(25);
-      // Claim summary details expects
-      for (let i = 7; i < 24; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
+      expect($(".govuk-summary-list__row").length).toEqual(34);
+      // Claim summary details expected
+      for (const expected of expectedContent) {
+        expect($(".govuk-summary-list__key").text()).toMatch(expected.key);
+        expect($(".govuk-summary-list__value").text()).toMatch(expected.value);
       }
     });
     test.each([
-      { type: "R", rows: 8 },
-      { type: undefined, rows: 8 },
+      { type: "R", rows: 13 },
+      { type: undefined, rows: 13 },
     ])("returns 200 without claim data", async ({ type, rows }) => {
       const options = {
         method: "GET",
@@ -351,7 +339,7 @@ describe("View claim test", () => {
       // Summary list rows expect to show only application data or if type is provided show application data and type of review
       expect($(".govuk-summary-list__row").length).toEqual(rows);
     });
-    test("returns 200 whithout claim data", async () => {
+    test("returns 200 without claim data and including an error", async () => {
       const encodedErrors =
         "W3sidGV4dCI6IlNlbGVjdCBib3RoIGNoZWNrYm94ZXMiLCJocmVmIjoiI3JlamVjdC1jbGFpbS1wYW5lbCJ9XQ%3D%3D";
       const auth = {
@@ -381,7 +369,7 @@ describe("View claim test", () => {
 
       expect(res.statusCode).toBe(StatusCodes.OK);
 
-      expect($(".govuk-summary-list__row").length).toEqual(8);
+      expect($(".govuk-summary-list__row").length).toEqual(13);
     });
     test("returns 200 with endemics claim and pigs species", async () => {
       const options = {
@@ -399,28 +387,9 @@ describe("View claim test", () => {
 
       expect(res.statusCode).toBe(StatusCodes.OK);
       // Summary list rows expect
-      expect($(".govuk-summary-list__row").length).toEqual(25);
+      expect($(".govuk-summary-list__row").length).toEqual(34);
       // Claim summary details expects
-      const content = [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
+      const expectedContent = [
         { key: "Review test result", value: "Positive" },
         { key: "Herd vaccination status", value: "Vaccinated" },
         { key: "URN", value: "123456" },
@@ -431,9 +400,9 @@ describe("View claim test", () => {
           value: "Yes, Assessment percentage: 100%",
         },
       ];
-      for (let i = 19; i < 24; i++) {
-        expect($(".govuk-summary-list__key").eq(i).text()).toMatch(content[i].key);
-        expect($(".govuk-summary-list__value").eq(i).text()).toMatch(content[i].value);
+      for (const eachEntry of expectedContent) {
+        expect($(".govuk-summary-list__key").text()).toMatch(eachEntry.key);
+        expect($(".govuk-summary-list__value").text()).toMatch(eachEntry.value);
       }
     });
 
@@ -472,7 +441,7 @@ describe("View claim test", () => {
       expect($(".govuk-back-link").attr("href")).toEqual("/claims?page=1");
     });
 
-    test("Multi herds enabled - returns 200", async () => {
+    test("Multi herds rows included - for pigs", async () => {
       const options = {
         method: "GET",
         url: `${url}/AHWR-0000-4444`,
@@ -500,7 +469,7 @@ describe("View claim test", () => {
       expect(res.statusCode).toBe(StatusCodes.OK);
     });
 
-    test("Multi herds enabled - returns 200 with no herd in claim", async () => {
+    test("Multi herds rows shown - no herd in claim", async () => {
       const options = {
         method: "GET",
         url: `${url}/AHWR-0000-4444`,
@@ -516,7 +485,7 @@ describe("View claim test", () => {
       expect(res.statusCode).toBe(StatusCodes.OK);
     });
 
-    test("Multi herds enabled - returns 200 for sheep", async () => {
+    test("Multi herds rows shown - for sheep", async () => {
       const options = {
         method: "GET",
         url: `${url}/AHWR-0000-4444`,
