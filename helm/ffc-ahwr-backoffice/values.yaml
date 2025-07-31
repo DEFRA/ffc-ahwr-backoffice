@@ -47,6 +47,7 @@ container:
   onHoldAppProcessEnabled:
   onHoldAppProcessSchedule:
   superAdmins: ''
+  pigUpdatesEnabled: 'false'
 
 deployment:
   cpuThreshold: 40
