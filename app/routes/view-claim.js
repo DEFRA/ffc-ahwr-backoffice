@@ -41,17 +41,28 @@ const speciesEligibleNumber = {
 
 const returnClaimDetailIfExist = (property, value) => property && value;
 
-const buildKeyValueJson = (keyText, valueText) => ({
-  key: { text: keyText },
-  value: { text: valueText },
-});
+const buildKeyValueJson = (keyText, valueText, valueAsHtml = false) => {
+  if (valueAsHtml) {
+    return {
+      key: { text: keyText },
+      value: { html: valueText },
+    }; 
+  }
+
+  return {
+    key: { text: keyText },
+    value: { text: valueText },
+  };
+};
+
+const testResultText = "Test result";
 
 export const getPigTestResultRows = (data) => {
 
   if (data.claimType === claimType.review) {
     return [
       {
-        key: { text: "Test result" },
+        key: { text: testResultText },
         value: { html: upperFirstLetter(data.testResults) },
       },
     ];
@@ -69,12 +80,7 @@ export const getPigTestResultRows = (data) => {
   const testResultType = upperFirstLetter(data.pigsFollowUpTest);
   const testResult = data[`pigs${testResultType}TestResult`];
 
-  const pigTestResultRows = [
-    {
-      key: { text: "Test result" },
-      value: { html: `${testResultType.toUpperCase()} ${testResult}` },
-    },
-  ];
+  const pigTestResultRows = [buildKeyValueJson(testResultText, `${testResultType.toUpperCase()} ${testResult}`, true)];
 
   const geneticSequencing = data?.pigsGeneticSequencing;
 
@@ -83,10 +89,7 @@ export const getPigTestResultRows = (data) => {
       (keyValuePair) => keyValuePair.value === geneticSequencing,
     ).label;
 
-    pigTestResultRows.push({
-      key: { text: "Genetic sequencing test results" },
-      value: { html: geneticSequencingLabel },
-    });
+    pigTestResultRows.push(buildKeyValueJson("Genetic sequencing test results", geneticSequencingLabel, true));
   }
 
   return pigTestResultRows;
@@ -94,7 +97,7 @@ export const getPigTestResultRows = (data) => {
 
 const getVaccinationStatusLabel = (vaccinationStatus) => {
   if (!vaccinationStatus) {
-    return;
+    return undefined;
   }
 
   if (vaccinationStatus === 'notVaccinated') {
@@ -201,17 +204,16 @@ export const viewClaimRoute = {
       const getBiosecurityRow = () =>
         data?.biosecurity &&
         isEndemicsFollowUp &&
-        [PIGS, BEEF, DAIRY].includes(data?.typeOfLivestock) && {
-          key: { text: "Biosecurity assessment" },
-          value: {
-            html:
-              data?.typeOfLivestock === PIGS
-                ? upperFirstLetter(
-                    `${data?.biosecurity?.biosecurity}, Assessment percentage: ${data?.biosecurity?.assessmentPercentage}%`,
-                  )
-                : upperFirstLetter(data?.biosecurity),
-          },
-        };
+        [PIGS, BEEF, DAIRY].includes(data?.typeOfLivestock) &&
+        buildKeyValueJson(
+          "Biosecurity assessment",
+          data?.typeOfLivestock === PIGS
+            ? upperFirstLetter(
+                `${data?.biosecurity?.biosecurity}, Assessment percentage: ${data?.biosecurity?.assessmentPercentage}%`,
+              )
+            : upperFirstLetter(data?.biosecurity),
+          true,
+        );
 
       const getSheepDiseasesTestedRow = () =>
         data?.typeOfLivestock === SHEEP &&
@@ -219,21 +221,12 @@ export const viewClaimRoute = {
         typeof data.testResults === "object" &&
         data.testResults.length
           ? data.testResults.map((sheepTest, index) => {
-              return {
-                key: {
-                  text: index === 0 ? "Disease or condition test result" : "",
-                },
-                value: {
-                  html:
-                    typeof sheepTest.result === "object"
-                      ? sheepTest.result
-                          .map(
-                            (testResult) => `${testResult.diseaseType} (${testResult.result})</br>`,
-                          )
-                          .join(" ")
-                      : `${sheepTestTypes[data?.sheepEndemicsPackage].find((test) => test.value === sheepTest.diseaseType)?.text} (${sheepTestResultsType[sheepTest.diseaseType].find((resultType) => resultType.value === sheepTest.result).text})`,
-                },
-              };
+              const key = index === 0 ? "Disease or condition test result" : "";
+              const value = typeof sheepTest.result === "object" ? sheepTest.result
+                      .map((testResult) => `${testResult.diseaseType} (${testResult.result})</br>`)
+                      .join(" ")
+              : `${sheepTestTypes[data?.sheepEndemicsPackage].find((test) => test.value === sheepTest.diseaseType)?.text} (${sheepTestResultsType[sheepTest.diseaseType].find((resultType) => resultType.value === sheepTest.result).text})`;
+              return buildKeyValueJson(key, value, true);
             })
           : [];
 
@@ -285,117 +278,36 @@ export const viewClaimRoute = {
         },
         actions: statusActions,
       };
-      const claimDate = {
-        key: { text: "Claim date" },
-        value: { html: formattedDateToUk(createdAt) },
-      };
-      const organisationName = {
-        key: { text: "Business name" },
-        value: { html: upperFirstLetter(organisation?.name) },
-      };
-      const livestock = {
-        key: { text: "Livestock" },
-        value: {
-          html: upperFirstLetter(
-            [PIGS, SHEEP].includes(data?.typeOfLivestock)
-              ? data?.typeOfLivestock
-              : `${data?.typeOfLivestock} cattle`,
-          ),
-        },
-      };
-      const typeOfVisit = {
-        key: { text: "Type of visit" },
-        value: {
-          html: isReview ? "Animal health and welfare review" : "Endemic disease follow-ups",
-        },
-      };
-      const dateOfVisit = {
-        key: { text: "Date of visit" },
-        value: { html: formattedDateToUk(data?.dateOfVisit) },
-        actions: dateOfVisitActions,
-      };
-      const dateOfSampling = {
-        key: { text: "Date of sampling" },
-        value: {
-          html: data?.dateOfTesting && formattedDateToUk(data?.dateOfTesting),
-        },
-      };
-      const typeOfLivestock = {
-        key: { text: speciesEligibleNumber[data?.typeOfLivestock] },
-        value: { html: upperFirstLetter(data?.speciesNumbers) },
-      };
-      const vetName = {
-        key: { text: "Vet's name" },
-        value: { html: upperFirstLetter(data?.vetsName) },
-        actions: vetsNameActions,
-      };
-      const vetRCVSNumber = {
-        key: { text: "Vet's RCVS number" },
-        value: { html: data?.vetRCVSNumber },
-        actions: vetRCVSNumberActions,
-      };
-      const piHunt = {
-        key: { text: "PI hunt" },
-        value: { html: upperFirstLetter(data?.piHunt) },
-      };
-      const laboratoryURN = {
-        key: { text: isBeef || isDairy ? "URN or test certificate" : "URN" },
-        value: { html: data?.laboratoryURN },
-      };
-      const numberOfOralFluidSamples = {
-        key: { text: "Number of oral fluid samples taken" },
-        value: { html: data?.numberOfOralFluidSamples },
-      };
-      const numberAnimalsTested = {
-        key: { text: "Number of animals tested" },
-        value: { html: data?.numberAnimalsTested },
-      };
-      const reviewTestResults = {
-        key: { text: "Review test result" },
-        value: { html: upperFirstLetter(data?.reviewTestResults) },
-      };
+      const claimDate = buildKeyValueJson("Claim date", formattedDateToUk(createdAt), true);
+      const organisationName = buildKeyValueJson("Business name", upperFirstLetter(organisation?.name), true);
+      const livestock = buildKeyValueJson("Livestock", upperFirstLetter(
+        [PIGS, SHEEP].includes(data?.typeOfLivestock)
+          ? data?.typeOfLivestock
+          : `${data?.typeOfLivestock} cattle`,
+      ), true);
+      const typeOfVisit = buildKeyValueJson("Type of visit", isReview ? "Animal health and welfare review" : "Endemic disease follow-ups", true);
+      const dateOfVisit = { ...buildKeyValueJson("Date of visit", formattedDateToUk(data?.dateOfVisit), true), actions: dateOfVisitActions };
+      const dateOfSampling = buildKeyValueJson("Date of sampling", data?.dateOfTesting && formattedDateToUk(data?.dateOfTesting), true);
+      const typeOfLivestock = buildKeyValueJson(speciesEligibleNumber[data?.typeOfLivestock], upperFirstLetter(data?.speciesNumbers), true);
+      const vetName = { ...buildKeyValueJson("Vet's name", upperFirstLetter(data?.vetsName), true), actions: vetsNameActions };
+      const vetRCVSNumber = { ...buildKeyValueJson("Vet's RCVS number", data?.vetRCVSNumber, true), actions: vetRCVSNumberActions };
+      const piHunt = buildKeyValueJson("PI hunt", upperFirstLetter(data?.piHunt), true);
+      const laboratoryURN = buildKeyValueJson(isBeef || isDairy ? "URN or test certificate" : "URN", data?.laboratoryURN, true);
+      const numberOfOralFluidSamples = buildKeyValueJson("Number of oral fluid samples taken", data?.numberOfOralFluidSamples, true);
+      const numberAnimalsTested = buildKeyValueJson("Number of animals tested", data?.numberAnimalsTested, true);
+      const reviewTestResults = buildKeyValueJson("Review test result", upperFirstLetter(data?.reviewTestResults), true);
       const testResults = returnClaimDetailIfExist(
         data?.testResults && typeof data?.testResults === "string",
-        {
-          key: {
-            text: data?.reviewTestResults ? "Follow-up test result" : "Test result",
-          },
-          value: { html: upperFirstLetter(data?.testResults) },
-        },
+        buildKeyValueJson(data?.reviewTestResults ? "Follow-up test result" : testResultText, upperFirstLetter(data?.testResults), true)
       );
-      const vetVisitsReviewTestResults = {
-        key: { text: "Vet Visits Review Test results" },
-        value: { html: upperFirstLetter(data?.vetVisitsReviewTestResults) },
-      };
-      const diseaseStatus = {
-        key: { text: "Disease status category" },
-        value: { html: data?.diseaseStatus },
-      };
-      const numberOfSamplesTested = {
-        key: { text: "Samples tested" },
-        value: { html: data?.numberOfSamplesTested },
-      };
-      const herdVaccinationStatus = {
-        key: { text: "Herd vaccination status" },
-        value: { html: getVaccinationStatusLabel(data?.herdVaccinationStatus) },
-      };
-      const sheepEndemicsPackage = {
-        key: { text: "Sheep health package" },
-        value: {
-          html: upperFirstLetter(sheepPackages[data?.sheepEndemicsPackage]),
-        },
-      };
-      const piHuntRecommendedRow = {
-        key: { text: "Vet recommended PI hunt" },
-        value: { html: upperFirstLetter(data?.piHuntRecommended) },
-      };
-      const piHuntAllAnimalsRow = {
-        key: { text: "PI hunt done on all cattle in herd" },
-        value: { html: upperFirstLetter(data?.piHuntAllAnimals) },
-      };
-
+      const vetVisitsReviewTestResults = buildKeyValueJson("Vet Visits Review Test results", upperFirstLetter(data?.vetVisitsReviewTestResults), true);
+      const diseaseStatus = buildKeyValueJson("Disease status category", data?.diseaseStatus, true);
+      const numberOfSamplesTested = buildKeyValueJson("Samples tested", data?.numberOfSamplesTested, true);
+      const herdVaccinationStatus = buildKeyValueJson("Herd vaccination status", getVaccinationStatusLabel(data?.herdVaccinationStatus), true);
+      const sheepEndemicsPackage = buildKeyValueJson("Sheep health package", upperFirstLetter(sheepPackages[data?.sheepEndemicsPackage]), true);
+      const piHuntRecommendedRow = buildKeyValueJson("Vet recommended PI hunt", upperFirstLetter(data?.piHuntRecommended), true);
+      const piHuntAllAnimalsRow = buildKeyValueJson("PI hunt done on all cattle in herd", upperFirstLetter(data?.piHuntAllAnimals), true);
       const herdRowData = getHerdRowData(herd, isSheep);
-
       const pigFollowUpTestResultRows = getPigTestResultRows(data)
 
       // There are more common rows than this, but the ordering matters and things get more complicated after these
