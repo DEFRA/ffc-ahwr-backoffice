@@ -46,7 +46,7 @@ const buildKeyValueJson = (keyText, valueText) => ({
   value: { text: valueText },
 });
 
-const getPigTestResultRows = (data) => {
+export const getPigTestResultRows = (data) => {
 
   if (data.claimType === claimType.review) {
     return [

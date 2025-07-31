@@ -5,6 +5,7 @@ import { getApplication, getApplicationHistory } from "../../../../app/api/appli
 import { config } from "../../../../app/config/index";
 import { createServer } from "../../../../app/server";
 import { StatusCodes } from "http-status-codes";
+import { getPigTestResultRows } from "../../../../app/routes/view-claim";
 const { administrator } = permissions;
 
 jest.mock("../../../../app/auth");
@@ -16,7 +17,6 @@ jest.mock("@hapi/wreck", () => ({
 }));
 
 describe("View claim test", () => {
-  config.multiHerdsEnabled = false;
   config.pigUpdatesEnabled = false;
   const url = "/view-claim";
   const auth = {
@@ -59,6 +59,7 @@ describe("View claim test", () => {
       reference: "AHWR-1111-6666",
       applicationReference: "AHWR-1234-APP1",
       data: {
+        claimType: "R",
         typeOfLivestock: "pigs",
         vetsName: "Vet one",
         dateOfVisit: "2024-03-22T00:00:00.000Z",
@@ -135,6 +136,7 @@ describe("View claim test", () => {
       reference: "AHWR-1111-6666",
       applicationReference: "AHWR-1234-APP1",
       data: {
+        claimType: "E",
         vetsName: "12312312312sdfsdf",
         biosecurity: {
           biosecurity: "yes",
@@ -191,6 +193,44 @@ describe("View claim test", () => {
       flags: [],
     },
   ];
+
+  const pigFollowUpClaimElisa = {
+    id: "58b297c9-c983-475c-8bdb-db5746899cec",
+    reference: "FUPI-1111-6666",
+    applicationReference: "AHWR-1234-APP1",
+    data: {
+      amount: 923,
+      herdId: "d6242c45-20df-4c69-bf49-a213604dd254",
+      vetsName: "Tim",
+      claimType: "E",
+      biosecurity: {
+        biosecurity: "yes",
+        assessmentPercentage: "30",
+      },
+      dateOfVisit: "2025-07-30T00:00:00.000Z",
+      herdVersion: 1,
+      dateOfTesting: "2025-07-30T00:00:00.000Z",
+      laboratoryURN: "22222",
+      vetRCVSNumber: "1112223",
+      speciesNumbers: "yes",
+      typeOfLivestock: "pigs",
+      herdAssociatedAt: "2025-07-30T09:50:09.258Z",
+      pigsFollowUpTest: "elisa",
+      reviewTestResults: "negative",
+      numberAnimalsTested: "30",
+      pigsElisaTestResult: "positive",
+      herdVaccinationStatus: "notVaccinated",
+      numberOfSamplesTested: "30",
+    },
+    statusId: 8,
+    type: "E",
+    createdAt: "2024-03-25T12:20:18.307Z",
+    updatedAt: "2024-03-25T12:20:18.307Z",
+    createdBy: "sql query",
+    updatedBy: null,
+    status: "PAID",
+    flags: [],
+  };
   getApplicationHistory.mockReturnValue({ historyRecords: [] });
   afterEach(async () => {
     jest.clearAllMocks();
@@ -258,9 +298,10 @@ describe("View claim test", () => {
         { key: "Vet's RCVS number", value: "1233211" },
         { key: "Number of animals tested", value: "40" },
         { key: "URN", value: "123456" },
+        { key: "Test result", value: "Positive" },
       ];
       // Summary list rows expect
-      expect($(".govuk-summary-list__row").length).toEqual(30);
+      expect($(".govuk-summary-list__row").length).toEqual(31);
       // Application summary details expects
       for (const expected of expectedContent) {
         expect($(".govuk-summary-list__key").text()).toMatch(expected.key);
@@ -385,10 +426,35 @@ describe("View claim test", () => {
       expect($(".govuk-back-link").attr("href")).toEqual("/claims?page=1");
     });
 
-    test("Multi herds and pig updates enabled - returns 200", async () => {
-      config.multiHerdsEnabled = true;
-      config.pigUpdatesEnabled = true;
+    test("Returns 200 for pigs", async () => {
+      const options = {
+        method: "GET",
+        url: `${url}/AHWR-0000-4444`,
+        auth,
+      };
 
+      const herd = {
+        herdId: "d6242c45-20df-4c69-bf49-a213604dd254",
+        herdVersion: 1,
+        herdName: "Fattening herd",
+        cph: "22/333/4444",
+        herdReasons: ["onlyHerd"],
+        species: "pigs",
+      };
+
+      getClaim.mockReturnValue({
+        ...pigFollowUpClaimElisa,
+        herd,
+      });
+      getClaims.mockReturnValue({ claims });
+      getApplication.mockReturnValue(application);
+
+      const res = await server.inject(options);
+
+      expect(res.statusCode).toBe(StatusCodes.OK);
+    });
+
+    test("Returns 200 pigs for a follow up", async () => {
       const options = {
         method: "GET",
         url: `${url}/AHWR-0000-4444`,
@@ -416,10 +482,7 @@ describe("View claim test", () => {
       expect(res.statusCode).toBe(StatusCodes.OK);
     });
 
-    test("Multi herds and pig updates enabled - returns 200 with no herd in claim", async () => {
-      config.multiHerdsEnabled = true;
-      config.pigUpdatesEnabled = true;
-
+    test("Returns 200 with no herd in claim", async () => {
       const options = {
         method: "GET",
         url: `${url}/AHWR-0000-4444`,
@@ -435,10 +498,7 @@ describe("View claim test", () => {
       expect(res.statusCode).toBe(StatusCodes.OK);
     });
 
-    test("Multi herds and pig updates enabled - returns 200 for sheep", async () => {
-      config.multiHerdsEnabled = true;
-      config.pigUpdatesEnabled = true;
-
+    test("Returns 200 for sheep", async () => {
       const options = {
         method: "GET",
         url: `${url}/AHWR-0000-4444`,
@@ -467,4 +527,48 @@ describe("View claim test", () => {
       expect(res.statusCode).toBe(StatusCodes.OK);
     });
   });
+
+  describe('getPigTestResultRows', () => {
+    it('returns the review test result when the claim is a review', () => {
+      const result = getPigTestResultRows(claims[0].data);
+
+      expect(result).toEqual([{ key: { text: "Test result" }, value: { html: "Positive" } }]);
+    });
+
+    it('returns the disease status category when the claim is a follow up and the feature flag is turned OFF', () => {
+      config.pigUpdatesEnabled = false;
+      const result = getPigTestResultRows(claims[2].data);
+
+      expect(result).toEqual([{ key: { text: "Disease status category" }, value: { html: "4" } }]);
+    });
+
+    it('returns the ELISA positive when the claim is a follow up and the feature flag is turned ON', () => {
+      config.pigUpdatesEnabled = true;
+      const result = getPigTestResultRows(pigFollowUpClaimElisa.data);
+
+      expect(result).toEqual([{ key: { text: "Test result" }, value: { html: "ELISA positive" } }]);
+    });
+
+    it("returns the ELISA positive when the claim is a follow up and the feature flag is turned ON", () => {
+      config.pigUpdatesEnabled = true;
+      const pigsFollowUpPcr = {
+        ...pigFollowUpClaimElisa,
+        data: {
+          ...pigFollowUpClaimElisa,
+          pigsFollowUpTest: "pcr",
+          pigsPcrTestResult: "positive",
+          pigsGeneticSequencing: "mlv",
+        },
+      };
+      const result = getPigTestResultRows(pigsFollowUpPcr.data);
+
+      expect(result).toEqual([
+        { key: { text: "Test result" }, value: { html: "PCR positive" } },
+        {
+          key: { text: "Genetic sequencing test results" },
+          value: { html: "Modified Live virus (MLV) only" },
+        },
+      ]);
+    });
+  })
 });
