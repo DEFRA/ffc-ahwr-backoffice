@@ -96,10 +96,6 @@ export const getPigTestResultRows = (data) => {
 };
 
 const getVaccinationStatusLabel = (vaccinationStatus) => {
-  if (!vaccinationStatus) {
-    return undefined;
-  }
-
   if (vaccinationStatus === 'notVaccinated') {
     return 'Not vaccinated';
   }
@@ -107,6 +103,8 @@ const getVaccinationStatusLabel = (vaccinationStatus) => {
   if (vaccinationStatus === 'vaccinated') {
     return 'Vaccinated';
   }
+
+  return 'N/A';
 }
 
 export const viewClaimRoute = {
@@ -303,7 +301,7 @@ export const viewClaimRoute = {
       const vetVisitsReviewTestResults = buildKeyValueJson("Vet Visits Review Test results", upperFirstLetter(data?.vetVisitsReviewTestResults), true);
       const diseaseStatus = buildKeyValueJson("Disease status category", data?.diseaseStatus, true);
       const numberOfSamplesTested = buildKeyValueJson("Samples tested", data?.numberOfSamplesTested, true);
-      const herdVaccinationStatus = buildKeyValueJson("Herd vaccination status", getVaccinationStatusLabel(data?.herdVaccinationStatus), true);
+      const herdVaccinationStatus = buildKeyValueJson("Herd vaccination status", data?.herdVaccinationStatus ? getVaccinationStatusLabel(data.herdVaccinationStatus) : undefined, true);
       const sheepEndemicsPackage = buildKeyValueJson("Sheep health package", upperFirstLetter(sheepPackages[data?.sheepEndemicsPackage]), true);
       const piHuntRecommendedRow = buildKeyValueJson("Vet recommended PI hunt", upperFirstLetter(data?.piHuntRecommended), true);
       const piHuntAllAnimalsRow = buildKeyValueJson("PI hunt done on all cattle in herd", upperFirstLetter(data?.piHuntAllAnimals), true);
