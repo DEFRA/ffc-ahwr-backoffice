@@ -46,8 +46,8 @@ container:
   displayPageSize: 20
   onHoldAppProcessEnabled:
   onHoldAppProcessSchedule:
-  dataRedactionProcessEnabled:
-  dataRedactionProcessSchedule:
+  dataRedactionProcessEnabled: false
+  dataRedactionProcessSchedule: "0 0 * * 2-5"
   superAdmins: ''
   multiHerdsEnabled: false
 
