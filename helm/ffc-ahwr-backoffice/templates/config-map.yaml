@@ -23,5 +23,5 @@ data:
   DATA_REDACTION_PROCESS_ENABLED: {{ quote .Values.container.dataRedactionProcessEnabled }}
   DATA_REDACTION_PROCESS_SCHEDULE: {{ quote .Values.container.dataRedactionProcessSchedule }}
   SUPER_ADMINS: {{ quote .Values.container.superAdmins }}
-  MULTI_HERDS_ENABLED: {{ quote .Values.container.multiHerdsEnabled }}
+  PIG_UPDATES_ENABLED: {{ quote .Values.container.pigUpdatesEnabled }}
 {{- end -}}

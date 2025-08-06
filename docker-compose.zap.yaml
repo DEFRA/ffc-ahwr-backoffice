@@ -10,7 +10,7 @@ services:
       - ./test-output/:/home/node/test-output/
 
   zap-baseline-scan:
-    image: softwaresecurityproject/zap-bare:2.14.0
+    image: zaproxy/zap-bare:2.16.1
     command: zap.sh -cmd -quickurl http://ffc-ahwr-backoffice:${PORT:-3000} -configfile wrk/config/zap.conf -quickout wrk/test-output/zap-report.html
     depends_on:
       - ffc-ahwr-backoffice

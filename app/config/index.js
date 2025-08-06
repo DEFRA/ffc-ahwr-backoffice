@@ -52,8 +52,8 @@ const getConfigSchema = () => (joi.object({
       enabled: joi.bool().required(),
       schedule: joi.string().required(),
     }))(),
-    superAdmins: joi.array().items(joi.string()).required().required(),
-    multiHerdsEnabled: joi.boolean().required().required(),
+    superAdmins: joi.array().items(joi.string()).required(),
+    pigUpdatesEnabled: joi.boolean().required(),
   }));
 
 const buildConfig = () => {
@@ -102,8 +102,10 @@ const buildConfig = () => {
       enabled: process.env.DATA_REDACTION_PROCESS_ENABLED === "true",
       schedule: process.env.DATA_REDACTION_PROCESS_SCHEDULE,
     },
-    superAdmins: process.env.SUPER_ADMINS ? process.env.SUPER_ADMINS.split(",").map((user) => user.trim().toLowerCase()) : [],
-    multiHerdsEnabled: process.env.MULTI_HERDS_ENABLED === "true",
+    superAdmins: process.env.SUPER_ADMINS
+      ? process.env.SUPER_ADMINS.split(",").map((user) => user.trim().toLowerCase())
+      : [],
+    pigUpdatesEnabled: process.env.PIG_UPDATES_ENABLED === "true",
   };
 
   if (process.env.NODE_ENV === "test") {
