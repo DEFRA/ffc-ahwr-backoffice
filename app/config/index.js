@@ -8,17 +8,17 @@ const NUMBER_OF_DAYS = 3;
 const ONE_YEAR_IN_DAYS = 365;
 
 const getConfigSchema = () => (joi.object({
-    cache: (() => ({
-    expiresIn: joi.number().required(),
-    options: {
-      host: joi.string().required(),
-      partition: joi.string().required(),
-      password: joi.string().allow("").required(),
-      port: joi.number().required(),
-      tls: joi.object(),
+    cache: {
+      expiresIn: joi.number().required(),
+      options: {
+        host: joi.string().required(),
+        partition: joi.string().required(),
+        password: joi.string().allow("").required(),
+        port: joi.number().required(),
+        tls: joi.object(),
+      },
     },
-  }))(),
-    cookie: (() => ({
+    cookie: {
       cookieNameCookiePolicy: joi.string().required(),
       cookieNameAuth: joi.string().required(),
       cookieNameSession: joi.string().required(),
@@ -26,8 +26,8 @@ const getConfigSchema = () => (joi.object({
       isSecure: joi.boolean().required(),
       password: joi.string().min(32).required(),
       ttl: joi.number().required(),
-    }))(),
-    cookiePolicy: (() => ({
+    },
+    cookiePolicy: {
       clearInvalid: joi.bool().required(),
       encoding: joi.string().required(),
       isSameSite: joi.string().required(),
@@ -35,7 +35,7 @@ const getConfigSchema = () => (joi.object({
       password: joi.string().min(32).required(),
       path: joi.string().required(),
       ttl: joi.number().required(),
-    }))(),
+    },
     env: joi.string().valid("development", "test", "production").required(),
     isDev: joi.boolean().required(),
     isProd: joi.boolean().required(),
@@ -44,14 +44,14 @@ const getConfigSchema = () => (joi.object({
     useRedis: joi.boolean().required(),
     applicationApiUri: joi.string().uri().required(),
     displayPageSize: joi.number().required(),
-    onHoldAppScheduler: (() => ({
+    onHoldAppScheduler: {
       enabled: joi.bool().required(),
       schedule: joi.string().required(),
-    }))(),
-    dataRedactionScheduler: (() => ({
+    },
+    dataRedactionScheduler: {
       enabled: joi.bool().required(),
       schedule: joi.string().required(),
-    }))(),
+    },
     superAdmins: joi.array().items(joi.string()).required(),
     pigUpdatesEnabled: joi.boolean().required(),
   }));
