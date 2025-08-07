@@ -20,6 +20,8 @@ data:
   DISPLAY_PAGE_SIZE: {{ quote .Values.container.displayPageSize }}
   ON_HOLD_APP_PROCESS_ENABLED: {{ quote .Values.container.onHoldAppProcessEnabled }}
   ON_HOLD_APP_PROCESS_SCHEDULE: {{ quote .Values.container.onHoldAppProcessSchedule }}
+  DATA_REDACTION_PROCESS_ENABLED: {{ quote .Values.container.dataRedactionProcessEnabled }}
+  DATA_REDACTION_PROCESS_SCHEDULE: {{ quote .Values.container.dataRedactionProcessSchedule }}
   SUPER_ADMINS: {{ quote .Values.container.superAdmins }}
   PIG_UPDATES_ENABLED: {{ quote .Values.container.pigUpdatesEnabled }}
 {{- end -}}

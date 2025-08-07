@@ -7,42 +7,35 @@ const HOURS_PER_DAY = 24;
 const NUMBER_OF_DAYS = 3;
 const ONE_YEAR_IN_DAYS = 365;
 
-const getCookieConfigSchema = () => ({
-  cookieNameCookiePolicy: joi.string().required(),
-  cookieNameAuth: joi.string().required(),
-  cookieNameSession: joi.string().required(),
-  isSameSite: joi.string().required(),
-  isSecure: joi.boolean().required(),
-  password: joi.string().min(32).required(),
-  ttl: joi.number().required(),
-});
-
-const getCacheConfigSchema = () => ({
-  expiresIn: joi.number().required(),
-  options: {
-    host: joi.string().required(),
-    partition: joi.string().required(),
-    password: joi.string().allow("").required(),
-    port: joi.number().required(),
-    tls: joi.object(),
-  },
-});
-
-const getCookiePolicyConfigSchema = () => ({
-  clearInvalid: joi.bool().required(),
-  encoding: joi.string().required(),
-  isSameSite: joi.string().required(),
-  isSecure: joi.bool().required(),
-  password: joi.string().min(32).required(),
-  path: joi.string().required(),
-  ttl: joi.number().required(),
-});
-
-const buildConfig = () => {
-  const schema = joi.object({
-    cache: getCacheConfigSchema(),
-    cookie: getCookieConfigSchema(),
-    cookiePolicy: getCookiePolicyConfigSchema(),
+const getConfigSchema = () => (joi.object({
+    cache: {
+      expiresIn: joi.number().required(),
+      options: {
+        host: joi.string().required(),
+        partition: joi.string().required(),
+        password: joi.string().allow("").required(),
+        port: joi.number().required(),
+        tls: joi.object(),
+      },
+    },
+    cookie: {
+      cookieNameCookiePolicy: joi.string().required(),
+      cookieNameAuth: joi.string().required(),
+      cookieNameSession: joi.string().required(),
+      isSameSite: joi.string().required(),
+      isSecure: joi.boolean().required(),
+      password: joi.string().min(32).required(),
+      ttl: joi.number().required(),
+    },
+    cookiePolicy: {
+      clearInvalid: joi.bool().required(),
+      encoding: joi.string().required(),
+      isSameSite: joi.string().required(),
+      isSecure: joi.bool().required(),
+      password: joi.string().min(32).required(),
+      path: joi.string().required(),
+      ttl: joi.number().required(),
+    },
     env: joi.string().valid("development", "test", "production").required(),
     isDev: joi.boolean().required(),
     isProd: joi.boolean().required(),
@@ -55,10 +48,15 @@ const buildConfig = () => {
       enabled: joi.bool().required(),
       schedule: joi.string().required(),
     },
+    dataRedactionScheduler: {
+      enabled: joi.bool().required(),
+      schedule: joi.string().required(),
+    },
     superAdmins: joi.array().items(joi.string()).required(),
     pigUpdatesEnabled: joi.boolean().required(),
-  });
+  }));
 
+const buildConfig = () => {
   const conf = {
     cache: {
       expiresIn: MILLISECONDS_PER_SECOND * SECONDS_PER_HOUR * HOURS_PER_DAY * NUMBER_OF_DAYS,
@@ -100,6 +98,10 @@ const buildConfig = () => {
       enabled: process.env.ON_HOLD_APP_PROCESS_ENABLED === "true",
       schedule: process.env.ON_HOLD_APP_PROCESS_SCHEDULE,
     },
+    dataRedactionScheduler: {
+      enabled: process.env.DATA_REDACTION_PROCESS_ENABLED === "true",
+      schedule: process.env.DATA_REDACTION_PROCESS_SCHEDULE,
+    },
     superAdmins: process.env.SUPER_ADMINS
       ? process.env.SUPER_ADMINS.split(",").map((user) => user.trim().toLowerCase())
       : [],
@@ -110,12 +112,12 @@ const buildConfig = () => {
     return { ...conf, auth: authConfig };
   }
 
+  const schema = getConfigSchema();
   const { error } = schema.validate(conf, { abortEarly: false });
-
   if (error) {
     throw new Error(`The server config is invalid. ${error.message}`);
   }
-
+  
   return { ...conf, auth: authConfig };
 };
 
