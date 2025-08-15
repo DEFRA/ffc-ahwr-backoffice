@@ -1,32 +1,38 @@
 {% extends "govuk/template.njk" %}
 
 {% from "govuk/components/back-link/macro.njk"           import govukBackLink %}
-{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/breadcrumbs/macro.njk"         import govukBreadcrumbs %}
+{% from "govuk/components/button/macro.njk"              import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk"          import govukCheckboxes %}
 {% from "govuk/components/date-input/macro.njk"          import govukDateInput %}
-{% from "govuk/components/details/macro.njk" import govukDetails %}
-{% from "govuk/components/footer/macro.njk" import govukFooter %}
-{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/details/macro.njk"             import govukDetails %}
+{% from "govuk/components/footer/macro.njk"              import govukFooter %}
+{% from "govuk/components/input/macro.njk"               import govukInput %}
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
-{% from "govuk/components/pagination/macro.njk" import govukPagination %}
-{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/pagination/macro.njk"          import govukPagination %}
+{% from "govuk/components/panel/macro.njk"               import govukPanel %}
 {% from "govuk/components/phase-banner/macro.njk"        import govukPhaseBanner %}
-{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/radios/macro.njk"              import govukRadios %}
 {% from "govuk/components/summary-list/macro.njk"        import govukSummaryList %}
-{% from "govuk/components/tabs/macro.njk" import govukTabs %}
-{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/tabs/macro.njk"                import govukTabs %}
+{% from "govuk/components/table/macro.njk"               import govukTable %}
 {% from "govuk/components/warning-text/macro.njk"        import govukWarningText %}
-{% from "govuk/components/header/macro.njk" import govukHeader %}
-{% from "moj/components/header/macro.njk" import mojHeader %}
-{%- from "moj/components/filter/macro.njk" import mojFilter -%}
-{%- from "../layouts/header.njk" import ahwrHeader -%}
-{%- from "moj/components/button-menu/macro.njk" import mojButtonMenu -%}
+{% from "govuk/components/header/macro.njk"              import govukHeader %}
+{% from "govuk/components/service-navigation/macro.njk"  import govukServiceNavigation %}
+{% from "moj/components/header/macro.njk"                import mojHeader %}
+{%- from "moj/components/filter/macro.njk"               import mojFilter -%}
+{%- from "moj/components/button-menu/macro.njk"          import mojButtonMenu -%}
 
-{% block pageTitle %}Administration of the health and welfare of your livestock - GOV.UK{% endblock %}
+{% set serviceName = "Administration of the health and welfare of your livestock" %}
+
+{% block pageTitle %}{{serviceName}} - GOV.UK{% endblock %}
+
+{% set govukRebrand = true %}
 
 {% block head %}
   <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" sizes="48x48" href="/assets/rebrand/images/favicon.ico">
+  <link rel="icon" sizes="any" href="/assets/rebrand/images/favicon.svg" type="image/svg+xml">
   <!--[if !IE 8]><!-->
   <% htmlWebpackPlugin.files.css.forEach(file => { %>
     <link href="<%= file %>" rel="stylesheet">
@@ -40,9 +46,28 @@
     {% endblock %}
 
     {% block header %}
-      {{
-        ahwrHeader(user, endemicsEnabled, currentPath)
-      }}
+      {{ govukHeader({
+        rebrand: true,
+        homepageUrl: "https://www.gov.uk/",
+        containerClasses: "govuk-width-container"
+      }) }}
+
+      {% set nav = [
+        { href: "/claims", text: "Home" },
+        { href: "/logout", text: "Sign out" }
+      ] %}
+      
+      {% if user %}
+        {% set nav = nav.slice(0, 1)
+          .concat([{ href: "/account", text: user.name }])
+          .concat(nav.slice(1)) %}
+      {% endif %}
+
+      {{ govukServiceNavigation({
+        serviceName: serviceName,
+        serviceUrl: "https://www.gov.uk/government/collections/funding-to-improve-animal-health-and-welfare-guidance-for-farmers-and-vets",
+        navigation: nav
+      }) }}
       <div class="govuk-grid-row govuk-width-container">
         {{ govukPhaseBanner({
           tag: {
@@ -55,6 +80,7 @@
 
     {% block footer %}
       {{ govukFooter({
+        rebrand: true,
         meta: {
           items: [
             {
