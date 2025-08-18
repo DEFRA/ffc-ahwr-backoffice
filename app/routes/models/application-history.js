@@ -39,6 +39,7 @@ const getAction = (updatedProperty, newValue, oldValue) => {
     agreementFlag: `Agreement was moved from ${oldValue} to ${newValue}`,
     testResults: `Test results updated from ${oldValue} to ${newValue}`,
     herdName: `Herd details were updated from ${oldValue} to ${newValue}`,
+    laboratoryUrn: `Laboratory URN was updated from ${oldValue} to ${newValue}`
   };
 
   return dataProperties[updatedProperty];
