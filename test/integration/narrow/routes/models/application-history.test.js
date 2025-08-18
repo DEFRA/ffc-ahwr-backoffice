@@ -55,6 +55,15 @@ test("renders table", () => {
       updatedBy: "admin",
       updatedProperty: "herdName",
     },
+    {
+      eventType: "claim-urnResult",
+      newValue: "SA-123-345",
+      note: "URN was incorrectly entered, and has been updated",
+      oldValue: "ZZZXXX",
+      updatedAt: "2025-03-28T14:54:18.927Z",
+      updatedBy: "admin",
+      updatedProperty: "laboratoryUrn",
+    },
   ];
 
   const expected = {
@@ -120,6 +129,23 @@ test("renders table", () => {
           text: "Herd details were retroactively applied to this pre-multiple herds claim",
         },
       ],
+      [
+        {
+          text: "28/03/2025",
+        },
+        {
+          text: "14:54:18",
+        },
+        {
+          text: "Laboratory URN was updated from ZZZXXX to SA-123-345",
+        },
+        {
+          text: "admin",
+        },
+        {
+          text: "URN was incorrectly entered, and has been updated",
+        },
+      ]
     ],
   };
 
