@@ -24,7 +24,7 @@ export const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = tru
         "aria-sort": sort === "claim number" ? direction : "none",
         "data-url": `${dataURLPrefix}claims/sort/claim number`,
       },
-      classes: "col-12 responsive-text",
+      classes: `col-12 ${respText}`,
     },
     {
       html: `<span>Flagged ${FLAG_EMOJI}</span>`,
@@ -40,7 +40,7 @@ export const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = tru
     },
     {
       text: "Herd name",
-      classes: "col-25 responsive-text",
+      classes: `col-25 ${respText}`,
     },
     {
       text: "Herd CPH",
@@ -53,7 +53,7 @@ export const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = tru
         "data-url": "/claims/sort/SBI",
       },
       format: "numeric",
-      classes: "col-6 align-left responsive-text",
+      classes: `col-6 align-left ${respText}`,
     },
     {
       text: "Claim date",
@@ -62,7 +62,7 @@ export const getClaimTableHeader = (sortField, dataURLPrefix = "", showSBI = tru
         "data-url": "claims/sort/claim date",
       },
       format: "date",
-      classes: "col-6 align-left responsive-text",
+      classes: `col-6 align-left ${respText}`,
     },
     {
       text: "Status",
@@ -80,13 +80,13 @@ export const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
     const row = [
       {
         html: `<div>
-                <a class="govuk-!-margin-0 responsive-text" href="${serviceUri}/view-claim/${claim.reference}?page=${page}&returnPage=${returnPage}">${claim.reference}</a>
-                <p class="govuk-!-margin-0 responsive-text">${formatTypeOfVisit(claim.type)}</p>
+                <a class="govuk-!-margin-0 ${respText}" href="${serviceUri}/view-claim/${claim.reference}?page=${page}&returnPage=${returnPage}">${claim.reference}</a>
+                <p class="govuk-!-margin-0 ${respText}">${formatTypeOfVisit(claim.type)}</p>
               </div>`,
       },
       {
         html: claim.flags.length ? `<span>Yes ${FLAG_EMOJI}</span>` : "",
-        classes: "responsive-text",
+        classes: respText,
       },
       {
         text: formatSpecies(claim.data?.typeOfLivestock),
@@ -113,7 +113,7 @@ export const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
               attributes: {
                 "data-sort-value": claim.application.data?.organisation?.sbi,
               },
-              classes: "responsive-text align-left",
+              classes: `${respText} align-left`,
             },
           ]
         : []),
@@ -123,10 +123,10 @@ export const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
         attributes: {
           "data-sort-value": claim.createdAt,
         },
-        classes: "responsive-text align-left",
+        classes: `${respText} align-left`,
       },
       {
-        html: `<span class="app-long-tag"><span class="govuk-tag responsive-text ${getStyleClassByStatus(claim.status.status)}">${upperFirstLetter(claim.status.status.toLowerCase())}</span></span>`,
+        html: `<span class="app-long-tag"><span class="govuk-tag ${respText} ${getStyleClassByStatus(claim.status.status)}">${upperFirstLetter(claim.status.status.toLowerCase())}</span></span>`,
         attributes: {
           "data-sort-value": `${claim.status.status}`,
         },
@@ -136,7 +136,7 @@ export const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
     if (claim.flags.length) {
       return row.map((rowItem) => ({
         ...rowItem,
-        classes: "flagged-item",
+        classes: rowItem?.classes ? `${rowItem.classes} flagged-item`: "flagged-item",
       }));
     }
 
