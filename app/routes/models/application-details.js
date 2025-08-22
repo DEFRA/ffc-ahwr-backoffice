@@ -2,8 +2,8 @@ import { formattedDateToUk, upperFirstLetter } from "../../lib/display-helper.js
 import { getStyleClassByStatus } from "../../constants/status.js";
 import { speciesNumbers } from "../../constants/species-numbers.js";
 
-export const getApplicationDetails = (application, statusActions) => {
-  const { data, createdAt, status } = application;
+export const getApplicationDetails = (application, statusActions, eligiblePiiRedactionActions) => {
+  const { data, createdAt, status, eligiblePiiRedaction } = application;
   const formatedDate = formattedDateToUk(createdAt);
 
   const statusLabel = upperFirstLetter(status.status.toLowerCase());
@@ -39,5 +39,10 @@ export const getApplicationDetails = (application, statusActions) => {
       key: { text: "Agreement accepted" },
       value: { text: data.offerStatus === "accepted" ? "Yes" : "No" },
     },
+    {
+      key: { text: "Eligible for automated data redaction" },
+      value: { text: eligiblePiiRedaction ? "Yes" : "No" },
+      actions: eligiblePiiRedactionActions,
+    }
   ];
 };

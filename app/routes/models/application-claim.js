@@ -17,7 +17,7 @@ export const getApplicationClaimDetails = (
   statusActions,
   visitDateActions,
   vetsNameActions,
-  vetRCVSNumberActions,
+  vetRCVSNumberActions
 ) => {
   if (!application.claimed && !claimDataStatus.includes(application.status.status)) {
     return null;
@@ -79,6 +79,6 @@ export const getApplicationClaimDetails = (
     {
       key: { text: "Test results unique reference number (URN)" },
       value: { text: data.urnResult },
-    },
+    }
   ];
 };
