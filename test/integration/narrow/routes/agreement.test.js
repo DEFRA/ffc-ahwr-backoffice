@@ -116,7 +116,30 @@ describe("Claims test", () => {
       expect(actions.find("a.govuk-link").length).toBe(1);
       expect(actions.find("a.govuk-link").text()).toBe("Change");
       expect(actions.find("a.govuk-link").attr("href")).toContain("/agreement/123/claims?page=1&updateEligiblePiiRedaction=true");
+
+      const redactionRow = $(".govuk-summary-list__row")
+        .filter((i, el) => $(el).find("dt").text().trim() === "Eligible for automated data redaction")
+        .first();
+      expect(redactionRow.find(".govuk-summary-list__value p").text().trim()).toBe('No');
     });
+
+    test('displays eligible for automated data redaction as Yes when the value is true', async () => {
+      getApplication.mockReturnValue({ ...applicationsData.applications[0], eligiblePiiRedaction: true });
+      const options = {
+        method: "GET",
+        url: `${url}?page=1`,
+        auth,
+      };
+
+      const res = await server.inject(options);
+     
+      expect(res.statusCode).toBe(StatusCodes.OK);
+      const $ = cheerio.load(res.payload);
+      const redactionRow = $(".govuk-summary-list__row")
+        .filter((i, el) => $(el).find("dt").text().trim() === "Eligible for automated data redaction")
+        .first();
+      expect(redactionRow.find(".govuk-summary-list__value p").text().trim()).toBe('Yes');
+    })
 
     test("returns table in correct sort order", async () => {
       getClaimSearch.mockReturnValueOnce({
