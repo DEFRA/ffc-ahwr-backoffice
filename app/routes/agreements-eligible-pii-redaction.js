@@ -37,6 +37,7 @@ export const updateEligiblePiiRedactionRoute = {
         const errors = encodeErrorsForUI(err.details, panelID);
         const query = new URLSearchParams({
           page,
+          updateEligiblePiiRedaction: "true",
           errors,
         });
 

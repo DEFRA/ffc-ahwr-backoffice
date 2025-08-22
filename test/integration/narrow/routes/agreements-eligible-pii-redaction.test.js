@@ -124,7 +124,7 @@ describe("get-applications-to-redact", () => {
       const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
-      expect(res.headers.location).toEqual(expect.stringContaining('/agreement/IAHW-U6ZE-5R5E/claims?page=1&errors='))
+      expect(res.headers.location).toEqual(expect.stringContaining('/agreement/IAHW-U6ZE-5R5E/claims?page=1&updateEligiblePiiRedaction=true&errors='))
     });
 
 
@@ -146,7 +146,7 @@ describe("get-applications-to-redact", () => {
       const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
-      expect(res.headers.location).toEqual(expect.stringContaining('/view-agreement/AHWR-U6ZE-5R5E?page=1&errors='))
+      expect(res.headers.location).toEqual(expect.stringContaining('/view-agreement/AHWR-U6ZE-5R5E?page=1&updateEligiblePiiRedaction=true&errors='))
     });
   });
 });
