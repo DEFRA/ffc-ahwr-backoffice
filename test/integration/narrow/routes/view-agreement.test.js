@@ -102,6 +102,8 @@ describe("View Application test", () => {
       authoriseForm: false,
       rejectForm: false,
       withdrawAction: true,
+      updateEligiblePiiRedactionAction: false,
+      updateEligiblePiiRedactionForm: false,
     });
 
     server = await createServer();

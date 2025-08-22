@@ -28,44 +28,39 @@ export const updateEligiblePiiRedactionRoute = {
         })
         .required(),
       failAction: async (request, h, err) => {
-        const { form, page, reference } = request.payload;
+        const { page, reference } = request.payload;
 
-        request.logger.setBindings({ err, form });
+        request.logger.setBindings({ err });
 
         const panelID = "#update-eligible-pii-redaction";
 
         const errors = encodeErrorsForUI(err.details, panelID);
         const query = new URLSearchParams({
           page,
-          [form]: "true",
           errors,
         });
 
-        return h
-          .redirect(`/view-agreement/${reference}?${query.toString()}`)
-          .takeover();
+        if(reference.startsWith('AHWR')) {
+          return h.redirect(`/view-agreement/${reference}?${query.toString()}`).takeover();
+        } else {
+          return h.redirect(`/agreement/${reference}/claims?${query.toString()}`).takeover();
+        }
       },
     },
     handler: async (request, h) => {
-      console.log('TEST')
       const { name } = request.auth.credentials.account;
       const {
-        form,
         page,
         note,
         reference,
         eligiblePiiRedaction,
       } = request.payload;
       
-
-      request.logger.setBindings({ form });
+      request.logger.setBindings({ reference });
 
       await generateNewCrumb(request, h);
       const query = new URLSearchParams({ page });
 
-      console.log({
-        eligiblePiiRedaction
-      })
       const agreementData = {
         eligiblePiiRedaction: eligiblePiiRedaction === 'yes'
       }

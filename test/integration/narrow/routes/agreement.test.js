@@ -11,6 +11,7 @@ import { getPagination, getPagingData } from "../../../../app/pagination";
 import { getClaimSearch } from "../../../../app/session";
 import { createServer } from "../../../../app/server";
 import { StatusCodes } from "http-status-codes";
+import { getClaimViewStates } from "../../../../app/routes/utils/get-claim-view-states";
 
 const { administrator } = permissions;
 
@@ -22,6 +23,7 @@ jest.mock("../../../../app/api/claims.js");
 jest.mock("../../../../app/api/contact-history.js");
 jest.mock("../../../../app/auth");
 jest.mock("../../../../app/session");
+jest.mock("../../../../app/routes/utils/get-claim-view-states")
 
 getApplication.mockReturnValue(applicationsData.applications[0]);
 getContactHistory.mockReturnValue(contactHistory);
@@ -45,6 +47,12 @@ displayContactHistory.mockReturnValue({
   farmerName: "NA",
   address: "NA",
 });
+
+getClaimViewStates.mockReturnValue({
+  updateEligiblePiiRedactionAction: false,
+  updateEligiblePiiRedactionForm: false
+});
+
 
 const auth = {
   strategy: "session-auth",
@@ -107,7 +115,7 @@ describe("Claims test", () => {
       const actions = $(".govuk-summary-list__actions");
       expect(actions.find("a.govuk-link").length).toBe(1);
       expect(actions.find("a.govuk-link").text()).toBe("Change");
-      expect(actions.find("a.govuk-link").attr("href")).toContain("/eligible-pii-redaction");
+      expect(actions.find("a.govuk-link").attr("href")).toContain("/agreement/123/claims?page=1&updateEligiblePiiRedaction=true");
     });
 
     test("returns table in correct sort order", async () => {
@@ -178,6 +186,7 @@ describe("Claims test", () => {
       const res = await server.inject(options);
       expect(res.result).toEqual(1);
     });
+
     test("the back link should go to view claim if the user is coming from view claim page", async () => {
       const options = {
         method: "GET",
@@ -193,6 +202,7 @@ describe("Claims test", () => {
 
       expect($(".govuk-back-link").attr("href")).toEqual("/view-claim/REDC-6179-D9D3?page=1");
     });
+
     test("the back link should go to all agreements if the user is coming from all agreements main tab", async () => {
       const options = {
         method: "GET",
@@ -201,6 +211,7 @@ describe("Claims test", () => {
       };
 
       const res = await server.inject(options);
+
       expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($("title").text()).toContain("Administration - My Farm");

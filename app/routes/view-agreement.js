@@ -54,10 +54,6 @@ export const viewAgreementRoute = {
         request.logger,
       );
 
-      console.log({
-        application
-      })
-
       const currentStatusEvent = getCurrentStatusEvent(application, historyRecords);
 
       let applicationEvents;
@@ -145,7 +141,7 @@ export const viewAgreementRoute = {
         statusActions,
         dateOfVisitActions,
         vetsNameActions,
-        vetRCVSNumberActions
+        vetRCVSNumberActions,
       );
       const errorMessages = getErrorMessagesByKey(errors);
 
