@@ -1,0 +1,54 @@
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+<div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="update-eligible-pii-redaction">
+  <form method="post" action="/agreements/{{ reference }}/eligible-pii-redaction" class="ahwr-update-form">
+    {% if claimOrAgreement == 'agreement' %}
+      <a href="/view-agreement/{{ reference }}?page={{ page }}" class="govuk-link govuk-body">Back</a>
+    {% elif claimOrAgreement == 'claim' %}
+      <a href="/view-claim/{{ reference }}?page={{ page }}&returnPage={{ returnPage }}" class="govuk-link govuk-body">Back</a>
+    {% endif %}
+    <h2 class="govuk-heading-l">Update eligible for automated data redaction</h2>
+    {{
+      govukRadios({
+        classes: "govuk-radios--inline",
+        name: "eligiblePiiRedaction",
+        fieldset: {
+          legend: {
+            text: 'Eligible for automated data redaction',
+            isPageHeading: false
+          }
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes",
+            checked: eligiblePiiRedaction == true
+          },
+          {
+            value: "no",
+            text: "No",
+            checked: eligiblePiiRedaction == false
+          }
+        ]
+      })
+    }}
+    {{
+      govukInput({
+        id: "note",
+        name: "note",
+        label: {
+          text: "Note"
+        },
+        errorMessage: errorMessages.note
+      })
+    }}
+    {{
+      govukButton({
+        text: "Confirm and continue"
+      })
+    }}
+    <input type="hidden" name="reference" value="{{ reference }}" />
+    <input type="hidden" name="page" value="{{ page }}" />
+    <input type="hidden" name="crumb" value="{{ crumb }}" />
+  </form>
+</div>

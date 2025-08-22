@@ -9,6 +9,7 @@ import {
   getApplicationEvents,
   updateApplicationData,
   redactPiiData,
+  updateEligiblePiiRedaction,
 } from "../../../app/api/applications";
 
 jest.mock("@hapi/wreck");
@@ -350,29 +351,71 @@ describe("Application API", () => {
     const logger = {
       setBindings: jest.fn(),
     };
-  
+
     const endpoint = `${applicationApiUri}/redact/pii`;
-  
+
     beforeEach(() => {
       jest.clearAllMocks();
     });
-  
+
     it('should return payload when request is successful', async () => {
       wreck.post.mockResolvedValue({ payload: {} });
-  
+
       const result = await redactPiiData(logger);
-  
+
       expect(wreck.post).toHaveBeenCalledWith(endpoint, {});
       expect(result).toEqual({});
       expect(logger.setBindings).not.toHaveBeenCalled();
     });
-  
+
     it('should log and rethrow error when request fails', async () => {
       const mockError = new Error('Request failed');
       wreck.post.mockRejectedValue(mockError);
-  
+
       await expect(redactPiiData(logger)).rejects.toThrow('Request failed');
-  
+
+      expect(logger.setBindings).toHaveBeenCalledWith({
+        err: mockError,
+        endpoint,
+      });
+    });
+  });
+
+
+  describe('updateEligiblePiiRedaction', () => {
+    const logger = {
+      setBindings: jest.fn(),
+    };
+    const reference = 'IAHW-KJLI-2678'
+    const endpoint = `${applicationApiUri}/application/${reference}/eligible-pii-redaction`;
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should return payload when request is successful', async () => {
+      wreck.put.mockResolvedValue({ payload: {} });
+
+      const result = await updateEligiblePiiRedaction(reference, { updateEligiblePiiRedaction: true }, 'Reason for change', 'John Doe', logger);
+
+      expect(wreck.put).toHaveBeenCalledWith(endpoint, {
+        payload: {
+          note: 'Reason for change',
+          updateEligiblePiiRedaction: true,
+          user: 'John Doe'
+        }
+      });
+      expect(result).toEqual({});
+      expect(logger.setBindings).not.toHaveBeenCalled();
+    });
+
+    it('should log and rethrow error when request fails', async () => {
+      const mockError = new Error('Request failed');
+      wreck.put.mockRejectedValue(mockError);
+
+      await expect(updateEligiblePiiRedaction(reference, { updateEligiblePiiRedaction: true }, 'Reason for change', 'John Doe', logger))
+        .rejects.toThrow('Request failed');
+
       expect(logger.setBindings).toHaveBeenCalledWith({
         err: mockError,
         endpoint,

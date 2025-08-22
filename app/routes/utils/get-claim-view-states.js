@@ -162,6 +162,7 @@ export const getClaimViewStates = (request, statusId, currentStatusEvent) => {
     updateVetsName,
     updateDateOfVisit,
     updateVetRCVSNumber,
+    updateEligiblePiiRedaction
   } = request.query;
   const { name } = request.auth.credentials.account;
 
@@ -189,6 +190,7 @@ export const getClaimViewStates = (request, statusId, currentStatusEvent) => {
     updateVetsName,
     updateVetRCVSNumber,
     updateDateOfVisit,
+    updateEligiblePiiRedaction,
   );
 
   return {
@@ -208,6 +210,7 @@ const superAdminActions = (
   updateVetsName,
   updateVetRCVSNumber,
   updateDateOfVisit,
+  updateEligiblePiiRedaction
 ) => {
   const claimIsntPaidOrReadyToPay = ![CLAIM_STATUS.READY_TO_PAY, CLAIM_STATUS.PAID].includes(
     statusId,
@@ -225,6 +228,9 @@ const superAdminActions = (
   const updateDateOfVisitAction = isSuperAdmin;
   const updateDateOfVisitForm = isSuperAdmin && updateDateOfVisit === true;
 
+  const updateEligiblePiiRedactionAction = isSuperAdmin;
+  const updateEligiblePiiRedactionForm = isSuperAdmin && updateEligiblePiiRedaction === true;
+
   return {
     updateStatusAction,
     updateStatusForm,
@@ -234,5 +240,7 @@ const superAdminActions = (
     updateVetRCVSNumberForm,
     updateDateOfVisitAction,
     updateDateOfVisitForm,
+    updateEligiblePiiRedactionAction,
+    updateEligiblePiiRedactionForm
   };
 };

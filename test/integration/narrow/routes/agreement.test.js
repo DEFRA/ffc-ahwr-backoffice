@@ -103,6 +103,11 @@ describe("Claims test", () => {
       expect($("th[aria-sort]")[2].attribs["data-url"]).toContain("claims/sort/claim date");
       expect($("th[aria-sort]")[3].attribs["aria-sort"]).toEqual("none");
       expect($("th[aria-sort]")[3].attribs["data-url"]).toContain("claims/sort/status");
+
+      const actions = $(".govuk-summary-list__actions");
+      expect(actions.find("a.govuk-link").length).toBe(1);
+      expect(actions.find("a.govuk-link").text()).toBe("Change");
+      expect(actions.find("a.govuk-link").attr("href")).toContain("/eligible-pii-redaction");
     });
 
     test("returns table in correct sort order", async () => {

@@ -129,3 +129,22 @@ export async function redactPiiData(logger) {
     throw err;
   }
 }
+
+export async function updateEligiblePiiRedaction(reference, data, note, name, logger) {
+  const endpoint = `${applicationApiUri}/application/${reference}/eligible-pii-redaction`;
+  const options = {
+    payload: {
+      ...data,
+      note,
+      user: name,
+    },
+  };
+
+  try {
+    const { payload } = await wreck.put(endpoint, options);
+    return payload;
+  } catch (err) {
+    logger.setBindings({ err, endpoint });
+    throw err;
+  }
+}
