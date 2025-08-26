@@ -190,7 +190,7 @@ export const getClaimViewStates = (request, statusId, currentStatusEvent) => {
     updateVetsName,
     updateVetRCVSNumber,
     updateDateOfVisit,
-    updateEligiblePiiRedaction,
+    updateEligiblePiiRedaction
   );
 
   return {
