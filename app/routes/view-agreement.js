@@ -95,7 +95,7 @@ export const viewAgreementRoute = {
         updateDateOfVisitAction,
         updateDateOfVisitForm,
         updateEligiblePiiRedactionAction,
-        updateEligiblePiiRedactionForm
+        updateEligiblePiiRedactionForm,
       } = getClaimViewStates(request, application.statusId, currentStatusEvent);
 
       const errors = request.query.errors

@@ -39,7 +39,7 @@ export const agreementRoutes = [
           page: joi.number().greater(0).default(1),
           returnPage: joi.string(),
           updateEligiblePiiRedaction: joi.bool().default(false),
-          errors: joi.string().allow(null)
+          errors: joi.string().allow(null),
         }),
       },
       handler: async (request, h) => {
@@ -93,13 +93,13 @@ export const agreementRoutes = [
           {
             field: "Flagged",
             newValue: application.flags.length > 0 ? "Yes" : "No",
-            oldValue: null
+            oldValue: null,
           },
           {
             field: "Eligible for automated data redaction",
             newValue: application.eligiblePiiRedaction ? 'Yes' : 'No',
             oldValue: null,
-            change: true
+            change: true,
           }
         ];
 
@@ -129,7 +129,7 @@ export const agreementRoutes = [
 
         const {
           updateEligiblePiiRedactionAction,
-          updateEligiblePiiRedactionForm
+          updateEligiblePiiRedactionForm,
         } = getClaimViewStates(request, application.statusId, null);
 
         const errors = request.query.errors

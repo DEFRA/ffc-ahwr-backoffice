@@ -51,7 +51,7 @@ const routes = [
   viewAgreementRoute,
   viewClaimRoute,
   withdrawAgreementRoute,
-  updateEligiblePiiRedactionRoute
+  updateEligiblePiiRedactionRoute,
 ];
 
 export const routerPlugin = {
