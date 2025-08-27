@@ -1,4 +1,5 @@
 {% extends './layouts/layout.njk'%}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% block pageTitle %}
   Administration - {{ businessName }}
@@ -14,13 +15,22 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      {% if errors.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors
+        }) }}
+      {% endif %}
       <h1 class="govuk-caption-l govuk-!-margin-bottom-3">Agreement details and claims</h1>
       <h2 class="govuk-heading-l">{{ businessName }}</h2>
+      {% if updateEligiblePiiRedactionForm %}
+        {% include "./includes/eligible-pii-redaction-form.njk" %}
+      {% endif %}
       <dl class="govuk-summary-list">
         {% for item in applicationSummaryDetails %}
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key {% if item.flagged %} flagged-item{% endif %}">{{ item.field }}</dt>
-            <dd class="govuk-summary-list__value{% if item.flagged %} flagged-item{% endif %}">
+            <dd class="govuk-summary-list__value{% if item.flagged %} flagged-item{% endif %}">              
               <p>{{ item.newValue }}</p>
               {% if (item.oldValue) and (item.oldValue != "NA") %}
                 <details class="govuk-details">
@@ -32,6 +42,15 @@
                   </div>
                 </details>
               {% endif %}
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <ul class="govuk-summary-list__actions-list">
+              {% if item.change %}
+                <li class="govuk-summary-list__actions-list-item">
+                  <a class="govuk-link" href="{{ updateEligiblePiiRedactionUrl }}">Change</a>
+                </li>
+              {% endif %}
+              </ul>
             </dd>
           </div>
         {% endfor %}
@@ -98,5 +117,6 @@
         </div>
       </div>
   {% endif %}
+
   </div>
 {%endblock%}

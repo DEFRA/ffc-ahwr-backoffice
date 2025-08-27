@@ -43,6 +43,7 @@ export const viewAgreementRoute = {
         updateVetsName: joi.bool().default(false),
         updateDateOfVisit: joi.bool().default(false),
         updateVetRCVSNumber: joi.bool().default(false),
+        updateEligiblePiiRedaction: joi.bool().default(false)
       }),
     },
     handler: async (request, h) => {
@@ -93,6 +94,8 @@ export const viewAgreementRoute = {
         updateVetRCVSNumberForm,
         updateDateOfVisitAction,
         updateDateOfVisitForm,
+        updateEligiblePiiRedactionAction,
+        updateEligiblePiiRedactionForm,
       } = getClaimViewStates(request, application.statusId, currentStatusEvent);
 
       const errors = request.query.errors
@@ -122,12 +125,15 @@ export const viewAgreementRoute = {
       const vetRCVSNumberActions = updateVetRCVSNumberAction
         ? getAction("updateVetRCVSNumber", "RCVS number", "update-vet-rcvs-number")
         : null;
+      const eligiblePiiRedactionActions = updateEligiblePiiRedactionAction
+        ? getAction("updateEligiblePiiRedaction", "eligible for automated data redaction", "update-eligible-pii-redaction")
+        : null;
 
       const contactHistory = await getContactHistory(request.params.reference, request.logger);
       const contactHistoryDetails = displayContactHistory(contactHistory);
       const { organisation } = application.data;
       const organisationDetails = getOrganisationDetails(organisation, contactHistoryDetails);
-      const applicationDetails = getApplicationDetails(application, statusActions);
+      const applicationDetails = getApplicationDetails(application, statusActions, eligiblePiiRedactionActions);
       const historyDetails = getHistoryDetails(historyRecords);
       const applicationClaimDetails = getApplicationClaimDetails(
         application,
@@ -169,6 +175,9 @@ export const viewAgreementRoute = {
         updateDateOfVisitForm,
         updateVetsNameForm,
         updateVetRCVSNumberForm,
+        updateEligiblePiiRedactionAction,
+        updateEligiblePiiRedactionForm,
+        eligiblePiiRedaction: application.eligiblePiiRedaction,
         statusOptions,
         errorMessages,
         errors,

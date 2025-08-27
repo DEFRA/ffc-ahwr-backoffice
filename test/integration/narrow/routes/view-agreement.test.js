@@ -102,6 +102,8 @@ describe("View Application test", () => {
       authoriseForm: false,
       rejectForm: false,
       withdrawAction: true,
+      updateEligiblePiiRedactionAction: false,
+      updateEligiblePiiRedactionForm: false,
     });
 
     server = await createServer();
@@ -811,6 +813,74 @@ describe("View Application test", () => {
       exepectedResult
         ? expect($(rejectClaimButtonClass).hasClass)
         : expect($(rejectClaimButtonClass).not.hasClass);
+    });
+
+    test.each([
+      [
+        "Eligible PII Redaction form displayed", 
+        "administrator", 
+        false, 
+        "?updateEligiblePiiRedaction=true", 
+        true
+      ],
+      [
+        "Eligible PII Redaction form not displayed",
+        "administrator",
+        true,
+        "?updateEligiblePiiRedaction=true",
+        false,
+      ],
+      [
+        "Eligible PII Redaction form not displayed - invalid scope",
+        "user",
+        false,
+        "?updateEligiblePiiRedaction=true",
+        false,
+      ],
+      [
+        "Eligible PII Redaction form not displayed - updateEligiblePiiRedaction query string false",
+        "administrator",
+        false,
+        "?updateEligiblePiiRedaction=false",
+        false,
+      ],
+      [
+        "Eligible PII Redaction form not displayed - updateEligiblePiiRedaction query string missing",
+        "administrator",
+        false,
+        "",
+        false,
+      ],
+    ])("%s", async ([, authScope, queryParam, exepectedResult]) => {
+      auth = {
+        strategy: "session-auth",
+        credentials: { scope: [authScope], account: { username: "test" } },
+      };
+      jest.clearAllMocks();
+      jest.mock("../../../../app/config", () => ({
+        ...jest.requireActual("../../../../app/config"),
+        complianceChecks: {
+          enabled: true,
+        },
+      }));
+      getApplication.mockReturnValueOnce(viewApplicationData.incheck);
+      getApplicationHistory.mockReturnValueOnce({
+        historyRecords: applicationHistory,
+      });
+      const options = {
+        method: "GET",
+        url: `/view-agreement/${reference}${queryParam}`,
+        auth,
+      };
+
+      const res = await server.inject(options);
+      const $ = cheerio.load(res.payload);
+
+      const claimButtonClass =
+        ".govuk-button. govuk-button--secondary .govuk-!-margin-bottom-3";
+      exepectedResult
+        ? expect($(claimButtonClass).hasClass)
+        : expect($(claimButtonClass).not.hasClass);
     });
   });
 });

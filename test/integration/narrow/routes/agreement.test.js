@@ -11,6 +11,7 @@ import { getPagination, getPagingData } from "../../../../app/pagination";
 import { getClaimSearch } from "../../../../app/session";
 import { createServer } from "../../../../app/server";
 import { StatusCodes } from "http-status-codes";
+import { getClaimViewStates } from "../../../../app/routes/utils/get-claim-view-states";
 
 const { administrator } = permissions;
 
@@ -22,6 +23,7 @@ jest.mock("../../../../app/api/claims.js");
 jest.mock("../../../../app/api/contact-history.js");
 jest.mock("../../../../app/auth");
 jest.mock("../../../../app/session");
+jest.mock("../../../../app/routes/utils/get-claim-view-states")
 
 getApplication.mockReturnValue(applicationsData.applications[0]);
 getContactHistory.mockReturnValue(contactHistory);
@@ -45,6 +47,12 @@ displayContactHistory.mockReturnValue({
   farmerName: "NA",
   address: "NA",
 });
+
+getClaimViewStates.mockReturnValue({
+  updateEligiblePiiRedactionAction: false,
+  updateEligiblePiiRedactionForm: false
+});
+
 
 const auth = {
   strategy: "session-auth",
@@ -103,7 +111,35 @@ describe("Claims test", () => {
       expect($("th[aria-sort]")[2].attribs["data-url"]).toContain("claims/sort/claim date");
       expect($("th[aria-sort]")[3].attribs["aria-sort"]).toEqual("none");
       expect($("th[aria-sort]")[3].attribs["data-url"]).toContain("claims/sort/status");
+
+      const actions = $(".govuk-summary-list__actions");
+      expect(actions.find("a.govuk-link").length).toBe(1);
+      expect(actions.find("a.govuk-link").text()).toBe("Change");
+      expect(actions.find("a.govuk-link").attr("href")).toContain("/agreement/123/claims?page=1&updateEligiblePiiRedaction=true");
+
+      const redactionRow = $(".govuk-summary-list__row")
+        .filter((i, el) => $(el).find("dt").text().trim() === "Eligible for automated data redaction")
+        .first();
+      expect(redactionRow.find(".govuk-summary-list__value p").text().trim()).toBe('No');
     });
+
+    test('displays eligible for automated data redaction as Yes when the value is true', async () => {
+      getApplication.mockReturnValue({ ...applicationsData.applications[0], eligiblePiiRedaction: true });
+      const options = {
+        method: "GET",
+        url: `${url}?page=1`,
+        auth,
+      };
+
+      const res = await server.inject(options);
+     
+      expect(res.statusCode).toBe(StatusCodes.OK);
+      const $ = cheerio.load(res.payload);
+      const redactionRow = $(".govuk-summary-list__row")
+        .filter((i, el) => $(el).find("dt").text().trim() === "Eligible for automated data redaction")
+        .first();
+      expect(redactionRow.find(".govuk-summary-list__value p").text().trim()).toBe('Yes');
+    })
 
     test("returns table in correct sort order", async () => {
       getClaimSearch.mockReturnValueOnce({
@@ -173,6 +209,7 @@ describe("Claims test", () => {
       const res = await server.inject(options);
       expect(res.result).toEqual(1);
     });
+
     test("the back link should go to view claim if the user is coming from view claim page", async () => {
       const options = {
         method: "GET",
@@ -188,6 +225,7 @@ describe("Claims test", () => {
 
       expect($(".govuk-back-link").attr("href")).toEqual("/view-claim/REDC-6179-D9D3?page=1");
     });
+
     test("the back link should go to all agreements if the user is coming from all agreements main tab", async () => {
       const options = {
         method: "GET",
@@ -196,6 +234,7 @@ describe("Claims test", () => {
       };
 
       const res = await server.inject(options);
+
       expect(res.statusCode).toBe(StatusCodes.OK);
       const $ = cheerio.load(res.payload);
       expect($("title").text()).toContain("Administration - My Farm");

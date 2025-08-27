@@ -23,6 +23,7 @@ import { updateStatusRoute } from "../routes/update-status.js";
 import { viewAgreementRoute } from "../routes/view-agreement.js";
 import { viewClaimRoute } from "../routes/view-claim.js";
 import { withdrawAgreementRoute } from "../routes/withdraw-agreement.js";
+import { updateEligiblePiiRedactionRoute } from "../routes/agreements-eligible-pii-redaction.js";
 
 const routes = [
   accessibilityRoute,
@@ -50,6 +51,7 @@ const routes = [
   viewAgreementRoute,
   viewClaimRoute,
   withdrawAgreementRoute,
+  updateEligiblePiiRedactionRoute,
 ];
 
 export const routerPlugin = {
