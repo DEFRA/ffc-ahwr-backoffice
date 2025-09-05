@@ -53,7 +53,7 @@ const sheepTestResultsType = {
   mv: { value: "mv", text: "Maedi Visna (MV)", resultType: positiveNegative },
   opa: { value: "opa", text: "Ovine Pulmonary Adenocarcinoma (OPA)", resultType: clinicalSymptoms },
   orf: { value: "orf", text: "Orf", resultType: clinicalSymptoms },
-  other: { value: "other", text: "Other", resultType: undefined },
+  other: { value: "other", text: "Other", resultType: null },
   pasteurellosis: { value: "pasteurellosis", text: "Pasteurellosis", resultType: clinicalSymptoms },
   pge: { value: "pge", text: "Parasitic gastroenteritis (PGE)", resultType: clinicalSymptoms },
   pulpyKidney: { value: "pulpyKidney", text: "Pulpy kidney", resultType: positiveNegative },
