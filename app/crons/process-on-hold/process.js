@@ -1,4 +1,3 @@
-import { processApplicationClaim, getApplications } from "../../api/applications.js";
 import { updateClaimStatus, getClaims } from "../../api/claims.js";
 import { CLAIM_STATUS } from "ffc-ahwr-common-library";
 
@@ -17,33 +16,6 @@ const formatDateForFilter = (timestamp) => {
   const bigEndianDate = date.split("/").reverse().join("-");
 
   return `${bigEndianDate}${time}`;
-};
-
-export const processOnHoldApplications = async (logger) => {
-  const { searchType, searchText, date24HrsAgo } = getCommonData();
-  const apps = await getApplications(
-    searchType,
-    searchText,
-    9999,
-    0,
-    [],
-    { field: "CREATEDAT", direction: "ASC" },
-    logger,
-  );
-  logger.setBindings({ applicationsTotal: apps.total });
-  const applicationRefs = apps.applications
-    .filter((a) => new Date(a.updatedAt) <= date24HrsAgo)
-    .map((a) => a.reference);
-  const failedApplicationRefs = [];
-  for (const appRef of applicationRefs) {
-    try {
-      await processApplicationClaim(appRef, "admin", true, logger);
-    } catch (_) {
-      failedApplicationRefs.push(appRef);
-    }
-  }
-
-  logger.setBindings({ applicationRefs, failedApplicationRefs });
 };
 
 export const processOnHoldClaims = async (logger) => {
@@ -72,8 +44,9 @@ export const processOnHoldClaims = async (logger) => {
     try {
       await updateClaimStatus(reference, "admin", CLAIM_STATUS.READY_TO_PAY, logger);
       claimRefs.push(reference);
-    } catch (_) {
+    } catch (err) {
       failedClaimRefs.push(reference);
+      logger.error(err, `Failed to process on hold claim ${reference}`);
     }
   }
 

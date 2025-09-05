@@ -145,7 +145,7 @@ test("renders table", () => {
         {
           text: "URN was incorrectly entered, and has been updated",
         },
-      ]
+      ],
     ],
   };
 

@@ -35,7 +35,9 @@ const validSpecies = (searchText) => {
     Pigs: "pigs",
   };
 
-  if (searchText.length <= 0) return { isValidSpecies: false, theSpecies: "" };
+  if (searchText.length <= 0) {
+    return { isValidSpecies: false, theSpecies: "" };
+  }
   let theSpecies;
   Object.keys(species).forEach((key) => {
     if (key.toLowerCase() === searchText.toLowerCase()) {

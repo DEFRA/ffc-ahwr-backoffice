@@ -1,7 +1,7 @@
 import appInsights from "applicationinsights";
 import cron from "node-cron";
 import { config } from "../../config/index.js";
-import { processOnHoldApplications, processOnHoldClaims } from "./process.js";
+import { processOnHoldClaims } from "./process.js";
 import { isTodayHoliday } from "../../api/is-today-holiday.js";
 
 export const scheduler = {
@@ -12,7 +12,7 @@ export const scheduler = {
         {
           schedule: config.onHoldAppScheduler,
         },
-        "registering schedule for processing on hold applications and claims",
+        "registering schedule for processing on hold claims",
       );
 
       cron.schedule(
@@ -23,19 +23,17 @@ export const scheduler = {
             const isHoliday = await isTodayHoliday();
             logger.setBindings({ isHoliday });
             if (!isHoliday) {
-              await processOnHoldApplications(logger);
               await processOnHoldClaims(logger);
             }
 
-            const { failedApplicationRefs, failedClaimRefs } = logger.bindings();
-            if (failedApplicationRefs.length > 0 || failedClaimRefs.length > 0) {
-              throw new Error("failed updates");
+            const { failedClaimRefs } = logger.bindings();
+            if (failedClaimRefs.length > 0) {
+              logAndTrackError(logger, new Error(`Failed updates`));
+            } else {
+              logger.info("processing on hold claims complete");
             }
-
-            logger.info("processing on hold applications and claims");
           } catch (err) {
-            logger.error({ err }, "processing on hold applications and claims");
-            appInsights.defaultClient.trackException({ exception: err });
+            logAndTrackError(logger, err);
           }
         },
         {
@@ -44,4 +42,9 @@ export const scheduler = {
       );
     },
   },
+};
+
+const logAndTrackError = (logger, err) => {
+  logger.error({ err }, "processing on hold claims");
+  appInsights.defaultClient.trackException({ exception: err });
 };

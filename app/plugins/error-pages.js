@@ -1,3 +1,5 @@
+import { StatusCodes } from "http-status-codes";
+
 export const errorPagesPlugin = {
   plugin: {
     name: "error-pages",
@@ -11,7 +13,10 @@ export const errorPagesPlugin = {
 
           request.logger.setBindings({ message });
 
-          if (statusCode >= 400 && statusCode < 500) {
+          if (
+            statusCode >= StatusCodes.BAD_REQUEST &&
+            statusCode < StatusCodes.INTERNAL_SERVER_ERROR
+          ) {
             return h.view("error-pages/4xx", { payload }).code(statusCode);
           }
 

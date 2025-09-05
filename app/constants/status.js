@@ -1,61 +1,69 @@
+const BLUE = "govuk-tag--blue";
+const GREEN = "govuk-tag--green";
+const GREY = "govuk-tag--grey";
+const YELLOW = "govuk-tag--yellow";
+const ORANGE = "govuk-tag--orange";
+const PURPLE = "govuk-tag--purple";
+const PINK = "govuk-tag--pink";
+const RED = "govuk-tag--red";
 const statusStyle = {
   APPLIED: {
-    styleClass: "govuk-tag--green",
+    styleClass: GREEN,
   },
   AGREED: {
-    styleClass: "govuk-tag--green",
+    styleClass: GREEN,
   },
   WITHDRAWN: {
-    styleClass: "govuk-tag--grey",
+    styleClass: GREY,
   },
   PAID: {
-    styleClass: "govuk-tag--blue",
+    styleClass: BLUE,
   },
   DATAINPUTTED: {
-    styleClass: "govuk-tag--yellow",
+    styleClass: YELLOW,
   },
   REJECTED: {
-    styleClass: "govuk-tag--red",
+    styleClass: RED,
   },
   NOTAGREED: {
-    styleClass: "govuk-tag--pink",
+    styleClass: PINK,
   },
   ACCEPTED: {
-    styleClass: "govuk-tag--purple",
+    styleClass: PURPLE,
   },
   CHECK: {
-    styleClass: "govuk-tag--orange",
+    styleClass: ORANGE,
   },
   CLAIMED: {
-    styleClass: "govuk-tag--blue",
+    styleClass: BLUE,
   },
   INCHECK: {
-    styleClass: "govuk-tag--orange",
+    styleClass: ORANGE,
   },
   RECOMMENDEDTOPAY: {
-    styleClass: "govuk-tag--orange",
+    styleClass: ORANGE,
   },
   RECOMMENDEDTOREJECT: {
-    styleClass: "govuk-tag--orange",
+    styleClass: ORANGE,
   },
   READYTOPAY: {
     styleClass: "govuk-tag",
   },
   ONHOLD: {
-    styleClass: "govuk-tag--purple",
+    styleClass: PURPLE,
   },
   SENTTOFINANCE: {
-    styleClass: "govuk-tag--pink",
+    styleClass: PINK,
   },
 };
 
 export const getStyleClassByStatus = (rawStatus) => {
   if (rawStatus === undefined) {
-    return "govuk-tag--orange";
+    return ORANGE;
   }
 
   const normalisedStatus = rawStatus.replace(/\s/g, "");
   const matchedStatus = statusStyle[normalisedStatus];
 
-  return matchedStatus?.styleClass ?? "govuk-tag--orange";
+  return matchedStatus?.styleClass ?? ORANGE;
 };

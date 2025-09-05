@@ -43,6 +43,6 @@ export const getApplicationDetails = (application, statusActions, eligiblePiiRed
       key: { text: "Eligible for automated data redaction" },
       value: { text: eligiblePiiRedaction ? "Yes" : "No" },
       actions: eligiblePiiRedactionActions,
-    }
+    },
   ];
 };

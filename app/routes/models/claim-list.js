@@ -136,7 +136,7 @@ export const getClaimTableRows = (claims, page, returnPage, showSBI = true) =>
     if (claim.flags.length) {
       return row.map((rowItem) => ({
         ...rowItem,
-        classes: rowItem?.classes ? `${rowItem.classes} flagged-item`: "flagged-item",
+        classes: rowItem?.classes ? `${rowItem.classes} flagged-item` : "flagged-item",
       }));
     }
 

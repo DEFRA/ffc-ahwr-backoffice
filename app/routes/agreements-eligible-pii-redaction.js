@@ -14,11 +14,10 @@ export const updateEligiblePiiRedactionRoute = {
     validate: {
       payload: joi
         .object({
-          eligiblePiiRedaction: joi.string().required()
-            .messages({
-              "any.required": "Select an option",
-              "string.empty": "Select an option",
-            }),
+          eligiblePiiRedaction: joi.string().required().messages({
+            "any.required": "Select an option",
+            "string.empty": "Select an option",
+          }),
           note: joi.string().required().messages({
             "any.required": "Enter note",
             "string.empty": "Enter note",
@@ -41,7 +40,7 @@ export const updateEligiblePiiRedactionRoute = {
           errors,
         });
 
-        if(reference.startsWith('AHWR')) {
+        if (reference.startsWith("AHWR")) {
           return h.redirect(`/view-agreement/${reference}?${query.toString()}`).takeover();
         } else {
           return h.redirect(`/agreement/${reference}/claims?${query.toString()}`).takeover();
@@ -50,29 +49,24 @@ export const updateEligiblePiiRedactionRoute = {
     },
     handler: async (request, h) => {
       const { name } = request.auth.credentials.account;
-      const {
-        page,
-        note,
-        reference,
-        eligiblePiiRedaction,
-      } = request.payload;
-      
+      const { page, note, reference, eligiblePiiRedaction } = request.payload;
+
       request.logger.setBindings({ reference });
 
       await generateNewCrumb(request, h);
       const query = new URLSearchParams({ page });
 
       const agreementData = {
-        eligiblePiiRedaction: eligiblePiiRedaction === 'yes'
-      }
+        eligiblePiiRedaction: eligiblePiiRedaction === "yes",
+      };
 
       await updateEligiblePiiRedaction(reference, agreementData, note, name, request.logger);
 
-      if(reference.startsWith('AHWR')) {
+      if (reference.startsWith("AHWR")) {
         return h.redirect(`/view-agreement/${reference}?${query.toString()}`);
       } else {
-        return h.redirect(`/agreement/${reference}/claims?${query.toString()}`)
-      }      
+        return h.redirect(`/agreement/${reference}/claims?${query.toString()}`);
+      }
     },
   },
 };

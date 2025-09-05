@@ -6,6 +6,7 @@ import { sessionKeys } from "../session/keys.js";
 import { viewModel } from "./models/application-list.js";
 import { searchValidation } from "../lib/search-validation.js";
 import { generateNewCrumb } from "./utils/crumb-cache.js";
+import { StatusCodes } from "http-status-codes";
 
 const { administrator, processor, user, recommender, authoriser } = permissions;
 const { displayPageSize } = config;
@@ -28,7 +29,8 @@ export const agreementsRoutes = [
       },
       handler: async (request, h) => {
         await generateNewCrumb(request, h);
-        return h.view(viewTemplate, await viewModel(request)); // NOSONAR
+        const viewModelDetails = await viewModel(request);
+        return h.view(viewTemplate, viewModelDetails);
       },
     },
   },
@@ -41,7 +43,8 @@ export const agreementsRoutes = [
       },
       handler: async (request, h) => {
         setAppSearch(request, sessionKeys.appSearch.filterStatus, []);
-        return h.view(viewTemplate, await viewModel(request)); // NOSONAR
+        const viewModelDetails = await viewModel(request);
+        return h.view(viewTemplate, viewModelDetails);
       },
     },
   },
@@ -61,7 +64,8 @@ export const agreementsRoutes = [
         let filterStatus = getAppSearch(request, sessionKeys.appSearch.filterStatus);
         filterStatus = filterStatus.filter((s) => s !== request.params.status);
         setAppSearch(request, sessionKeys.appSearch.filterStatus, filterStatus);
-        return h.view(viewTemplate, await viewModel(request)); // NOSONAR
+        const viewModelDetails = await viewModel(request);
+        return h.view(viewTemplate, viewModelDetails);
       },
     },
   },
@@ -91,11 +95,12 @@ export const agreementsRoutes = [
           const { searchText, searchType } = searchValidation(request.payload.searchText);
           setAppSearch(request, sessionKeys.appSearch.searchText, searchText ?? "");
           setAppSearch(request, sessionKeys.appSearch.searchType, searchType ?? "");
-          return h.view(viewTemplate, await viewModel(request, 1)); // NOSONAR
+          const viewModelDetails = await viewModel(request, 1);
+          return h.view(viewTemplate, viewModelDetails);
         } catch (err) {
           return h
             .view(viewTemplate, { ...request.payload, error: err })
-            .code(400)
+            .code(StatusCodes.BAD_REQUEST)
             .takeover();
         }
       },
@@ -114,7 +119,7 @@ export const agreementsRoutes = [
           direction: Joi.string(),
         }),
       },
-      handler: async (request, h) => {
+      handler: async (request, _h) => {
         request.params.direction = request.params.direction !== "descending" ? "DESC" : "ASC";
         setAppSearch(request, sessionKeys.appSearch.sort, request.params);
         return 1; // NOSONAR

@@ -12,7 +12,7 @@ jest.mock("../../../../app/api/claims");
 jest.mock("../../../../app/pagination");
 jest.mock("../../../../app/routes/models/claim-list");
 jest.mock("../../../../app/auth");
-jest.mock("../../../../app/api/applications")
+jest.mock("../../../../app/api/applications");
 
 getPagination.mockReturnValue({
   limit: 10,
@@ -42,9 +42,9 @@ describe("get-applications-to-redact", () => {
     server = await createServer();
   });
 
-  describe('POST /agreements/{ref}/eligible-pii-redaction', () => {
+  describe("POST /agreements/{ref}/eligible-pii-redaction", () => {
     let crumb;
-    const url = '/agreements/IAHW-U6ZE-5R5E/eligible-pii-redaction'
+    const url = "/agreements/IAHW-U6ZE-5R5E/eligible-pii-redaction";
 
     beforeEach(async () => {
       crumb = await getCrumbs(server);
@@ -63,90 +63,97 @@ describe("get-applications-to-redact", () => {
     });
 
     test("updates eligible pii redaction and redirects to new world agreement when new world reference", async () => {
-      updateEligiblePiiRedaction.mockResolvedValueOnce()
+      updateEligiblePiiRedaction.mockResolvedValueOnce();
       const options = {
         method: "POST",
         url,
         auth,
         headers: { cookie: `crumb=${crumb}` },
-        payload: { 
-          crumb, 
+        payload: {
+          crumb,
           page: 1,
-          note: 'Investigating issue',
-          reference: 'IAHW-U6ZE-5R5E',
-          eligiblePiiRedaction: 'yes',
-        }
+          note: "Investigating issue",
+          reference: "IAHW-U6ZE-5R5E",
+          eligiblePiiRedaction: "yes",
+        },
       };
 
       const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
-      expect(res.headers.location).toBe('/agreement/IAHW-U6ZE-5R5E/claims?page=1')
+      expect(res.headers.location).toBe("/agreement/IAHW-U6ZE-5R5E/claims?page=1");
     });
 
     test("updates eligible pii redaction and redirects to old world agreement when old world reference", async () => {
-      updateEligiblePiiRedaction.mockResolvedValueOnce()
+      updateEligiblePiiRedaction.mockResolvedValueOnce();
       const options = {
         method: "POST",
         url,
         auth,
         headers: { cookie: `crumb=${crumb}` },
-        payload: { 
-          crumb, 
+        payload: {
+          crumb,
           page: 1,
-          note: 'Investigating issue',
-          reference: 'AHWR-U6ZE-5R5E',
-          eligiblePiiRedaction: 'yes',
-        }
+          note: "Investigating issue",
+          reference: "AHWR-U6ZE-5R5E",
+          eligiblePiiRedaction: "yes",
+        },
       };
 
       const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
-      expect(res.headers.location).toBe('/view-agreement/AHWR-U6ZE-5R5E?page=1')
+      expect(res.headers.location).toBe("/view-agreement/AHWR-U6ZE-5R5E?page=1");
     });
 
     test("redirects to new world agreement with errors when new world reference", async () => {
-      updateEligiblePiiRedaction.mockResolvedValueOnce()
+      updateEligiblePiiRedaction.mockResolvedValueOnce();
       const options = {
         method: "POST",
         url,
         auth,
         headers: { cookie: `crumb=${crumb}` },
-        payload: { 
-          crumb, 
+        payload: {
+          crumb,
           page: 1,
-          reference: 'IAHW-U6ZE-5R5E',
-          eligiblePiiRedaction: 'yes',
-        }
+          reference: "IAHW-U6ZE-5R5E",
+          eligiblePiiRedaction: "yes",
+        },
       };
 
       const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
-      expect(res.headers.location).toEqual(expect.stringContaining('/agreement/IAHW-U6ZE-5R5E/claims?page=1&updateEligiblePiiRedaction=true&errors='))
+      expect(res.headers.location).toEqual(
+        expect.stringContaining(
+          "/agreement/IAHW-U6ZE-5R5E/claims?page=1&updateEligiblePiiRedaction=true&errors=",
+        ),
+      );
     });
 
-
     test("redirects to old world agreement with errors when old world reference", async () => {
-      updateEligiblePiiRedaction.mockResolvedValueOnce()
+      updateEligiblePiiRedaction.mockResolvedValueOnce();
       const options = {
         method: "POST",
         url,
         auth,
         headers: { cookie: `crumb=${crumb}` },
-        payload: { 
-          crumb, 
+        payload: {
+          crumb,
           page: 1,
-          reference: 'AHWR-U6ZE-5R5E',
-          eligiblePiiRedaction: 'yes',
-        }
+          reference: "AHWR-U6ZE-5R5E",
+          eligiblePiiRedaction: "yes",
+        },
       };
 
       const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
-      expect(res.headers.location).toEqual(expect.stringContaining('/view-agreement/AHWR-U6ZE-5R5E?page=1&updateEligiblePiiRedaction=true&errors='))
+      expect(res.headers.location).toEqual(
+        expect.stringContaining(
+          "/view-agreement/AHWR-U6ZE-5R5E?page=1&updateEligiblePiiRedaction=true&errors=",
+        ),
+      );
     });
   });
 });

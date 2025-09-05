@@ -7,7 +7,8 @@ const HOURS_PER_DAY = 24;
 const NUMBER_OF_DAYS = 3;
 const ONE_YEAR_IN_DAYS = 365;
 
-const getConfigSchema = () => (joi.object({
+const getConfigSchema = () =>
+  joi.object({
     cache: {
       expiresIn: joi.number().required(),
       options: {
@@ -54,7 +55,7 @@ const getConfigSchema = () => (joi.object({
     },
     superAdmins: joi.array().items(joi.string()).required(),
     pigUpdatesEnabled: joi.boolean().required(),
-  }));
+  });
 
 const buildConfig = () => {
   const conf = {
@@ -117,7 +118,7 @@ const buildConfig = () => {
   if (error) {
     throw new Error(`The server config is invalid. ${error.message}`);
   }
-  
+
   return { ...conf, auth: authConfig };
 };
 

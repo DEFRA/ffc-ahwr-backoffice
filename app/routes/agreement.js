@@ -97,10 +97,10 @@ export const agreementRoutes = [
           },
           {
             field: "Eligible for automated data redaction",
-            newValue: application.eligiblePiiRedaction ? 'Yes' : 'No',
+            newValue: application.eligiblePiiRedaction ? "Yes" : "No",
             oldValue: null,
             change: true,
-          }
+          },
         ];
 
         const applicationSummaryDetails = summaryDetails.filter((row) => row.newValue);
@@ -112,7 +112,7 @@ export const agreementRoutes = [
 
         const searchText = applicationReference;
         const searchType = "appRef";
-        const filter = undefined;
+        const filter = null;
         const limit = 30;
         const offset = 0;
         const { claims, total } = await getClaims(
@@ -127,10 +127,8 @@ export const agreementRoutes = [
         const claimReturnPage = "agreement";
         const rows = getClaimTableRows(claims, page, claimReturnPage, showSBI);
 
-        const {
-          updateEligiblePiiRedactionAction,
-          updateEligiblePiiRedactionForm,
-        } = getClaimViewStates(request, application.statusId, null);
+        const { updateEligiblePiiRedactionAction, updateEligiblePiiRedactionForm } =
+          getClaimViewStates(request, application.statusId, null);
 
         const errors = request.query.errors
           ? JSON.parse(Buffer.from(request.query.errors, "base64").toString("utf8"))
@@ -171,7 +169,7 @@ export const agreementRoutes = [
           direction: joi.string(),
         }),
       },
-      handler: async (request, h) => {
+      handler: async (request, _h) => {
         request.params.direction = request.params.direction !== "descending" ? "DESC" : "ASC";
         setClaimSearch(request, sessionKeys.claimSearch.sort, request.params);
         return 1; // NOSONAR

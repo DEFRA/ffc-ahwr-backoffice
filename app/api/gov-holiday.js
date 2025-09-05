@@ -1,5 +1,6 @@
 import wreck from "@hapi/wreck";
 import { config } from "../config/index.js";
+import { StatusCodes } from "http-status-codes";
 
 const { applicationApiUri } = config;
 
@@ -18,7 +19,8 @@ export async function isTodayCustomHoliday() {
     await wreck.get(url);
     return true;
   } catch (err) {
-    if (err.output.statusCode === 404) {
+    if (err.output.statusCode === StatusCodes.NOT_FOUND) {
+      // Switch this to a 204 in another ticket
       return false;
     } else {
       throw err;
