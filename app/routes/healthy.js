@@ -1,3 +1,5 @@
+import { StatusCodes } from "http-status-codes";
+
 export const healthyRoute = {
   method: "GET",
   path: "/healthy",
@@ -7,7 +9,7 @@ export const healthyRoute = {
       yar: { skip: true },
     },
     handler: (_, h) => {
-      return h.response("ok").code(200);
+      return h.response("ok").code(StatusCodes.OK);
     },
   },
 };

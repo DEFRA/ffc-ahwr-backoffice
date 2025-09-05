@@ -6,13 +6,13 @@ import { redactPiiData } from "../../api/applications.js";
 const handleDataRedaction = async (logger) => {
   try {
     logger.info("Starting schedule for data redaction");
-    await redactPiiData(logger)
-    logger.info('Completed schedule for data redaction')
+    await redactPiiData(logger);
+    logger.info("Completed schedule for data redaction");
   } catch (err) {
     logger.error({ err }, "Error during scheduled data redaction task");
     appInsights.defaultClient.trackException({ exception: err });
   }
-}
+};
 
 export const scheduler = {
   plugin: {
@@ -28,7 +28,7 @@ export const scheduler = {
       if (!cron.validate(config.dataRedactionScheduler.schedule)) {
         server.logger.warn(
           { schedule: config.dataRedactionScheduler.schedule },
-          "Invalid cron schedule syntax – data redaction will not be scheduled"
+          "Invalid cron schedule syntax – data redaction will not be scheduled",
         );
         return;
       }
@@ -37,11 +37,11 @@ export const scheduler = {
         config.dataRedactionScheduler.schedule,
         async () => {
           const logger = server.logger.child({});
-          await handleDataRedaction(logger)
+          await handleDataRedaction(logger);
         },
         {
           scheduled: config.dataRedactionScheduler.enabled,
-      },
+        },
       );
     },
   },

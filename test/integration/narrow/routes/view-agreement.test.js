@@ -817,11 +817,11 @@ describe("View Application test", () => {
 
     test.each([
       [
-        "Eligible PII Redaction form displayed", 
-        "administrator", 
-        false, 
-        "?updateEligiblePiiRedaction=true", 
-        true
+        "Eligible PII Redaction form displayed",
+        "administrator",
+        false,
+        "?updateEligiblePiiRedaction=true",
+        true,
       ],
       [
         "Eligible PII Redaction form not displayed",
@@ -876,8 +876,7 @@ describe("View Application test", () => {
       const res = await server.inject(options);
       const $ = cheerio.load(res.payload);
 
-      const claimButtonClass =
-        ".govuk-button. govuk-button--secondary .govuk-!-margin-bottom-3";
+      const claimButtonClass = ".govuk-button. govuk-button--secondary .govuk-!-margin-bottom-3";
       exepectedResult
         ? expect($(claimButtonClass).hasClass)
         : expect($(claimButtonClass).not.hasClass);

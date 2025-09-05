@@ -91,7 +91,7 @@ describe("Process process on hold claims function test.", () => {
     });
     updateClaimStatus.mockRejectedValueOnce(new Error("boom"));
 
-    const logger = { setBindings: jest.fn() };
+    const logger = { setBindings: jest.fn(), error: jest.fn() };
     await processOnHoldClaims(logger);
 
     expect(logger.setBindings.mock.calls).toEqual([
@@ -103,5 +103,6 @@ describe("Process process on hold claims function test.", () => {
         },
       ],
     ]);
+    expect(logger.error).toHaveBeenCalledTimes(1);
   });
 });

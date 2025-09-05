@@ -1,6 +1,6 @@
 import nodeCron from "node-cron";
 import { scheduler } from "../../../app/crons/process-on-hold/scheduler";
-import { processOnHoldApplications } from "../../../app/crons/process-on-hold/process";
+import { processOnHoldClaims } from "../../../app/crons/process-on-hold/process";
 import { isTodayHoliday } from "../../../app/api/is-today-holiday";
 
 jest.mock("node-cron", () => {
@@ -20,7 +20,7 @@ jest.mock("../../../app/config/index.js", () => ({
   },
 }));
 
-describe("Process On Hold Applications plugin test", () => {
+describe("Process On Hold claims plugin test", () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetModules();
@@ -45,7 +45,7 @@ describe("Process On Hold Applications plugin test", () => {
     });
   });
 
-  test("Is Holiday True - test Process On Hold Applications not called", async () => {
+  test("Is Holiday True - test Process On Hold Claims not called", async () => {
     const mockLogger = {
       info: jest.fn(),
       error: jest.fn(),
@@ -62,10 +62,10 @@ describe("Process On Hold Applications plugin test", () => {
       },
     };
     await scheduler.plugin.register(server);
-    expect(processOnHoldApplications).toBeCalledTimes(0);
+    expect(processOnHoldClaims).toBeCalledTimes(0);
   });
 
-  test("Is Holiday Throw Error - test Process On Hold Applications not called", async () => {
+  test("Is Holiday Throw Error - test Process On Hold Claims not called", async () => {
     const mockLogger = {
       info: jest.fn(),
       error: jest.fn(),
@@ -86,10 +86,10 @@ describe("Process On Hold Applications plugin test", () => {
       },
     };
     await scheduler.plugin.register(server);
-    expect(processOnHoldApplications).toBeCalledTimes(0);
+    expect(processOnHoldClaims).toBeCalledTimes(0);
   });
 
-  test("test Process On Hold Applications called", async () => {
+  test("test Process On Hold Claims called", async () => {
     const mockLogger = {
       info: jest.fn(),
       error: jest.fn(),
@@ -101,7 +101,7 @@ describe("Process On Hold Applications plugin test", () => {
     };
 
     isTodayHoliday.mockReturnValue(false);
-    processOnHoldApplications.mockResolvedValue(true);
+    processOnHoldClaims.mockResolvedValue(true);
 
     nodeCron.schedule.mockImplementationOnce(async (_, callback) => await callback());
     const server = {
@@ -112,7 +112,7 @@ describe("Process On Hold Applications plugin test", () => {
     };
     await scheduler.plugin.register(server);
 
-    expect(processOnHoldApplications).toHaveBeenCalled();
+    expect(processOnHoldClaims).toHaveBeenCalled();
   });
 
   test("captures failed updates", async () => {
@@ -128,7 +128,7 @@ describe("Process On Hold Applications plugin test", () => {
     };
 
     isTodayHoliday.mockReturnValue(false);
-    processOnHoldApplications.mockResolvedValue(true);
+    processOnHoldClaims.mockResolvedValue(true);
 
     nodeCron.schedule.mockImplementationOnce(async (_, callback) => await callback());
 

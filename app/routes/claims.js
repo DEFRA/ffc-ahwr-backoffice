@@ -8,6 +8,7 @@ import { getPagination, getPagingData } from "../pagination.js";
 import { searchValidation } from "../lib/search-validation.js";
 import { getClaimTableHeader, getClaimTableRows } from "./models/claim-list.js";
 import { permissions } from "../auth/permissions.js";
+import { StatusCodes } from "http-status-codes";
 
 const { administrator, authoriser, processor, recommender, user } = permissions;
 const { displayPageSize } = config;
@@ -22,7 +23,7 @@ const getViewData = async (request) => {
   const searchText = getClaimSearch(request, claimSearch.searchText);
   const sort = getClaimSearch(request, claimSearch.sort);
   const { searchType } = searchValidation(searchText);
-  const filter = undefined;
+  const filter = null;
   const { claims, total } = await getClaims(
     searchType,
     searchText,
@@ -111,7 +112,7 @@ export const claimsRoutes = [
           request.logger.setBindings({ err });
           return h
             .view(viewTemplate, { ...request.payload, error: err })
-            .code(400)
+            .code(StatusCodes.BAD_REQUEST)
             .takeover();
         }
       },

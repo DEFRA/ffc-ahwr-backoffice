@@ -528,21 +528,21 @@ describe("View claim test", () => {
     });
   });
 
-  describe('getPigTestResultRows', () => {
-    it('returns the review test result when the claim is a review', () => {
+  describe("getPigTestResultRows", () => {
+    it("returns the review test result when the claim is a review", () => {
       const result = getPigTestResultRows(claims[0].data);
 
       expect(result).toEqual([{ key: { text: "Test result" }, value: { html: "Positive" } }]);
     });
 
-    it('returns the disease status category when the claim is a follow up and the feature flag is turned OFF', () => {
+    it("returns the disease status category when the claim is a follow up and the feature flag is turned OFF", () => {
       config.pigUpdatesEnabled = false;
       const result = getPigTestResultRows(claims[2].data);
 
       expect(result).toEqual([{ key: { text: "Disease status category" }, value: { html: "4" } }]);
     });
 
-    it('returns the ELISA positive when the claim is a follow up and the feature flag is turned ON', () => {
+    it("returns the ELISA positive when the claim is a follow up and the feature flag is turned ON", () => {
       config.pigUpdatesEnabled = true;
       const result = getPigTestResultRows(pigFollowUpClaimElisa.data);
 
@@ -570,5 +570,5 @@ describe("View claim test", () => {
         },
       ]);
     });
-  })
+  });
 });
