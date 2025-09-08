@@ -112,7 +112,7 @@ export const agreementRoutes = [
 
         const searchText = applicationReference;
         const searchType = "appRef";
-        const filter = null;
+        const filter = undefined;
         const limit = 30;
         const offset = 0;
         const { claims, total } = await getClaims(
