@@ -23,7 +23,7 @@ const getViewData = async (request) => {
   const searchText = getClaimSearch(request, claimSearch.searchText);
   const sort = getClaimSearch(request, claimSearch.sort);
   const { searchType } = searchValidation(searchText);
-  const filter = null;
+  const filter = undefined;
   const { claims, total } = await getClaims(
     searchType,
     searchText,
