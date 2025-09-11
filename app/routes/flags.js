@@ -12,6 +12,19 @@ const MIN_APPLICATION_REFERENCE_LENGTH = 14;
 const MIN_NOTE_LENGTH = 1;
 const STRING_EMPTY = "string.empty";
 
+const ERRORS = {
+  AGREEMENT_REDACTED: [
+    {
+      message: "Flag not created - agreement is redacted.",
+      path: [],
+      type: STRING_EMPTY,
+      context: {
+        key: "appRef",
+      },
+    },
+  ]
+}
+
 const getFlagsHandler = {
   method: "GET",
   path: "/flags",
@@ -170,7 +183,7 @@ const createFlagHandler = {
         };
 
         const { res } = await createFlagApiCall(payload, appRef.trim(), request.logger);
-     
+
         if (res.statusCode === StatusCodes.NO_CONTENT) {
           let error = new Error("Flag already exists.");
           error = {
@@ -216,16 +229,7 @@ const createFlagHandler = {
         }
 
         if (err.isBoom && err.data.payload.message === 'Unable to create flag for redacted agreement') {
-          formattedErrors = [
-            {
-              message: "Flag not created - agreement is redacted.",
-              path: [],
-              type: STRING_EMPTY,
-              context: {
-                key: "appRef",
-              },
-            },
-          ];
+          formattedErrors = ERRORS.AGREEMENT_REDACTED
         }
 
         if (formattedErrors.length) {
