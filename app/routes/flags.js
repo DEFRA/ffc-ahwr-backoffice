@@ -10,6 +10,7 @@ import { mapAuth } from "../auth/map-auth.js";
 const { administrator, processor, user, recommender, authoriser } = permissions;
 const MIN_APPLICATION_REFERENCE_LENGTH = 14;
 const MIN_NOTE_LENGTH = 1;
+const STRING_EMPTY = "string.empty";
 
 const getFlagsHandler = {
   method: "GET",
@@ -193,7 +194,7 @@ const createFlagHandler = {
             {
               message: "Agreement reference does not exist.",
               path: [],
-              type: "string.empty",
+              type: STRING_EMPTY,
               context: {
                 key: "appRef",
               },
@@ -206,7 +207,7 @@ const createFlagHandler = {
             {
               message: `Flag not created - agreement flag with the same "Flag applies to multiple herds T&C's" value already exists.`,
               path: [],
-              type: "string.empty",
+              type: STRING_EMPTY,
               context: {
                 key: "appRef",
               },
@@ -219,7 +220,7 @@ const createFlagHandler = {
             {
               message: "Flag not created - agreement is redacted.",
               path: [],
-              type: "string.empty",
+              type: STRING_EMPTY,
               context: {
                 key: "appRef",
               },
