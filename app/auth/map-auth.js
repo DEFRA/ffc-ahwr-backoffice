@@ -7,15 +7,7 @@ const { superAdmins } = config;
 export const mapAuth = (request) => {
   const { isAuthenticated, credentials } = request.auth;
   const { username } = credentials.account;
-  console.log({
-    isSuperAdmin:  isAuthenticated &&
-    credentials.scope.includes(administrator) &&
-    superAdmins.includes(username.trim().toLowerCase()),
-    isAuthenticated,
-    scope: credentials.scope.includes(administrator) ,
-    superAdmins: superAdmins.includes(username.trim().toLowerCase()),
-  })
-  console.log({superAdmins})
+
   return {
     isAuthenticated,
     isAdministrator: isAuthenticated && credentials.scope.includes(administrator),

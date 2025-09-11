@@ -72,10 +72,10 @@ const createTableHeader = (isAdmin) => {
     },
     ...(isAdmin
       ? [
-        {
-          text: "Action",
-        },
-      ]
+          {
+            text: "Action",
+          },
+        ]
       : [{}]),
   ].filter((item) => Object.keys(item).length > 0);
 };

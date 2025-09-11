@@ -20,7 +20,6 @@ jest.mock("@hapi/wreck", () => ({
 
 describe("View claim test", () => {
   config.pigUpdatesEnabled = false;
-  config.superAdmins = ['test']
   const url = "/view-claim";
   const auth = {
     strategy: "session-auth",
@@ -333,8 +332,6 @@ describe("View claim test", () => {
       }
     });
     test("returns 200 with endemics claim and sheep species", async () => {
-      config.superAdmins = ['test']
-
       const options = {
         method: "GET",
         url: `${url}/AHWR-0000-4444`,
@@ -407,7 +404,6 @@ describe("View claim test", () => {
     });
 
     test("should not show actions when agreement is redacted and has permissions", async () => {
-      config.superAdmins = ['test']
       const options = {
         method: "GET",
         url: `${url}/AHWR-0000-4444`,
