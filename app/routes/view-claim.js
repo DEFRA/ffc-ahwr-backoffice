@@ -156,6 +156,8 @@ export const viewClaimRoute = {
       const isFlagged = application.flags.length > 0;
       const flaggedText = isFlagged ? "Yes" : "No";
 
+      const isRedacted = application.applicationRedacts?.length > 0
+
       const applicationSummaryDetails = [
         buildKeyValueJson("Agreement number", applicationReference),
         buildKeyValueJson("Agreement date", formattedDateToUk(application.createdAt)),
@@ -193,8 +195,10 @@ export const viewClaimRoute = {
         updateVetRCVSNumberForm,
         updateDateOfVisitAction,
         updateDateOfVisitForm,
-      } = getClaimViewStates(request, claim.statusId, currentStatusEvent);
-
+      } = !isRedacted ? getClaimViewStates(request, claim.statusId, currentStatusEvent) : {};
+      console.log({
+        states: getClaimViewStates(request, claim.statusId, currentStatusEvent)
+      })
       const { isBeef, isDairy, isPigs, isSheep } = getLivestockTypes(data?.typeOfLivestock);
       const { isReview, isEndemicsFollowUp } = getReviewType(type);
 
@@ -206,31 +210,31 @@ export const viewClaimRoute = {
           "Biosecurity assessment",
           data?.typeOfLivestock === PIGS
             ? upperFirstLetter(
-                `${data?.biosecurity?.biosecurity}, Assessment percentage: ${data?.biosecurity?.assessmentPercentage}%`,
-              )
+              `${data?.biosecurity?.biosecurity}, Assessment percentage: ${data?.biosecurity?.assessmentPercentage}%`,
+            )
             : upperFirstLetter(data?.biosecurity),
           true,
         );
 
       const getSheepDiseasesTestedRow = () =>
         data?.typeOfLivestock === SHEEP &&
-        isEndemicsFollowUp &&
-        typeof data.testResults === "object" &&
-        data.testResults.length
+          isEndemicsFollowUp &&
+          typeof data.testResults === "object" &&
+          data.testResults.length
           ? data.testResults.map((sheepTest, index) => {
-              const key = index === 0 ? "Disease or condition test result" : "";
-              const relevantSheepPackage = sheepPackages[data?.sheepEndemicsPackage];
-              const relevantDiseaseType = relevantSheepPackage.testTypes.find(
-                (test) => test.value === sheepTest.diseaseType,
-              );
-              const value =
-                typeof sheepTest.result === "object"
-                  ? sheepTest.result
-                      .map((testResult) => `${testResult.diseaseType} (${testResult.result})</br>`)
-                      .join(" ")
-                  : `${relevantSheepPackage.testTypes.find((test) => test.value === sheepTest.diseaseType)?.text} (${relevantDiseaseType.resultType.find((resultType) => resultType.value === sheepTest.result).text})`;
-              return buildKeyValueJson(key, value, true);
-            })
+            const key = index === 0 ? "Disease or condition test result" : "";
+            const relevantSheepPackage = sheepPackages[data?.sheepEndemicsPackage];
+            const relevantDiseaseType = relevantSheepPackage.testTypes.find(
+              (test) => test.value === sheepTest.diseaseType,
+            );
+            const value =
+              typeof sheepTest.result === "object"
+                ? sheepTest.result
+                  .map((testResult) => `${testResult.diseaseType} (${testResult.result})</br>`)
+                  .join(" ")
+                : `${relevantSheepPackage.testTypes.find((test) => test.value === sheepTest.diseaseType)?.text} (${relevantDiseaseType.resultType.find((resultType) => resultType.value === sheepTest.result).text})`;
+            return buildKeyValueJson(key, value, true);
+          })
           : [];
 
       const getAction = (createItems, query, visuallyHiddenText, id) => {

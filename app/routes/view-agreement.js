@@ -73,6 +73,7 @@ export const viewAgreementRoute = {
       const status = application.status.status.toUpperCase();
       const statusLabel = upperFirstLetter(application.status.status.toLowerCase());
       const statusClass = getStyleClassByStatus(application.status.status);
+      const isRedacted = application.applicationRedacts.length > 0
 
       const {
         withdrawAction,
@@ -96,7 +97,7 @@ export const viewAgreementRoute = {
         updateDateOfVisitForm,
         updateEligiblePiiRedactionAction,
         updateEligiblePiiRedactionForm,
-      } = getClaimViewStates(request, application.statusId, currentStatusEvent);
+      } = !isRedacted ? getClaimViewStates(request, application.statusId, currentStatusEvent) : {};
 
       const errors = request.query.errors
         ? JSON.parse(Buffer.from(request.query.errors, "base64").toString("utf8"))

@@ -126,6 +126,29 @@ describe("Claims test", () => {
       expect(redactionRow.find(".govuk-summary-list__value p").text().trim()).toBe("No");
     });
 
+    test("returns 200 and hides actions when agreement is redacted", async () => {
+      getApplication.mockReturnValue({
+        ...applicationsData.applications[0],
+        applicationRedacts: [
+          {
+            success: 'Y'
+          }
+        ]
+      });
+      const options = {
+        method: "GET",
+        url: `${url}?page=1`,
+        auth,
+      };
+
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.OK);
+      const $ = cheerio.load(res.payload);
+
+      const actions = $(".govuk-summary-list__actions");
+      expect(actions.find("a.govuk-link").length).toBe(0);
+    });
+
     test("displays eligible for automated data redaction as Yes when the value is true", async () => {
       getApplication.mockReturnValue({
         ...applicationsData.applications[0],

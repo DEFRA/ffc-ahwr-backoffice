@@ -123,6 +123,28 @@ describe("View Application test", () => {
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
 
+    test("should not show actions when agreement is redacted", async () => {
+      getApplication.mockReturnValueOnce({...viewApplicationData.agreed, applicationRedacts: [{ success: 'Y' }]});
+      getApplicationHistory.mockReturnValueOnce({
+        historyRecords: applicationHistory,
+      });
+
+      const options = {
+        method: "GET",
+        url,
+        auth: {
+          strategy: "session-auth",
+          credentials: { scope: ["administrator"], account: { username: "test" } },
+        }
+      };
+      const res = await server.inject(options);
+      const $ = cheerio.load(res.payload);
+
+      expectRecommendButtons($, false);
+      expectApplicationDetails($);
+      expect(getClaimViewStates).not.toHaveBeenCalled()
+    });
+
     test.each([
       ["administrator", true],
       ["authoriser", true],

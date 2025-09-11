@@ -169,7 +169,7 @@ const createFlagHandler = {
         };
 
         const { res } = await createFlagApiCall(payload, appRef.trim(), request.logger);
-
+     
         if (res.statusCode === StatusCodes.NO_CONTENT) {
           let error = new Error("Flag already exists.");
           error = {
@@ -205,6 +205,19 @@ const createFlagHandler = {
           formattedErrors = [
             {
               message: `Flag not created - agreement flag with the same "Flag applies to multiple herds T&C's" value already exists.`,
+              path: [],
+              type: "string.empty",
+              context: {
+                key: "appRef",
+              },
+            },
+          ];
+        }
+
+        if (err.isBoom && err.data.payload.message === 'Unable to create flag for redacted agreement') {
+          formattedErrors = [
+            {
+              message: "Flag not created - agreement is redacted.",
               path: [],
               type: "string.empty",
               context: {
