@@ -6,8 +6,10 @@ import { config } from "../../../../app/config/index";
 import { createServer } from "../../../../app/server";
 import { StatusCodes } from "http-status-codes";
 import { getPigTestResultRows } from "../../../../app/routes/view-claim";
+import { getClaimViewStates } from "../../../../app/routes/utils/get-claim-view-states";
 const { administrator } = permissions;
 
+jest.mock("../../../../app/routes/utils/get-claim-view-states");
 jest.mock("../../../../app/auth");
 jest.mock("../../../../app/session");
 jest.mock("../../../../app/api/claims");
@@ -52,6 +54,7 @@ describe("View claim test", () => {
     type: "EE",
     status: "AGREED",
     flags: [],
+    applicationRedacts: []
   };
   const claims = [
     {
@@ -241,6 +244,26 @@ describe("View claim test", () => {
   beforeAll(async () => {
     jest.clearAllMocks();
     server = await createServer();
+
+    getClaimViewStates.mockReturnValue({
+      moveToInCheckAction: false,
+      moveToInCheckForm: false,
+      recommendAction: false,
+      recommendToPayForm: false,
+      recommendToRejectForm: false,
+      authoriseAction: false,
+      authoriseForm: false,
+      rejectAction: false,
+      rejectForm: false,
+      updateStatusAction: false,
+      updateStatusForm: false,
+      updateVetsNameAction: false,
+      updateVetsNameForm: false,
+      updateVetRCVSNumberAction: false,
+      updateVetRCVSNumberForm: false,
+      updateDateOfVisitAction: false,
+      updateDateOfVisitForm: false
+    });
   });
 
   describe(`GET ${url} route`, () => {
@@ -318,6 +341,26 @@ describe("View claim test", () => {
       getClaim.mockReturnValue(claims[1]);
       getClaims.mockReturnValue({ claims });
       getApplication.mockReturnValue(application);
+      getClaimViewStates.mockReturnValue({
+        moveToInCheckAction: false,
+        moveToInCheckForm: false,
+        recommendAction: false,
+        recommendToPayForm: false,
+        recommendToRejectForm: false,
+        authoriseAction: false,
+        authoriseForm: false,
+        rejectAction: false,
+        rejectForm: false,
+        updateStatusAction: true,
+        updateStatusForm: true,
+        updateVetsNameAction: true,
+        updateVetsNameForm: true,
+        updateVetRCVSNumberAction: true,
+        updateVetRCVSNumberForm: true,
+        updateDateOfVisitAction: true,
+        updateDateOfVisitForm: true
+      });
+
 
       const res = await server.inject(options);
       const $ = cheerio.load(res.payload);
@@ -326,16 +369,16 @@ describe("View claim test", () => {
 
       const expectedContent = [
         { key: "Flagged", value: "No" },
-        { key: "Status", value: "Recommended to pay" },
+        { key: "Status", value: "Recommended to pay", actions: true },
         { key: "Claim date", value: "20/03/2024" },
         { key: "Business name", value: "Test Farm Lodge" },
         { key: "Livestock", value: "Sheep" },
         { key: "Type of visit", value: "Endemic disease follow-ups" },
-        { key: "Date of visit", value: "22/03/2024" },
+        { key: "Date of visit", value: "22/03/2024", actions: true },
         { key: "Date of sampling", value: "22/03/2024" },
         { key: "21 or more sheep", value: "Yes" },
-        { key: "Vet's name", value: "12312312312sdfsdf" },
-        { key: "Vet's RCVS number", value: "1233211" },
+        { key: "Vet's name", value: "12312312312sdfsdf", actions: true },
+        { key: "Vet's RCVS number", value: "1233211", actions: true },
         { key: "URN", value: "123456" },
         { key: "Number of animals tested", value: "40" },
         { key: "Sheep health package", value: "Lameness" },
@@ -354,8 +397,49 @@ describe("View claim test", () => {
       for (const expected of expectedContent) {
         expect($(".govuk-summary-list__key").text()).toMatch(expected.key);
         expect($(".govuk-summary-list__value").text()).toMatch(expected.value);
+        if (expected.actions) {
+          expect($(".govuk-summary-list__actions a").text()).toMatch("Change");
+        }
       }
     });
+
+    test("should not show actions when agreement is redacted and has permissions", async () => {
+      const options = {
+        method: "GET",
+        url: `${url}/AHWR-0000-4444`,
+        auth,
+      };
+      getClaim.mockReturnValue(claims[1]);
+      getClaims.mockReturnValue({ claims });
+      getApplication.mockReturnValue({ ...application, applicationRedacts: [{ success: 'Y' }] });
+      getClaimViewStates.mockReturnValue({
+        moveToInCheckAction: false,
+        moveToInCheckForm: false,
+        recommendAction: false,
+        recommendToPayForm: false,
+        recommendToRejectForm: false,
+        authoriseAction: false,
+        authoriseForm: false,
+        rejectAction: false,
+        rejectForm: false,
+        updateStatusAction: true,
+        updateStatusForm: true,
+        updateVetsNameAction: true,
+        updateVetsNameForm: true,
+        updateVetRCVSNumberAction: true,
+        updateVetRCVSNumberForm: true,
+        updateDateOfVisitAction: true,
+        updateDateOfVisitForm: true
+      });
+
+      const res = await server.inject(options);
+      const $ = cheerio.load(res.payload);
+
+      expect(res.statusCode).toBe(StatusCodes.OK);
+      expect($(".govuk-summary-list__row").length).toEqual(34);
+      expect($(".govuk-summary-list__actions").length).toEqual(0);
+    });
+
     test("returns 200 with endemics claim and pigs species", async () => {
       const options = {
         method: "GET",

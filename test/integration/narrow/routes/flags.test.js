@@ -441,5 +441,51 @@ describe("Flags tests", () => {
         },
       ]);
     });
+
+    test("renders an error when the user is trying to create a flag for an agreement that is redacted", async () => {
+      createFlag.mockImplementationOnce(() => {
+        const error = {
+          data: {
+            payload: {
+              message: 'Unable to create flag for redacted agreement',
+            },
+            res: {
+              statusCode: 400
+            }
+          },
+          isBoom: true,
+        };
+
+        throw error;
+      });
+      const options = {
+        method: "POST",
+        url: "/flags/create",
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          crumb,
+          appRef: "IAHW-TEST-REF1",
+          note: "To be flagged",
+          appliesToMh: "yes",
+        },
+      };
+      const res = await server.inject(options);
+
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+
+      const redirectedLocation = res.headers.location;
+      expect(redirectedLocation).toContain("flags?createFlag=true&errors=");
+
+      const base64EncodedErrors = redirectedLocation.split("errors=")[1].replace("%3D%3D", "");
+      const parsedErrors = JSON.parse(Buffer.from(base64EncodedErrors, "base64").toString("utf8"));
+      expect(parsedErrors).toEqual([
+        {
+          href: "#agreement-reference",
+          key: "appRef",
+          text: 'Flag not created - agreement is redacted.',
+        },
+      ]);
+    });
   });
 });

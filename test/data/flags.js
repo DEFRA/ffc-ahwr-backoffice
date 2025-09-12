@@ -9,6 +9,7 @@ export const flags = [
     appliesToMh: false,
     deletedAt: null,
     deletedBy: null,
+    applicationRedacts: []
   },
   {
     id: "53dbbc6c-dd14-4d01-be11-ad288cb16b08",
@@ -20,5 +21,6 @@ export const flags = [
     appliesToMh: true,
     deletedAt: null,
     deletedBy: null,
+    applicationRedacts: []
   },
 ];

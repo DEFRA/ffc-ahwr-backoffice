@@ -14,6 +14,11 @@ const mockLogger = {
 };
 
 describe("createFlagsTableData", () => {
+  
+  beforeEach(async () => {
+    jest.clearAllMocks()
+  })
+
   it("creates the table data from the getAllFlags API call data", async () => {
     const result = await createFlagsTableData({
       logger: mockLogger,
@@ -147,6 +152,7 @@ describe("createFlagsTableData", () => {
             { text: "Tom" },
             { text: "Invalid Date" },
             { text: "No" },
+            { html: '</>' }
           ],
           [
             { text: "IAHW-U6ZE-5R5E" },
@@ -155,7 +161,64 @@ describe("createFlagsTableData", () => {
             { text: "Ben" },
             { text: "Invalid Date" },
             { text: "Yes" },
+            { html: '</>' }
           ],
+        ],
+      },
+    });
+  });
+
+  it("creates the table data from the getAllFlags API call data when create flag is true, but agreement is redacted", async () => {
+    getAllFlags.mockResolvedValueOnce([
+      {
+        id: "333c18ef-fb26-4beb-ac87-c483fc886fea",
+        applicationReference: "IAHW-U6ZE-5R5E",
+        sbi: "123456789",
+        note: "Flag this please",
+        createdBy: "Tom",
+        createdAt: "2025-04-09T11: 59: 54.075Z",
+        appliesToMh: false,
+        deletedAt: null,
+        deletedBy: null,
+        applicationRedacts: [{
+          success: 'Y'
+        }]
+      }
+    ]);
+
+    const result = await createFlagsTableData({
+      logger: mockLogger,
+      flagIdToDelete: undefined,
+      createFlag: true,
+      isAdmin: true,
+    });
+
+    expect(result).toEqual({
+      model: {
+        applicationRefOfFlagToDelete: undefined,
+        appliesToMh: "non-MH",
+        createFlag: true,
+        createFlagUrl: `${serviceUri}/flags?createFlag=true`,
+        flagIdToDelete: undefined,
+        header: [
+          { text: "Agreement number" },
+          { text: "SBI" },
+          { text: "Note" },
+          { text: "Created by" },
+          { text: "Created at" },
+          { text: "Flagged due to multiple herds" },
+          { text: "Action" }
+        ],
+        rows: [
+          [
+            { text: "IAHW-U6ZE-5R5E" },
+            { text: "123456789" },
+            { text: "Flag this please" },
+            { text: "Tom" },
+            { text: "Invalid Date" },
+            { text: "No" },
+            { html: '</>' }
+          ]
         ],
       },
     });

@@ -57,6 +57,8 @@ export const agreementRoutes = [
         const { organisation } = application.data;
         const isFlagged = application.flags.length > 0;
         const flaggedText = isFlagged ? ` ${FLAG_EMOJI}` : "";
+        const isRedacted = application.applicationRedacts.length > 0
+
         const summaryDetails = [
           {
             field: "Agreement number",
@@ -99,7 +101,7 @@ export const agreementRoutes = [
             field: "Eligible for automated data redaction",
             newValue: application.eligiblePiiRedaction ? "Yes" : "No",
             oldValue: null,
-            change: true,
+            change: !isRedacted,
           },
         ];
 
@@ -128,7 +130,7 @@ export const agreementRoutes = [
         const rows = getClaimTableRows(claims, page, claimReturnPage, showSBI);
 
         const { updateEligiblePiiRedactionAction, updateEligiblePiiRedactionForm } =
-          getClaimViewStates(request, application.statusId, null);
+          !isRedacted ? getClaimViewStates(request, application.statusId, null) : {};
 
         const errors = request.query.errors
           ? JSON.parse(Buffer.from(request.query.errors, "base64").toString("utf8"))
