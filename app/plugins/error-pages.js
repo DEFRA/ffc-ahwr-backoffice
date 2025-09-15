@@ -13,6 +13,11 @@ export const errorPagesPlugin = {
 
           request.logger.setBindings({ message });
 
+          if (statusCode === StatusCodes.NOT_FOUND) {
+            // handled specifically by a route handler that renders a 404 page for unknown pages. This allows us to still track which user it is
+            return h.continue;
+          }
+
           if (
             statusCode >= StatusCodes.BAD_REQUEST &&
             statusCode < StatusCodes.INTERNAL_SERVER_ERROR

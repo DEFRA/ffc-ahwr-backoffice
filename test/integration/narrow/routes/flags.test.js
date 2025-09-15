@@ -447,11 +447,11 @@ describe("Flags tests", () => {
         const error = {
           data: {
             payload: {
-              message: 'Unable to create flag for redacted agreement',
+              message: "Unable to create flag for redacted agreement",
             },
             res: {
-              statusCode: 400
-            }
+              statusCode: 400,
+            },
           },
           isBoom: true,
         };
@@ -483,7 +483,7 @@ describe("Flags tests", () => {
         {
           href: "#agreement-reference",
           key: "appRef",
-          text: 'Flag not created - agreement is redacted.',
+          text: "Flag not created - agreement is redacted.",
         },
       ]);
     });

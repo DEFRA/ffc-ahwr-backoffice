@@ -19,7 +19,7 @@ const formatDate = (dateInput) => {
 
 const createRows = (flags, isAdmin) => {
   return flags.map((flag) => {
-    const isAgreementNotRedacted = !flag.applicationRedacts?.length
+    const isAgreementNotRedacted = !flag.applicationRedacts?.length;
     return [
       {
         text: flag.applicationReference,
@@ -41,11 +41,11 @@ const createRows = (flags, isAdmin) => {
       },
       ...(isAdmin && isAgreementNotRedacted
         ? [
-          {
-            html: `<a class="govuk-button govuk-button--warning" data-module="govuk-button" href="${serviceUri}/flags?deleteFlag=${flag.id}">Delete flag</a>`,
-          },
-        ]
-        : [{ html: '</>' }]),
+            {
+              html: `<a class="govuk-button govuk-button--warning" data-module="govuk-button" href="${serviceUri}/flags?deleteFlag=${flag.id}">Delete flag</a>`,
+            },
+          ]
+        : [{ html: "</>" }]),
     ].filter((item) => Object.keys(item).length > 0);
   });
 };

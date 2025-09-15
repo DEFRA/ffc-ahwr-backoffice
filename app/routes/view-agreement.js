@@ -73,7 +73,7 @@ export const viewAgreementRoute = {
       const status = application.status.status.toUpperCase();
       const statusLabel = upperFirstLetter(application.status.status.toLowerCase());
       const statusClass = getStyleClassByStatus(application.status.status);
-      const isRedacted = application.applicationRedacts.length > 0
+      const isRedacted = application.applicationRedacts.length > 0;
 
       const {
         withdrawAction,

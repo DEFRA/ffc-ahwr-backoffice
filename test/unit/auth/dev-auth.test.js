@@ -19,7 +19,7 @@ describe("Dev auth test", () => {
   });
 
   test("authenticate test with no userId argument", async () => {
-    await authenticate(undefined, {
+    const [user, roles] = await authenticate(undefined, {
       set: MOCK_COOKIE_AUTH_SET,
     });
     expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledTimes(1);
@@ -30,10 +30,13 @@ describe("Dev auth test", () => {
       },
       scope: ["administrator", "processor", "user", "recommender", "authoriser"],
     });
+
+    expect(user).toBe("developer@defra.gov.uk");
+    expect(roles).toEqual(["administrator", "processor", "user", "recommender", "authoriser"]);
   });
 
   test("authenticate test with userId provided", async () => {
-    await authenticate("abc123", {
+    const [user, roles] = await authenticate("abc123", {
       set: MOCK_COOKIE_AUTH_SET,
     });
     expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledTimes(1);
@@ -44,6 +47,9 @@ describe("Dev auth test", () => {
       },
       scope: ["administrator", "processor", "user", "recommender", "authoriser"],
     });
+
+    expect(user).toBe("developer+abc123@defra.gov.uk");
+    expect(roles).toEqual(["administrator", "processor", "user", "recommender", "authoriser"]);
   });
 
   test("refresh test", async () => {

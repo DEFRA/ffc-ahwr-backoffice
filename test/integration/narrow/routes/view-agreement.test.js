@@ -124,7 +124,10 @@ describe("View Application test", () => {
     });
 
     test("should not show actions when agreement is redacted", async () => {
-      getApplication.mockReturnValueOnce({...viewApplicationData.agreed, applicationRedacts: [{ success: 'Y' }]});
+      getApplication.mockReturnValueOnce({
+        ...viewApplicationData.agreed,
+        applicationRedacts: [{ success: "Y" }],
+      });
       getApplicationHistory.mockReturnValueOnce({
         historyRecords: applicationHistory,
       });
@@ -135,14 +138,14 @@ describe("View Application test", () => {
         auth: {
           strategy: "session-auth",
           credentials: { scope: ["administrator"], account: { username: "test" } },
-        }
+        },
       };
       const res = await server.inject(options);
       const $ = cheerio.load(res.payload);
 
       expectRecommendButtons($, false);
       expectApplicationDetails($);
-      expect(getClaimViewStates).not.toHaveBeenCalled()
+      expect(getClaimViewStates).not.toHaveBeenCalled();
     });
 
     test.each([

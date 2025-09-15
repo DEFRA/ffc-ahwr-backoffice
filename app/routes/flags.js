@@ -22,8 +22,8 @@ const ERRORS = {
         key: "appRef",
       },
     },
-  ]
-}
+  ],
+};
 
 const getFlagsHandler = {
   method: "GET",
@@ -228,8 +228,11 @@ const createFlagHandler = {
           ];
         }
 
-        if (err.isBoom && err.data.payload.message === 'Unable to create flag for redacted agreement') {
-          formattedErrors = ERRORS.AGREEMENT_REDACTED
+        if (
+          err.isBoom &&
+          err.data.payload.message === "Unable to create flag for redacted agreement"
+        ) {
+          formattedErrors = ERRORS.AGREEMENT_REDACTED;
         }
 
         if (formattedErrors.length) {

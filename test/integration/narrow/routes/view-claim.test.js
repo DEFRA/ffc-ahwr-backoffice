@@ -54,7 +54,7 @@ describe("View claim test", () => {
     type: "EE",
     status: "AGREED",
     flags: [],
-    applicationRedacts: []
+    applicationRedacts: [],
   };
   const claims = [
     {
@@ -262,7 +262,7 @@ describe("View claim test", () => {
       updateVetRCVSNumberAction: false,
       updateVetRCVSNumberForm: false,
       updateDateOfVisitAction: false,
-      updateDateOfVisitForm: false
+      updateDateOfVisitForm: false,
     });
   });
 
@@ -358,9 +358,8 @@ describe("View claim test", () => {
         updateVetRCVSNumberAction: true,
         updateVetRCVSNumberForm: true,
         updateDateOfVisitAction: true,
-        updateDateOfVisitForm: true
+        updateDateOfVisitForm: true,
       });
-
 
       const res = await server.inject(options);
       const $ = cheerio.load(res.payload);
@@ -411,7 +410,7 @@ describe("View claim test", () => {
       };
       getClaim.mockReturnValue(claims[1]);
       getClaims.mockReturnValue({ claims });
-      getApplication.mockReturnValue({ ...application, applicationRedacts: [{ success: 'Y' }] });
+      getApplication.mockReturnValue({ ...application, applicationRedacts: [{ success: "Y" }] });
       getClaimViewStates.mockReturnValue({
         moveToInCheckAction: false,
         moveToInCheckForm: false,
@@ -429,7 +428,7 @@ describe("View claim test", () => {
         updateVetRCVSNumberAction: true,
         updateVetRCVSNumberForm: true,
         updateDateOfVisitAction: true,
-        updateDateOfVisitForm: true
+        updateDateOfVisitForm: true,
       });
 
       const res = await server.inject(options);

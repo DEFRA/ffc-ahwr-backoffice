@@ -57,7 +57,7 @@ export const agreementRoutes = [
         const { organisation } = application.data;
         const isFlagged = application.flags.length > 0;
         const flaggedText = isFlagged ? ` ${FLAG_EMOJI}` : "";
-        const isRedacted = application.applicationRedacts.length > 0
+        const isRedacted = application.applicationRedacts.length > 0;
 
         const summaryDetails = [
           {
@@ -129,8 +129,9 @@ export const agreementRoutes = [
         const claimReturnPage = "agreement";
         const rows = getClaimTableRows(claims, page, claimReturnPage, showSBI);
 
-        const { updateEligiblePiiRedactionAction, updateEligiblePiiRedactionForm } =
-          !isRedacted ? getClaimViewStates(request, application.statusId, null) : {};
+        const { updateEligiblePiiRedactionAction, updateEligiblePiiRedactionForm } = !isRedacted
+          ? getClaimViewStates(request, application.statusId, null)
+          : {};
 
         const errors = request.query.errors
           ? JSON.parse(Buffer.from(request.query.errors, "base64").toString("utf8"))

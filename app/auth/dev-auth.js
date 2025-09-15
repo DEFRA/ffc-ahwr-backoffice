@@ -29,10 +29,13 @@ export const getAuthenticationUrl = (userId) => {
 };
 
 export const authenticate = async (userId, cookieAuth) => {
+  const roles = [administrator, processor, user, recommender, authoriser];
+  const account = getDevAccount(userId);
   cookieAuth.set({
-    scope: [administrator, processor, user, recommender, authoriser],
-    account: getDevAccount(userId),
+    scope: roles,
+    account,
   });
+  return [account.username, roles];
 };
 
 export const refresh = async (_account, cookieAuth) => {

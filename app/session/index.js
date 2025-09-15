@@ -1,6 +1,7 @@
 const entries = {
   appSearch: "appSearch",
   claimSearch: "claimSearch",
+  userDetails: "userDetails",
 };
 
 function set(request, entryKey, key, value) {
@@ -27,4 +28,12 @@ export function setClaimSearch(request, key, value) {
 
 export function getClaimSearch(request, key) {
   return get(request, entries.claimSearch, key);
+}
+
+export function setUserDetails(request, key, value) {
+  set(request, entries.userDetails, key, value);
+}
+
+export function getUserDetails(request, key) {
+  return get(request, entries.userDetails, key);
 }

@@ -13,6 +13,7 @@ import { routerPlugin } from "./plugins/router.js";
 import { sessionPlugin } from "./plugins/session.js";
 import { viewsPlugin } from "./plugins/views.js";
 import { inertPlugin } from "./plugins/inert.js";
+import { loggingContextPlugin } from "./plugins/logging-context.js";
 
 const catbox = catboxRedis;
 const cacheConfig = config.cache.options;
@@ -56,6 +57,7 @@ export async function createServer() {
   await server.register(errorPagesPlugin);
   await server.register(loggerPlugin);
   await server.register(headerPlugin);
+  await server.register(loggingContextPlugin);
 
   if (process.env.NODE_ENV !== "test") {
     await server.register(processOnHoldScheduler);
