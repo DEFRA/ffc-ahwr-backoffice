@@ -5,7 +5,7 @@ export const missingPagesRoute = {
   path: "/{any*}",
   options: {
     auth: false,
-    handler: (request, h) => {
+    handler: (_request, h) => {
       return h
         .view("error-pages/4xx", {
           payload: { statusCode: StatusCodes.NOT_FOUND, error: "Not Found", message: "Not Found" },
