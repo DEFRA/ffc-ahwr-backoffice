@@ -14,10 +14,9 @@ const mockLogger = {
 };
 
 describe("createFlagsTableData", () => {
-  
   beforeEach(async () => {
-    jest.clearAllMocks()
-  })
+    jest.clearAllMocks();
+  });
 
   it("creates the table data from the getAllFlags API call data", async () => {
     const result = await createFlagsTableData({
@@ -152,7 +151,7 @@ describe("createFlagsTableData", () => {
             { text: "Tom" },
             { text: "Invalid Date" },
             { text: "No" },
-            { html: '</>' }
+            { html: "</>" },
           ],
           [
             { text: "IAHW-U6ZE-5R5E" },
@@ -161,7 +160,7 @@ describe("createFlagsTableData", () => {
             { text: "Ben" },
             { text: "Invalid Date" },
             { text: "Yes" },
-            { html: '</>' }
+            { html: "</>" },
           ],
         ],
       },
@@ -180,10 +179,12 @@ describe("createFlagsTableData", () => {
         appliesToMh: false,
         deletedAt: null,
         deletedBy: null,
-        applicationRedacts: [{
-          success: 'Y'
-        }]
-      }
+        applicationRedacts: [
+          {
+            success: "Y",
+          },
+        ],
+      },
     ]);
 
     const result = await createFlagsTableData({
@@ -207,7 +208,7 @@ describe("createFlagsTableData", () => {
           { text: "Created by" },
           { text: "Created at" },
           { text: "Flagged due to multiple herds" },
-          { text: "Action" }
+          { text: "Action" },
         ],
         rows: [
           [
@@ -217,8 +218,8 @@ describe("createFlagsTableData", () => {
             { text: "Tom" },
             { text: "Invalid Date" },
             { text: "No" },
-            { html: '</>' }
-          ]
+            { html: "</>" },
+          ],
         ],
       },
     });

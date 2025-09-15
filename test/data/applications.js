@@ -39,7 +39,7 @@ export const applicationsData = {
           deletedBy: null,
         },
       ],
-      applicationRedacts: []
+      applicationRedacts: [],
     },
     {
       id: "555afd4c-b095-4ce4-b492-800466b54493",
@@ -66,7 +66,7 @@ export const applicationsData = {
       updatedAt: "2022-06-06T14:27:51.775Z",
       createdBy: "admin",
       flags: [],
-      applicationRedacts: []
+      applicationRedacts: [],
     },
     {
       id: "555afd4c-b095-4ce4-b492-800466b55593",
@@ -93,7 +93,7 @@ export const applicationsData = {
       updatedAt: "2022-06-06T14:27:51.775Z",
       createdBy: "admin",
       flags: [],
-      applicationRedacts: []
+      applicationRedacts: [],
     },
     {
       id: "555afd4c-b095-4ce4-b492-800466b66693",
@@ -120,7 +120,7 @@ export const applicationsData = {
       updatedAt: "2022-06-06T14:27:51.775Z",
       createdBy: "admin",
       flags: [],
-      applicationRedacts: []
+      applicationRedacts: [],
     },
     {
       id: "555afd4c-b095-4ce4-b492-800466b66693",
@@ -147,7 +147,7 @@ export const applicationsData = {
       updatedAt: "2022-06-06T14:27:51.775Z",
       createdBy: "admin",
       flags: [],
-      applicationRedacts: []
+      applicationRedacts: [],
     },
     {
       id: "555afd4c-b095-4ce4-b492-800466b78693",
@@ -174,7 +174,7 @@ export const applicationsData = {
       updatedAt: "2022-06-06T14:27:51.775Z",
       createdBy: "admin",
       flags: [],
-      applicationRedacts: []
+      applicationRedacts: [],
     },
     {
       id: "555afd4c-b095-4ce4-b492-800466b88893",
@@ -201,7 +201,7 @@ export const applicationsData = {
       updatedAt: "2022-06-06T14:27:51.775Z",
       createdBy: "admin",
       flags: [],
-      applicationRedacts: []
+      applicationRedacts: [],
     },
     {
       id: "555afd4c-b095-4ce4-b492-800466b90993",
@@ -228,7 +228,7 @@ export const applicationsData = {
       updatedAt: "2022-06-06T14:27:51.775Z",
       createdBy: "admin",
       flags: [],
-      applicationRedacts: []
+      applicationRedacts: [],
     },
     {
       id: "555afd4c-b095-4ce4-b492-800466b10993",
@@ -255,7 +255,7 @@ export const applicationsData = {
       updatedAt: "2022-06-06T14:27:51.775Z",
       createdBy: "admin",
       flags: [],
-      applicationRedacts: []
+      applicationRedacts: [],
     },
   ],
   applicationStatus: [

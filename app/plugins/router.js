@@ -24,6 +24,7 @@ import { viewAgreementRoute } from "../routes/view-agreement.js";
 import { viewClaimRoute } from "../routes/view-claim.js";
 import { withdrawAgreementRoute } from "../routes/withdraw-agreement.js";
 import { updateEligiblePiiRedactionRoute } from "../routes/agreements-eligible-pii-redaction.js";
+import { missingPagesRoute } from "../routes/missing-routes.js";
 
 const routes = [
   accessibilityRoute,
@@ -52,6 +53,7 @@ const routes = [
   viewClaimRoute,
   withdrawAgreementRoute,
   updateEligiblePiiRedactionRoute,
+  missingPagesRoute,
 ];
 
 export const routerPlugin = {

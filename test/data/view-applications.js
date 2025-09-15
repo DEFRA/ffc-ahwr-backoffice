@@ -26,7 +26,7 @@ export const viewApplicationData = {
     createdAt: "2022-06-06T14:27:51.251Z",
     updatedAt: "2022-06-06T14:27:51.775Z",
     createdBy: "admin",
-    applicationRedacts: []
+    applicationRedacts: [],
   },
   notagreed: {
     id: "555afd4c-b095-4ce4-b492-800466b53393",
@@ -54,7 +54,7 @@ export const viewApplicationData = {
     createdAt: "2022-06-06T14:27:51.251Z",
     updatedAt: "2022-06-06T14:27:51.775Z",
     createdBy: "admin",
-    applicationRedacts: []
+    applicationRedacts: [],
   },
   dataInputted: {
     id: "555afd4c-b095-4ce4-b492-800466b53393",
@@ -82,7 +82,7 @@ export const viewApplicationData = {
     createdAt: "2022-06-06T14:27:51.251Z",
     updatedAt: "2022-06-06T14:27:51.775Z",
     createdBy: "admin",
-    applicationRedacts: []
+    applicationRedacts: [],
   },
   claim: {
     id: "555afd4c-b095-4ce4-b492-800466b53393",
@@ -117,7 +117,7 @@ export const viewApplicationData = {
     createdAt: "2022-06-06T14:27:51.251Z",
     updatedAt: "2022-12-07T14:27:51.775Z",
     createdBy: "admin",
-    applicationRedacts: []
+    applicationRedacts: [],
   },
   claimWithNoClaimDate: {
     id: "555afd4c-b095-4ce4-b492-800466b53393",
@@ -151,7 +151,7 @@ export const viewApplicationData = {
     createdAt: "2022-06-06T14:27:51.251Z",
     updatedAt: "2022-12-07T14:27:51.775Z",
     createdBy: "admin",
-    applicationRedacts: []
+    applicationRedacts: [],
   },
   claimWithNoDateOfTesting: {
     id: "555afd4c-b095-4ce4-b492-800466b53393",
@@ -184,7 +184,7 @@ export const viewApplicationData = {
     createdAt: "2022-06-06T14:27:51.251Z",
     updatedAt: "2022-12-07T14:27:51.775Z",
     createdBy: "admin",
-    applicationRedacts: []
+    applicationRedacts: [],
   },
   paid: {
     id: "555afd4c-b095-4ce4-b492-800466b53393",
@@ -229,7 +229,7 @@ export const viewApplicationData = {
     createdAt: "2022-06-06T14:27:51.251Z",
     updatedAt: "2022-06-06T14:27:51.775Z",
     createdBy: "admin",
-    applicationRedacts: []
+    applicationRedacts: [],
   },
   incheck: {
     id: "75216bb8-b4e6-40aa-b51f-24e8a90f7195",
@@ -259,7 +259,7 @@ export const viewApplicationData = {
     createdAt: "2022-06-06T14:27:51.251Z",
     updatedAt: "2022-06-06T14:27:51.775Z",
     createdBy: "admin",
-    applicationRedacts: []
+    applicationRedacts: [],
   },
   readytopay: {
     id: "75216bb8-b4e6-40aa-b51f-24e8a90f7195",
@@ -289,7 +289,7 @@ export const viewApplicationData = {
     createdAt: "2022-06-06T14:27:51.251Z",
     updatedAt: "2022-06-06T14:27:51.775Z",
     createdBy: "admin",
-    applicationRedacts: []
+    applicationRedacts: [],
   },
   withdrawn: {
     id: "75216bb8-b4e6-40aa-b51f-24e8a90f7195",
@@ -302,7 +302,7 @@ export const viewApplicationData = {
       whichReview: "sheep",
       offerStatus: "withdrawn",
     },
-    applicationRedacts: []
+    applicationRedacts: [],
   },
   accepted: {
     id: "75216bb8-b4e6-40aa-b51f-24e8a90f7195",
@@ -315,7 +315,7 @@ export const viewApplicationData = {
       whichReview: "sheep",
       offerStatus: "accepted",
     },
-    applicationRedacts: []
+    applicationRedacts: [],
   },
   rejected: {
     id: "75216bb8-b4e6-40aa-b51f-24e8a90f7195",
@@ -329,6 +329,6 @@ export const viewApplicationData = {
       offerStatus: "rejected",
       dateOfClaim: "2022-11-08T00:00:00.000Z",
     },
-    applicationRedacts: []
+    applicationRedacts: [],
   },
 };

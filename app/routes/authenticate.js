@@ -1,5 +1,7 @@
 import { auth } from "../auth/index.js";
 import { StatusCodes } from "http-status-codes";
+import { setUserDetails } from "../session/index.js";
+import { upperFirstLetter } from "../lib/display-helper.js";
 
 export const authenticateRoute = {
   method: "GET",
@@ -9,7 +11,9 @@ export const authenticateRoute = {
   },
   handler: async (request, h) => {
     try {
-      await auth.authenticate(request.query.code, request.cookieAuth);
+      const [username, roles] = await auth.authenticate(request.query.code, request.cookieAuth);
+      setUserDetails(request, "user", username);
+      setUserDetails(request, "roles", roles.map((x) => upperFirstLetter(x)).join(", "));
       return h.redirect("/claims");
     } catch (err) {
       request.logger.setBindings({ err });

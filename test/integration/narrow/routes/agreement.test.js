@@ -131,9 +131,9 @@ describe("Claims test", () => {
         ...applicationsData.applications[0],
         applicationRedacts: [
           {
-            success: 'Y'
-          }
-        ]
+            success: "Y",
+          },
+        ],
       });
       const options = {
         method: "GET",
