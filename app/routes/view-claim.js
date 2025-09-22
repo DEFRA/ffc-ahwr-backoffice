@@ -1,4 +1,4 @@
-import { Buffer } from "buffer";
+import { Buffer } from "node:buffer";
 import joi from "joi";
 import { getClaim, getClaims } from "../api/claims.js";
 import { getApplication, getApplicationHistory } from "../api/applications.js";
@@ -185,7 +185,7 @@ export const viewClaimRoute = {
         updateVetRCVSNumberForm,
         updateDateOfVisitAction,
         updateDateOfVisitForm,
-      } = !isRedacted ? getClaimViewStates(request, claim.statusId, currentStatusEvent) : {};
+      } = isRedacted ? {} : getClaimViewStates(request, claim.statusId, currentStatusEvent);
 
       const { isBeef, isDairy, isPigs, isSheep } = getLivestockTypes(data?.typeOfLivestock);
       const { isReview, isEndemicsFollowUp } = getReviewType(type);
