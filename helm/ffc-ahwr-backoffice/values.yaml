@@ -49,7 +49,6 @@ container:
   dataRedactionProcessEnabled: false
   dataRedactionProcessSchedule: "0 0 * * 2-5"
   superAdmins: ''
-  pigUpdatesEnabled: 'false'
 
 deployment:
   cpuThreshold: 40

@@ -54,7 +54,6 @@ const getConfigSchema = () =>
       schedule: joi.string().required(),
     },
     superAdmins: joi.array().items(joi.string()).required(),
-    pigUpdatesEnabled: joi.boolean().required(),
   });
 
 const buildConfig = () => {
@@ -106,7 +105,6 @@ const buildConfig = () => {
     superAdmins: process.env.SUPER_ADMINS
       ? process.env.SUPER_ADMINS.split(",").map((user) => user.trim().toLowerCase())
       : [],
-    pigUpdatesEnabled: process.env.PIG_UPDATES_ENABLED === "true",
   };
 
   if (process.env.NODE_ENV === "test") {

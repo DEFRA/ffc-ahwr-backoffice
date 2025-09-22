@@ -2,7 +2,6 @@ import * as cheerio from "cheerio";
 import { getClaim, getClaims } from "../../../../app/api/claims";
 import { permissions } from "../../../../app/auth/permissions";
 import { getApplication, getApplicationHistory } from "../../../../app/api/applications";
-import { config } from "../../../../app/config/index";
 import { createServer } from "../../../../app/server";
 import { StatusCodes } from "http-status-codes";
 import { getPigTestResultRows } from "../../../../app/routes/view-claim";
@@ -19,7 +18,6 @@ jest.mock("@hapi/wreck", () => ({
 }));
 
 describe("View claim test", () => {
-  config.pigUpdatesEnabled = false;
   const url = "/view-claim";
   const auth = {
     strategy: "session-auth",
@@ -439,41 +437,6 @@ describe("View claim test", () => {
       expect($(".govuk-summary-list__actions").length).toEqual(0);
     });
 
-    test("returns 200 with endemics claim and pigs species", async () => {
-      const options = {
-        method: "GET",
-        url: `${url}/AHWR-0000-4444`,
-        auth,
-      };
-
-      getClaim.mockReturnValue(claims[2]);
-      getClaims.mockReturnValue({ claims });
-      getApplication.mockReturnValue(application);
-
-      const res = await server.inject(options);
-      const $ = cheerio.load(res.payload);
-
-      expect(res.statusCode).toBe(StatusCodes.OK);
-      // Summary list rows expect
-      expect($(".govuk-summary-list__row").length).toEqual(34);
-      // Claim summary details expects
-      const expectedContent = [
-        { key: "Review test result", value: "Positive" },
-        { key: "Herd vaccination status", value: "Vaccinated" },
-        { key: "URN", value: "123456" },
-        { key: "Samples tested", value: "6" },
-        { key: "Disease status category", value: "4" },
-        {
-          key: "Biosecurity assessment",
-          value: "Yes, Assessment percentage: 100%",
-        },
-      ];
-      for (const eachEntry of expectedContent) {
-        expect($(".govuk-summary-list__key").text()).toMatch(eachEntry.key);
-        expect($(".govuk-summary-list__value").text()).toMatch(eachEntry.value);
-      }
-    });
-
     test("the back link should go to agreement details if the user is coming from agreement details page", async () => {
       const options = {
         method: "GET",
@@ -618,22 +581,13 @@ describe("View claim test", () => {
       expect(result).toEqual([{ key: { text: "Test result" }, value: { html: "Positive" } }]);
     });
 
-    it("returns the disease status category when the claim is a follow up and the feature flag is turned OFF", () => {
-      config.pigUpdatesEnabled = false;
-      const result = getPigTestResultRows(claims[2].data);
-
-      expect(result).toEqual([{ key: { text: "Disease status category" }, value: { html: "4" } }]);
-    });
-
-    it("returns the ELISA positive when the claim is a follow up and the feature flag is turned ON", () => {
-      config.pigUpdatesEnabled = true;
+    it("returns the ELISA positive when the claim is a follow up", () => {
       const result = getPigTestResultRows(pigFollowUpClaimElisa.data);
 
       expect(result).toEqual([{ key: { text: "Test result" }, value: { html: "ELISA positive" } }]);
     });
 
-    it("returns the ELISA positive when the claim is a follow up and the feature flag is turned ON", () => {
-      config.pigUpdatesEnabled = true;
+    it("returns the PCR positive when the claim is a follow up", () => {
       const pigsFollowUpPcr = {
         ...pigFollowUpClaimElisa,
         data: {
