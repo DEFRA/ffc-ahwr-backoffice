@@ -1,4 +1,4 @@
-import { Buffer } from "buffer";
+import { Buffer } from "node:buffer";
 import joi from "joi";
 import { getClaim, getClaims } from "../api/claims.js";
 import { getApplication, getApplicationHistory } from "../api/applications.js";
@@ -16,7 +16,6 @@ import { getLivestockTypes } from "../lib/get-livestock-types.js";
 import { getReviewType } from "../lib/get-review-type.js";
 import { getHerdBreakdown } from "../lib/get-herd-breakdown.js";
 import { getHerdRowData } from "../lib/get-herd-row-data.js";
-import { config } from "../config/index.js";
 import { claimType } from "../constants/claim-type.js";
 
 const { BEEF, PIGS, DAIRY, SHEEP } = TYPE_OF_LIVESTOCK;
@@ -59,15 +58,6 @@ export const getPigTestResultRows = (data) => {
       {
         key: { text: testResultText },
         value: { html: upperFirstLetter(data.testResults) },
-      },
-    ];
-  }
-
-  if (!config.pigUpdatesEnabled) {
-    return [
-      {
-        key: { text: "Disease status category" },
-        value: { html: data?.diseaseStatus },
       },
     ];
   }
@@ -195,7 +185,7 @@ export const viewClaimRoute = {
         updateVetRCVSNumberForm,
         updateDateOfVisitAction,
         updateDateOfVisitForm,
-      } = !isRedacted ? getClaimViewStates(request, claim.statusId, currentStatusEvent) : {};
+      } = isRedacted ? {} : getClaimViewStates(request, claim.statusId, currentStatusEvent);
 
       const { isBeef, isDairy, isPigs, isSheep } = getLivestockTypes(data?.typeOfLivestock);
       const { isReview, isEndemicsFollowUp } = getReviewType(type);

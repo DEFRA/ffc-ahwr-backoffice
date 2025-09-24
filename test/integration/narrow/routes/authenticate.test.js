@@ -1,7 +1,7 @@
 import { createServer } from "../../../../app/server";
 import { auth } from "../../../../app/auth";
 import { StatusCodes } from "http-status-codes";
-import { setUserDetails } from '../../../../app/session/index.js'
+import { setUserDetails } from "../../../../app/session/index.js";
 
 jest.mock("../../../../app/auth");
 jest.mock("../../../../app/session/index.js");
@@ -32,8 +32,8 @@ describe("Authentication route tests", () => {
       expect(response.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
       expect(response.headers.location).toEqual("/claims");
 
-      expect(setUserDetails).toHaveBeenCalledWith(expect.anything(),"user", "user1");
-      expect(setUserDetails).toHaveBeenCalledWith(expect.anything(),"roles",  "Role1, Role2");
+      expect(setUserDetails).toHaveBeenCalledWith(expect.anything(), "user", "user1");
+      expect(setUserDetails).toHaveBeenCalledWith(expect.anything(), "roles", "Role1, Role2");
     });
 
     test("GET /authenticate route returns a 500 error due to try catch", async () => {
