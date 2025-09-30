@@ -7,6 +7,7 @@ const claimDataStatus = [
   "REJECTED",
   "READY TO PAY",
   "ON HOLD",
+  "PAID",
   "Recommended to Pay",
   "Recommended to Reject",
 ];

@@ -91,7 +91,7 @@ describe("View Application test with Date of Testing enabled", () => {
 
       expect($(".govuk-summary-list__key").eq(2).text()).toMatch("Address");
       expect($(".govuk-summary-list__value").eq(2).text()).toMatch(
-        "Long dusty road, Middle-of-knowhere, In the countryside, CC33 3CC",
+        "Long dusty road, Middle-of-nowhere, In the countryside, CC33 3CC",
       );
 
       expect($(".govuk-summary-list__key").eq(3).text()).toMatch("Email address");
