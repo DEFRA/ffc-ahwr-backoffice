@@ -243,4 +243,58 @@ describe("Application-claim model", () => {
       },
     ]);
   });
+
+  test("getClaimData - Data returned for paid status", async () => {
+    const statusActions = { items: [{ test: "change status" }] };
+    const visitDateActions = { items: [{ test: "change visit date" }] };
+    const vetsNameActions = { items: [{ test: "change vets name" }] };
+    const vetRCVSActions = { items: [{ test: "change RCVS" }] };
+    const res = getApplicationClaimDetails(
+      viewApplicationData.paid,
+      {
+        eventRecords: [
+          {
+            EventRaised: "2022-11-09T11:00:00.000Z",
+            EventType: "claim-createdBy",
+          },
+        ],
+      },
+      statusActions,
+      visitDateActions,
+      vetsNameActions,
+      vetRCVSActions,
+    );
+
+    expect(res).toEqual([
+      {
+        key: { text: "Status" },
+        value: {
+          html: '<span class="govuk-tag app-long-tag govuk-tag--blue">Paid</span>',
+        },
+        actions: statusActions,
+      },
+      {
+        key: { text: "Date of review" },
+        value: { text: "Invalid Date" },
+        actions: visitDateActions,
+      },
+      { key: { text: "Date of testing" }, value: { text: "Invalid Date" } },
+      { key: { text: "Date of claim" }, value: { text: "08/11/2022" } },
+      { key: { text: "Review details confirmed" }, value: { text: "Yes" } },
+      {
+        key: { text: "Vet’s name" },
+        value: { text: undefined },
+        actions: vetsNameActions,
+      },
+      {
+        key: { text: "Vet’s RCVS number" },
+        value: { text: undefined },
+        actions: vetRCVSActions,
+      },
+      {
+        key: { text: "Test results unique reference number (URN)" },
+        value: { text: undefined },
+      },
+    ]);
+  });
 });
