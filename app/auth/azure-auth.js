@@ -1,22 +1,12 @@
 import { config } from "../config/index.js";
 import { ConfidentialClientApplication, LogLevel } from "@azure/msal-node";
 
-const msalLogging = config.isProd
-  ? {}
-  : {
-      loggerCallback(_loglevel, message, _containsPii) {
-        console.log(message);
-      },
-      piiLoggingEnabled: false,
-      logLevel: LogLevel.Verbose,
-    };
-
 let msalClientApplication;
 
 export const init = () => {
   msalClientApplication = new ConfidentialClientApplication({
     auth: config.auth,
-    system: { loggerOptions: msalLogging },
+    system: { loggerOptions: envSpecificMsalLoggingOptions },
   });
 };
 
@@ -48,3 +38,13 @@ export const logout = async (account) => {
     console.error("Unable to end session", err);
   }
 };
+
+const envSpecificMsalLoggingOptions = config.isProd
+  ? {}
+  : {
+      loggerCallback(_loglevel, message, _containsPii) {
+        console.log(message);
+      },
+      piiLoggingEnabled: false,
+      logLevel: LogLevel.Verbose,
+    };
