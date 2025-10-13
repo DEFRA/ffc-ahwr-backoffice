@@ -1,7 +1,7 @@
 import { config } from "../config/index.js";
 import authCookie from "@hapi/cookie";
 
-const SESSION_AUTH = "session-auth";
+export const SESSION_AUTH = "session-auth";
 
 export const authPlugin = {
   plugin: {
