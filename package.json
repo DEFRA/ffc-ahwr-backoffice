@@ -37,7 +37,6 @@
     "@hapi/yar": "10.1.1",
     "@ministryofjustice/frontend": "2.2.5",
     "applicationinsights": "2.9.7",
-    "crypto": "1.0.1",
     "ffc-ahwr-common-library": "2.6.4",
     "govuk-frontend": "5.10.0",
     "hapi-pino": "11.0.1",
