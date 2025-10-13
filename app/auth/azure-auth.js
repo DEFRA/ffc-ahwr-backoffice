@@ -29,32 +29,16 @@ export const getAuthenticationUrl = () => {
   return msalClientApplication.getAuthCodeUrl(authCodeUrlParameters);
 };
 
-export const authenticate = async (redirectCode, cookieAuth) => {
+export const authenticate = async (redirectCode, auth, cookieAuth) => {
   const token = await msalClientApplication.acquireTokenByCode({
     code: redirectCode,
     redirectUri: config.auth.redirectUrl,
   });
 
-  cookieAuth.set({
-    scope: token.idTokenClaims.roles,
-    account: token.account,
-  });
+  const sessionId = auth.createSession(token.account, token.idTokenClaims.roles);
+  cookieAuth.set({ id: sessionId });
 
   return [token.account.username, token.idTokenClaims.roles];
-};
-
-export const refresh = async (account, cookieAuth) => {
-  const token = await msalClientApplication.acquireTokenSilent({
-    account,
-    forceRefresh: true,
-  });
-
-  cookieAuth.set({
-    scope: token.idTokenClaims.roles,
-    account: token.account,
-  });
-
-  return token.idTokenClaims.roles;
 };
 
 export const logout = async (account) => {

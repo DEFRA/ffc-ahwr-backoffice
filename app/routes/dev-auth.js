@@ -12,7 +12,11 @@ export const devAuthRoute = {
   handler: async (request, h) => {
     try {
       const { userId } = request.query;
-      const [username, roles] = await auth.authenticate(userId, request.cookieAuth);
+      const [username, roles] = await auth.authenticate(
+        userId,
+        request.server.plugins.auth,
+        request.cookieAuth,
+      );
 
       setUserDetails(request, "user", username);
       setUserDetails(request, "roles", roles.map((x) => upperFirstLetter(x)).join(", "));
