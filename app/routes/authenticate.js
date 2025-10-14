@@ -11,7 +11,11 @@ export const authenticateRoute = {
   },
   handler: async (request, h) => {
     try {
-      const [username, roles] = await auth.authenticate(request.query.code, request.cookieAuth);
+      const [username, roles] = await auth.authenticate(
+        request.query.code,
+        request.server.plugins.auth,
+        request.cookieAuth,
+      );
       setUserDetails(request, "user", username);
       setUserDetails(request, "roles", roles.map((x) => upperFirstLetter(x)).join(", "));
       return h.redirect("/claims");

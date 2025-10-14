@@ -1,8 +1,8 @@
-import { getAuthenticationUrl, authenticate, refresh, logout } from "../../../app/auth/dev-auth";
-import { permissions } from "../../../app/auth/permissions";
+import { getAuthenticationUrl, authenticate, logout } from "../../../app/auth/dev-auth";
 
-const { administrator, processor, user, recommender, authoriser } = permissions;
+const FAKE_SESSION_ID = "fake-session-id";
 
+const MOCK_AUTH_CREATESESSION = jest.fn().mockReturnValue(FAKE_SESSION_ID);
 const MOCK_COOKIE_AUTH_SET = jest.fn();
 
 describe("Dev auth test", () => {
@@ -19,48 +19,47 @@ describe("Dev auth test", () => {
   });
 
   test("authenticate test with no userId argument", async () => {
-    const [user, roles] = await authenticate(undefined, {
-      set: MOCK_COOKIE_AUTH_SET,
-    });
-    expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledTimes(1);
-    expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledWith({
-      account: {
+    const mockAuth = { createSession: MOCK_AUTH_CREATESESSION };
+    const mockCookieAuth = { set: MOCK_COOKIE_AUTH_SET };
+
+    const [user, roles] = await authenticate(undefined, mockAuth, mockCookieAuth);
+
+    expect(MOCK_AUTH_CREATESESSION).toHaveBeenCalledTimes(1);
+    expect(MOCK_AUTH_CREATESESSION).toHaveBeenCalledWith(
+      {
         name: "Developer",
         username: "developer@defra.gov.uk",
       },
-      scope: ["administrator", "processor", "user", "recommender", "authoriser"],
-    });
+      ["administrator", "processor", "user", "recommender", "authoriser"],
+    );
+
+    expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledTimes(1);
+    expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledWith({ id: FAKE_SESSION_ID });
 
     expect(user).toBe("developer@defra.gov.uk");
     expect(roles).toEqual(["administrator", "processor", "user", "recommender", "authoriser"]);
   });
 
   test("authenticate test with userId provided", async () => {
-    const [user, roles] = await authenticate("abc123", {
-      set: MOCK_COOKIE_AUTH_SET,
-    });
-    expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledTimes(1);
-    expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledWith({
-      account: {
+    const mockAuth = { createSession: MOCK_AUTH_CREATESESSION };
+    const mockCookieAuth = { set: MOCK_COOKIE_AUTH_SET };
+
+    const [user, roles] = await authenticate("abc123", mockAuth, mockCookieAuth);
+
+    expect(MOCK_AUTH_CREATESESSION).toHaveBeenCalledTimes(1);
+    expect(MOCK_AUTH_CREATESESSION).toHaveBeenCalledWith(
+      {
         name: "Developer-abc123",
         username: "developer+abc123@defra.gov.uk",
       },
-      scope: ["administrator", "processor", "user", "recommender", "authoriser"],
-    });
+      ["administrator", "processor", "user", "recommender", "authoriser"],
+    );
+
+    expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledTimes(1);
+    expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledWith({ id: FAKE_SESSION_ID });
 
     expect(user).toBe("developer+abc123@defra.gov.uk");
     expect(roles).toEqual(["administrator", "processor", "user", "recommender", "authoriser"]);
-  });
-
-  test("refresh test", async () => {
-    expect(await refresh(expect.anything(), { set: MOCK_COOKIE_AUTH_SET })).toEqual([
-      administrator,
-      processor,
-      user,
-      recommender,
-      authoriser,
-    ]);
-    expect(MOCK_COOKIE_AUTH_SET).toHaveBeenCalledTimes(1);
   });
 
   test("logout test", () => {
