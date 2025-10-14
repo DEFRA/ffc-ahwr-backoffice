@@ -25,7 +25,7 @@ export const authenticate = async (redirectCode, auth, cookieAuth) => {
     redirectUri: config.auth.redirectUrl,
   });
 
-  const sessionId = auth.createSession(token.account, token.idTokenClaims.roles);
+  const sessionId = await auth.createSession(token.account, token.idTokenClaims.roles);
   cookieAuth.set({ id: sessionId });
 
   return [token.account.username, token.idTokenClaims.roles];
