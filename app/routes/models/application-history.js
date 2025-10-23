@@ -40,6 +40,7 @@ const getAction = (updatedProperty, newValue, oldValue) => {
     testResults: `Test results updated from ${oldValue} to ${newValue}`,
     herdName: `Herd details were updated from ${oldValue} to ${newValue}`,
     laboratoryUrn: `Laboratory URN was updated from ${oldValue} to ${newValue}`,
+    dateOfTesting: `Date of sampling updated from ${oldValue} to ${newValue}`,
   };
 
   return dataProperties[updatedProperty];
