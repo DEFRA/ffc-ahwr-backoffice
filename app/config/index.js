@@ -100,6 +100,10 @@ const buildConfig = () => {
       enabled: process.env.DATA_REDACTION_PROCESS_ENABLED === "true",
       schedule: process.env.DATA_REDACTION_PROCESS_SCHEDULE,
     },
+    reminderEmailScheduler: {
+      enabled: process.env.REMINDER_EMAIL_ENABLED === "true",
+      schedule: process.env.REMINDER_EMAIL_SCHEDULE,
+    },
     superAdmins: process.env.SUPER_ADMINS
       ? process.env.SUPER_ADMINS.split(",").map((user) => user.trim().toLowerCase())
       : [],
