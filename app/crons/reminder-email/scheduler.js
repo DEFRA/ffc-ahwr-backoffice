@@ -19,7 +19,10 @@ export const scheduler = {
     name: "reminderEmailScheduler",
     register: async (server) => {
       const { enabled, schedule } = config.reminderEmailScheduler;
-      server.logger.info({ schedule: config.reminderEmailScheduler }, "registering schedule for reminder email");
+      server.logger.info(
+        { schedule: config.reminderEmailScheduler },
+        "registering schedule for reminder email",
+      );
 
       if (!cron.validate(schedule)) {
         server.logger.warn(
