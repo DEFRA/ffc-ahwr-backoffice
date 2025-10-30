@@ -18,11 +18,14 @@ export const scheduler = {
   plugin: {
     name: "reminderEmailScheduler",
     register: async (server) => {
-      const { enabled, schedule } = config.reminderEmailScheduler
-      server.logger.info({ schedule }, "registering schedule for reminder email");
+      const { enabled, schedule } = config.reminderEmailScheduler;
+      server.logger.info({ schedule: config.reminderEmailScheduler }, "registering schedule for reminder email");
 
       if (!cron.validate(schedule)) {
-        server.logger.warn({ schedule }, "Invalid cron schedule syntax – reminder email will not be scheduled");
+        server.logger.warn(
+          { schedule },
+          "Invalid cron schedule syntax – reminder email will not be scheduled",
+        );
         return;
       }
 

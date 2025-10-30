@@ -51,6 +51,10 @@ const getConfigSchema = () =>
       enabled: joi.bool().required(),
       schedule: joi.string().required(),
     },
+    reminderEmailScheduler: {
+      enabled: joi.bool().required(),
+      schedule: joi.string().required(),
+    },
     superAdmins: joi.array().items(joi.string()).required(),
   });
 
