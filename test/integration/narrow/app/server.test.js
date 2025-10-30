@@ -2,6 +2,7 @@ import { createServer } from "../../../../app/server.js";
 
 jest.mock("../../../../app/crons/process-on-hold/scheduler.js");
 jest.mock("../../../../app/crons/data-redaction/scheduler.js");
+jest.mock("../../../../app/crons/reminder-email/scheduler.js");
 
 describe("Server test", () => {
   test("createServer returns server", async () => {
