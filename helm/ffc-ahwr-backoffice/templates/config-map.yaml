@@ -23,4 +23,6 @@ data:
   DATA_REDACTION_PROCESS_ENABLED: {{ quote .Values.container.dataRedactionProcessEnabled }}
   DATA_REDACTION_PROCESS_SCHEDULE: {{ quote .Values.container.dataRedactionProcessSchedule }}
   SUPER_ADMINS: {{ quote .Values.container.superAdmins }}
+  REMINDER_EMAIL_ENABLED: {{ quote .Values.container.reminderEmailEnabled }}
+  REMINDER_EMAIL_SCHEDULE: {{ quote .Values.container.reminderEmailSchedule }}
 {{- end -}}

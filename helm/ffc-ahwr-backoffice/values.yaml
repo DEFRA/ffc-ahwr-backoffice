@@ -49,6 +49,8 @@ container:
   dataRedactionProcessEnabled: false
   dataRedactionProcessSchedule: "0 0 * * 2-5"
   superAdmins: ''
+  reminderEmailEnabled: false
+  reminderEmailSchedule: "0 5 * * 2"
 
 deployment:
   cpuThreshold: 40

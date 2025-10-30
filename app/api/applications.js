@@ -148,3 +148,14 @@ export async function updateEligiblePiiRedaction(reference, data, note, name, lo
     throw err;
   }
 }
+
+export async function triggerReminderEmailProcess(logger) {
+  const endpoint = `${applicationApiUri}/email/reminder`;
+  try {
+    const { payload } = await wreck.post(endpoint, {});
+    return payload;
+  } catch (err) {
+    logger.setBindings({ err, endpoint });
+    throw err;
+  }
+}

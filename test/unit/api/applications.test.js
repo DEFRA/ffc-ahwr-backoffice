@@ -10,6 +10,7 @@ import {
   updateApplicationData,
   redactPiiData,
   updateEligiblePiiRedaction,
+  triggerReminderEmailProcess
 } from "../../../app/api/applications";
 
 jest.mock("@hapi/wreck");
@@ -427,6 +428,40 @@ describe("Application API", () => {
           logger,
         ),
       ).rejects.toThrow("Request failed");
+
+      expect(logger.setBindings).toHaveBeenCalledWith({
+        err: mockError,
+        endpoint,
+      });
+    });
+  });
+
+  describe("triggerReminderEmailProcess", () => {
+    const logger = {
+      setBindings: jest.fn(),
+    };
+
+    const endpoint = `${applicationApiUri}/email/reminder`;
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it("should return payload when request is successful", async () => {
+      wreck.post.mockResolvedValue({ payload: {} });
+
+      const result = await triggerReminderEmailProcess(logger);
+
+      expect(wreck.post).toHaveBeenCalledWith(endpoint, {});
+      expect(result).toEqual({});
+      expect(logger.setBindings).not.toHaveBeenCalled();
+    });
+
+    it("should log and rethrow error when request fails", async () => {
+      const mockError = new Error("Request failed");
+      wreck.post.mockRejectedValue(mockError);
+
+      await expect(triggerReminderEmailProcess(logger)).rejects.toThrow("Request failed");
 
       expect(logger.setBindings).toHaveBeenCalledWith({
         err: mockError,
