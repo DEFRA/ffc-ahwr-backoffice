@@ -10,7 +10,7 @@ import {
   updateApplicationData,
   redactPiiData,
   updateEligiblePiiRedaction,
-  triggerReminderEmailProcess
+  triggerReminderEmailProcess,
 } from "../../../app/api/applications";
 
 jest.mock("@hapi/wreck");

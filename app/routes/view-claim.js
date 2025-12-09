@@ -326,6 +326,11 @@ export const viewClaimRoute = {
         data?.numberOfOralFluidSamples,
         true,
       );
+      const numberOfBloodSamples = buildKeyValueJson(
+        "Number of blood samples taken",
+        data?.numberOfBloodSamples,
+        true,
+      );
       const numberAnimalsTested = buildKeyValueJson(
         "Number of animals tested",
         data?.numberAnimalsTested,
@@ -450,6 +455,7 @@ export const viewClaimRoute = {
         dateOfSampling,
         typeOfLivestock,
         numberOfOralFluidSamples,
+        numberOfBloodSamples,
         vetName,
         vetRCVSNumber,
         piHunt,

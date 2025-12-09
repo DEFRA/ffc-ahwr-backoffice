@@ -572,6 +572,68 @@ describe("View claim test", () => {
 
       expect(res.statusCode).toBe(StatusCodes.OK);
     });
+
+    it("should hide oral fluid and show blood samples for pigs review when blood tests taken", async () => {
+      const options = {
+        method: "GET",
+        url: `${url}/AHWR-0000-4444`,
+        auth,
+      };
+
+      const pigsReviewWithBloodSamples = claims[0];
+      delete pigsReviewWithBloodSamples.data.numberOfOralFluidSamples;
+      pigsReviewWithBloodSamples.data.numberOfBloodSamples = "30";
+      const updatedClaims = claims;
+      updatedClaims[0] = pigsReviewWithBloodSamples;
+
+      getClaim.mockReturnValue(pigsReviewWithBloodSamples);
+      getClaims.mockReturnValue({ claims: updatedClaims });
+      getApplication.mockReturnValue(application);
+
+      const res = await server.inject(options);
+      const $ = cheerio.load(res.payload);
+
+      expect(res.statusCode).toBe(StatusCodes.OK);
+
+      const expectedContent = [
+        { key: "Agreement number", value: "AHWR-1234-APP1" },
+        { key: "Agreement date", value: "22/03/2024" },
+        { key: "Agreement holder", value: "Russell Paul Davies" },
+        {
+          key: "Agreement holder email",
+          value: "russelldaviese@seivadllessurm.com.test",
+        },
+        { key: "SBI number", value: "113494460" },
+        {
+          key: "Address",
+          value:
+            "Tesco Stores Ltd, Harwell, Betton, WHITE HOUSE FARM, VINCENT CLOSE, LEIGHTON BUZZARD, HR2 8AN, United Kingdom",
+        },
+        { key: "Business email", value: "orgEmail@gmail.com" },
+        { key: "Flagged", value: "No" },
+        { key: "Status", value: "Paid" },
+        { key: "Claim date", value: "25/03/2024" },
+        { key: "Business name", value: "Test Farm Lodge" },
+        { key: "Livestock", value: "Pigs" },
+        { key: "Type of visit", value: "Animal health and welfare review" },
+        { key: "Date of visit", value: "22/03/2024" },
+        { key: "Date of sampling", value: "22/03/2024" },
+        { key: "51 or more pigs", value: "Yes" },
+        { key: "Number of blood samples taken", value: "30" },
+        { key: "Vet's name", value: "Vet one" },
+        { key: "Vet's RCVS number", value: "1233211" },
+        { key: "Number of animals tested", value: "40" },
+        { key: "URN", value: "123456" },
+        { key: "Test result", value: "Positive" },
+      ];
+      // Summary list rows expect
+      expect($(".govuk-summary-list__row").length).toEqual(31);
+      // Application summary details expects
+      for (const expected of expectedContent) {
+        expect($(".govuk-summary-list__key").text()).toMatch(expected.key);
+        expect($(".govuk-summary-list__value").text()).toMatch(expected.value);
+      }
+    });
   });
 
   describe("getPigTestResultRows", () => {
