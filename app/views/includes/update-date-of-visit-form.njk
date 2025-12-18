@@ -1,3 +1,10 @@
+{% set dayClasses = "govuk-input--width-2" %}
+{% set monthClasses = "govuk-input--width-2" %}
+{% set yearClasses = "govuk-input--width-3" %}
+{% if errorMessages.all or errorMessages.day %}{% set dayClasses = dayClasses + " govuk-input--error" %}{% endif %}
+{% if errorMessages.all or errorMessages.month %}{% set monthClasses = monthClasses + " govuk-input--error" %}{% endif %}
+{% if errorMessages.all or errorMessages.year %}{% set yearClasses = yearClasses + " govuk-input--error" %}{% endif %}
+
 <div class="govuk-panel govuk-panel--confirmation govuk-!-text-align-left" id="update-date-of-visit">
   <form method="post" action="/claims/data" class="ahwr-update-form">
     {% if claimOrAgreement == 'agreement' %}
@@ -9,21 +16,22 @@
     {{
       govukDateInput({
         id: "visitDate",
+        name: "visitDate",
         hint: {
           html: "For example, 28 3 2025",
           id: "date-of-visit-hint"
         },
         items: [
           {
-            classes: "govuk-input--width-2 {{ govuk-input--error if errorMessages.day }}",
+            classes: dayClasses,
             name: "day"
           },
           {
-            classes: "govuk-input--width-2 {{ govuk-input--error if errorMessages.month }}",
+            classes: monthClasses,
             name: "month"
           },
           {
-            classes: "govuk-input--width-4 {{ govuk-input--error if errorMessages.year }}",
+            classes: yearClasses,
             name: "year"
           }
         ],
@@ -47,6 +55,7 @@
     }}
     <input type="hidden" name="claimOrAgreement" value="{{ claimOrAgreement }}" />
     <input type="hidden" name="reference" value="{{ reference }}" />
+    <input type="hidden" name="dateOfVisit" value="{{ dateOfVisit }}" />
     <input type="hidden" name="form" value="updateDateOfVisit" />
     <input type="hidden" name="page" value="{{ page }}" />
     <input type="hidden" name="returnPage" value="{{ returnPage }}" />

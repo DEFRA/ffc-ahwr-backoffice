@@ -508,6 +508,7 @@ export const viewClaimRoute = {
         reference,
         applicationReference,
         claimOrAgreement: "claim",
+        dateOfVisit: data?.dateOfVisit,
         title: upperFirstLetter(application.data.organisation.name),
         claimSummaryDetails: rowsWithData,
         status: {

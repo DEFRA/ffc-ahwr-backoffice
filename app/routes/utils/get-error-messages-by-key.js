@@ -1,5 +1,5 @@
 export const getErrorMessagesByKey = (errors) => {
-  const dateFields = ["day", "month", "year"];
+  const dateFields = ["day", "month", "year", "all"];
   const dateErrors = [];
   const keyedErrors = errors.reduce((obj, { key, text }) => {
     if (dateFields.includes(key)) {

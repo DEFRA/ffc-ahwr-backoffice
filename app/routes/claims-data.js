@@ -4,8 +4,11 @@ import { permissions } from "../auth/permissions.js";
 import { updateClaimData } from "../api/claims.js";
 import { updateApplicationData } from "../api/applications.js";
 import { encodeErrorsForUI } from "./utils/encode-errors-for-ui.js";
+import { config } from "../config/index.js";
 
 const { administrator } = permissions;
+const { releaseDate } = config.pigsAndPayments;
+const pigsAndPaymentsReleaseDate = new Date(releaseDate);
 
 const panelIdGivenFormName = (formName) => {
   if (formName === "updateVetsName") {
@@ -17,6 +20,36 @@ const panelIdGivenFormName = (formName) => {
   }
 
   return "#update-vet-rcvs-number";
+};
+
+const encodeErrAndRedirectBackToView = (request, h, err) => {
+  const { claimOrAgreement, form, page, reference, returnPage } = request.payload;
+
+  request.logger.setBindings({ err, form });
+
+  const panelID = panelIdGivenFormName(form);
+
+  const errors = encodeErrorsForUI(err.details, panelID);
+
+  const query = new URLSearchParams({
+    page,
+    [form]: "true",
+    errors,
+  });
+
+  if (claimOrAgreement === "claim") {
+    query.append("returnPage", returnPage);
+  }
+
+  return h.redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`).takeover();
+};
+
+const affectsPaymentRate = (originalDateString, newDate) => {
+  const originalDate = new Date(originalDateString);
+  return (
+    (newDate >= pigsAndPaymentsReleaseDate && originalDate < pigsAndPaymentsReleaseDate) ||
+    (originalDate >= pigsAndPaymentsReleaseDate && newDate < pigsAndPaymentsReleaseDate)
+  );
 };
 
 export const claimsDataRoutes = [
@@ -97,29 +130,11 @@ export const claimsDataRoutes = [
               .valid("updateVetsName", "updateDateOfVisit", "updateVetRCVSNumber"),
             returnPage: joi.string().optional().allow("").valid("agreement", "claims"),
             reference: joi.string().required(),
+            dateOfVisit: joi.string(),
           })
           .required(),
         failAction: async (request, h, err) => {
-          const { claimOrAgreement, form, page, reference, returnPage } = request.payload;
-
-          request.logger.setBindings({ err, form });
-
-          const panelID = panelIdGivenFormName(form);
-
-          const errors = encodeErrorsForUI(err.details, panelID);
-          const query = new URLSearchParams({
-            page,
-            [form]: "true",
-            errors,
-          });
-
-          if (claimOrAgreement === "claim") {
-            query.append("returnPage", returnPage);
-          }
-
-          return h
-            .redirect(`/view-${claimOrAgreement}/${reference}?${query.toString()}`)
-            .takeover();
+          return encodeErrAndRedirectBackToView(request, h, err);
         },
       },
       handler: async (request, h) => {
@@ -136,26 +151,44 @@ export const claimsDataRoutes = [
           month,
           year,
           reference,
+          dateOfVisit,
         } = request.payload;
 
         request.logger.setBindings({ form });
 
-        await generateNewCrumb(request, h);
-        const query = new URLSearchParams({ page });
-
-        const dateOfVisit =
+        const newDateString =
           day && month && year
             ? new Date(
                 `${year}/${month.toString().padStart(2, 0)}/${day.toString().padStart(2, 0)}`,
               ).toISOString()
             : undefined;
 
+        const newDate = new Date(newDateString);
+        if (dateOfVisit && affectsPaymentRate(dateOfVisit, newDate)) {
+          const message =
+            newDate >= pigsAndPaymentsReleaseDate
+              ? `The date of visit cannot be moved after the payment rate change on 22/01/2026`
+              : `The date of visit cannot be moved before the payment rate change on 22/01/2026`;
+          const err = {
+            details: [
+              {
+                message,
+                context: { key: "all" },
+              },
+            ],
+          };
+          return encodeErrAndRedirectBackToView(request, h, err);
+        }
+
+        await generateNewCrumb(request, h);
+        const query = new URLSearchParams({ page });
+
         if (claimOrAgreement === "claim") {
           query.append("returnPage", returnPage);
           const claimData = {
             vetsName,
             vetRCVSNumber,
-            dateOfVisit,
+            dateOfVisit: newDateString,
           };
 
           await updateClaimData(reference, claimData, note, name, request.logger);
@@ -165,7 +198,7 @@ export const claimsDataRoutes = [
           const agreementData = {
             vetName: vetsName,
             vetRcvs: vetRCVSNumber,
-            visitDate: dateOfVisit,
+            visitDate: newDateString,
           };
           await updateApplicationData(reference, agreementData, note, name, request.logger);
         }

@@ -56,6 +56,9 @@ const getConfigSchema = () =>
       schedule: joi.string().required(),
     },
     superAdmins: joi.array().items(joi.string()).required(),
+    pigsAndPayments: {
+      releaseDate: joi.string().required(),
+    },
   });
 
 const buildConfig = () => {
@@ -111,6 +114,9 @@ const buildConfig = () => {
     superAdmins: process.env.SUPER_ADMINS
       ? process.env.SUPER_ADMINS.split(",").map((user) => user.trim().toLowerCase())
       : [],
+    pigsAndPayments: {
+      releaseDate: process.env.PIGS_AND_PAYMENTS_RELEASE_DATE || "2026-01-22",
+    },
   };
 
   if (process.env.NODE_ENV === "test") {
