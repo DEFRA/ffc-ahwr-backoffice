@@ -10,6 +10,7 @@ services:
     environment:
       USE_PRETTY_PRINT: ${USE_PRETTY_PRINT:-true}
       SUPER_ADMINS: ${SUPER_ADMINS:-developer@defra.gov.uk}
+      PIGS_AND_PAYMENTS_RELEASE_DATE: ${PIGS_AND_PAYMENTS_RELEASE_DATE:-2025-12-01}
     ports:
       - "3002:3000"
       - "9231:9229"

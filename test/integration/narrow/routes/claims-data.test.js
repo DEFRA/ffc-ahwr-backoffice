@@ -71,6 +71,7 @@ describe("Claims data tests", () => {
           note: "Updated value",
           reference: "AAAA",
           returnPage: "claims",
+          dateOfVisit: "2025-01-22",
         },
       };
       const res = await server.inject(options);
@@ -98,10 +99,11 @@ describe("Claims data tests", () => {
           form: "updateDateOfVisit",
           day: 1,
           month: 2,
-          year: 2028,
+          year: 2025,
           note: "Updated value",
           reference: "AAAA",
           returnPage: "claims",
+          dateOfVisit: "2025-01-22",
         },
       };
       const res = await server.inject(options);
@@ -111,7 +113,7 @@ describe("Claims data tests", () => {
       expect(updateClaimData).toHaveBeenCalledWith(
         "AAAA",
         {
-          dateOfVisit: "2028-02-01T00:00:00.000Z",
+          dateOfVisit: "2025-02-01T00:00:00.000Z",
           vetRCVSNumber: undefined,
           vetsName: undefined,
         },
@@ -135,6 +137,7 @@ describe("Claims data tests", () => {
           note: "Updated value",
           reference: "AAAA",
           returnPage: "claims",
+          dateOfVisit: "2025-01-22",
         },
       };
       const res = await server.inject(options);
@@ -262,6 +265,7 @@ describe("Claims data tests", () => {
           note: "Updated value",
           reference: "AAAA",
           returnPage: "claims",
+          dateOfVisit: "2025-01-22",
         },
       };
       const res = await server.inject(options);
@@ -269,6 +273,62 @@ describe("Claims data tests", () => {
 
       expect(res.headers.location).toMatch(
         /view-claim\/AAAA\?page=1&updateVetRCVSNumber=true&errors=.+&returnPage=claims/,
+      );
+      expect(updateApplicationData).toHaveBeenCalledTimes(0);
+    });
+
+    test("returns 302 with an error message when visitDate moved after payment rate change", async () => {
+      const options = {
+        method: "POST",
+        url: "/claims/data",
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          crumb,
+          claimOrAgreement: "claim",
+          form: "updateDateOfVisit",
+          day: 22,
+          month: 1,
+          year: 2026,
+          note: "Updated value",
+          reference: "AAAA",
+          returnPage: "claims",
+          dateOfVisit: "2025-11-22",
+        },
+      };
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+
+      expect(res.headers.location).toMatch(
+        /view-claim\/AAAA\?page=1&updateDateOfVisit=true&errors=.+&returnPage=claims/,
+      );
+      expect(updateApplicationData).toHaveBeenCalledTimes(0);
+    });
+
+    test("returns 302 with an error message when visitDate moved before payment rate change", async () => {
+      const options = {
+        method: "POST",
+        url: "/claims/data",
+        auth,
+        headers: { cookie: `crumb=${crumb}` },
+        payload: {
+          crumb,
+          claimOrAgreement: "claim",
+          form: "updateDateOfVisit",
+          day: 22,
+          month: 11,
+          year: 2025,
+          note: "Updated value",
+          reference: "AAAA",
+          returnPage: "claims",
+          dateOfVisit: "2026-01-22",
+        },
+      };
+      const res = await server.inject(options);
+      expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
+
+      expect(res.headers.location).toMatch(
+        /view-claim\/AAAA\?page=1&updateDateOfVisit=true&errors=.+&returnPage=claims/,
       );
       expect(updateApplicationData).toHaveBeenCalledTimes(0);
     });

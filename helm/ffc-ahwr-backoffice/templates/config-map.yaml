@@ -25,4 +25,5 @@ data:
   SUPER_ADMINS: {{ quote .Values.container.superAdmins }}
   REMINDER_EMAIL_ENABLED: {{ quote .Values.container.reminderEmailEnabled }}
   REMINDER_EMAIL_SCHEDULE: {{ quote .Values.container.reminderEmailSchedule }}
+  PIGS_AND_PAYMENTS_RELEASE_DATE: {{ quote .Values.container.pigsAndPaymentsReleaseDate }}
 {{- end -}}
