@@ -4,9 +4,9 @@ import { config } from "../config/index.js";
 import { setAppSearch, getAppSearch } from "../session/index.js";
 import { sessionKeys } from "../session/keys.js";
 import { viewModel } from "./models/application-list.js";
-import { searchValidation } from "../lib/search-validation.js";
+// import { searchValidation } from "../lib/search-validation.js";
 import { generateNewCrumb } from "./utils/crumb-cache.js";
-import { StatusCodes } from "http-status-codes";
+// import { StatusCodes } from "http-status-codes";
 
 const { administrator, processor, user, recommender, authoriser } = permissions;
 const { displayPageSize } = config;
@@ -76,33 +76,33 @@ export const agreementsRoutes = [
       auth: {
         scope: [administrator, processor, user, recommender, authoriser],
       },
-      validate: {
-        query: Joi.object({
-          page: Joi.number().greater(0).default(1),
-          limit: Joi.number().greater(0).default(displayPageSize),
-        }),
-      },
+      // validate: {
+      //   query: Joi.object({
+      //     page: Joi.number().greater(0).default(1),
+      //     limit: Joi.number().greater(0).default(displayPageSize),
+      //   }),
+      // },
       handler: async (request, h) => {
-        try {
-          let filterStatus = [];
-          // Is Search Button Clicked
-          if (!request.payload.submit) {
-            filterStatus = request.payload?.status ?? [];
-            filterStatus = Array.isArray(filterStatus) ? filterStatus : [filterStatus];
-          }
+        // try {
+        //   let filterStatus = [];
+        //   // Is Search Button Clicked
+        //   if (!request.payload.submit) {
+        //     filterStatus = request.payload?.status ?? [];
+        //     filterStatus = Array.isArray(filterStatus) ? filterStatus : [filterStatus];
+        //   }
 
-          setAppSearch(request, sessionKeys.appSearch.filterStatus, filterStatus);
-          const { searchText, searchType } = searchValidation(request.payload.searchText);
-          setAppSearch(request, sessionKeys.appSearch.searchText, searchText ?? "");
-          setAppSearch(request, sessionKeys.appSearch.searchType, searchType ?? "");
-          const viewModelDetails = await viewModel(request, 1);
-          return h.view(viewTemplate, viewModelDetails);
-        } catch (err) {
-          return h
-            .view(viewTemplate, { ...request.payload, error: err })
-            .code(StatusCodes.BAD_REQUEST)
-            .takeover();
-        }
+        //   setAppSearch(request, sessionKeys.appSearch.filterStatus, filterStatus);
+        //   const { searchText, searchType } = searchValidation(request.payload.searchText);
+        //   setAppSearch(request, sessionKeys.appSearch.searchText, searchText ?? "");
+        //   setAppSearch(request, sessionKeys.appSearch.searchType, searchType ?? "");
+        const viewModelDetails = await viewModel(request, 1);
+        return h.view(viewTemplate, viewModelDetails);
+        // } catch (err) {
+        //   return h
+        //     .view(viewTemplate, { ...request.payload, error: err })
+        //     .code(StatusCodes.BAD_REQUEST)
+        //     .takeover();
+        // }
       },
     },
   },
