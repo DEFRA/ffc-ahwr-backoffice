@@ -76,6 +76,16 @@
           html: 'This is a new service'
         }) }}
       </div>
+      <div class="govuk-grid-row govuk-width-container">
+      {% set html %}
+        <p class="govuk-notification-banner__heading">This version of the back-office tool is being migrated and should be used only to check for data that has not yet been migrated to the new service. To use the new service, go to: <a class="govuk-notification-banner__link" href="https://ahwr-backoffice-ui.prod.cdp-int.defra.cloud">https://ahwr-backoffice-ui.prod.cdp-int.defra.cloud</a></p>
+      {% endset %}
+      <div class="shrink-wrap">
+      {{ govukNotificationBanner({
+         html: html
+      }) }}
+      </div>
+      </div>
     {% endblock %}
 
     {% block footer %}
