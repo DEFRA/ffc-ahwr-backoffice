@@ -113,10 +113,6 @@ describe("Flags tests", () => {
       const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
-      // const $ = cheerio.load(res.payload);
-      // expect($("h1.govuk-heading-l").text()).toContain("Flags");
-      // expect($("title").text()).toContain("AHWR Flags");
-      // phaseBannerOk($);
     });
 
     test("redirects the user to the flags page when the flag has happily been deleted", async () => {
@@ -135,7 +131,6 @@ describe("Flags tests", () => {
       expect(res.headers.location).toBe("/flags");
     });
 
-    // test("renders errors when the user has not provided a deleted note value", async () => {
     test("redirects even when the user has not provided a deleted note value", async () => {
       const flagId = "abc123";
       const options = {
@@ -150,22 +145,8 @@ describe("Flags tests", () => {
       const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
-
-      // const redirectedLocation = res.headers.location;
-      // expect(redirectedLocation).toContain(`flags?deleteFlag=${flagId}&errors=`);
-
-      // const base64EncodedErrors = redirectedLocation.split("errors=")[1].replace("%3D%3D", "");
-      // const parsedErrors = JSON.parse(Buffer.from(base64EncodedErrors, "base64").toString("utf8"));
-      // expect(parsedErrors).toEqual([
-      //   {
-      //     href: "#deletedNote",
-      //     key: "deletedNote",
-      //     text: "Enter a note to explain the reason for removing this flag",
-      //   },
-      // ]);
     });
 
-    // test("renders errors when the user has not provided a long enough deleted note value", async () => {
     test("redirects even when the user has not provided a long enough deleted note value", async () => {
       const flagId = "abc123";
       const options = {
@@ -181,19 +162,6 @@ describe("Flags tests", () => {
       const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
-
-      // const redirectedLocation = res.headers.location;
-      // expect(redirectedLocation).toContain(`flags?deleteFlag=${flagId}&errors=`);
-
-      // const base64EncodedErrors = redirectedLocation.split("errors=")[1].replace("%3D%3D", "");
-      // const parsedErrors = JSON.parse(Buffer.from(base64EncodedErrors, "base64").toString("utf8"));
-      // expect(parsedErrors).toEqual([
-      //   {
-      //     href: "#deletedNote",
-      //     key: "deletedNote",
-      //     text: "Enter a note of at least 2 characters in length",
-      //   },
-      // ]);
     });
   });
 
@@ -212,7 +180,6 @@ describe("Flags tests", () => {
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
     });
 
-    // test("returns 400 when the create flag API call fails", async () => {
     test("returns redirect even when the create flag API call fails", async () => {
       createFlag.mockImplementationOnce(() => {
         let error = new Error("Random error");
@@ -259,15 +226,8 @@ describe("Flags tests", () => {
       const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
-      // expect(createFlag).toHaveBeenCalledWith(
-      //   { appliesToMh: true, note: "Test flag", user: "test admin" },
-      //   "IAHW-TEST-REF1",
-      //   expect.any(Object),
-      // );
-      // expect(res.headers.location).toBe("/flags");
     });
 
-    // test("renders errors when the user has not provided the proper appliesToMh value", async () => {
     test("redirects even  when the user has not provided the proper appliesToMh value", async () => {
       const options = {
         method: "POST",
@@ -284,22 +244,8 @@ describe("Flags tests", () => {
       const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
-
-      // const redirectedLocation = res.headers.location;
-      // expect(redirectedLocation).toContain("flags?createFlag=true&errors=");
-
-      // const base64EncodedErrors = redirectedLocation.split("errors=")[1].replace("%3D", "");
-      // const parsedErrors = JSON.parse(Buffer.from(base64EncodedErrors, "base64").toString("utf8"));
-      // expect(parsedErrors).toEqual([
-      //   {
-      //     href: "#",
-      //     key: "appliesToMh",
-      //     text: "Select if the flag is because the user declined multiple herds T&C's.",
-      //   },
-      // ]);
     });
 
-    // test("renders errors when the user has not provided the proper appRef value", async () => {
     test("redirects even when the user has not provided the proper appRef value", async () => {
       const options = {
         method: "POST",
@@ -316,22 +262,8 @@ describe("Flags tests", () => {
       const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
-
-      // const redirectedLocation = res.headers.location;
-      // expect(redirectedLocation).toContain("flags?createFlag=true&errors=");
-
-      // const base64EncodedErrors = redirectedLocation.split("errors=")[1].replace("%3D%3D", "");
-      // const parsedErrors = JSON.parse(Buffer.from(base64EncodedErrors, "base64").toString("utf8"));
-      // expect(parsedErrors).toEqual([
-      //   {
-      //     href: "#",
-      //     key: "appRef",
-      //     text: "Enter a valid agreement reference.",
-      //   },
-      // ]);
     });
 
-    // test("renders errors when the user has not provided the proper note value", async () => {
     test("redirects even when the user has not provided the proper note value", async () => {
       const options = {
         method: "POST",
@@ -348,22 +280,8 @@ describe("Flags tests", () => {
       const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
-
-      // const redirectedLocation = res.headers.location;
-      // expect(redirectedLocation).toContain("flags?createFlag=true&errors=");
-
-      // const base64EncodedErrors = redirectedLocation.split("errors=")[1].replace("%3D%3D", "");
-      // const parsedErrors = JSON.parse(Buffer.from(base64EncodedErrors, "base64").toString("utf8"));
-      // expect(parsedErrors).toEqual([
-      //   {
-      //     href: "#",
-      //     key: "note",
-      //     text: "Enter a note to explain the reason for creating the flag.",
-      //   },
-      // ]);
     });
 
-    // test("renders an error when the user is trying to create a flag which already exists", async () => {
     test("redirects even when the user is trying to create a flag which already exists", async () => {
       createFlag.mockImplementationOnce(() => {
         let error = new Error("Flag already exists");
@@ -392,22 +310,8 @@ describe("Flags tests", () => {
       const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
-
-      // const redirectedLocation = res.headers.location;
-      // expect(redirectedLocation).toContain("flags?createFlag=true&errors=");
-
-      // const base64EncodedErrors = redirectedLocation.split("errors=")[1].replace("%3D%3D", "");
-      // const parsedErrors = JSON.parse(Buffer.from(base64EncodedErrors, "base64").toString("utf8"));
-      // expect(parsedErrors).toEqual([
-      //   {
-      //     href: "#agreement-reference",
-      //     key: "appRef",
-      //     text: 'Flag not created - agreement flag with the same "Flag applies to multiple herds T&C\'s" value already exists.',
-      //   },
-      // ]);
     });
 
-    // test("renders an error when the user is trying to create a flag with a reference that doesnt exist", async () => {
     test("redirects even when the user is trying to create a flag with a reference that doesnt exist", async () => {
       createFlag.mockImplementationOnce(() => {
         let error = new Error("Flag does not exist");
@@ -436,22 +340,8 @@ describe("Flags tests", () => {
       const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
-
-      // const redirectedLocation = res.headers.location;
-      // expect(redirectedLocation).toContain("flags?createFlag=true&errors=");
-
-      // const base64EncodedErrors = redirectedLocation.split("errors=")[1].replace("%3D%3D", "");
-      // const parsedErrors = JSON.parse(Buffer.from(base64EncodedErrors, "base64").toString("utf8"));
-      // expect(parsedErrors).toEqual([
-      //   {
-      //     href: "#agreement-reference",
-      //     key: "appRef",
-      //     text: "Agreement reference does not exist.",
-      //   },
-      // ]);
     });
 
-    // test("renders an error when the user is trying to create a flag for an agreement that is redacted", async () => {
     test("redirects even when the user is trying to create a flag for an agreement that is redacted", async () => {
       createFlag.mockImplementationOnce(() => {
         const error = {
@@ -483,19 +373,6 @@ describe("Flags tests", () => {
       const res = await server.inject(options);
 
       expect(res.statusCode).toBe(StatusCodes.MOVED_TEMPORARILY);
-
-      // const redirectedLocation = res.headers.location;
-      // expect(redirectedLocation).toContain("flags?createFlag=true&errors=");
-
-      // const base64EncodedErrors = redirectedLocation.split("errors=")[1].replace("%3D%3D", "");
-      // const parsedErrors = JSON.parse(Buffer.from(base64EncodedErrors, "base64").toString("utf8"));
-      // expect(parsedErrors).toEqual([
-      //   {
-      //     href: "#agreement-reference",
-      //     key: "appRef",
-      //     text: "Flag not created - agreement is redacted.",
-      //   },
-      // ]);
     });
   });
 });

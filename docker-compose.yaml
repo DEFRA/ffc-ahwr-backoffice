@@ -5,6 +5,8 @@ services:
       target: production
     image: ffc-ahwr-backoffice
     container_name: ffc-ahwr-backoffice
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       APPINSIGHTS_CLOUDROLE: ffc-ahwr-backoffice-local
       APPLICATIONINSIGHTS_CONNECTION_STRING: ${APPLICATIONINSIGHTS_CONNECTION_STRING}

@@ -108,7 +108,6 @@ describe("Claims tests", () => {
       };
       const res = await server.inject(options);
       expect(res.statusCode).toBe(StatusCodes.OK);
-      // expect(setClaimSearch).toHaveBeenCalledTimes(1);
     });
   });
 });
