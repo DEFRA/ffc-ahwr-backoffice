@@ -8,7 +8,7 @@ import { getPagination, getPagingData } from "../pagination.js";
 import { searchValidation } from "../lib/search-validation.js";
 import { getClaimTableHeader, getClaimTableRows } from "./models/claim-list.js";
 import { permissions } from "../auth/permissions.js";
-// import { StatusCodes } from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 
 const { administrator, authoriser, processor, recommender, user } = permissions;
 const { displayPageSize } = config;
@@ -97,24 +97,24 @@ export const claimsRoutes = [
       auth: {
         scope: [administrator, processor, user, recommender, authoriser],
       },
-      // validate: {
-      //   query: joi.object({
-      //     page: joi.number().greater(0).default(1),
-      //     limit: joi.number().greater(0).default(displayPageSize),
-      //   }),
-      // },
+      validate: {
+        query: joi.object({
+          page: joi.number().greater(0).default(1),
+          limit: joi.number().greater(0).default(displayPageSize),
+        }),
+      },
       handler: async (request, h) => {
-        // try {
-        //   setClaimSearch(request, claimSearch.searchText, request.payload?.searchText);
-        const viewData = await getViewData(request);
-        return h.view(viewTemplate, viewData);
-        // } catch (err) {
-        //   request.logger.setBindings({ err });
-        //   return h
-        //     .view(viewTemplate, { ...request.payload, error: err })
-        //     .code(StatusCodes.BAD_REQUEST)
-        //     .takeover();
-        // }
+        try {
+          setClaimSearch(request, claimSearch.searchText, request.payload?.searchText);
+          const viewData = await getViewData(request);
+          return h.view(viewTemplate, viewData);
+        } catch (err) {
+          request.logger.setBindings({ err });
+          return h
+            .view(viewTemplate, { ...request.payload, error: err })
+            .code(StatusCodes.BAD_REQUEST)
+            .takeover();
+        }
       },
     },
   },
