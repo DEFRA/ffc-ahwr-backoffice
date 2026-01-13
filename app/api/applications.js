@@ -43,25 +43,7 @@ export async function getApplications(
   }
 }
 
-export async function processApplicationClaim(reference, user, approved, logger, note) {
-  const endpoint = `${applicationApiUri}/application/claim`;
-  const options = {
-    payload: {
-      reference,
-      user,
-      approved,
-      note,
-    },
-    json: true,
-  };
-  try {
-    const { payload } = await wreck.post(endpoint, options);
-    return payload;
-  } catch (err) {
-    logger.setBindings({ err, endpoint });
-    throw err;
-  }
-}
+export async function processApplicationClaim(_reference, _user, _approved, _logger, _note) {}
 
 export async function updateApplicationStatus(_reference, _user, _status, _logger, _note) {}
 
