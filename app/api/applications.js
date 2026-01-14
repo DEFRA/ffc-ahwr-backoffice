@@ -1,5 +1,6 @@
 import wreck from "@hapi/wreck";
 import { config } from "../config/index.js";
+import { StatusCodes } from "http-status-codes";
 
 const { applicationApiUri } = config;
 
@@ -69,10 +70,18 @@ export async function getApplicationEvents(reference, logger) {
   }
 }
 
-export async function updateApplicationData(_reference, _data, _note, _name, _logger) {}
+export async function updateApplicationData(_reference, _data, _note, _name, _logger) {
+  return Promise.resolve({ res: { statusCode: StatusCodes.OK } });
+}
 
-export async function redactPiiData(_logger) {}
+export async function redactPiiData(_logger) {
+  return Promise.resolve({ res: { statusCode: StatusCodes.OK } });
+}
 
-export async function updateEligiblePiiRedaction(_reference, _data, _note, _name, _logger) {}
+export async function updateEligiblePiiRedaction(_reference, _data, _note, _name, _logger) {
+  return Promise.resolve({ res: { statusCode: StatusCodes.OK } });
+}
 
-export async function triggerReminderEmailProcess(_logger) {}
+export async function triggerReminderEmailProcess(_logger) {
+  return Promise.resolve({ res: { statusCode: StatusCodes.OK } });
+}
