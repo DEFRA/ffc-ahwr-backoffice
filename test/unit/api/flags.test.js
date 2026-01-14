@@ -1,5 +1,5 @@
 import wreck from "@hapi/wreck";
-import { getAllFlags } from "../../../app/api/flags";
+import { createFlag, deleteFlag, getAllFlags } from "../../../app/api/flags";
 import { flags } from "../../data/flags.js";
 
 jest.mock("@hapi/wreck");
@@ -40,5 +40,25 @@ describe("Flags API", () => {
       expect(async () => await getAllFlags(mockLogger)).rejects.toThrow("test error");
       expect(mockLogger.setBindings).toHaveBeenCalled();
     });
+  });
+
+  it("createFlag should return on success", async () => {
+    const wreckResponse = {
+      res: {
+        statusCode: 200,
+      },
+    };
+    const response = await createFlag(undefined);
+    expect(response).toStrictEqual(wreckResponse);
+  });
+
+  it("deleteFlag should return on success", async () => {
+    const wreckResponse = {
+      res: {
+        statusCode: 200,
+      },
+    };
+    const response = await deleteFlag(undefined);
+    expect(response).toStrictEqual(wreckResponse);
   });
 });
