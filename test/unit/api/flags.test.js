@@ -58,7 +58,7 @@ describe("Flags API", () => {
         statusCode: 200,
       },
     };
-    const response = await deleteFlag(undefined);
+    const response = await deleteFlag({ _flagId: undefined, _deletedNote: undefined });
     expect(response).toStrictEqual(wreckResponse);
   });
 });
