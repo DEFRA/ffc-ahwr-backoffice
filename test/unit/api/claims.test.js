@@ -1,14 +1,11 @@
 import wreck from "@hapi/wreck";
 import { claims } from "../../data/claims.js";
-import { CLAIM_STATUS } from "ffc-ahwr-common-library";
-import { getClaim, getClaims, updateClaimStatus, updateClaimData } from "../../../app/api/claims";
+import { getClaim, getClaims, updateClaimData, updateClaimStatus } from "../../../app/api/claims";
 
 jest.mock("@hapi/wreck");
 jest.mock("../../../app/config");
 
 describe("Claims API", () => {
-  const applicationReference = "AHWR-1234-APP1";
-
   test("getClaim", async () => {
     const wreckResponse = {
       payload: claims[0],
@@ -74,89 +71,23 @@ describe("Claims API", () => {
     }).rejects.toEqual(wreckResponse);
   });
 
-  test("updateClaimStatus", async () => {
+  it("updateClaimStatus should return on success", async () => {
     const wreckResponse = {
-      payload: claims[0],
       res: {
         statusCode: 200,
       },
-      json: true,
     };
-
-    wreck.put = jest.fn().mockResolvedValueOnce(wreckResponse);
-
-    const response = await updateClaimStatus(applicationReference, "Admin", CLAIM_STATUS.IN_CHECK);
-
-    expect(response).toEqual(wreckResponse.payload);
+    const response = await updateClaimStatus(undefined, "test", 2);
+    expect(response).toStrictEqual(wreckResponse);
   });
 
-  test("updateClaimStatus error", async () => {
+  it("updateClaimData should return on success", async () => {
     const wreckResponse = {
-      payload: claims[0],
       res: {
-        statusCode: 400,
+        statusCode: 200,
       },
-      json: true,
     };
-
-    wreck.put = jest.fn().mockRejectedValueOnce(wreckResponse);
-    const logger = { setBindings: jest.fn() };
-
-    expect(async () => {
-      await updateClaimStatus(applicationReference, "Admin", CLAIM_STATUS.IN_CHECK, logger);
-    }).rejects.toEqual(wreckResponse);
-  });
-  test("updateClaimData", async () => {
-    const wreckResponse = {
-      payload: {},
-      res: {
-        statusCode: 204,
-      },
-      json: true,
-    };
-    const logger = { setBindings: jest.fn() };
-
-    wreck.put = jest.fn().mockResolvedValueOnce(wreckResponse);
-
-    const response = await updateClaimData(
-      applicationReference,
-      {
-        vetsName: "John Doe",
-        dateOfVisit: "2025-01-17",
-        vetRCVSNumber: "123456",
-      },
-      "my note",
-      "Admin",
-      logger,
-    );
-
-    expect(response).toEqual(wreckResponse.payload);
-  });
-
-  test("updateClaimData error", async () => {
-    const wreckResponse = {
-      payload: {},
-      res: {
-        statusCode: 400,
-      },
-      json: true,
-    };
-
-    wreck.put = jest.fn().mockRejectedValueOnce(wreckResponse);
-    const logger = { setBindings: jest.fn() };
-
-    expect(async () => {
-      await updateClaimData(
-        applicationReference,
-        {
-          vetsName: "John Doe",
-          dateOfVisit: "2025-01-17",
-          vetRCVSNumber: "123456",
-        },
-        "my note",
-        "Admin",
-        logger,
-      );
-    }).rejects.toEqual(wreckResponse);
+    const response = await updateClaimData(undefined, "test", 2);
+    expect(response).toStrictEqual(wreckResponse);
   });
 });

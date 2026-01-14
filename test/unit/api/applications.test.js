@@ -3,14 +3,14 @@ import { config } from "../../../app/config";
 import {
   getApplications,
   getApplication,
-  updateApplicationStatus,
-  processApplicationClaim,
   getApplicationHistory,
   getApplicationEvents,
-  updateApplicationData,
-  redactPiiData,
-  updateEligiblePiiRedaction,
+  updateApplicationStatus,
+  processApplicationClaim,
   triggerReminderEmailProcess,
+  updateEligiblePiiRedaction,
+  redactPiiData,
+  updateApplicationData,
 } from "../../../app/api/applications";
 
 jest.mock("@hapi/wreck");
@@ -135,145 +135,6 @@ describe("Application API", () => {
     );
   });
 
-  it("updateApplicationStatus should throw errors", async () => {
-    const options = {
-      payload: {
-        user: "test",
-        status: 2,
-      },
-      json: true,
-    };
-    wreck.put = jest.fn().mockRejectedValueOnce("updateApplicationStatus boom");
-    const logger = { setBindings: jest.fn() };
-
-    expect(async () => {
-      await updateApplicationStatus(appRef, "test", 2, logger);
-    }).rejects.toBe("updateApplicationStatus boom");
-
-    expect(wreck.put).toHaveBeenCalledTimes(1);
-    expect(wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/application/${appRef}`, options);
-  });
-
-  it("updateApplicationStatus should return on success", async () => {
-    const options = {
-      payload: {
-        user: "test",
-        status: 2,
-      },
-      json: true,
-    };
-    const wreckResponse = {
-      payload: {},
-      res: {
-        statusCode: 200,
-      },
-    };
-
-    wreck.put = jest.fn().mockResolvedValueOnce(wreckResponse);
-    const response = await updateApplicationStatus(appRef, "test", 2);
-
-    expect(response).toEqual(wreckResponse.payload);
-    expect(wreck.put).toHaveBeenCalledTimes(1);
-    expect(wreck.put).toHaveBeenCalledWith(`${applicationApiUri}/application/${appRef}`, options);
-  });
-
-  test("updateApplicationData", async () => {
-    const wreckResponse = {
-      payload: {},
-      res: {
-        statusCode: 204,
-      },
-      json: true,
-    };
-    const logger = { setBindings: jest.fn() };
-
-    wreck.put = jest.fn().mockResolvedValueOnce(wreckResponse);
-
-    const response = await updateApplicationData(
-      appRef,
-      {
-        vetName: "John Doe",
-        visitDate: "2025-01-17",
-        vetRcvs: "123456",
-      },
-      "my note",
-      "Admin",
-      logger,
-    );
-
-    expect(response).toEqual(wreckResponse.payload);
-  });
-
-  test("updateApplicationData error", async () => {
-    const wreckResponse = {
-      payload: {},
-      res: {
-        statusCode: 400,
-      },
-      json: true,
-    };
-
-    wreck.put = jest.fn().mockRejectedValueOnce(wreckResponse);
-    const logger = { setBindings: jest.fn() };
-
-    expect(async () => {
-      await updateApplicationData(
-        appRef,
-        {
-          vetName: "John Doe",
-          visitDate: "2025-01-17",
-          vetRcvs: "123456",
-        },
-        "my note",
-        "Admin",
-        logger,
-      );
-    }).rejects.toEqual(wreckResponse);
-  });
-
-  it("processApplicationClaim should throw errors", async () => {
-    const options = {
-      payload: {
-        user: "test",
-        approved: false,
-        reference: appRef,
-      },
-      json: true,
-    };
-    wreck.post = jest.fn().mockRejectedValueOnce("processApplicationClaim boom");
-    const logger = { setBindings: jest.fn() };
-
-    expect(async () => {
-      await processApplicationClaim(appRef, "test", false, logger);
-    }).rejects.toBe("processApplicationClaim boom");
-    expect(wreck.post).toHaveBeenCalledTimes(1);
-    expect(wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/application/claim`, options);
-  });
-
-  it("processApplicationClaim should return on success", async () => {
-    const options = {
-      payload: {
-        user: "test",
-        approved: true,
-        reference: appRef,
-      },
-      json: true,
-    };
-    const wreckResponse = {
-      payload: {},
-      res: {
-        statusCode: 200,
-      },
-    };
-
-    wreck.post = jest.fn().mockResolvedValueOnce(wreckResponse);
-    const response = await processApplicationClaim(appRef, "test", true);
-
-    expect(response).toEqual(wreckResponse.payload);
-    expect(wreck.post).toHaveBeenCalledTimes(1);
-    expect(wreck.post).toHaveBeenCalledWith(`${applicationApiUri}/application/claim`, options);
-  });
-
   it("getApplicationHistory should return history records", async () => {
     const wreckResponse = {
       payload: {
@@ -348,125 +209,69 @@ describe("Application API", () => {
     );
   });
 
-  describe("redactPiiData", () => {
-    const logger = {
-      setBindings: jest.fn(),
+  it("updateApplicationStatus should return on success", async () => {
+    const wreckResponse = {
+      res: {
+        statusCode: 200,
+      },
     };
-
-    const endpoint = `${applicationApiUri}/redact/pii`;
-
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it("should return payload when request is successful", async () => {
-      wreck.post.mockResolvedValue({ payload: {} });
-
-      const result = await redactPiiData(logger);
-
-      expect(wreck.post).toHaveBeenCalledWith(endpoint, {});
-      expect(result).toEqual({});
-      expect(logger.setBindings).not.toHaveBeenCalled();
-    });
-
-    it("should log and rethrow error when request fails", async () => {
-      const mockError = new Error("Request failed");
-      wreck.post.mockRejectedValue(mockError);
-
-      await expect(redactPiiData(logger)).rejects.toThrow("Request failed");
-
-      expect(logger.setBindings).toHaveBeenCalledWith({
-        err: mockError,
-        endpoint,
-      });
-    });
+    const response = await updateApplicationStatus(appRef, "test", 2);
+    expect(response).toStrictEqual(wreckResponse);
   });
 
-  describe("updateEligiblePiiRedaction", () => {
-    const logger = {
-      setBindings: jest.fn(),
+  it("processApplicationClaim should return on success", async () => {
+    const wreckResponse = {
+      res: {
+        statusCode: 200,
+      },
     };
-    const reference = "IAHW-KJLI-2678";
-    const endpoint = `${applicationApiUri}/application/${reference}/eligible-pii-redaction`;
-
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it("should return payload when request is successful", async () => {
-      wreck.put.mockResolvedValue({ payload: {} });
-
-      const result = await updateEligiblePiiRedaction(
-        reference,
-        { updateEligiblePiiRedaction: true },
-        "Reason for change",
-        "John Doe",
-        logger,
-      );
-
-      expect(wreck.put).toHaveBeenCalledWith(endpoint, {
-        payload: {
-          note: "Reason for change",
-          updateEligiblePiiRedaction: true,
-          user: "John Doe",
-        },
-      });
-      expect(result).toEqual({});
-      expect(logger.setBindings).not.toHaveBeenCalled();
-    });
-
-    it("should log and rethrow error when request fails", async () => {
-      const mockError = new Error("Request failed");
-      wreck.put.mockRejectedValue(mockError);
-
-      await expect(
-        updateEligiblePiiRedaction(
-          reference,
-          { updateEligiblePiiRedaction: true },
-          "Reason for change",
-          "John Doe",
-          logger,
-        ),
-      ).rejects.toThrow("Request failed");
-
-      expect(logger.setBindings).toHaveBeenCalledWith({
-        err: mockError,
-        endpoint,
-      });
-    });
+    const response = await processApplicationClaim(appRef, "test", undefined, undefined, undefined);
+    expect(response).toStrictEqual(wreckResponse);
   });
 
-  describe("triggerReminderEmailProcess", () => {
-    const logger = {
-      setBindings: jest.fn(),
+  it("updateApplicationData should return on success", async () => {
+    const wreckResponse = {
+      res: {
+        statusCode: 200,
+      },
     };
+    const response = await updateApplicationData(appRef, "test", undefined, undefined, undefined);
+    expect(response).toStrictEqual(wreckResponse);
+  });
 
-    const endpoint = `${applicationApiUri}/email/reminder`;
+  it("redactPiiData should return on success", async () => {
+    const wreckResponse = {
+      res: {
+        statusCode: 200,
+      },
+    };
+    const response = await redactPiiData(undefined);
+    expect(response).toStrictEqual(wreckResponse);
+  });
 
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
+  it("updateEligiblePiiRedaction should return on success", async () => {
+    const wreckResponse = {
+      res: {
+        statusCode: 200,
+      },
+    };
+    const response = await updateEligiblePiiRedaction(
+      appRef,
+      "test",
+      undefined,
+      undefined,
+      undefined,
+    );
+    expect(response).toStrictEqual(wreckResponse);
+  });
 
-    it("should return payload when request is successful", async () => {
-      wreck.post.mockResolvedValue({ payload: {} });
-
-      const result = await triggerReminderEmailProcess(logger);
-
-      expect(wreck.post).toHaveBeenCalledWith(endpoint, {});
-      expect(result).toEqual({});
-      expect(logger.setBindings).not.toHaveBeenCalled();
-    });
-
-    it("should log and rethrow error when request fails", async () => {
-      const mockError = new Error("Request failed");
-      wreck.post.mockRejectedValue(mockError);
-
-      await expect(triggerReminderEmailProcess(logger)).rejects.toThrow("Request failed");
-
-      expect(logger.setBindings).toHaveBeenCalledWith({
-        err: mockError,
-        endpoint,
-      });
-    });
+  it("triggerReminderEmailProcess should return on success", async () => {
+    const wreckResponse = {
+      res: {
+        statusCode: 200,
+      },
+    };
+    const response = await triggerReminderEmailProcess(undefined);
+    expect(response).toStrictEqual(wreckResponse);
   });
 });

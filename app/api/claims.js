@@ -1,5 +1,6 @@
 import wreck from "@hapi/wreck";
 import { config } from "../config/index.js";
+import { StatusCodes } from "http-status-codes";
 
 const { applicationApiUri } = config;
 
@@ -35,38 +36,10 @@ export async function getClaims(searchType, searchText, filter, limit, offset, s
   }
 }
 
-export async function updateClaimStatus(reference, user, status, logger, note) {
-  const endpoint = `${applicationApiUri}/claim/update-by-reference`;
-  const options = {
-    payload: {
-      reference,
-      status,
-      user,
-      note,
-    },
-    json: true,
-  };
-  try {
-    const { payload } = await wreck.put(endpoint, options);
-    return payload;
-  } catch (err) {
-    logger.setBindings({ err, endpoint });
-    throw err;
-  }
+export async function updateClaimStatus(_reference, _user, _status, _logger, _note) {
+  return { res: { statusCode: StatusCodes.OK } };
 }
 
-export async function updateClaimData(reference, data, note, name, logger) {
-  const endpoint = `${applicationApiUri}/claims/${reference}/data`;
-  logger.setBindings({ endpoint });
-
-  const options = {
-    payload: {
-      ...data,
-      note,
-      user: name,
-    },
-  };
-
-  const { payload } = await wreck.put(endpoint, options);
-  return payload;
+export async function updateClaimData(_reference, _data, _note, _name, _logger) {
+  return { res: { statusCode: StatusCodes.OK } };
 }

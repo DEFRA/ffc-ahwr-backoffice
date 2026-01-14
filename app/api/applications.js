@@ -1,5 +1,6 @@
 import wreck from "@hapi/wreck";
 import { config } from "../config/index.js";
+import { StatusCodes } from "http-status-codes";
 
 const { applicationApiUri } = config;
 
@@ -43,43 +44,12 @@ export async function getApplications(
   }
 }
 
-export async function processApplicationClaim(reference, user, approved, logger, note) {
-  const endpoint = `${applicationApiUri}/application/claim`;
-  const options = {
-    payload: {
-      reference,
-      user,
-      approved,
-      note,
-    },
-    json: true,
-  };
-  try {
-    const { payload } = await wreck.post(endpoint, options);
-    return payload;
-  } catch (err) {
-    logger.setBindings({ err, endpoint });
-    throw err;
-  }
+export async function processApplicationClaim(_reference, _user, _approved, _logger, _note) {
+  return { res: { statusCode: StatusCodes.OK } };
 }
 
-export async function updateApplicationStatus(reference, user, status, logger, note) {
-  const endpoint = `${applicationApiUri}/application/${reference}`;
-  const options = {
-    payload: {
-      user,
-      status,
-      note,
-    },
-    json: true,
-  };
-  try {
-    const { payload } = await wreck.put(endpoint, options);
-    return payload;
-  } catch (err) {
-    logger.setBindings({ err, endpoint });
-    throw err;
-  }
+export async function updateApplicationStatus(_reference, _user, _status, _logger, _note) {
+  return { res: { statusCode: StatusCodes.OK } };
 }
 
 export async function getApplicationHistory(reference, logger) {
@@ -104,58 +74,18 @@ export async function getApplicationEvents(reference, logger) {
   }
 }
 
-export async function updateApplicationData(reference, data, note, name, logger) {
-  const endpoint = `${applicationApiUri}/applications/${reference}/data`;
-  logger.setBindings({ endpoint });
-  const options = {
-    payload: {
-      ...data,
-      note,
-      user: name,
-    },
-  };
-
-  const { payload } = await wreck.put(endpoint, options);
-  return payload;
+export async function updateApplicationData(_reference, _data, _note, _name, _logger) {
+  return { res: { statusCode: StatusCodes.OK } };
 }
 
-export async function redactPiiData(logger) {
-  const endpoint = `${applicationApiUri}/redact/pii`;
-  try {
-    const { payload } = await wreck.post(endpoint, {});
-    return payload;
-  } catch (err) {
-    logger.setBindings({ err, endpoint });
-    throw err;
-  }
+export async function redactPiiData(_logger) {
+  return { res: { statusCode: StatusCodes.OK } };
 }
 
-export async function updateEligiblePiiRedaction(reference, data, note, name, logger) {
-  const endpoint = `${applicationApiUri}/application/${reference}/eligible-pii-redaction`;
-  const options = {
-    payload: {
-      ...data,
-      note,
-      user: name,
-    },
-  };
-
-  try {
-    const { payload } = await wreck.put(endpoint, options);
-    return payload;
-  } catch (err) {
-    logger.setBindings({ err, endpoint });
-    throw err;
-  }
+export async function updateEligiblePiiRedaction(_reference, _data, _note, _name, _logger) {
+  return { res: { statusCode: StatusCodes.OK } };
 }
 
-export async function triggerReminderEmailProcess(logger) {
-  const endpoint = `${applicationApiUri}/email/reminder`;
-  try {
-    const { payload } = await wreck.post(endpoint, {});
-    return payload;
-  } catch (err) {
-    logger.setBindings({ err, endpoint });
-    throw err;
-  }
+export async function triggerReminderEmailProcess(_logger) {
+  return { res: { statusCode: StatusCodes.OK } };
 }

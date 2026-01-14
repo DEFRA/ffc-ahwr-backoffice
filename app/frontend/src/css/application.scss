@@ -11,6 +11,19 @@ $govuk-assets-path: "~govuk-frontend/dist/govuk/assets/";
   max-width: 90% !important;
 }
 
+// The next two sections are all about
+// displaying the banner within a row without stretching
+.shrink-wrap {
+    display: inline-block;
+    vertical-align: top;
+}
+
+// make the banner itself fit its content instead of stretching
+.shrink-wrap .govuk-notification-banner {
+    display: inline-block;
+    width: auto;
+}
+
 $moj-assets-path: "~@ministryofjustice/frontend/moj/assets/";
 
 @import "@ministryofjustice/frontend/moj/all";
