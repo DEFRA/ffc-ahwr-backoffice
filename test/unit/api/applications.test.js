@@ -5,6 +5,12 @@ import {
   getApplication,
   getApplicationHistory,
   getApplicationEvents,
+  updateApplicationStatus,
+  processApplicationClaim,
+  triggerReminderEmailProcess,
+  updateEligiblePiiRedaction,
+  redactPiiData,
+  updateApplicationData,
 } from "../../../app/api/applications";
 
 jest.mock("@hapi/wreck");
@@ -201,5 +207,71 @@ describe("Application API", () => {
       `${applicationApiUri}/application/events/${appRef}`,
       options,
     );
+  });
+
+  it("updateApplicationStatus should return on success", async () => {
+    const wreckResponse = {
+      res: {
+        statusCode: 200,
+      },
+    };
+    const response = await updateApplicationStatus(appRef, "test", 2);
+    expect(response).toStrictEqual(wreckResponse);
+  });
+
+  it("processApplicationClaim should return on success", async () => {
+    const wreckResponse = {
+      res: {
+        statusCode: 200,
+      },
+    };
+    const response = await processApplicationClaim(appRef, "test", undefined, undefined, undefined);
+    expect(response).toStrictEqual(wreckResponse);
+  });
+
+  it("updateApplicationData should return on success", async () => {
+    const wreckResponse = {
+      res: {
+        statusCode: 200,
+      },
+    };
+    const response = await updateApplicationData(appRef, "test", undefined, undefined, undefined);
+    expect(response).toStrictEqual(wreckResponse);
+  });
+
+  it("redactPiiData should return on success", async () => {
+    const wreckResponse = {
+      res: {
+        statusCode: 200,
+      },
+    };
+    const response = await redactPiiData(undefined);
+    expect(response).toStrictEqual(wreckResponse);
+  });
+
+  it("updateEligiblePiiRedaction should return on success", async () => {
+    const wreckResponse = {
+      res: {
+        statusCode: 200,
+      },
+    };
+    const response = await updateEligiblePiiRedaction(
+      appRef,
+      "test",
+      undefined,
+      undefined,
+      undefined,
+    );
+    expect(response).toStrictEqual(wreckResponse);
+  });
+
+  it("triggerReminderEmailProcess should return on success", async () => {
+    const wreckResponse = {
+      res: {
+        statusCode: 200,
+      },
+    };
+    const response = await triggerReminderEmailProcess(undefined);
+    expect(response).toStrictEqual(wreckResponse);
   });
 });
