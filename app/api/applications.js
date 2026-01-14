@@ -44,9 +44,13 @@ export async function getApplications(
   }
 }
 
-export async function processApplicationClaim(_reference, _user, _approved, _logger, _note) {}
+export async function processApplicationClaim(_reference, _user, _approved, _logger, _note) {
+  return Promise.resolve({ res: { statusCode: StatusCodes.OK } });
+}
 
-export async function updateApplicationStatus(_reference, _user, _status, _logger, _note) {}
+export async function updateApplicationStatus(_reference, _user, _status, _logger, _note) {
+  return Promise.resolve({ res: { statusCode: StatusCodes.OK } });
+}
 
 export async function getApplicationHistory(reference, logger) {
   const endpoint = `${applicationApiUri}/application/history/${reference}`;
