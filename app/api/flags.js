@@ -16,9 +16,9 @@ export async function getAllFlags(logger) {
 }
 
 export async function deleteFlag({ _flagId, _deletedNote }, _user, _logger) {
-  return Promise.resolve({ res: { statusCode: StatusCodes.OK } });
+  return { res: { statusCode: StatusCodes.OK } };
 }
 
 export async function createFlag(_payload, _appRef, _logger) {
-  return Promise.resolve({ res: { statusCode: StatusCodes.OK } });
+  return { res: { statusCode: StatusCodes.OK } };
 }

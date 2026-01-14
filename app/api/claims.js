@@ -37,9 +37,9 @@ export async function getClaims(searchType, searchText, filter, limit, offset, s
 }
 
 export async function updateClaimStatus(_reference, _user, _status, _logger, _note) {
-  return Promise.resolve({ res: { statusCode: StatusCodes.OK } });
+  return { res: { statusCode: StatusCodes.OK } };
 }
 
 export async function updateClaimData(_reference, _data, _note, _name, _logger) {
-  return Promise.resolve({ res: { statusCode: StatusCodes.OK } });
+  return { res: { statusCode: StatusCodes.OK } };
 }

@@ -45,11 +45,11 @@ export async function getApplications(
 }
 
 export async function processApplicationClaim(_reference, _user, _approved, _logger, _note) {
-  return Promise.resolve({ res: { statusCode: StatusCodes.OK } });
+  return { res: { statusCode: StatusCodes.OK } };
 }
 
 export async function updateApplicationStatus(_reference, _user, _status, _logger, _note) {
-  return Promise.resolve({ res: { statusCode: StatusCodes.OK } });
+  return { res: { statusCode: StatusCodes.OK } };
 }
 
 export async function getApplicationHistory(reference, logger) {
@@ -75,17 +75,17 @@ export async function getApplicationEvents(reference, logger) {
 }
 
 export async function updateApplicationData(_reference, _data, _note, _name, _logger) {
-  return Promise.resolve({ res: { statusCode: StatusCodes.OK } });
+  return { res: { statusCode: StatusCodes.OK } };
 }
 
 export async function redactPiiData(_logger) {
-  return Promise.resolve({ res: { statusCode: StatusCodes.OK } });
+  return { res: { statusCode: StatusCodes.OK } };
 }
 
 export async function updateEligiblePiiRedaction(_reference, _data, _note, _name, _logger) {
-  return Promise.resolve({ res: { statusCode: StatusCodes.OK } });
+  return { res: { statusCode: StatusCodes.OK } };
 }
 
 export async function triggerReminderEmailProcess(_logger) {
-  return Promise.resolve({ res: { statusCode: StatusCodes.OK } });
+  return { res: { statusCode: StatusCodes.OK } };
 }
